@@ -1,0 +1,26 @@
+version: 2
+
+updates:
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    groups:
+      maven-plugin:
+        patterns:
+          - "org.apache.maven.plugins:*"
+    ignore:
+      # Gson is bundled with Minecraft. Keep in sync.
+      - dependency-name: "com.google.code.gson:gson"
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        update-types:
+          - "major"
+        patterns:
+          - "*"

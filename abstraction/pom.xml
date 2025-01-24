@@ -26,11 +26,11 @@
 
     <parent>
         <groupId>com.loohp</groupId>
-        <artifactId>InteractiveChatDiscordSrvAddon-Parent</artifactId>
+        <artifactId>MultiChatDiscordSrvAddon-Parent</artifactId>
         <version>4.2.16.0</version>
     </parent>
 
-    <artifactId>InteractiveChatDiscordSrvAddon-Abstraction</artifactId>
+    <artifactId>MultiChatDiscordSrvAddon-Abstraction</artifactId>
 
     <repositories>
         <repository>
@@ -40,6 +40,27 @@
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>pinodev-repo-releases</id>
+            <name>Pineta</name>
+            <url>https://repo.pinodev.it/releases</url>
+        </repository>
+        <repository>
+            <id>spigotmc-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>loohp-repo</id>
+            <url>https://repo.loohpjames.com/repository</url>
+        </repository>
+        <repository>
+            <id>papermc-repo</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
     </repositories>
 
@@ -59,37 +80,31 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-gson</artifactId>
-            <version>4.17.0-SNAPSHOT</version>
+            <version>4.17.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-legacy</artifactId>
-            <version>4.17.0-SNAPSHOT</version>
+            <version>4.17.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-plain</artifactId>
-            <version>4.17.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.kyori</groupId>
-            <artifactId>adventure-text-serializer-gson</artifactId>
-            <version>4.17.0-SNAPSHOT</version>
+            <version>4.17.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
-            <version>4.17.0-SNAPSHOT</version>
+            <version>4.17.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-nbt</artifactId>
-            <version>4.17.0-SNAPSHOT</version>
+            <version>4.17.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -99,16 +114,15 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
-            <version>1.9-R0.1-SNAPSHOT</version>
+            <groupId>com.mojang</groupId>
+            <artifactId>authlib</artifactId>
+            <version>6.0.54</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.loohp</groupId>
-            <artifactId>InteractiveChat</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker</artifactId>
+            <version>3.48.4</version>
         </dependency>
     </dependencies>
 
