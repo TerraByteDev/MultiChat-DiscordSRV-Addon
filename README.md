@@ -10,7 +10,7 @@ This fork mostly removes the complete dependency on InteractiveChat - A lot of I
 All code credits go towards LOOHP, who has given permission for this fork to be created and maintained by me.
 
 > [!WARNING]
-> If you encounter bugs while using this fork, **do not report this to the original author!\
+> If you encounter bugs while using this fork, **do not report this to the original author!**\
 > You should create an issue for [this fork](https://github.com/TerraByteDev/MultiChat-DIscordSRV-Addon/issues).
 
 ## Built against Spigot
