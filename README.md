@@ -32,6 +32,9 @@ Plugins built against Spigot usually also work with [Paper](https://papermc.io/)
 - [ChatControl](https://builtbybit.com/resources/chatcontrol-format-filter-chat.18217/)
 
 ## Compiling Yourself
+> [!INFO]
+> You can get a pre-compiled dev build from the actions workflow here: https://github.com/TerraByteDev/MultiChat-DIscordSRV-Addon/actions
+
 ### Prerequisites
 - [Maven](https://maven.apache.org/) - This must be installed in order to compile the plugin.
 
