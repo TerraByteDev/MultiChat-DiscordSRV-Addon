@@ -25,19 +25,19 @@ import com.loohp.multichatdiscordsrvaddon.VersionManager;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class NMSAddon {
+public class NMS {
 
-    private static NMSAddonWrapper instance;
+    private static NMSWrapper instance;
 
     @SuppressWarnings("deprecation")
-    public synchronized static NMSAddonWrapper getInstance() {
+    public synchronized static NMSWrapper getInstance() {
         if (instance != null) {
             return instance;
         }
         try {
-            Class<NMSAddonWrapper> nmsImplClass = (Class<NMSAddonWrapper>) Class.forName("com.loohp.multichatdiscordsrvaddon.nms." + VersionManager.version.name());
+            Class<NMSWrapper> nmsImplClass = (Class<NMSWrapper>) Class.forName("com.loohp.multichatdiscordsrvaddon.nms." + VersionManager.version.name());
             instance = nmsImplClass.getConstructor().newInstance();
-            NMSAddonWrapper.setup(instance, InteractiveChatDiscordSrvAddon.plugin);
+            NMSWrapper.setup(instance, InteractiveChatDiscordSrvAddon.plugin);
             return instance;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
             if (VersionManager.version.isSupported()) {

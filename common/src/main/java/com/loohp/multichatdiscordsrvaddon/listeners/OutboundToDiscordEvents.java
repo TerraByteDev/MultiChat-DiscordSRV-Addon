@@ -56,7 +56,7 @@ import com.loohp.multichatdiscordsrvaddon.api.events.GameMessageProcessPlayerInv
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.AdvancementData;
 import com.loohp.multichatdiscordsrvaddon.objectholders.AdvancementType;
 import com.loohp.multichatdiscordsrvaddon.objectholders.AttachmentData;
@@ -618,7 +618,7 @@ public class OutboundToDiscordEvents implements Listener {
         }
         Debug.debug("Triggered onDeath");
         Player player = event.getEntity();
-        Component deathMessage = NMSAddon.getInstance().getDeathMessage(player);
+        Component deathMessage = NMS.getInstance().getDeathMessage(player);
         DEATH_MESSAGE.put(player.getUniqueId(), deathMessage);
     }
 
@@ -679,7 +679,7 @@ public class OutboundToDiscordEvents implements Listener {
 
             DiscordToolTip discordToolTip = DiscordItemStackUtils.getToolTip(item, icPlayer, InteractiveChatDiscordSrvAddon.plugin.showAdvanceDetails);
             if (!discordToolTip.isHideTooltip() &&(!discordToolTip.isBaseItem() || InteractiveChatDiscordSrvAddon.plugin.itemUseTooltipImageOnBaseItem)) {
-                BufferedImage tooltip = ImageGeneration.getToolTipImage(discordToolTip.getComponents(), NMSAddon.getInstance().getCustomTooltipResourceLocation(item));
+                BufferedImage tooltip = ImageGeneration.getToolTipImage(discordToolTip.getComponents(), NMS.getInstance().getCustomTooltipResourceLocation(item));
                 byte[] tooltipData = ImageUtils.toArray(tooltip);
                 content.addAttachment("ToolTip.png", tooltipData);
                 content.addImageUrl("attachment://ToolTip.png");
@@ -722,8 +722,8 @@ public class OutboundToDiscordEvents implements Listener {
 
         Debug.debug("onAdvancement getting achievement");
         Event bukkitEvent = event.getTriggeringBukkitEvent();
-        Object advancement = NMSAddon.getInstance().getBukkitAdvancementFromEvent(bukkitEvent);
-        AdvancementData data = NMSAddon.getInstance().getAdvancementDataFromBukkitAdvancement(advancement);
+        Object advancement = NMS.getInstance().getBukkitAdvancementFromEvent(bukkitEvent);
+        AdvancementData data = NMS.getInstance().getAdvancementDataFromBukkitAdvancement(advancement);
 
         SpecificTranslateFunction translateFunction = InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(InteractiveChatDiscordSrvAddon.plugin.language);
 

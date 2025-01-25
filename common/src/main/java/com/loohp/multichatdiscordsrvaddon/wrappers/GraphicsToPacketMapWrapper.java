@@ -26,7 +26,7 @@ import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageFrame;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
@@ -166,7 +166,7 @@ public class GraphicsToPacketMapWrapper {
         InteractiveChatDiscordSrvAddon.plugin.imagesViewedCounter.incrementAndGet();
         InboundToGameEvents.MAP_VIEWERS.put(player, this);
 
-        NMSAddon.getInstance().sendFakeMainHandSlot(player, mapItem);
+        NMS.getInstance().sendFakeMainHandSlot(player, mapItem);
 
         GraphicsToPacketMapWrapper ref = this;
         new BukkitRunnable() {
@@ -177,7 +177,7 @@ public class GraphicsToPacketMapWrapper {
                 GraphicsToPacketMapWrapper wrapper = InboundToGameEvents.MAP_VIEWERS.get(player);
                 if (wrapper != null && wrapper.equals(ref)) {
                     byte[] colorArray = colors.get(index);
-                    NMSAddon.getInstance().sendFakeMapUpdate(player, MAP_ID, Collections.emptyList(), colorArray);
+                    NMS.getInstance().sendFakeMapUpdate(player, MAP_ID, Collections.emptyList(), colorArray);
                 } else {
                     this.cancel();
                 }

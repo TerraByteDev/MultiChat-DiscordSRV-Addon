@@ -60,10 +60,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
 
-public abstract class NMSAddonWrapper {
+public abstract class NMSWrapper {
 
     private static Plugin plugin;
-    private static NMSAddonWrapper instance;
+    private static NMSWrapper instance;
 
     @Deprecated
     public static Plugin getPlugin() {
@@ -71,14 +71,14 @@ public abstract class NMSAddonWrapper {
     }
 
     @Deprecated
-    public static NMSAddonWrapper getInstance() {
+    public static NMSWrapper getInstance() {
         return instance;
     }
 
     @Deprecated
-    public static void setup(NMSAddonWrapper instance, Plugin plugin) {
-        NMSAddonWrapper.instance = instance;
-        NMSAddonWrapper.plugin = plugin;
+    public static void setup(NMSWrapper instance, Plugin plugin) {
+        NMSWrapper.instance = instance;
+        NMSWrapper.plugin = plugin;
     }
 
     static final ItemStack ITEM_STACK_AIR = new ItemStack(Material.AIR);

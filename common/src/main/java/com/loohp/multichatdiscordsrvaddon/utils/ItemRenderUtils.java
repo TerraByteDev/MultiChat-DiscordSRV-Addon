@@ -36,7 +36,7 @@ import com.loohp.multichatdiscordsrvaddon.graphics.BannerGraphics;
 import com.loohp.multichatdiscordsrvaddon.graphics.BannerGraphics.BannerAssetResult;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ChargeType;
 import com.loohp.multichatdiscordsrvaddon.objectholders.CustomModelData;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ItemDamageInfo;
@@ -115,7 +115,7 @@ public class ItemRenderUtils {
             world = null;
         }
 
-        String namespacedKey = NMSAddon.getInstance().getItemModelResourceLocation(item).asString();
+        String namespacedKey = NMS.getInstance().getItemModelResourceLocation(item).asString();
 
         ItemModelDefinition itemModelDefinition = manager.getItemModelDefinitionManager().getItemModelDefinition(namespacedKey);
         ItemModelDefinition.ItemModelDefinitionType<?> itemModelDefinitionType = itemModelDefinition.getType();
@@ -146,13 +146,13 @@ public class ItemRenderUtils {
 
         if (hasItemMeta && itemMeta instanceof PotionMeta) {
             PotionMeta meta = (PotionMeta) itemMeta;
-            PotionType potiontype = NMSAddon.getInstance().getBasePotionType(item);
+            PotionType potiontype = NMS.getInstance().getBasePotionType(item);
         }
         if (CompassUtils.isLodestoneCompass(item)) {
             requiresEnchantmentGlint = true;
         }
 
-        Boolean enchantmentGlintOverride = NMSAddon.getInstance().getEnchantmentGlintOverride(item);
+        Boolean enchantmentGlintOverride = NMS.getInstance().getEnchantmentGlintOverride(item);
         if (enchantmentGlintOverride != null) {
             requiresEnchantmentGlint = enchantmentGlintOverride;
         }
@@ -165,7 +165,7 @@ public class ItemRenderUtils {
             if (!PlayerUtils.isRightHanded(player)) {
                 predicates.put(ModelOverrideType.LEFTHANDED, 1F);
             }
-            CustomModelData customModelData = NMSAddon.getInstance().getCustomModelData(item);
+            CustomModelData customModelData = NMS.getInstance().getCustomModelData(item);
             if (customModelData != null && customModelData.hasLegacyIndex()) {
                 predicates.put(ModelOverrideType.CUSTOM_MODEL_DATA, customModelData.getLegacyIndex());
             }
@@ -173,7 +173,7 @@ public class ItemRenderUtils {
                 int maxDur = item.getType().getMaxDurability();
                 int damage = VersionManager.version.isLegacy() ? item.getDurability() : ((Damageable) itemMeta).getDamage();
                 predicates.put(ModelOverrideType.DAMAGE, (float) damage / (float) maxDur);
-                predicates.put(ModelOverrideType.DAMAGED, NMSAddon.getInstance().isItemUnbreakable(item) || (damage <= 0) ? 0F : 1F);
+                predicates.put(ModelOverrideType.DAMAGED, NMS.getInstance().isItemUnbreakable(item) || (damage <= 0) ? 0F : 1F);
             }
 
             if (icMaterial.isMaterial(XMaterial.CHEST) || icMaterial.isMaterial(XMaterial.TRAPPED_CHEST)) {
@@ -200,7 +200,7 @@ public class ItemRenderUtils {
             } else if (icMaterial.isMaterial(XMaterial.PLAYER_HEAD)) {
                 BufferedImage skinImage = manager.getTextureManager().getTexture(ResourceRegistry.DEFAULT_WIDE_SKIN_LOCATION).getTexture();
                 if (hasItemMeta) {
-                    GameProfile gameProfile = NMSAddon.getInstance().getPlayerHeadProfile(item);
+                    GameProfile gameProfile = NMS.getInstance().getPlayerHeadProfile(item);
                     String skinURL = GameProfileUtils.getSkinUrl(gameProfile);
                     if (skinURL != null) {
                         try {
@@ -329,14 +329,14 @@ public class ItemRenderUtils {
                 }
                 predicates.put(ModelOverrideType.LEVEL, level);
             } else if (icMaterial.isMaterial(XMaterial.WOLF_ARMOR)) {
-                int dyedColor = NMSAddon.getInstance().getLeatherArmorColor(item).orElse(ResourceRegistry.DEFAULT_DYE_COLOR);
+                int dyedColor = NMS.getInstance().getLeatherArmorColor(item).orElse(ResourceRegistry.DEFAULT_DYE_COLOR);
                 tintColorProvider = new TintColorProvider.DyeTintProvider(tintIndex -> tintIndex > 0 ? dyedColor : -1);
             } else if (itemMeta instanceof LeatherArmorMeta) {
-                int dyedColor = NMSAddon.getInstance().getLeatherArmorColor(item).orElse(ResourceRegistry.DEFAULT_DYE_COLOR);
+                int dyedColor = NMS.getInstance().getLeatherArmorColor(item).orElse(ResourceRegistry.DEFAULT_DYE_COLOR);
                 tintColorProvider = new TintColorProvider.DyeTintProvider(tintIndex -> tintIndex > 0 ? -1 : dyedColor);
             } else if (itemMeta instanceof PotionMeta) {
                 PotionMeta meta = (PotionMeta) itemMeta;
-                PotionType potiontype = NMSAddon.getInstance().getBasePotionType(item);
+                PotionType potiontype = NMS.getInstance().getBasePotionType(item);
                 int color;
                 try {
                     if (meta.hasColor()) {
@@ -401,7 +401,7 @@ public class ItemRenderUtils {
                 Player icplayer = player.getPlayer();
                 if (icplayer != null && PlayerUtils.isLocal(icplayer)) {
                     Player bukkitPlayer = icplayer;
-                    if (NMSAddon.getInstance().getFishHook(bukkitPlayer) != null) {
+                    if (NMS.getInstance().getFishHook(bukkitPlayer) != null) {
                         ItemStack mainHandItem = bukkitPlayer.getEquipment().getItemInHand();
                         if (VersionManager.version.isOld()) {
                             if (mainHandItem != null && mainHandItem.equals(item)) {
@@ -441,7 +441,7 @@ public class ItemRenderUtils {
                     for (int i = 0; i < materials.size(); i++) {
                         TextureResource textureResource = null;
                         ItemStack sherd = new ItemStack(materials.get(i));
-                        Key type = NMSAddon.getInstance().getDecoratedPotSherdPatternName(sherd);
+                        Key type = NMS.getInstance().getDecoratedPotSherdPatternName(sherd);
                         if (VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_3)) {
                             String namespace = type.namespace();
                             String key = type.value();
@@ -460,7 +460,7 @@ public class ItemRenderUtils {
                 ArmorMeta armorMeta = (ArmorMeta) itemMeta;
                 ArmorTrim armorTrim = armorMeta.getTrim();
                 TrimMaterial trimMaterial = armorTrim == null ? null : armorTrim.getMaterial();
-                float trimIndex = NMSAddon.getInstance().getLegacyTrimMaterialIndex(trimMaterial);
+                float trimIndex = NMS.getInstance().getLegacyTrimMaterialIndex(trimMaterial);
                 predicates.put(ModelOverrideType.TRIM_TYPE, trimIndex);
             }
 
@@ -501,7 +501,7 @@ public class ItemRenderUtils {
                         tintData[tintindex] = () -> value;
                     } else if (tintSourceType.equals(ItemModelDefinition.TintSourceType.DYE)) {
                         ItemModelDefinition.DyeTintSource dyeTintSource = (ItemModelDefinition.DyeTintSource) tintSource;
-                        int dyedColor = NMSAddon.getInstance().getLeatherArmorColor(itemStack).orElse(dyeTintSource.getDefaultColor());
+                        int dyedColor = NMS.getInstance().getLeatherArmorColor(itemStack).orElse(dyeTintSource.getDefaultColor());
                         tintData[tintindex] = () -> dyedColor;
                     } else if (tintSourceType.equals(ItemModelDefinition.TintSourceType.GRASS)) {
                         ItemModelDefinition.GrassTintSource grassTintSource = (ItemModelDefinition.GrassTintSource) tintSource;
@@ -538,7 +538,7 @@ public class ItemRenderUtils {
                         int potionColor;
                         if (itemStack.getItemMeta() instanceof PotionMeta) {
                             PotionMeta meta = (PotionMeta) itemStack.getItemMeta();
-                            PotionType potiontype = NMSAddon.getInstance().getBasePotionType(itemStack);
+                            PotionType potiontype = NMS.getInstance().getBasePotionType(itemStack);
                             int color;
                             try {
                                 if (meta.hasColor()) {
@@ -583,7 +583,7 @@ public class ItemRenderUtils {
                         tintData[tintindex] = () -> color;
                     } else if (tintSourceType.equals(ItemModelDefinition.TintSourceType.CUSTOM_MODEL_DATA)) {
                         ItemModelDefinition.CustomModelDataTintSource customModelDataTintSource = (ItemModelDefinition.CustomModelDataTintSource) tintSource;
-                        CustomModelData customModelData = NMSAddon.getInstance().getCustomModelData(itemStack);
+                        CustomModelData customModelData = NMS.getInstance().getCustomModelData(itemStack);
                         int color;
                         if (customModelData == null || customModelData.getColor(customModelDataTintSource.getIndex()) == null) {
                             color = customModelDataTintSource.getDefaultColor();
@@ -619,7 +619,7 @@ public class ItemRenderUtils {
                     evaluation = false;
                 }
             } else if (propertyType.equals(ItemModelDefinition.ConditionPropertyType.DAMAGED)) {
-                if (itemStack.getType().getMaxDurability() > 0 && NMSAddon.getInstance().isItemUnbreakable(itemStack)) {
+                if (itemStack.getType().getMaxDurability() > 0 && NMS.getInstance().isItemUnbreakable(itemStack)) {
                     int maxDur = itemStack.getType().getMaxDurability();
                     int damage = VersionManager.version.isLegacy() ? itemStack.getDurability() : ((Damageable) itemStack.getItemMeta()).getDamage();
                     evaluation = damage > 0;
@@ -628,12 +628,12 @@ public class ItemRenderUtils {
                 }
             } else if (propertyType.equals(ItemModelDefinition.ConditionPropertyType.HAS_COMPONENT)) {
                 ItemModelDefinition.HasComponentConditionProperty hasComponentConditionProperty = (ItemModelDefinition.HasComponentConditionProperty) condition;
-                evaluation = NMSAddon.getInstance().hasDataComponent(itemStack, hasComponentConditionProperty.getComponent(), hasComponentConditionProperty.isIgnoreDefault());
+                evaluation = NMS.getInstance().hasDataComponent(itemStack, hasComponentConditionProperty.getComponent(), hasComponentConditionProperty.isIgnoreDefault());
             } else if (propertyType.equals(ItemModelDefinition.ConditionPropertyType.FISHING_ROD_CAST)) {
                 Player icplayer = player.getPlayer();
                 boolean evaluation0 = false;
                 if (icplayer != null && PlayerUtils.isLocal(icplayer)) {
-                    if (NMSAddon.getInstance().getFishHook(icplayer) != null) {
+                    if (NMS.getInstance().getFishHook(icplayer) != null) {
                         ItemStack mainHandItem = icplayer.getEquipment().getItemInHand();
                         ItemStack offHandItem = icplayer.getEquipment().getItemInOffHand();
                         if ((mainHandItem != null && mainHandItem.equals(itemStack)) || ((offHandItem != null && offHandItem.equals(itemStack)) && (mainHandItem == null || !XMaterial.matchXMaterial(mainHandItem).equals(XMaterial.FISHING_ROD)))) {
@@ -656,7 +656,7 @@ public class ItemRenderUtils {
                 evaluation = false;
             } else if (propertyType.equals(ItemModelDefinition.ConditionPropertyType.CUSTOM_MODEL_DATA)) {
                 ItemModelDefinition.CustomModelDataConditionProperty customModelDataConditionProperty = (ItemModelDefinition.CustomModelDataConditionProperty) condition;
-                CustomModelData customModelData = NMSAddon.getInstance().getCustomModelData(itemStack);
+                CustomModelData customModelData = NMS.getInstance().getCustomModelData(itemStack);
                 evaluation = customModelData != null && Boolean.TRUE.equals(customModelData.getFlag(customModelDataConditionProperty.getIndex()));
             } else {
                 evaluation = false;
@@ -700,7 +700,7 @@ public class ItemRenderUtils {
                 }
             } else if (propertyType.equals(ItemModelDefinition.SelectPropertyType.BLOCK_STATE)) {
                 ItemModelDefinition.BlockStateSelectProperty blockStateSelectProperty = (ItemModelDefinition.BlockStateSelectProperty) select;
-                value = NMSAddon.getInstance().getBlockStateProperty(itemStack, blockStateSelectProperty.getBlockStateProperty());
+                value = NMS.getInstance().getBlockStateProperty(itemStack, blockStateSelectProperty.getBlockStateProperty());
             } else if (propertyType.equals(ItemModelDefinition.SelectPropertyType.DISPLAY_CONTEXT)) {
                 value = displayPosition;
             } else if (propertyType.equals(ItemModelDefinition.SelectPropertyType.LOCAL_TIME)) {
@@ -718,7 +718,7 @@ public class ItemRenderUtils {
             } else if (propertyType.equals(ItemModelDefinition.SelectPropertyType.CONTEXT_DIMENSION)) {
                 Player icPlayer = player.getPlayer();
                 if (icPlayer != null && PlayerUtils.isLocal(icPlayer)) {
-                    value = NMSAddon.getInstance().getNamespacedKey(icPlayer.getWorld());
+                    value = NMS.getInstance().getNamespacedKey(icPlayer.getWorld());
                 } else {
                     value = null;
                 }
@@ -726,7 +726,7 @@ public class ItemRenderUtils {
                 value = KeyUtils.toKey(EntityType.PLAYER.getKey());
             } else if (propertyType.equals(ItemModelDefinition.SelectPropertyType.CUSTOM_MODEL_DATA)) {
                 ItemModelDefinition.CustomModelDataSelectProperty customModelDataSelectProperty = (ItemModelDefinition.CustomModelDataSelectProperty) select;
-                CustomModelData customModelData = NMSAddon.getInstance().getCustomModelData(itemStack);
+                CustomModelData customModelData = NMS.getInstance().getCustomModelData(itemStack);
                 if (customModelData != null) {
                     value = customModelData.getString(customModelDataSelectProperty.getIndex());
                 } else {
@@ -754,7 +754,7 @@ public class ItemRenderUtils {
                 }
             } else if (propertyType.equals(ItemModelDefinition.RangeDispatchPropertyType.DAMAGE)) {
                 ItemModelDefinition.DamageRangeDispatchProperty damageRangeDispatchProperty = (ItemModelDefinition.DamageRangeDispatchProperty) rangeDispatch;
-                ItemDamageInfo itemDamageInfo = NMSAddon.getInstance().getItemDamageInfo(itemStack);
+                ItemDamageInfo itemDamageInfo = NMS.getInstance().getItemDamageInfo(itemStack);
                 float damage = (float) itemDamageInfo.getDamage();
                 float maxDamage = (float) itemDamageInfo.getMaxDamage();
                 if (damageRangeDispatchProperty.isNormalize()) {
@@ -774,7 +774,7 @@ public class ItemRenderUtils {
             } else if (propertyType.equals(ItemModelDefinition.RangeDispatchPropertyType.COOLDOWN)) {
                 Player icPlayer = player.getPlayer();
                 if (icPlayer != null && PlayerUtils.isLocal(icPlayer)) {
-                    value = NMSAddon.getInstance().getItemCooldownProgress(icPlayer, itemStack) * rangeDispatch.getScale();
+                    value = NMS.getInstance().getItemCooldownProgress(icPlayer, itemStack) * rangeDispatch.getScale();
                 } else {
                     value = 0F;
                 }
@@ -786,10 +786,10 @@ public class ItemRenderUtils {
                     World world = icPlayer.getWorld();
                     switch (timeRangeDispatchProperty.getSource()) {
                         case DAYTIME:
-                            angle = NMSAddon.getInstance().getSkyAngle(world);
+                            angle = NMS.getInstance().getSkyAngle(world);
                             break;
                         case MOON_PHASE:
-                            angle = (float) NMSAddon.getInstance().getMoonPhase(world) / 8.0f;
+                            angle = (float) NMS.getInstance().getMoonPhase(world) / 8.0f;
                             break;
                     }
                 }
@@ -846,8 +846,8 @@ public class ItemRenderUtils {
                         int pullTime;
                         int tickUsedSoFar;
                         if (icPlayer != null && PlayerUtils.isLocal(icPlayer)) {
-                            pullTime = NMSAddon.getInstance().getCrossbowPullTime(itemStack, icPlayer);
-                            tickUsedSoFar = NMSAddon.getInstance().getTicksUsedSoFar(itemStack, icPlayer);
+                            pullTime = NMS.getInstance().getCrossbowPullTime(itemStack, icPlayer);
+                            tickUsedSoFar = NMS.getInstance().getTicksUsedSoFar(itemStack, icPlayer);
                         } else {
                             pullTime = 0;
                             tickUsedSoFar = 0;
@@ -864,9 +864,9 @@ public class ItemRenderUtils {
                 Player icPlayer = player.getPlayer();
                 if (icPlayer != null && PlayerUtils.isLocal(icPlayer) && PlayerUtils.getMainHandItem(icPlayer).equals(itemStack)) {
                     if (useDurationRangeDispatchProperty.isRemaining()) {
-                        value = NMSAddon.getInstance().getItemUseTimeLeft(icPlayer) * rangeDispatch.getScale();
+                        value = NMS.getInstance().getItemUseTimeLeft(icPlayer) * rangeDispatch.getScale();
                     } else {
-                        value = NMSAddon.getInstance().getTicksUsedSoFar(itemStack, icPlayer) * rangeDispatch.getScale();
+                        value = NMS.getInstance().getTicksUsedSoFar(itemStack, icPlayer) * rangeDispatch.getScale();
                     }
                 } else {
                     value = 0F;
@@ -875,13 +875,13 @@ public class ItemRenderUtils {
                 ItemModelDefinition.UseCycleRangeDispatchProperty useCycleRangeDispatchProperty = (ItemModelDefinition.UseCycleRangeDispatchProperty) rangeDispatch;
                 Player icPlayer = player.getPlayer();
                 if (icPlayer != null && PlayerUtils.isLocal(icPlayer) && PlayerUtils.getMainHandItem(icPlayer).equals(itemStack)) {
-                    value = (NMSAddon.getInstance().getItemUseTimeLeft(icPlayer) % useCycleRangeDispatchProperty.getPeriod()) * useCycleRangeDispatchProperty.getScale();
+                    value = (NMS.getInstance().getItemUseTimeLeft(icPlayer) % useCycleRangeDispatchProperty.getPeriod()) * useCycleRangeDispatchProperty.getScale();
                 } else {
                     value = 0F;
                 }
             } else if (propertyType.equals(ItemModelDefinition.RangeDispatchPropertyType.CUSTOM_MODEL_DATA)) {
                 ItemModelDefinition.CustomModelDataRangeDispatchProperty customModelDataRangeDispatchProperty = (ItemModelDefinition.CustomModelDataRangeDispatchProperty) rangeDispatch;
-                CustomModelData customModelData = NMSAddon.getInstance().getCustomModelData(itemStack);
+                CustomModelData customModelData = NMS.getInstance().getCustomModelData(itemStack);
                 if (customModelData != null && customModelData.getFloat(customModelDataRangeDispatchProperty.getIndex()) != null) {
                     value = customModelData.getFloat(customModelDataRangeDispatchProperty.getIndex());
                 } else {
@@ -938,7 +938,7 @@ public class ItemRenderUtils {
                     for (int i = 0; i < materials.size(); i++) {
                         TextureResource textureResource = null;
                         ItemStack sherd = new ItemStack(materials.get(i));
-                        Key type = NMSAddon.getInstance().getDecoratedPotSherdPatternName(sherd);
+                        Key type = NMS.getInstance().getDecoratedPotSherdPatternName(sherd);
                         if (VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_3)) {
                             String namespace = type.namespace();
                             String key = type.value();
@@ -957,7 +957,7 @@ public class ItemRenderUtils {
                 if (ICMaterial.from(itemStack).isMaterial(XMaterial.PLAYER_HEAD)) {
                     BufferedImage skinImage = manager.getTextureManager().getTexture(ResourceRegistry.DEFAULT_WIDE_SKIN_LOCATION).getTexture();
                     if (itemStack.hasItemMeta()) {
-                        GameProfile gameProfile = NMSAddon.getInstance().getPlayerHeadProfile(itemStack);
+                        GameProfile gameProfile = NMS.getInstance().getPlayerHeadProfile(itemStack);
                         String skinURL = GameProfileUtils.getSkinUrl(gameProfile);
                         if (skinURL != null) {
                             try {

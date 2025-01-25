@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -53,7 +53,7 @@ public class InventoryUtils {
     }
 
     public static void sendFakePlayerInventory(Player player, Inventory inventory, boolean armor, boolean offhand) {
-        NMSAddon.getInstance().sendFakePlayerInventory(player, inventory, armor, offhand);
+        NMS.getInstance().sendFakePlayerInventory(player, inventory, armor, offhand);
     }
 
     public static String toBase64(Inventory inventory) throws IllegalStateException {
