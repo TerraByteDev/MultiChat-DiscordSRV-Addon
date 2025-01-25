@@ -20,20 +20,10 @@
 
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChat;
-import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatAPI;
+import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.objectholders.CustomPlaceholder;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICInventoryHolder;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlayer;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlayerFactory;
-import com.loohp.multichatdiscordsrvaddon.objectholders.OfflineICPlayer;
-import com.loohp.multichatdiscordsrvaddon.objectholders.PlaceholderCooldownManager;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
-import com.loohp.multichatdiscordsrvaddon.objectholders.WebData;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.ColorUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.ComponentFlattening;
@@ -57,16 +47,6 @@ import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
-import com.loohp.multichatdiscordsrvaddon.objectholders.AdvancementData;
-import com.loohp.multichatdiscordsrvaddon.objectholders.AdvancementType;
-import com.loohp.multichatdiscordsrvaddon.objectholders.AttachmentData;
-import com.loohp.multichatdiscordsrvaddon.objectholders.DiscordDisplayData;
-import com.loohp.multichatdiscordsrvaddon.objectholders.DiscordMessageContent;
-import com.loohp.multichatdiscordsrvaddon.objectholders.HoverClickDisplayData;
-import com.loohp.multichatdiscordsrvaddon.objectholders.IDProvider;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ImageDisplayData;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ImageDisplayType;
-import com.loohp.multichatdiscordsrvaddon.objectholders.InteractionHandler;
 import com.loohp.multichatdiscordsrvaddon.registry.DiscordDataRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.languages.SpecificTranslateFunction;
 import com.loohp.multichatdiscordsrvaddon.utils.ComponentStringUtils;
@@ -104,6 +84,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -199,7 +180,7 @@ public class OutboundToDiscordEvents implements Listener {
         InteractiveChatDiscordSrvAddon.plugin.messagesCounter.incrementAndGet();
 
         Player sender = event.getPlayer();
-        ICPlayer icSender = ICPlayerFactory.getICPlayer(sender);
+        OfflinePlayer icSender = Bukkit.getOfflinePlayer(sender.getUniqueId());
         Component message = ComponentStringUtils.toRegularComponent(event.getMessageComponent());
 
         message = processGameMessage(icSender, message);
@@ -262,12 +243,12 @@ public class OutboundToDiscordEvents implements Listener {
         }
         InteractiveChatDiscordSrvAddon.plugin.messagesCounter.incrementAndGet();
 
-        ICPlayer icSender = null;
+        Player icSender = null;
         MineverseChatPlayer mcPlayer = event.getVentureChatEvent().getMineverseChatPlayer();
         if (mcPlayer != null) {
-            icSender = ICPlayerFactory.getICPlayer(mcPlayer.getUUID());
+            icSender = Bukkit.getPlayer(mcPlayer.getUUID());
         } else {
-            icSender = ICPlayerFactory.getICPlayerExact(event.getVentureChatEvent().getUsername());
+            icSender = Bukkit.getPlayer(event.getVentureChatEvent().getUsername());
         }
         if (icSender == null) {
             return;
@@ -284,7 +265,7 @@ public class OutboundToDiscordEvents implements Listener {
         event.setMessageComponent(ComponentStringUtils.toDiscordSRVComponent(message));
     }
 
-    public Component processGameMessage(ICPlayer icSender, Component component) {
+    public Component processGameMessage(OfflinePlayer icSender, Component component) {
         boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
         PlaceholderCooldownManager cooldownManager = InteractiveChatDiscordSrvAddon.plugin.placeholderCooldownManager;
         long now = cooldownManager.checkMessage(icSender.getUniqueId(), PlainTextComponentSerializer.plainText().serialize(component)).getTimeNow();

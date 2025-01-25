@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.graphics;
 
-import com.loohp.multichatdiscordsrvaddon.VersionManager;
+import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import net.kyori.adventure.key.Key;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;

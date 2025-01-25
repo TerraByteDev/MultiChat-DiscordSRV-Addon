@@ -23,7 +23,6 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 import com.loohp.blockmodelrenderer.render.Face;
 import com.loohp.blockmodelrenderer.render.Point3D;
 import com.loohp.blockmodelrenderer.utils.MathUtils;
-import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;

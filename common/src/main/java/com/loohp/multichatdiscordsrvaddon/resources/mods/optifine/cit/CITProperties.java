@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.mods.optifine.cit;
 
-import com.loohp.multichatdiscordsrvaddon.VersionManager;
+import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import net.kyori.adventure.text.Component;
 import net.querz.nbt.tag.ByteTag;
 import net.querz.nbt.tag.CompoundTag;

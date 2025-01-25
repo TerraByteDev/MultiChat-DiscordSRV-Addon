@@ -22,7 +22,6 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.google.common.collect.Multimap;
 import com.cryptomorin.xseries.XMaterial;
-import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatDiscordSrvAddonAPI;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;

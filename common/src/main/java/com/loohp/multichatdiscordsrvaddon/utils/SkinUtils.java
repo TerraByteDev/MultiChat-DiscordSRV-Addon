@@ -21,7 +21,6 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

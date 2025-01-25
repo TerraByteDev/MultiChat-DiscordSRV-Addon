@@ -2,7 +2,7 @@ package com.loohp.multichatdiscordsrvaddon.objectholders;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XTag;
-import com.loohp.multichatdiscordsrvaddon.VersionManager;
+import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

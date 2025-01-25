@@ -6,12 +6,14 @@ import net.querz.nbt.io.NamedTag;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MainHand;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 public class PlayerUtils {
 
@@ -58,5 +60,10 @@ public class PlayerUtils {
             return player.getPlayer().getInventory().getItemInMainHand();
         }
         return null;
+    }
+
+    public static boolean hasPermission(UUID uuid, String node) {
+        Player player = Bukkit.getPlayer(uuid);
+        return player != null && player.hasPermission(node);
     }
 }

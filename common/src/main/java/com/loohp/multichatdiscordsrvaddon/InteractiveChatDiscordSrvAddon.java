@@ -22,8 +22,12 @@ package com.loohp.multichatdiscordsrvaddon;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.objectholders.BuiltInPlaceholder;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
+import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
+import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
+import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
@@ -84,17 +88,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Queue;
-import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
@@ -281,9 +276,15 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
     public List<Pattern> additionalRGBFormats = new ArrayList<>();
     public boolean useBungeecord = false;
     public boolean parsePAPIOnMainThread = false;
-    public boolean chatTabCompletionsEnabled = rue;
+    public boolean chatTabCompletionsEnabled = true;
     public boolean useTooltipOnTab = true;
     public String tabTooltip = "";
+
+    public static ICPlaceholder itemPlaceholder = null;
+    public static ICPlaceholder inventoryPlaceholder = null;
+    public static ICPlaceholder enderChestPlaceholder = null;
+
+    public static Map<UUID, ICPlaceholder> placeholderList = new LinkedHashMap<>();
 
     private ResourceManager resourceManager;
     public ModelRenderer modelRenderer;
@@ -664,6 +665,23 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
         language = config.getConfiguration().getString("Resources.Language");
         LanguageUtils.loadTranslations(language);
         forceUnicode = config.getConfiguration().getBoolean("Resources.ForceUnicodeFont");
+
+        Pattern itemPlaceholderPattern = Pattern.compile(config.getConfiguration().getString("Placeholders.Item"));
+        Pattern inventoryPlaceholderPattern = Pattern.compile(config.getConfiguration().getString("Placeholders.Inventory"));
+        Pattern enderChestPlaceholderPattern = Pattern.compile(config.getConfiguration().getString("Placeholders.EnderChest"));
+
+        if (invImage) {
+            itemPlaceholder = new BuiltInPlaceholder(itemPlaceholderPattern, itemTitle, "", "", config.getConfiguration().getLong("InventoryImage.Item.Cooldown") * 1000);
+            placeholderList.put(itemPlaceholder.getInternalId(), itemPlaceholder);
+        }
+        if (invImage) {
+            inventoryPlaceholder = new BuiltInPlaceholder(inventoryPlaceholderPattern, "", "", "", config.getConfiguration().getLong("InventoryImage.Inventory.Cooldown") * 1000);
+            placeholderList.put(inventoryPlaceholder.getInternalId(), inventoryPlaceholder);
+        }
+        if (enderImage) {
+            enderChestPlaceholder = new BuiltInPlaceholder(enderChestPlaceholderPattern, "", "", "", config.getConfiguration().getLong("InventoryImage.EnderChest.Cooldown") * 1000);
+            placeholderList.put(enderChestPlaceholder.getInternalId(), enderChestPlaceholder);
+        }
 
         FontTextureResource.setCacheTime(cacheTimeout);
 

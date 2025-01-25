@@ -25,7 +25,6 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
-import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

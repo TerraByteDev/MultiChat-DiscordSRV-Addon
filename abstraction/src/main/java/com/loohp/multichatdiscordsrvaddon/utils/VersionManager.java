@@ -1,6 +1,5 @@
-package com.loohp.multichatdiscordsrvaddon;
+package com.loohp.multichatdiscordsrvaddon.utils;
 
-import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
 import org.bukkit.Bukkit;
 
 public class VersionManager {

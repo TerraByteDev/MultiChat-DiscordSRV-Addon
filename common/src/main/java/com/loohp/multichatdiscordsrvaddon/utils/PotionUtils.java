@@ -20,7 +20,6 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
-import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.attribute.AttributeModifier;

@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.api;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents;
 import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents.DiscordAttachmentData;
+import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
 import com.loohp.multichatdiscordsrvaddon.wrappers.GraphicsToPacketMapWrapper;
 import org.bukkit.entity.Player;
@@ -125,6 +126,15 @@ public class InteractiveChatDiscordSrvAddonAPI {
             return value;
         }
 
+    }
+
+    /**
+     * Get the placeholder list.
+     *
+     * @return The placeholder list
+     */
+    public static List<ICPlaceholder> getPlaceholderList() {
+        return new ArrayList<>(InteractiveChatDiscordSrvAddon.placeholderList.values());
     }
 
 }

@@ -28,10 +28,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -43,6 +40,7 @@ import java.util.regex.Pattern;
 public class PlaceholderParser {
 
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("[%]([^%]+)[%]");
+    private static final Map<UUID, Map<String, String>> remotePlaceholders = new HashMap<>();
 
     static {
         Bukkit.getScheduler().runTaskTimerAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
@@ -101,8 +99,13 @@ public class PlaceholderParser {
                 }
                 return PlaceholderAPI.setPlaceholders(player, str);
             } else {
-                for (Entry<String, String> entry : player.getRemotePlaceholdersMapping().entrySet()) {
-                    str = str.replace(entry.getKey(), entry.getValue());
+                Map<String, String> remotePlaceholderMappings = remotePlaceholders.get(player.getUniqueId());
+                if (remotePlaceholderMappings != null) {
+                    for (Entry<String, String> entry : remotePlaceholderMappings.entrySet()) {
+                        str = str.replace(entry.getKey(), entry.getValue());
+
+                        // todo - https://github.com/LOOHP/InteractiveChat/blob/7b13007fa153094f1757606bc19486e1441bc00e/common/src/main/java/com/loohp/interactivechat/bungeemessaging/BungeeMessageListener.java#L244
+                    }
                 }
                 return str;
             }

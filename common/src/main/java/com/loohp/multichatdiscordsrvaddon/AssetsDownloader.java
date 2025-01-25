@@ -25,6 +25,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import com.loohp.multichatdiscordsrvaddon.libs.LibraryDownloadManager;
 import com.loohp.multichatdiscordsrvaddon.libs.LibraryLoader;
+import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import com.loohp.multichatdiscordsrvaddon.utils.FileUtils;

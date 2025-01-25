@@ -20,10 +20,6 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.objectholders.LegacyIdKey;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
@@ -38,8 +34,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEvent.ShowEntity;
 import net.kyori.adventure.text.event.HoverEvent.ShowItem;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -47,13 +41,11 @@ import net.kyori.adventure.util.Codec.Decoder;
 import net.kyori.adventure.util.Codec.Encoder;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -62,8 +54,6 @@ import java.util.stream.Collectors;
 public class InteractiveChatComponentSerializer {
 
     private static final InteractiveChatBungeecordAPILegacyComponentSerializer BUNGEECORD_CHAT_LEGACY;
-    private static final GsonComponentSerializer GSON_SERIALIZER;
-    private static final GsonComponentSerializer GSON_SERIALIZER_LEGACY;
     private static final PlainTextComponentSerializer PLAIN_TEXT_SERIALIZER;
     private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER;
 
@@ -74,32 +64,6 @@ public class InteractiveChatComponentSerializer {
     static {
         LEGACY_HOVER_SERIALIZER = new InteractiveChatLegacyHoverEventSerializer();
         BUNGEECORD_CHAT_LEGACY = new InteractiveChatBungeecordAPILegacyComponentSerializer();
-        GSON_SERIALIZER = new InteractiveChatGsonComponentSerializer(
-                GsonComponentSerializer.builder()
-                        .legacyHoverEventSerializer(LEGACY_HOVER_SERIALIZER)
-                        .editOptions(builder -> builder
-                                .value(JSONOptions.SHOW_ITEM_HOVER_DATA_MODE, JSONOptions.ShowItemHoverDataMode.EMIT_EITHER)
-                                .value(JSONOptions.EMIT_RGB, true)
-                                .value(JSONOptions.EMIT_HOVER_EVENT_TYPE, JSONOptions.HoverEventValueMode.BOTH)
-                                .value(JSONOptions.EMIT_DEFAULT_ITEM_HOVER_QUANTITY, true)
-                                .value(JSONOptions.EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, isProxyEnvironment() || isBukkitAboveV1_20_3())
-                                .build()
-                        )
-                        .build()
-        );
-        GSON_SERIALIZER_LEGACY = new InteractiveChatGsonComponentSerializer(
-                GsonComponentSerializer.builder()
-                        .legacyHoverEventSerializer(LEGACY_HOVER_SERIALIZER)
-                        .editOptions(builder -> builder
-                                .value(JSONOptions.SHOW_ITEM_HOVER_DATA_MODE, JSONOptions.ShowItemHoverDataMode.EMIT_EITHER)
-                                .value(JSONOptions.EMIT_RGB, false)
-                                .value(JSONOptions.EMIT_HOVER_EVENT_TYPE, JSONOptions.HoverEventValueMode.BOTH)
-                                .value(JSONOptions.EMIT_DEFAULT_ITEM_HOVER_QUANTITY, true)
-                                .value(JSONOptions.EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false)
-                                .build()
-                        )
-                        .build()
-        );
         PLAIN_TEXT_SERIALIZER = new InteractiveChatPlainTextComponentSerializer();
         LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.legacySection().toBuilder().hexColors().useUnusualXRepeatedCharacterHexFormat().build();
     }
@@ -123,14 +87,6 @@ public class InteractiveChatComponentSerializer {
 
     public static InteractiveChatBungeecordAPILegacyComponentSerializer bungeecordApiLegacy() {
         return BUNGEECORD_CHAT_LEGACY;
-    }
-
-    public static GsonComponentSerializer gson() {
-        return GSON_SERIALIZER;
-    }
-
-    public static GsonComponentSerializer legacyGson() {
-        return GSON_SERIALIZER_LEGACY;
     }
 
     public static PlainTextComponentSerializer plainText() {
@@ -177,7 +133,7 @@ public class InteractiveChatComponentSerializer {
 
         @Override
         public String serialize(Component component) {
-            return net.md_5.bungee.api.chat.BaseComponent.toLegacyText(net.md_5.bungee.chat.ComponentSerializer.parse(GSON_SERIALIZER.serialize(component)));
+            return net.md_5.bungee.api.chat.BaseComponent.toLegacyText(net.md_5.bungee.chat.ComponentSerializer.parse(AbstractInteractiveChatComponentSerializer.gson().serialize(component)));
         }
 
         public String serialize(Component component, String language) {
@@ -343,56 +299,6 @@ public class InteractiveChatComponentSerializer {
                     sb.append(PlainTextComponentSerializer.plainText().serialize(children));
                 }
             }
-        }
-
-    }
-
-    public static class InteractiveChatGsonComponentSerializer implements GsonComponentSerializer {
-
-        private final GsonComponentSerializer instance;
-
-        private InteractiveChatGsonComponentSerializer(GsonComponentSerializer instance) {
-            this.instance = instance;
-        }
-
-        @Override
-        public @NotNull Gson serializer() {
-            return instance.serializer();
-        }
-
-        @Override
-        public @NotNull UnaryOperator<GsonBuilder> populator() {
-            return instance.populator();
-        }
-
-        @Override
-        public @NotNull Component deserializeFromTree(@NotNull JsonElement input) {
-            return instance.deserializeFromTree(input);
-        }
-
-        @Override
-        public @NotNull JsonElement serializeToTree(@NotNull Component component) {
-            return instance.serializeToTree(component);
-        }
-
-        @Override
-        public @NotNull Component deserialize(@NotNull String input) {
-            return instance.deserialize(input);
-        }
-
-        @Override
-        public @Nullable Component deserializeOr(@Nullable String input, @Nullable Component fallback) {
-            return instance.deserializeOr(input, fallback);
-        }
-
-        @Override
-        public @NotNull String serialize(@NotNull Component component) {
-            return instance.serialize(component);
-        }
-
-        @Override
-        public @NotNull Builder toBuilder() {
-            throw new UnsupportedOperationException("The InteractiveChatGsonComponentSerializer cannot be turned into a builder");
         }
 
     }

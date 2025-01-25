@@ -21,7 +21,6 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
-import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import net.md_5.bungee.api.ChatColor;
 
 import java.util.Arrays;

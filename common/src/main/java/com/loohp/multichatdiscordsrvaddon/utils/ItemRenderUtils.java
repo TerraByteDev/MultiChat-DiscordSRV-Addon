@@ -25,7 +25,6 @@ import com.ibm.icu.util.Calendar;
 import com.ibm.icu.util.ULocale;
 import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
-import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import net.kyori.adventure.key.Key;
 import net.querz.nbt.tag.CompoundTag;
 import net.querz.nbt.tag.StringTag;

@@ -21,7 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.nms;
 
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
-import com.loohp.multichatdiscordsrvaddon.VersionManager;
+import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 
 import java.lang.reflect.InvocationTargetException;
 

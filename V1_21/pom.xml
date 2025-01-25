@@ -107,7 +107,7 @@
         </dependency>
         <dependency>
             <groupId>com.loohp</groupId>
-            <artifactId>MultiChatDiscordSrvAddon</artifactId>
+            <artifactId>MultiChatDiscordSrvAddon-Abstraction</artifactId>
             <version>${project.parent.version}</version>
             <scope>provided</scope>
         </dependency>

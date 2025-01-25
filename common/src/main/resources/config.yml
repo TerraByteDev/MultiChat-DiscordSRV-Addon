@@ -2,6 +2,8 @@ InventoryImage:
   #Whether to generate images for the item placeholder
   Item:
     Enabled: true
+    # Cooldown of usage in seconds
+    Cooldown: 0
     #If UseTooltipImage is true, should the plugin attach tooltip image if the target item
     #is just a plain base item with no information worth showing
     UseTooltipImageOnBaseItem: false
@@ -15,6 +17,8 @@ InventoryImage:
   #Whether to generate images for the inventory placeholder
   Inventory:
     Enabled: true
+    # Cooldown of usage in seconds
+    Cooldown: 0
     #Use the player inventory gui template instead of the normal inventory template
     UsePlayerInventoryView: true
     #Whether to render the items a player is holding
@@ -25,6 +29,8 @@ InventoryImage:
   #Whether to generate images for the enderchest placeholder
   EnderChest:
     Enabled: true
+    # Cooldown of usage in seconds
+    Cooldown: 0
     EmbedColor: "#FF55FF"
 
 #Choose what to include in item tooltips
@@ -34,6 +40,14 @@ ToolTipSettings:
   ShowMapScale: true
   ShowFireworkRocketDetailsInCrossbow: true
   ShowAdvanceDetails: true
+
+Placeholders:
+  # If your chat plugin supports it, what placeholder does the player use to show their held item in chat? (Regex)
+  Item: "(?i)\\[item\\]"
+  # Same as above but for player inventories.
+  Inventory: "(?i)\\[inventory\\]"
+  # Same as above but for player enderchests.
+  EnderChest: "(?i)\\[ender\\]"
 
 #Choose what to include when sharing items and inventories to discord
 DiscordItemDetailsAndInteractions:
@@ -358,6 +372,10 @@ Settings:
   # How long should an item display be stored in memory after its creation?
   # (In minutes) - Default 5 Minutes.
   Timeout: 5
+
+  #Set the cooldown that is shared between all placeholders in this plugin (in seconds)
+  #Placeholders will not be parsed in discord messages when a player is in cooldown
+  UniversalCooldown: 0
 
   #Hide lodestone compass position when sharing them
   HideLodestoneCompassPos: true

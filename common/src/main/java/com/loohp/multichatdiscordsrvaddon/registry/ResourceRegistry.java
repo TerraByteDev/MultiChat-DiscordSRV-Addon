@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.registry;
 
-import com.loohp.multichatdiscordsrvaddon.VersionManager;
+import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.utils.ResourcePackUtils;
 
 public class ResourceRegistry {
