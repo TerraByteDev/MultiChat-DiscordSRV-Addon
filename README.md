@@ -1,4 +1,4 @@
-[![Build Status](https://ci.loohpjames.com/job/InteractiveChat-DiscordSRV-Addon/badge/icon)](https://ci.loohpjames.com/job/InteractiveChat-DiscordSRV-Addon/)
+[![Build Status](https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/actions/workflows/build.yml/badge.svg)](https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/actions)
 # MultiChat DiscordSRV Addon
 
 This is a fork of [InteractiveChat-DiscordSRV-Addon](https://github.com/LOOHP/InteractiveChat-DiscordSRV-Addon)!\
