@@ -1,5 +1,11 @@
 [![Build Status](https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/actions/workflows/build.yml/badge.svg)](https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/actions)
 # MultiChat DiscordSRV Addon
+<div align="center">
+    <img src="https://wakatime.com/badge/github/TerraByteDev/MultiChat-DiscordSRV-Addon.svg?style=for-the-badge" alt = "Project Hours">
+    <a href="https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/actions">
+        <img alt="Build Status" src="https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/actions/workflows/build.yml/badge.svg">
+    </a>
+</div>
 
 This is a fork of [InteractiveChat-DiscordSRV-Addon](https://github.com/LOOHP/InteractiveChat-DiscordSRV-Addon)!\
 Have InteractiveChat, ZelChat and ChatControl Placeholders translated on DiscordSRV discord messages. As well as sharing items, inventories to discord and sharing images and gifs to the game from discord!

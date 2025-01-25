@@ -279,6 +279,7 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
     public boolean chatTabCompletionsEnabled = true;
     public boolean useTooltipOnTab = true;
     public String tabTooltip = "";
+    public long universalCooldown = 0;
 
     public static ICPlaceholder itemPlaceholder = null;
     public static ICPlaceholder inventoryPlaceholder = null;
@@ -682,6 +683,8 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
             enderChestPlaceholder = new BuiltInPlaceholder(enderChestPlaceholderPattern, "", "", "", config.getConfiguration().getLong("InventoryImage.EnderChest.Cooldown") * 1000);
             placeholderList.put(enderChestPlaceholder.getInternalId(), enderChestPlaceholder);
         }
+
+        universalCooldown = config.getConfiguration().getLong("Settings.UniversalCooldown") * 1000;
 
         FontTextureResource.setCacheTime(cacheTimeout);
 

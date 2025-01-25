@@ -20,14 +20,10 @@
 
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChat;
-import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatAPI;
+import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatDiscordSrvAddonAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlayer;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlayerFactory;
-import com.loohp.multichatdiscordsrvaddon.objectholders.OfflineICPlayer;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
@@ -45,6 +41,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -80,14 +77,14 @@ public class LegacyDiscordCommandEvents {
                 event.setExpiration(0);
             }
             Map<OfflinePlayer, Integer> players;
-            if (InteractiveChat.bungeecordMode && InteractiveChatDiscordSrvAddon.plugin.playerlistCommandBungeecord && !Bukkit.getOnlinePlayers().isEmpty()) {
+            if (InteractiveChatDiscordSrvAddon.plugin.useBungeecord && InteractiveChatDiscordSrvAddon.plugin.playerlistCommandBungeecord && !Bukkit.getOnlinePlayers().isEmpty()) {
                 try {
-                    List<ValueTrios<UUID, String, Integer>> bungeePlayers = InteractiveChatAPI.getBungeecordPlayerList().get();
+                    List<ValueTrios<UUID, String, Integer>> bungeePlayers = InteractiveChatDiscordSrvAddonAPI.getBungeecordPlayerList().get();
                     players = new LinkedHashMap<>(bungeePlayers.size());
                     for (ValueTrios<UUID, String, Integer> playerinfo : bungeePlayers) {
                         UUID uuid = playerinfo.getFirst();
-                        ICPlayer icPlayer = ICPlayerFactory.getICPlayer(uuid);
-                        if (icPlayer == null || !icPlayer.isVanished()) {
+                        Player icPlayer = Bukkit.getPlayer(uuid);
+                        if (icPlayer == null || !PlayerUtils.isVanished(icPlayer)) {
                             players.put(Bukkit.getOfflinePlayer(uuid), playerinfo.getThird());
                         }
                     }
@@ -98,22 +95,20 @@ public class LegacyDiscordCommandEvents {
                 }
             } else {
                 players = Bukkit.getOnlinePlayers().stream().filter(each -> {
-                    ICPlayer icPlayer = ICPlayerFactory.getICPlayer(each);
-                    return icPlayer == null || !icPlayer.isVanished();
-                }).collect(Collectors.toMap(each -> each, each -> PlayerUtils.getPing(each), (a, b) -> a));
+                    Player icPlayer = Bukkit.getPlayer(each.getUniqueId());
+                    return icPlayer == null || !PlayerUtils.isVanished(icPlayer);
+                }).collect(Collectors.toMap(each -> each, each -> each.getPing(), (a, b) -> a));
             }
             if (players.isEmpty()) {
                 event.setPlayerListMessage(ChatColorUtils.stripColor(InteractiveChatDiscordSrvAddon.plugin.playerlistCommandEmptyServer));
             } else {
                 int errorCode = -2;
                 try {
-                    List<ValueTrios<OfflineICPlayer, Component, Integer>> player = new ArrayList<>();
+                    List<ValueTrios<OfflinePlayer, Component, Integer>> player = new ArrayList<>();
                     Map<UUID, ValuePairs<List<String>, String>> playerInfo = new HashMap<>();
                     for (Map.Entry<OfflinePlayer, Integer> entry : players.entrySet()) {
-                        OfflinePlayer bukkitOfflinePlayer = entry.getKey();
-                        @SuppressWarnings("deprecation")
-                        OfflineICPlayer offlinePlayer = ICPlayerFactory.getUnsafe().getOfflineICPPlayerWithoutInitialization(bukkitOfflinePlayer.getUniqueId());
-                        playerInfo.put(offlinePlayer.getUniqueId(), new ValuePairs<>(DiscordCommands.getPlayerGroups(bukkitOfflinePlayer), offlinePlayer.getName()));
+                        OfflinePlayer offlinePlayer = entry.getKey();
+                        playerInfo.put(offlinePlayer.getUniqueId(), new ValuePairs<>(DiscordCommands.getPlayerGroups(offlinePlayer), offlinePlayer.getName()));
                         String name = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlinePlayer, InteractiveChatDiscordSrvAddon.plugin.playerlistCommandPlayerFormat));
                         Component nameComponent;
                         if (InteractiveChatDiscordSrvAddon.plugin.playerlistCommandParsePlayerNamesWithMiniMessage) {
@@ -126,8 +121,7 @@ public class LegacyDiscordCommandEvents {
                     errorCode--;
                     DiscordCommands.sortPlayers(InteractiveChatDiscordSrvAddon.plugin.playerlistOrderingTypes, player, playerInfo);
                     errorCode--;
-                    @SuppressWarnings("deprecation")
-                    OfflineICPlayer firstPlayer = ICPlayerFactory.getUnsafe().getOfflineICPPlayerWithoutInitialization(players.keySet().iterator().next().getUniqueId());
+                    OfflinePlayer firstPlayer = Bukkit.getOfflinePlayer(players.keySet().iterator().next().getUniqueId());
                     List<Component> header = new ArrayList<>();
                     if (!InteractiveChatDiscordSrvAddon.plugin.playerlistCommandHeader.isEmpty()) {
                         header = ComponentStyling.splitAtLineBreaks(LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(firstPlayer, InteractiveChatDiscordSrvAddon.plugin.playerlistCommandHeader.replace("{OnlinePlayers}", players.size() + "")))));

@@ -66,4 +66,8 @@ public class PlayerUtils {
         Player player = Bukkit.getPlayer(uuid);
         return player != null && player.hasPermission(node);
     }
+
+    public static boolean isVanished(Player player) {
+        return player != null && player.hasMetadata("vanished") && player.getMetadata("vanished").getFirst().asBoolean();
+    }
 }

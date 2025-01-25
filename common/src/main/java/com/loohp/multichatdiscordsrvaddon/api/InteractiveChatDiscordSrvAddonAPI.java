@@ -21,15 +21,18 @@
 package com.loohp.multichatdiscordsrvaddon.api;
 
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
 import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents;
 import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents.DiscordAttachmentData;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
+import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
 import com.loohp.multichatdiscordsrvaddon.wrappers.GraphicsToPacketMapWrapper;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class InteractiveChatDiscordSrvAddonAPI {
 
@@ -135,6 +138,17 @@ public class InteractiveChatDiscordSrvAddonAPI {
      */
     public static List<ICPlaceholder> getPlaceholderList() {
         return new ArrayList<>(InteractiveChatDiscordSrvAddon.placeholderList.values());
+    }
+
+    public static CompletableFuture<List<ValueTrios<UUID, String, Integer>>> getBungeecordPlayerList() {
+        CompletableFuture<List<ValueTrios<UUID, String, Integer>>> future = new CompletableFuture<>();
+        try {
+            BungeeMessageSender.requestBungeePlayerlist(System.currentTimeMillis(), future);
+        } catch (Exception error) {
+            future.completeExceptionally(error);
+        }
+
+        return future;
     }
 
 }
