@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChat.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -18,27 +18,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.loohp.multichatdiscordsrvaddon.utils;
+package com.loohp.multichatdiscordsrvaddon.objectholders;
 
-import net.kyori.adventure.key.Key;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
-import com.loohp.multichatdiscordsrvaddon.objectholders.BiomePrecipitation;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 
-public class WorldUtils {
+public class ICInventoryHolder implements InventoryHolder {
 
-    public static Key getNamespacedKey(World world) {
-        return NMSAddon.getInstance().getNamespacedKey(world);
+    public static final ICInventoryHolder INSTANCE = new ICInventoryHolder();
+
+    private ICInventoryHolder() {
+
     }
 
-    public static boolean isNatural(World world) {
-        return world.isNatural();
-    }
-
-    public static BiomePrecipitation getPrecipitation(Location location) {
-        return NMSAddon.getInstance().getPrecipitation(location);
+    @Override
+    public Inventory getInventory() {
+        return null;
     }
 
 }
-

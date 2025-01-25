@@ -12,10 +12,6 @@ InventoryImage:
 
     # Title of the inventory view embed
     InventoryTitle: "%player_names%'s Item"
-
-    # How long should an item display be stored in memory after its creation?
-    # (In minutes) - Default 5 Minutes.
-    Timeout: 5
   #Whether to generate images for the inventory placeholder
   Inventory:
     Enabled: true
@@ -327,6 +323,14 @@ Resources:
   #Enable (Partial) Chime Custom Model Override support (1.16+)
   ChimeOverrideModels: true
 
+TabCompletion:
+  ChatTabCompletion:
+    Enabled: true
+
+  PlayerNameToolTip:
+    Enabled: true
+    ToolTip: "%vault_prefix%%player_name%"
+
 Messages:
   ReloadConfig: "&aICDiscordSRVAddon config has been reloaded!"
   ReloadTexture: "&aICDiscordSRVAddon reloading textures--- (See console for progress)"
@@ -347,6 +351,16 @@ Settings:
   # THIS IS A WORK IN PROGRESS AND NOT FUNCTIONAL AS OF RIGHT NOW!
   # Uses bungeecord to request the playerlist etc.
   Bungeecord: false
+
+  #Whether to parse PlaceholderAPI placeholders on the main thread
+  parsePAPIOnMainThread: false
+
+  # How long should an item display be stored in memory after its creation?
+  # (In minutes) - Default 5 Minutes.
+  Timeout: 5
+
+  #Hide lodestone compass position when sharing them
+  HideLodestoneCompassPos: true
 
   #This is in seconds
   CacheTimeout: 300

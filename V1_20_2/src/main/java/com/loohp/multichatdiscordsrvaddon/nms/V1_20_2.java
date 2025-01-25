@@ -24,6 +24,7 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.datafixers.util.Pair;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.DataComponentValue;
@@ -31,11 +32,14 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.network.PlayerConnection;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.saveddata.maps.MapIcon;
+import net.minecraft.world.level.saveddata.maps.WorldMap;
 import net.querz.nbt.io.NBTDeserializer;
 import net.querz.nbt.io.NamedTag;
 import org.apache.commons.lang3.math.Fraction;
@@ -62,13 +66,6 @@ import net.minecraft.world.entity.EnumItemSlot;
 import net.minecraft.world.entity.EnumMonsterType;
 import net.minecraft.world.entity.ai.attributes.AttributeBase;
 import net.minecraft.world.entity.projectile.EntityFishingHook;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.BundleItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemArmor;
-import net.minecraft.world.item.ItemFireworks;
-import net.minecraft.world.item.ItemMonsterEgg;
-import net.minecraft.world.item.ItemRecord;
 import net.minecraft.world.item.alchemy.PotionUtil;
 import net.minecraft.world.item.armortrim.TrimMaterial;
 import net.minecraft.world.item.enchantment.EnchantmentManager;
@@ -111,6 +108,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
@@ -975,6 +973,69 @@ public class V1_20_2 extends NMSAddonWrapper {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         String str = nmsItemStack.C().e.toString();
         return ChatColor.getByChar(str.charAt(str.length() - 1));
+    }
+
+    @Override
+    public void sendFakePlayerInventory(Player player, Inventory inventory, boolean armor, boolean offhand) {
+        ItemStack[] items = new ItemStack[46];
+        Arrays.fill(items, ITEM_STACK_AIR);
+        int u = 36;
+        for (int i = 0; i < 9; i++) {
+            ItemStack item = inventory.getItem(i);
+            items[u] = item == null ? ITEM_STACK_AIR : item.clone();
+            u++;
+        }
+        for (int i = 9; i < 36; i++) {
+            ItemStack item = inventory.getItem(i);
+            items[i] = item == null ? ITEM_STACK_AIR : item.clone();
+        }
+        if (armor) {
+            u = 8;
+            for (int i = 36; i < 40; i++) {
+                ItemStack item = inventory.getItem(i);
+                items[u] = item == null ? ITEM_STACK_AIR : item.clone();
+                u--;
+            }
+        }
+        if (offhand) {
+            ItemStack item = inventory.getItem(40);
+            items[45] = item == null ? ITEM_STACK_AIR : item.clone();
+        }
+
+        NonNullList<net.minecraft.world.item.ItemStack> itemList = NonNullList.a();
+        for (ItemStack itemStack : items) {
+            itemList.add(toNMSCopy(itemStack));
+        }
+
+        PacketPlayOutWindowItems packet1 = new PacketPlayOutWindowItems(0, 0, itemList, toNMSCopy(ITEM_STACK_AIR));
+        PacketPlayOutSetSlot packet2 = new PacketPlayOutSetSlot(-1, -1, 0, toNMSCopy(ITEM_STACK_AIR));
+
+        PlayerConnection connection = ((CraftPlayer) player).getHandle().c;
+        connection.b(packet1);
+        connection.b(packet2);
+    }
+
+    @Override
+    public void sendFakeMainHandSlot(Player player, ItemStack item) {
+        List<Pair<EnumItemSlot, net.minecraft.world.item.ItemStack>> nmsEquipments = Collections.singletonList(new Pair<>(EnumItemSlot.a, toNMSCopy(item)));
+        PacketPlayOutEntityEquipment packet = new PacketPlayOutEntityEquipment(player.getEntityId(), nmsEquipments);
+        ((CraftPlayer) player).getHandle().c.b(packet);
+    }
+
+    @Override
+    public void sendFakeMapUpdate(Player player, int mapId, List<MapCursor> mapCursors, byte[] colors) {
+        List<MapIcon> mapIcons = toNMSMapIconList(mapCursors);
+        WorldMap.b b = new WorldMap.b(0, 0, 128, 128, colors);
+        PacketPlayOutMap packet = new PacketPlayOutMap(mapId, (byte) 0, false, mapIcons, b);
+        ((CraftPlayer) player).getHandle().c.b(packet);
+    }
+
+    @Override
+    public Component getSkullOwner(ItemStack itemStack) {
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        ItemSkullPlayer skull = (ItemSkullPlayer) nmsItemStack.d();
+        IChatBaseComponent owner = skull.m(nmsItemStack);
+        return GsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(owner));
     }
 
 }

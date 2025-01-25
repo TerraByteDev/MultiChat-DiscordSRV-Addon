@@ -21,9 +21,9 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.google.common.collect.Multimap;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChat;
-import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatAPI;
 import com.cryptomorin.xseries.XMaterial;
+import com.loohp.multichatdiscordsrvaddon.VersionManager;
+import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatDiscordSrvAddonAPI;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
@@ -32,18 +32,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.querz.nbt.tag.CompoundTag;
 import org.apache.commons.lang3.math.Fraction;
-import org.apache.commons.text.WordUtils;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
-import com.loohp.multichatdiscordsrvaddon.objectholders.OfflineICPlayer;
-import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.FilledMapUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.InteractiveChatComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.utils.ItemNBTUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ItemStackUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
-import com.loohp.multichatdiscordsrvaddon.utils.NBTParsingUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.RarityUtils;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
 import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
@@ -57,10 +46,7 @@ import github.scarsz.discordsrv.dependencies.kyori.adventure.text.TranslatableCo
 import github.scarsz.discordsrv.dependencies.mcdiscordreserializer.discord.DiscordSerializer;
 import github.scarsz.discordsrv.dependencies.mcdiscordreserializer.discord.DiscordSerializerOptions;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Banner;
@@ -95,6 +81,7 @@ import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.map.MapView;
 import org.bukkit.potion.PotionEffect;
+import org.checkerframework.org.apache.commons.text.WordUtils;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -113,19 +100,9 @@ import java.util.OptionalInt;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.loohp.interactivechat.libs.net.kyori.adventure.text.Component.empty;
-import static com.loohp.interactivechat.libs.net.kyori.adventure.text.Component.text;
-import static com.loohp.interactivechat.libs.net.kyori.adventure.text.Component.translatable;
-import static com.loohp.interactivechat.libs.net.kyori.adventure.text.format.NamedTextColor.BLUE;
-import static com.loohp.interactivechat.libs.net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
-import static com.loohp.interactivechat.libs.net.kyori.adventure.text.format.NamedTextColor.DARK_GREEN;
-import static com.loohp.interactivechat.libs.net.kyori.adventure.text.format.NamedTextColor.DARK_PURPLE;
-import static com.loohp.interactivechat.libs.net.kyori.adventure.text.format.NamedTextColor.GRAY;
-import static com.loohp.interactivechat.libs.net.kyori.adventure.text.format.NamedTextColor.RED;
-import static com.loohp.interactivechat.libs.net.kyori.adventure.text.format.NamedTextColor.WHITE;
-import static com.loohp.interactivechat.utils.LanguageUtils.getTranslation;
-import static com.loohp.interactivechat.utils.LanguageUtils.getTranslationKey;
 import static com.loohp.multichatdiscordsrvaddon.utils.ComponentStringUtils.join;
+import static com.loohp.multichatdiscordsrvaddon.utils.LanguageUtils.getTranslation;
+import static com.loohp.multichatdiscordsrvaddon.utils.LanguageUtils.getTranslationKey;
 import static com.loohp.multichatdiscordsrvaddon.utils.TranslationKeyUtils.getAttributeModifierKey;
 import static com.loohp.multichatdiscordsrvaddon.utils.TranslationKeyUtils.getBannerPatternItemName;
 import static com.loohp.multichatdiscordsrvaddon.utils.TranslationKeyUtils.getBannerPatternName;
@@ -177,6 +154,16 @@ import static com.loohp.multichatdiscordsrvaddon.utils.TranslationKeyUtils.getSp
 import static com.loohp.multichatdiscordsrvaddon.utils.TranslationKeyUtils.getTrimPatternName;
 import static com.loohp.multichatdiscordsrvaddon.utils.TranslationKeyUtils.getTropicalFishBucketName;
 import static com.loohp.multichatdiscordsrvaddon.utils.TranslationKeyUtils.getUnbreakable;
+import static net.kyori.adventure.text.Component.empty;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
+import static net.kyori.adventure.text.format.NamedTextColor.BLUE;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_PURPLE;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 
 @SuppressWarnings("deprecation")
 public class DiscordItemStackUtils {
@@ -215,14 +202,14 @@ public class DiscordItemStackUtils {
         return chatColorHasGetColor ? RarityUtils.getRarityColor(item).getColor() : ColorUtils.getColor(RarityUtils.getRarityColor(item));
     }
 
-    public static String getItemNameForDiscord(ItemStack item, OfflineICPlayer player, String language) {
+    public static String getItemNameForDiscord(ItemStack item, OfflinePlayer player, String language) {
         SpecificTranslateFunction translationFunction = InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(language);
 
-        Player bukkitPlayer = player == null || player.getPlayer() == null || !player.getPlayer().isLocal() ? null : player.getPlayer().getLocalPlayer();
+        Player bukkitPlayer = player == null || player.getPlayer() == null || !PlayerUtils.isLocal(player) ? null : player.getPlayer();
         if (bukkitPlayer == null && !Bukkit.getOnlinePlayers().isEmpty()) {
             bukkitPlayer = Bukkit.getOnlinePlayers().iterator().next();
         }
-        item = InteractiveChatAPI.transformItemStack(item, bukkitPlayer == null ? null : bukkitPlayer.getUniqueId());
+        item = InteractiveChatDiscordSrvAddonAPI.transformItemStack(item, bukkitPlayer == null ? null : bukkitPlayer.getUniqueId());
 
         if (item == null) {
             item = new ItemStack(Material.AIR);
@@ -239,15 +226,15 @@ public class DiscordItemStackUtils {
     }
 
     @SuppressWarnings({"UnstableApiUsage", "PatternValidation"})
-    public static DiscordToolTip getToolTip(ItemStack item, OfflineICPlayer player, boolean showAdvanceDetails) throws Exception {
+    public static DiscordToolTip getToolTip(ItemStack item, OfflinePlayer player, boolean showAdvanceDetails) throws Exception {
         String language = InteractiveChatDiscordSrvAddon.plugin.language;
         SpecificTranslateFunction translationFunction = InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(language);
 
-        Player bukkitPlayer = player == null || player.getPlayer() == null || !player.getPlayer().isLocal() ? null : player.getPlayer().getLocalPlayer();
+        Player bukkitPlayer = player == null || player.getPlayer() == null || !PlayerUtils.isLocal(player) ? null : player.getPlayer();
         if (bukkitPlayer == null && !Bukkit.getOnlinePlayers().isEmpty()) {
             bukkitPlayer = Bukkit.getOnlinePlayers().iterator().next();
         }
-        item = InteractiveChatAPI.transformItemStack(item, bukkitPlayer == null ? null : bukkitPlayer.getUniqueId());
+        item = InteractiveChatDiscordSrvAddonAPI.transformItemStack(item, bukkitPlayer == null ? null : bukkitPlayer.getUniqueId());
         World world = bukkitPlayer == null ? null : bukkitPlayer.getWorld();
 
         List<ToolTipComponent<?>> prints = new ArrayList<>();
@@ -262,7 +249,7 @@ public class DiscordItemStackUtils {
         prints.add(tooltipText(itemDisplayNameComponent));
 
         boolean hasMeta = item.getItemMeta() != null;
-        boolean hideAdditionalFlags = hasMeta && item.getItemMeta().hasItemFlag(NMSAddon.getInstance().getHideAdditionalItemFlag()) && (item.getItemMeta() instanceof PotionMeta || InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_20_5));
+        boolean hideAdditionalFlags = hasMeta && item.getItemMeta().hasItemFlag(NMSAddon.getInstance().getHideAdditionalItemFlag()) && (item.getItemMeta() instanceof PotionMeta || VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_5));
 
         if (hasMeta && item.getItemMeta().getDisplayName() != null) {
             hasCustomName = true;
@@ -285,7 +272,7 @@ public class DiscordItemStackUtils {
             }
         }
 
-        if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_20) && hasMeta && item.getItemMeta() instanceof ArmorMeta) {
+        if (VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20) && hasMeta && item.getItemMeta() instanceof ArmorMeta) {
             ArmorMeta armorMeta = (ArmorMeta) item.getItemMeta();
             ArmorTrim armorTrim = armorMeta.getTrim();
             if (armorTrim != null && !item.getItemMeta().hasItemFlag(ItemFlag.HIDE_ARMOR_TRIM)) {
@@ -299,7 +286,7 @@ public class DiscordItemStackUtils {
             }
         }
 
-        if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_19_4) && icMaterial.isOneOf(Collections.singletonList("CONTAINS:smithing_template")) && !hideAdditionalFlags) {
+        if (icMaterial.isOneOf(Collections.singletonList("CONTAINS:smithing_template")) && !hideAdditionalFlags) {
             Key key = Key.key(item.getType().getKey().toString());
             prints.add(tooltipText(translatable(getTrimPatternName(key)).color(GRAY)));
             prints.add(tooltipEmpty());
@@ -318,7 +305,7 @@ public class DiscordItemStackUtils {
             }
         }
 
-        if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_19_4) && icMaterial.isMaterial(XMaterial.PAINTING) && !hideAdditionalFlags) {
+        if (icMaterial.isMaterial(XMaterial.PAINTING) && !hideAdditionalFlags) {
             PaintingVariant paintingVariant = NMSAddon.getInstance().getPaintingVariant(item);
             if (paintingVariant != null) {
                 paintingVariant.getTitle().ifPresent(title -> prints.add(tooltipText(title)));
@@ -328,7 +315,7 @@ public class DiscordItemStackUtils {
             }
         }
 
-        if (InteractiveChat.version.isNewerThan(MCVersion.V1_19) && icMaterial.isMaterial(XMaterial.SPAWNER) && hasMeta && item.getItemMeta() instanceof BlockStateMeta && !hideAdditionalFlags) {
+        if (icMaterial.isMaterial(XMaterial.SPAWNER) && hasMeta && item.getItemMeta() instanceof BlockStateMeta && !hideAdditionalFlags) {
             BlockStateMeta meta = (BlockStateMeta) item.getItemMeta();
             EntityType entityType = null;
             if (meta.hasBlockState()) {
@@ -358,7 +345,7 @@ public class DiscordItemStackUtils {
             List<ItemStack> items = ((BundleMeta) item.getItemMeta()).getItems();
             BufferedImage contentsImage = ImageGeneration.getBundleContainerInterface(player, items);
             Fraction weight = BundleUtils.getWeight(items);
-            if (InteractiveChat.version.isNewerThan(MCVersion.V1_21_1)) {
+            if (VersionManager.version.isNewerThan(MCVersion.V1_21_1)) {
                 if (weight.compareTo(Fraction.ZERO) <= 0) {
                     prints.add(tooltipText(translatable(getBundleEmptyDescription()).color(GRAY)));
                 }
@@ -518,12 +505,12 @@ public class DiscordItemStackUtils {
             }
         }
 
-        if (InteractiveChatDiscordSrvAddon.plugin.showMapScale && InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_12) && FilledMapUtils.isFilledMap(item) && !hideAdditionalFlags) {
+        if (InteractiveChatDiscordSrvAddon.plugin.showMapScale && FilledMapUtils.isFilledMap(item) && !hideAdditionalFlags) {
             MapMeta map = (MapMeta) item.getItemMeta();
             MapView mapView = FilledMapUtils.getMapView(item);
             int id = FilledMapUtils.getMapId(item);
             int scale = mapView == null ? 0 : mapView.getScale().getValue();
-            if (!InteractiveChat.version.isLegacy()) {
+            if (!VersionManager.version.isLegacy()) {
                 prints.add(tooltipText(translatable(getFilledMapId()).arguments(text(id)).color(GRAY)));
             } else {
                 prints.set(0, tooltipText(prints.get(0).getToolTipComponent(ToolTipType.TEXT).append(text(" (#" + id + ")").color(GRAY))));
@@ -532,7 +519,7 @@ public class DiscordItemStackUtils {
             prints.add(tooltipText(translatable(getFilledMapLevel()).arguments(text(scale), text(4)).color(GRAY)));
         }
 
-        if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_12) && !hideAdditionalFlags) {
+        if (!hideAdditionalFlags) {
             if (item.getItemMeta() instanceof PotionMeta) {
                 PotionMeta meta = (PotionMeta) item.getItemMeta();
                 List<PotionEffect> effects = PotionUtils.getAllPotionEffects(item);
@@ -542,7 +529,7 @@ public class DiscordItemStackUtils {
                 } else {
                     Map<String, AttributeModifier> attributes = new HashMap<>();
                     for (PotionEffect effect : effects) {
-                        if (InteractiveChat.version.isLegacy()) {
+                        if (VersionManager.version.isLegacy()) {
                             String key = getEffect(effect.getType());
                             String translation = getTranslation(key, language).getResult();
                             String description = "";
@@ -600,7 +587,7 @@ public class DiscordItemStackUtils {
                             }
                             if (duration > 20) {
                                 Component time;
-                                if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_19_4) && effect.getDuration() == -1) {
+                                if (effect.getDuration() == -1) {
                                     time = translatable(getPotionDurationInfinite());
                                 } else {
                                     time = text(TimeUtils.getReadableTimeBetween(0, duration, ":", ChronoUnit.MINUTES, ChronoUnit.SECONDS, true));
@@ -641,8 +628,8 @@ public class DiscordItemStackUtils {
                 int level = entry.getValue();
                 Component description = getEnchantmentDescription(enchantment);
                 String enchantmentName;
-                if (description instanceof com.loohp.interactivechat.libs.net.kyori.adventure.text.TranslatableComponent) {
-                    String key = ((com.loohp.interactivechat.libs.net.kyori.adventure.text.TranslatableComponent) description).key();
+                if (description instanceof net.kyori.adventure.text.TranslatableComponent) {
+                    String key = ((net.kyori.adventure.text.TranslatableComponent) description).key();
                     if (key.equals(getTranslation(key, language).getResult())) {
                         continue;
                     }
@@ -674,8 +661,8 @@ public class DiscordItemStackUtils {
             }
         }
 
-        if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_12) && hasMeta && !item.getItemMeta().hasItemFlag(ItemFlag.HIDE_ATTRIBUTES)) {
-            if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_21)) {
+        if (hasMeta && !item.getItemMeta().hasItemFlag(ItemFlag.HIDE_ATTRIBUTES)) {
+            if (VersionManager.version.isNewerOrEqualTo(MCVersion.V1_21)) {
                 Map<EquipmentSlotGroup, List<ToolTipComponent<?>>> tooltips = new EnumMap<>(EquipmentSlotGroup.class);
                 Map<EquipmentSlotGroup, Multimap<String, AttributeModifier>> attributeList = AttributeModifiersUtils.getAttributeModifiers(item);
                 for (Entry<EquipmentSlotGroup, Multimap<String, AttributeModifier>> entry : attributeList.entrySet()) {
@@ -786,7 +773,7 @@ public class DiscordItemStackUtils {
             prints.add(tooltipText(translatable(getUnbreakable()).color(BLUE)));
         }
 
-        if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_12) && hasMeta && !item.getItemMeta().hasItemFlag(ItemFlag.HIDE_DESTROYS)) {
+        if (hasMeta && !item.getItemMeta().hasItemFlag(ItemFlag.HIDE_DESTROYS)) {
             List<ICMaterial> materialList = NMSAddon.getInstance().getItemCanDestroyList(item);
             if (!materialList.isEmpty()) {
                 prints.add(tooltipEmpty());
@@ -797,7 +784,7 @@ public class DiscordItemStackUtils {
             }
         }
 
-        if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_12) && hasMeta && !item.getItemMeta().hasItemFlag(ItemFlag.HIDE_PLACED_ON)) {
+        if (hasMeta && !item.getItemMeta().hasItemFlag(ItemFlag.HIDE_PLACED_ON)) {
             List<ICMaterial> materialList = NMSAddon.getInstance().getItemCanPlaceOnList(item);
             if (!materialList.isEmpty()) {
                 prints.add(tooltipEmpty());
@@ -809,14 +796,14 @@ public class DiscordItemStackUtils {
         }
 
         if (InteractiveChatDiscordSrvAddon.plugin.showDurability && item.getType().getMaxDurability() > 0) {
-            int durability = item.getType().getMaxDurability() - (InteractiveChat.version.isLegacy() ? item.getDurability() : ((Damageable) item.getItemMeta()).getDamage());
+            int durability = item.getType().getMaxDurability() - (VersionManager.version.isLegacy() ? item.getDurability() : ((Damageable) item.getItemMeta()).getDamage());
             int maxDur = item.getType().getMaxDurability();
             if (durability < maxDur) {
                 prints.add(tooltipText(translatable(getDurability()).arguments(text(durability), text(maxDur)).color(WHITE)));
             }
         }
         if (showAdvanceDetails) {
-            if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_20_5)) {
+            if (VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_5)) {
                 prints.add(tooltipText(text(item.getType().getKey().toString()).color(DARK_GRAY)));
                 int size = NMSAddon.getInstance().getItemComponentsSize(item);
                 if (size > 0) {

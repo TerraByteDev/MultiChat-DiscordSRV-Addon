@@ -22,22 +22,15 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.VersionManager;
+import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.listeners.DiscordInteractionEvents;
 import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
-import com.loohp.multichatdiscordsrvaddon.objectholders.DiscordDisplayData;
-import com.loohp.multichatdiscordsrvaddon.objectholders.DiscordMessageContent;
-import com.loohp.multichatdiscordsrvaddon.objectholders.HoverClickDisplayData;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ImageDisplayData;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ImageDisplayType;
-import com.loohp.multichatdiscordsrvaddon.objectholders.InteractionHandler;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ToolTipComponent;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.CustomItemTextureRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.ModelRenderer;
@@ -422,11 +415,7 @@ public class DiscordContentUtils {
     }
 
     private static boolean isInventoryEmpty(Inventory inventory) {
-        if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_16_2)) {
-            return inventory.isEmpty();
-        } else {
-            return Arrays.stream(inventory.getContents()).noneMatch(i -> i != null && !i.getType().equals(Material.AIR));
-        }
+        return inventory.isEmpty();
     }
 
     private static BiConsumer<GenericComponentInteractionCreateEvent, List<DiscordMessageContent>> getBookHandler(UUID interactionUuid, Color color, List<Supplier<BufferedImage>> imageSuppliers, byte[][] cachedImages) {

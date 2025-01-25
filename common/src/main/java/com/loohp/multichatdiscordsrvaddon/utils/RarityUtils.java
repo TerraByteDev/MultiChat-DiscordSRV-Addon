@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChat.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -20,25 +20,22 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
-import net.kyori.adventure.key.Key;
 import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
-import com.loohp.multichatdiscordsrvaddon.objectholders.BiomePrecipitation;
-import org.bukkit.Location;
-import org.bukkit.World;
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
-public class WorldUtils {
+public class RarityUtils {
 
-    public static Key getNamespacedKey(World world) {
-        return NMSAddon.getInstance().getNamespacedKey(world);
+    public static ChatColor getRarityColor(ItemStack item) {
+        return NMSAddon.getInstance().getRarityColor(item);
     }
 
-    public static boolean isNatural(World world) {
-        return world.isNatural();
-    }
-
-    public static BiomePrecipitation getPrecipitation(Location location) {
-        return NMSAddon.getInstance().getPrecipitation(location);
+    public static ChatColor getRarityColor(Material material) {
+        if (!material.equals(Material.AIR)) {
+            return getRarityColor(new ItemStack(material));
+        }
+        return ChatColor.WHITE;
     }
 
 }
-

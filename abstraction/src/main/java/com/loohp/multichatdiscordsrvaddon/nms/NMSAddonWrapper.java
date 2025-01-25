@@ -44,6 +44,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -255,5 +256,13 @@ public abstract class NMSAddonWrapper {
     public abstract String getItemStackTranslationKey(ItemStack itemStack);
 
     public abstract ChatColor getRarityColor(ItemStack itemStack);
+
+    public abstract void sendFakePlayerInventory(Player player, Inventory inventory, boolean armor, boolean offhand);
+
+    public abstract void sendFakeMainHandSlot(Player player, ItemStack item);
+
+    public abstract void sendFakeMapUpdate(Player player, int mapId, List<MapCursor> mapCursors, byte[] colors);
+
+    public abstract Component getSkullOwner(ItemStack itemStack);
 
 }

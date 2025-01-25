@@ -18,7 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.loohp.multichatdiscordsrvaddon.utils;
+package com.loohp.multichatdiscordsrvaddon.bungee;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -28,6 +28,9 @@ import com.loohp.multichatdiscordsrvaddon.objectholders.CustomPlaceholder;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
+import com.loohp.multichatdiscordsrvaddon.utils.CustomArrayUtils;
+import com.loohp.multichatdiscordsrvaddon.utils.DataTypeIO;
+import com.loohp.multichatdiscordsrvaddon.utils.HashUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

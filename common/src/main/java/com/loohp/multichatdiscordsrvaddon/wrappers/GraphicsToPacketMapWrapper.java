@@ -20,12 +20,13 @@
 
 package com.loohp.multichatdiscordsrvaddon.wrappers;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChat;
 import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageFrame;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents;
+import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
@@ -94,7 +95,7 @@ public class GraphicsToPacketMapWrapper {
         }
         this.colors = new ArrayList<>();
         this.mapItem = XMaterial.FILLED_MAP.parseItem();
-        if (InteractiveChat.version.isLegacy()) {
+        if (VersionManager.version.isLegacy()) {
             mapItem.setDurability(MAP_ID);
         } else {
             MapMeta meta = (MapMeta) mapItem.getItemMeta();
@@ -165,7 +166,7 @@ public class GraphicsToPacketMapWrapper {
         InteractiveChatDiscordSrvAddon.plugin.imagesViewedCounter.incrementAndGet();
         InboundToGameEvents.MAP_VIEWERS.put(player, this);
 
-        NMS.getInstance().sendFakeMainHandSlot(player, mapItem);
+        NMSAddon.getInstance().sendFakeMainHandSlot(player, mapItem);
 
         GraphicsToPacketMapWrapper ref = this;
         new BukkitRunnable() {
@@ -176,7 +177,7 @@ public class GraphicsToPacketMapWrapper {
                 GraphicsToPacketMapWrapper wrapper = InboundToGameEvents.MAP_VIEWERS.get(player);
                 if (wrapper != null && wrapper.equals(ref)) {
                     byte[] colorArray = colors.get(index);
-                    NMS.getInstance().sendFakeMapUpdate(player, MAP_ID, Collections.emptyList(), colorArray);
+                    NMSAddon.getInstance().sendFakeMapUpdate(player, MAP_ID, Collections.emptyList(), colorArray);
                 } else {
                     this.cancel();
                 }

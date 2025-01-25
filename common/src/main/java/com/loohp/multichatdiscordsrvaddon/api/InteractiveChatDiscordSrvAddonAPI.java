@@ -26,6 +26,7 @@ import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents.DiscordA
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
 import com.loohp.multichatdiscordsrvaddon.wrappers.GraphicsToPacketMapWrapper;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -83,6 +84,15 @@ public class InteractiveChatDiscordSrvAddonAPI {
         } else {
             return null;
         }
+    }
+
+    public static ItemStack transformItemStack(ItemStack itemStack, UUID uuid) {
+        return InteractiveChatDiscordSrvAddon.itemStackTransformFunctions.values().stream()
+                .sorted(Comparator.comparing(each -> each.getFirst()))
+                .map(each -> each.getSecond())
+                .reduce((a, b) -> (i, u) -> b.apply(a.apply(i, u), u))
+                .map(function -> function.apply(itemStack, uuid))
+                .orElse(itemStack);
     }
 
     public enum SharedType {

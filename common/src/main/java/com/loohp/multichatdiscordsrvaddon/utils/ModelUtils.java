@@ -23,12 +23,10 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 import com.loohp.blockmodelrenderer.render.Face;
 import com.loohp.blockmodelrenderer.render.Point3D;
 import com.loohp.blockmodelrenderer.utils.MathUtils;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChat;
+import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
-import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
@@ -260,9 +258,6 @@ public class ModelUtils {
     }
 
     public static String getNamespace(ICMaterial icMaterial) {
-        if (InteractiveChat.version.isOlderThan(MCVersion.V1_14)) {
-            return ResourceRegistry.DEFAULT_NAMESPACE;
-        }
         Material material = icMaterial.parseMaterial();
         if (material == null) {
             return ResourceRegistry.DEFAULT_NAMESPACE;
@@ -272,10 +267,10 @@ public class ModelUtils {
 
     @SuppressWarnings("RedundantIfStatement")
     private static boolean shouldUseLegacyModelName(ICMaterial icMaterial) {
-        if (!InteractiveChat.version.isLegacy()) {
+        if (!VersionManager.version.isLegacy()) {
             return false;
         }
-        if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_11) && icMaterial.isOneOf(Collections.singletonList("CONTAINS:shulker_box"))) {
+        if (icMaterial.isOneOf(Collections.singletonList("CONTAINS:shulker_box"))) {
             return false;
         }
         return true;
@@ -293,9 +288,6 @@ public class ModelUtils {
             if (legacyKey != null) {
                 return legacyKey.toLowerCase();
             }
-        }
-        if (InteractiveChat.version.isOlderThan(MCVersion.V1_14)) {
-            return icMaterial.name().toLowerCase();
         }
         Material material = icMaterial.parseMaterial();
         if (material == null) {

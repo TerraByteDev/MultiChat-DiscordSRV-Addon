@@ -22,6 +22,9 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.VersionManager;
+import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
@@ -100,7 +103,7 @@ public class LanguageUtils {
                     if (manifest == null) {
                         Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[InteractiveChat] Unable to fetch version_manifest from " + VERSION_MANIFEST_URL);
                     } else {
-                        String mcVersion = InteractiveChatDiscordSrvAddon.exactMinecraftVersion;
+                        String mcVersion = VersionManager.exactMinecraftVersion;
                         Object urlObj = ((JSONArray) manifest.get("versions")).stream().filter(each -> ((JSONObject) each).get("id").toString().equalsIgnoreCase(mcVersion)).map(each -> ((JSONObject) each).get("url").toString()).findFirst().orElse(null);
                         if (urlObj == null) {
                             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[InteractiveChat] Unable to find " + mcVersion + " from version_manifest");
@@ -285,7 +288,7 @@ public class LanguageUtils {
 
     public static String getTranslationKey(ItemStack itemStack) {
         try {
-            if (InteractiveChat.version.isLegacy()) {
+            if (VersionManager.version.isLegacy()) {
                 return getLegacyTranslationKey(itemStack);
             } else {
                 return getModernTranslationKey(itemStack);
@@ -299,7 +302,7 @@ public class LanguageUtils {
     @SuppressWarnings("deprecation")
     private static String getModernTranslationKey(ItemStack itemStack) {
         Material material = itemStack.getType();
-        String path = NMS.getInstance().getItemStackTranslationKey(itemStack);
+        String path = NMSAddon.getInstance().getItemStackTranslationKey(itemStack);
 
         if (material.equals(Material.POTION) || material.equals(Material.SPLASH_POTION) || material.equals(Material.LINGERING_POTION) || material.equals(Material.TIPPED_ARROW)) {
             PotionMeta meta = (PotionMeta) itemStack.getItemMeta();
@@ -308,14 +311,14 @@ public class LanguageUtils {
         }
 
         if (material.equals(Material.PLAYER_HEAD)) {
-            Component owner = NMS.getInstance().getSkullOwner(itemStack);
+            Component owner = NMSAddon.getInstance().getSkullOwner(itemStack);
             if (owner != null) {
                 path += ".named";
             }
         }
 
         if (material.equals(Material.SHIELD)) {
-            if (NMS.getInstance().hasBlockEntityTag(itemStack)) {
+            if (NMSAddon.getInstance().hasBlockEntityTag(itemStack)) {
                 DyeColor color = DyeColor.WHITE;
                 if (!(itemStack.getItemMeta() instanceof BannerMeta)) {
                     if (itemStack.getItemMeta() instanceof BlockStateMeta) {
@@ -326,8 +329,7 @@ public class LanguageUtils {
                         }
                     }
                 } else {
-                    BannerMeta meta = (BannerMeta) itemStack.getItemMeta();
-                    color = meta.getBaseColor();
+                    color = ((Banner) itemStack).getBaseColor();
                 }
 
                 path += "." + color.name().toLowerCase();
@@ -349,16 +351,14 @@ public class LanguageUtils {
 
     private static String getLegacyTranslationKey(ItemStack itemStack) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         if (itemStack.getType().equals(Material.AIR)) {
-            if (InteractiveChat.version.isOld()) {
+            if (VersionManager.version.isOld()) {
                 return "Air";
-            } else if (InteractiveChat.version.isOlderThan(MCVersion.V1_11)) {
-                return "createWorld.customize.flat.air";
             }
         }
-        String path = NMS.getInstance().getItemStackTranslationKey(itemStack) + ".name";
+        String path = NMSAddon.getInstance().getItemStackTranslationKey(itemStack) + ".name";
         ICMaterial icMaterial = ICMaterial.from(itemStack);
         if (icMaterial.isMaterial(XMaterial.PLAYER_HEAD)) {
-            Component owner = NMS.getInstance().getSkullOwner(itemStack);
+            Component owner = NMSAddon.getInstance().getSkullOwner(itemStack);
             if (owner != null) {
                 path = "item.skull.player.name";
             }

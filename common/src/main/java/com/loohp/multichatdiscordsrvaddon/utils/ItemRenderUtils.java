@@ -24,19 +24,14 @@ import com.ibm.icu.text.SimpleDateFormat;
 import com.ibm.icu.util.Calendar;
 import com.ibm.icu.util.ULocale;
 import com.cryptomorin.xseries.XMaterial;
+import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import net.kyori.adventure.key.Key;
 import net.querz.nbt.tag.CompoundTag;
 import net.querz.nbt.tag.StringTag;
 import net.querz.nbt.tag.Tag;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
-import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.CompassUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.FilledMapUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ItemNBTUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
-import com.loohp.multichatdiscordsrvaddon.utils.NBTParsingUtils;
 import com.loohp.multichatdiscordsrvaddon.graphics.BannerGraphics;
 import com.loohp.multichatdiscordsrvaddon.graphics.BannerGraphics.BannerAssetResult;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
@@ -63,10 +58,7 @@ import com.loohp.multichatdiscordsrvaddon.resources.textures.EnchantmentGlintTyp
 import com.loohp.multichatdiscordsrvaddon.resources.textures.GeneratedTextureResource;
 import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureResource;
 import com.mojang.authlib.GameProfile;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DecoratedPot;
 import org.bukkit.entity.EntityType;
@@ -112,11 +104,11 @@ public class ItemRenderUtils {
 
     private static final Random RANDOM = new Random();
 
-    public static ItemStackProcessResult processItemForRendering(ResourceManager manager, OfflineICPlayer player, ItemStack item, EquipmentSlot slot, ModelDisplay.ModelDisplayPosition displayPosition, boolean is1_8, String language) throws IOException {
+    public static ItemStackProcessResult processItemForRendering(ResourceManager manager, OfflinePlayer player, ItemStack item, EquipmentSlot slot, ModelDisplay.ModelDisplayPosition displayPosition, boolean is1_8, String language) throws IOException {
         World world;
         LivingEntity livingEntity;
-        if (player.isOnline() && player.getPlayer().isLocal()) {
-            livingEntity = player.getPlayer().getLocalPlayer();
+        if (player.isOnline() && PlayerUtils.isLocal(player)) {
+            livingEntity = player.getPlayer();
             world = livingEntity.getWorld();
         } else {
             livingEntity = null;
@@ -155,11 +147,6 @@ public class ItemRenderUtils {
         if (hasItemMeta && itemMeta instanceof PotionMeta) {
             PotionMeta meta = (PotionMeta) itemMeta;
             PotionType potiontype = NMSAddon.getInstance().getBasePotionType(item);
-            if (!icMaterial.isMaterial(XMaterial.TIPPED_ARROW) && potiontype != null && InteractiveChat.version.isOlderThan(MCVersion.V1_19_4)) {
-                if (!(potiontype.name().equals("WATER") || potiontype.name().equals("AWKWARD") || potiontype.name().equals("MUNDANE") || potiontype.name().equals("THICK") || potiontype.name().equals("UNCRAFTABLE"))) {
-                    requiresEnchantmentGlint = true;
-                }
-            }
         }
         if (CompassUtils.isLodestoneCompass(item)) {
             requiresEnchantmentGlint = true;
@@ -175,7 +162,7 @@ public class ItemRenderUtils {
             Map<ModelOverrideType, Float> predicates = new EnumMap<>(ModelOverrideType.class);
             Map<String, TextureResource> providedTextures = new HashMap<>();
 
-            if (!player.isRightHanded()) {
+            if (!PlayerUtils.isRightHanded(player)) {
                 predicates.put(ModelOverrideType.LEFTHANDED, 1F);
             }
             CustomModelData customModelData = NMSAddon.getInstance().getCustomModelData(item);
@@ -184,7 +171,7 @@ public class ItemRenderUtils {
             }
             if (item.getType().getMaxDurability() > 0) {
                 int maxDur = item.getType().getMaxDurability();
-                int damage = InteractiveChat.version.isLegacy() ? item.getDurability() : ((Damageable) itemMeta).getDamage();
+                int damage = VersionManager.version.isLegacy() ? item.getDurability() : ((Damageable) itemMeta).getDamage();
                 predicates.put(ModelOverrideType.DAMAGE, (float) damage / (float) maxDur);
                 predicates.put(ModelOverrideType.DAMAGED, NMSAddon.getInstance().isItemUnbreakable(item) || (damage <= 0) ? 0F : 1F);
             }
@@ -205,9 +192,9 @@ public class ItemRenderUtils {
                 providedTextures.put(ResourceRegistry.SHIELD_BASE_TEXTURE_PLACEHOLDER, new GeneratedTextureResource(manager, shieldAsset.getBase()));
                 providedTextures.put(ResourceRegistry.SHIELD_PATTERNS_TEXTURE_PLACEHOLDER, new GeneratedTextureResource(manager, shieldAsset.getPatterns()));
                 predicates.put(ModelOverrideType.BLOCKING, 0F);
-                ICPlayer icplayer = player.getPlayer();
-                if (icplayer != null && icplayer.isLocal()) {
-                    int cooldown = icplayer.getLocalPlayer().getCooldown(item.getType());
+                Player icplayer = player.getPlayer();
+                if (icplayer != null && PlayerUtils.isLocal(icplayer)) {
+                    int cooldown = icplayer.getCooldown(item.getType());
                     predicates.put(ModelOverrideType.COOLDOWN, (float) cooldown / (float) ResourceRegistry.SHIELD_COOLDOWN);
                 }
             } else if (icMaterial.isMaterial(XMaterial.PLAYER_HEAD)) {
@@ -227,7 +214,7 @@ public class ItemRenderUtils {
                 }
                 providedTextures.put(ResourceRegistry.SKIN_TEXTURE_PLACEHOLDER, new GeneratedTextureResource(manager, ModelUtils.convertToModernSkinTexture(skinImage)));
             } else if (icMaterial.isMaterial(XMaterial.ELYTRA)) {
-                int durability = item.getType().getMaxDurability() - (InteractiveChat.version.isLegacy() ? item.getDurability() : ((Damageable) itemMeta).getDamage());
+                int durability = item.getType().getMaxDurability() - (VersionManager.version.isLegacy() ? item.getDurability() : ((Damageable) itemMeta).getDamage());
                 if (durability <= 1) {
                     predicates.put(ModelOverrideType.BROKEN, 1F);
                 }
@@ -244,11 +231,10 @@ public class ItemRenderUtils {
                 }
             } else if (icMaterial.isMaterial(XMaterial.CLOCK)) {
                 long time;
-                ICPlayer onlinePlayer = player.getPlayer();
-                if (onlinePlayer != null && onlinePlayer.isLocal()) {
-                    Player bukkitPlayer = onlinePlayer.getLocalPlayer();
-                    if (WorldUtils.isNatural(bukkitPlayer.getWorld())) {
-                        time = (onlinePlayer.getLocalPlayer().getPlayerTime() % 24000) - 6000;
+                Player onlinePlayer = player.getPlayer();
+                if (onlinePlayer != null && PlayerUtils.isLocal(onlinePlayer)) {
+                    if (WorldUtils.isNatural(onlinePlayer.getWorld())) {
+                        time = (onlinePlayer.getPlayerTime() % 24000) - 6000;
                     } else {
                         time = RANDOM.nextInt(24000) - 6000;
                     }
@@ -264,58 +250,38 @@ public class ItemRenderUtils {
                 ItemStack compass = item;
 
                 if (CompassUtils.isLodestoneCompass(compass)) {
-                    if (InteractiveChat.hideLodestoneCompassPos) {
+                    if (InteractiveChatDiscordSrvAddon.plugin.hideLodestoneCompassPos) {
                         compass = CompassUtils.hideLodestoneCompassPosition(compass);
                     }
                 }
 
                 double angle;
-                ICPlayer icplayer = player.getPlayer();
-                if (icplayer != null && icplayer.isLocal()) {
-                    Player bukkitPlayer = icplayer.getLocalPlayer();
-                    if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_16)) {
-                        CompassMeta meta = (CompassMeta) compass.getItemMeta();
-                        Location target;
-                        if (meta.hasLodestone()) {
-                            Location lodestone = meta.getLodestone();
-                            target = new Location(lodestone.getWorld(), lodestone.getBlockX() + 0.5, lodestone.getBlockY(), lodestone.getBlockZ() + 0.5, lodestone.getYaw(), lodestone.getPitch());
-                        } else if (WorldUtils.isNatural(bukkitPlayer.getWorld())) {
-                            Location spawn = bukkitPlayer.getCompassTarget();
-                            target = new Location(spawn.getWorld(), spawn.getBlockX() + 0.5, spawn.getBlockY(), spawn.getBlockZ() + 0.5, spawn.getYaw(), spawn.getPitch());
-                        } else {
-                            target = null;
-                        }
-                        if (target != null && target.getWorld().equals(bukkitPlayer.getWorld())) {
-                            Location playerLocation = bukkitPlayer.getEyeLocation();
-                            playerLocation.setPitch(0);
-                            Vector looking = playerLocation.getDirection();
-                            Vector pointing = target.toVector().subtract(playerLocation.toVector());
-                            pointing.setY(0);
-                            double degree = VectorUtils.getBearing(looking, pointing);
-                            if (degree < 0) {
-                                degree += 360;
-                            }
-                            angle = degree / 360;
-                        } else {
-                            angle = RANDOM.nextDouble();
-                        }
+                Player icplayer = player.getPlayer();
+                if (icplayer != null && PlayerUtils.isLocal(icplayer)) {
+                    CompassMeta meta = (CompassMeta) compass.getItemMeta();
+                    Location target;
+                    if (meta.hasLodestone()) {
+                        Location lodestone = meta.getLodestone();
+                        target = new Location(lodestone.getWorld(), lodestone.getBlockX() + 0.5, lodestone.getBlockY(), lodestone.getBlockZ() + 0.5, lodestone.getYaw(), lodestone.getPitch());
+                    } else if (WorldUtils.isNatural(icplayer.getWorld())) {
+                        Location spawn = icplayer.getCompassTarget();
+                        target = new Location(spawn.getWorld(), spawn.getBlockX() + 0.5, spawn.getBlockY(), spawn.getBlockZ() + 0.5, spawn.getYaw(), spawn.getPitch());
                     } else {
-                        if (WorldUtils.isNatural(bukkitPlayer.getWorld())) {
-                            Location spawn = bukkitPlayer.getCompassTarget();
-                            Location target = new Location(spawn.getWorld(), spawn.getBlockX() + 0.5, spawn.getBlockY(), spawn.getBlockZ() + 0.5, spawn.getYaw(), spawn.getPitch());
-                            Location playerLocation = bukkitPlayer.getEyeLocation();
-                            playerLocation.setPitch(0);
-                            Vector looking = playerLocation.getDirection();
-                            Vector pointing = target.toVector().subtract(playerLocation.toVector());
-                            pointing.setY(0);
-                            double degree = VectorUtils.getBearing(looking, pointing);
-                            if (degree < 0) {
-                                degree += 360;
-                            }
-                            angle = degree / 360;
-                        } else {
-                            angle = RANDOM.nextDouble();
+                        target = null;
+                    }
+                    if (target != null && target.getWorld().equals(icplayer.getWorld())) {
+                        Location playerLocation = icplayer.getEyeLocation();
+                        playerLocation.setPitch(0);
+                        Vector looking = playerLocation.getDirection();
+                        Vector pointing = target.toVector().subtract(playerLocation.toVector());
+                        pointing.setY(0);
+                        double degree = VectorUtils.getBearing(looking, pointing);
+                        if (degree < 0) {
+                            degree += 360;
                         }
+                        angle = degree / 360;
+                    } else {
+                        angle = RANDOM.nextDouble();
                     }
                 } else {
                     angle = 0;
@@ -324,12 +290,11 @@ public class ItemRenderUtils {
                 predicates.put(ModelOverrideType.ANGLE, (float) (angle - 0.015625));
             } else if (icMaterial.isMaterial(XMaterial.RECOVERY_COMPASS)) {
                 double angle;
-                ICPlayer icplayer = player.getPlayer();
-                if (icplayer != null && icplayer.isLocal()) {
-                    Player bukkitPlayer = icplayer.getLocalPlayer();
-                    Location target = bukkitPlayer.getLastDeathLocation();
-                    if (target != null && target.getWorld().equals(bukkitPlayer.getWorld())) {
-                        Location playerLocation = bukkitPlayer.getEyeLocation();
+                Player icplayer = player.getPlayer();
+                if (icplayer != null && PlayerUtils.isLocal(icplayer) && WorldUtils.isNatural(icplayer.getWorld())) {
+                    Location target = icplayer.getLastDeathLocation();
+                    if (target != null && target.getWorld().equals(icplayer.getWorld())) {
+                        Location playerLocation = icplayer.getEyeLocation();
                         playerLocation.setPitch(0);
                         Vector looking = playerLocation.getDirection();
                         Vector pointing = target.toVector().subtract(playerLocation.toVector());
@@ -412,33 +377,33 @@ public class ItemRenderUtils {
                 }
 
                 tintColorProvider = new TintColorProvider.DyeTintProvider(tintIndex -> tintIndex != 1 ? -1 : overlayColor);
-            } else if (InteractiveChat.version.isLegacy() && icMaterial.isOneOf(Collections.singletonList("CONTAINS:bed"))) {
+            } else if (VersionManager.version.isLegacy() && icMaterial.isOneOf(Collections.singletonList("CONTAINS:bed"))) {
                 String colorName = icMaterial.name().replace("_BED", "").toLowerCase();
                 if (colorName.equalsIgnoreCase("light_gray")) {
                     colorName = "silver";
                 }
                 BufferedImage bedTexture = manager.getTextureManager().getTexture(ResourceRegistry.ENTITY_TEXTURE_LOCATION + "bed/" + colorName).getTexture();
                 providedTextures.put(ResourceRegistry.LEGACY_BED_TEXTURE_PLACEHOLDER, new GeneratedTextureResource(manager, bedTexture));
-            } else if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_9) && icMaterial.isMaterial(XMaterial.ENDER_PEARL)) {
-                ICPlayer icplayer = player.getPlayer();
-                if (icplayer != null && icplayer.isLocal()) {
-                    int cooldown = icplayer.getLocalPlayer().getCooldown(item.getType());
+            } else if (icMaterial.isMaterial(XMaterial.ENDER_PEARL)) {
+                Player icplayer = player.getPlayer();
+                if (icplayer != null && PlayerUtils.isLocal(icplayer)) {
+                    int cooldown = icplayer.getCooldown(item.getType());
                     predicates.put(ModelOverrideType.COOLDOWN, (float) cooldown / (float) ResourceRegistry.ENDER_PEARL_COOLDOWN);
                 }
             } else if (icMaterial.isMaterial(XMaterial.CHORUS_FRUIT)) {
-                ICPlayer icplayer = player.getPlayer();
-                if (icplayer != null && icplayer.isLocal()) {
-                    int cooldown = icplayer.getLocalPlayer().getCooldown(item.getType());
+                Player icplayer = player.getPlayer();
+                if (icplayer != null && PlayerUtils.isLocal(icplayer)) {
+                    int cooldown = icplayer.getCooldown(item.getType());
                     predicates.put(ModelOverrideType.COOLDOWN, (float) cooldown / (float) ResourceRegistry.CHORUS_FRUIT_COOLDOWN);
                 }
             } else if (icMaterial.isMaterial(XMaterial.FISHING_ROD)) {
                 predicates.put(ModelOverrideType.CAST, 0F);
-                ICPlayer icplayer = player.getPlayer();
-                if (icplayer != null && icplayer.isLocal()) {
-                    Player bukkitPlayer = icplayer.getLocalPlayer();
+                Player icplayer = player.getPlayer();
+                if (icplayer != null && PlayerUtils.isLocal(icplayer)) {
+                    Player bukkitPlayer = icplayer;
                     if (NMSAddon.getInstance().getFishHook(bukkitPlayer) != null) {
                         ItemStack mainHandItem = bukkitPlayer.getEquipment().getItemInHand();
-                        if (InteractiveChat.version.isOld()) {
+                        if (VersionManager.version.isOld()) {
                             if (mainHandItem != null && mainHandItem.equals(item)) {
                                 predicates.put(ModelOverrideType.CAST, 1F);
                             }
@@ -477,7 +442,7 @@ public class ItemRenderUtils {
                         TextureResource textureResource = null;
                         ItemStack sherd = new ItemStack(materials.get(i));
                         Key type = NMSAddon.getInstance().getDecoratedPotSherdPatternName(sherd);
-                        if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_20_3)) {
+                        if (VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_3)) {
                             String namespace = type.namespace();
                             String key = type.value();
                             String pattern = key.equals("blank") ? "decorated_pot_side" : key + "_pottery_pattern";
@@ -491,7 +456,7 @@ public class ItemRenderUtils {
                     }
                 }
             }
-            if (InteractiveChat.version.isBetweenInclusively(MCVersion.V1_20, MCVersion.V1_21_3) && itemMeta instanceof ArmorMeta) {
+            if (VersionManager.version.isBetweenInclusively(MCVersion.V1_20, MCVersion.V1_21_3) && itemMeta instanceof ArmorMeta) {
                 ArmorMeta armorMeta = (ArmorMeta) itemMeta;
                 ArmorTrim armorTrim = armorMeta.getTrim();
                 TrimMaterial trimMaterial = armorTrim == null ? null : armorTrim.getMaterial();
@@ -518,7 +483,7 @@ public class ItemRenderUtils {
         }
     }
 
-    public static List<ModelLayer> resolveItemModelDefinition(ResourceManager manager, OfflineICPlayer player, ModelDisplay.ModelDisplayPosition displayPosition, ItemStack itemStack, ItemModelDefinition itemModelDefinition, PostResolveFunctionGenerator postResolveFunctionGenerator) {
+    public static List<ModelLayer> resolveItemModelDefinition(ResourceManager manager, OfflinePlayer player, ModelDisplay.ModelDisplayPosition displayPosition, ItemStack itemStack, ItemModelDefinition itemModelDefinition, PostResolveFunctionGenerator postResolveFunctionGenerator) {
         ItemModelDefinition.ItemModelDefinitionType<?> itemModelDefinitionType = itemModelDefinition.getType();
         if (itemModelDefinitionType.equals(ItemModelDefinition.ItemModelDefinitionType.MODEL)) {
             ItemModelDefinition.ItemModelDefinitionModel model = (ItemModelDefinition.ItemModelDefinitionModel) itemModelDefinition;
@@ -648,7 +613,7 @@ public class ItemRenderUtils {
             } else if (propertyType.equals(ItemModelDefinition.ConditionPropertyType.BROKEN)) {
                 if (itemStack.getType().getMaxDurability() > 0) {
                     int maxDur = itemStack.getType().getMaxDurability();
-                    int damage = InteractiveChat.version.isLegacy() ? itemStack.getDurability() : ((Damageable) itemStack.getItemMeta()).getDamage();
+                    int damage = VersionManager.version.isLegacy() ? itemStack.getDurability() : ((Damageable) itemStack.getItemMeta()).getDamage();
                     evaluation = maxDur - damage == 1;
                 } else {
                     evaluation = false;
@@ -656,7 +621,7 @@ public class ItemRenderUtils {
             } else if (propertyType.equals(ItemModelDefinition.ConditionPropertyType.DAMAGED)) {
                 if (itemStack.getType().getMaxDurability() > 0 && NMSAddon.getInstance().isItemUnbreakable(itemStack)) {
                     int maxDur = itemStack.getType().getMaxDurability();
-                    int damage = InteractiveChat.version.isLegacy() ? itemStack.getDurability() : ((Damageable) itemStack.getItemMeta()).getDamage();
+                    int damage = VersionManager.version.isLegacy() ? itemStack.getDurability() : ((Damageable) itemStack.getItemMeta()).getDamage();
                     evaluation = damage > 0;
                 } else {
                     evaluation = false;
@@ -665,13 +630,12 @@ public class ItemRenderUtils {
                 ItemModelDefinition.HasComponentConditionProperty hasComponentConditionProperty = (ItemModelDefinition.HasComponentConditionProperty) condition;
                 evaluation = NMSAddon.getInstance().hasDataComponent(itemStack, hasComponentConditionProperty.getComponent(), hasComponentConditionProperty.isIgnoreDefault());
             } else if (propertyType.equals(ItemModelDefinition.ConditionPropertyType.FISHING_ROD_CAST)) {
-                ICPlayer icplayer = player.getPlayer();
+                Player icplayer = player.getPlayer();
                 boolean evaluation0 = false;
-                if (icplayer != null && icplayer.isLocal()) {
-                    Player bukkitPlayer = icplayer.getLocalPlayer();
-                    if (NMSAddon.getInstance().getFishHook(bukkitPlayer) != null) {
-                        ItemStack mainHandItem = bukkitPlayer.getEquipment().getItemInHand();
-                        ItemStack offHandItem = bukkitPlayer.getEquipment().getItemInOffHand();
+                if (icplayer != null && PlayerUtils.isLocal(icplayer)) {
+                    if (NMSAddon.getInstance().getFishHook(icplayer) != null) {
+                        ItemStack mainHandItem = icplayer.getEquipment().getItemInHand();
+                        ItemStack offHandItem = icplayer.getEquipment().getItemInOffHand();
                         if ((mainHandItem != null && mainHandItem.equals(itemStack)) || ((offHandItem != null && offHandItem.equals(itemStack)) && (mainHandItem == null || !XMaterial.matchXMaterial(mainHandItem).equals(XMaterial.FISHING_ROD)))) {
                             evaluation0 = true;
                         }
@@ -704,8 +668,7 @@ public class ItemRenderUtils {
             ItemModelDefinition.SelectPropertyType<?> propertyType = select.getPropertyType();
             Object value;
             if (propertyType.equals(ItemModelDefinition.SelectPropertyType.MAIN_HAND)) {
-                ICPlayer icPlayer = player.getPlayer();
-                value = player.isRightHanded() ? MainHand.RIGHT : MainHand.LEFT;
+                value = PlayerUtils.isRightHanded(player) ? MainHand.RIGHT : MainHand.LEFT;
             } else if (propertyType.equals(ItemModelDefinition.SelectPropertyType.CHARGE_TYPE)) {
                 if (itemStack.getItemMeta() instanceof CrossbowMeta) {
                     CrossbowMeta meta = (CrossbowMeta) itemStack.getItemMeta();
@@ -753,9 +716,9 @@ public class ItemRenderUtils {
                 }
                 value = dateMatch;
             } else if (propertyType.equals(ItemModelDefinition.SelectPropertyType.CONTEXT_DIMENSION)) {
-                ICPlayer icPlayer = player.getPlayer();
-                if (icPlayer != null && icPlayer.isLocal()) {
-                    value = NMSAddon.getInstance().getNamespacedKey(icPlayer.getLocalPlayer().getWorld());
+                Player icPlayer = player.getPlayer();
+                if (icPlayer != null && PlayerUtils.isLocal(icPlayer)) {
+                    value = NMSAddon.getInstance().getNamespacedKey(icPlayer.getWorld());
                 } else {
                     value = null;
                 }
@@ -809,18 +772,18 @@ public class ItemRenderUtils {
                     value = Math.min(Math.max(count, 0.0F), maxStackSize) * countRangeDispatchProperty.getScale();
                 }
             } else if (propertyType.equals(ItemModelDefinition.RangeDispatchPropertyType.COOLDOWN)) {
-                ICPlayer icPlayer = player.getPlayer();
-                if (icPlayer != null && icPlayer.isLocal()) {
-                    value = NMSAddon.getInstance().getItemCooldownProgress(icPlayer.getLocalPlayer(), itemStack) * rangeDispatch.getScale();
+                Player icPlayer = player.getPlayer();
+                if (icPlayer != null && PlayerUtils.isLocal(icPlayer)) {
+                    value = NMSAddon.getInstance().getItemCooldownProgress(icPlayer, itemStack) * rangeDispatch.getScale();
                 } else {
                     value = 0F;
                 }
             } else if (propertyType.equals(ItemModelDefinition.RangeDispatchPropertyType.TIME)) {
                 ItemModelDefinition.TimeRangeDispatchProperty timeRangeDispatchProperty = (ItemModelDefinition.TimeRangeDispatchProperty) rangeDispatch;
-                ICPlayer icPlayer = player.getPlayer();
+                Player icPlayer = player.getPlayer();
                 float angle = RANDOM.nextFloat();
-                if (icPlayer != null && icPlayer.isLocal()) {
-                    World world = icPlayer.getLocalPlayer().getWorld();
+                if (icPlayer != null && PlayerUtils.isLocal(icPlayer)) {
+                    World world = icPlayer.getWorld();
                     switch (timeRangeDispatchProperty.getSource()) {
                         case DAYTIME:
                             angle = NMSAddon.getInstance().getSkyAngle(world);
@@ -833,17 +796,17 @@ public class ItemRenderUtils {
                 value = angle * timeRangeDispatchProperty.getScale();
             } else if (propertyType.equals(ItemModelDefinition.RangeDispatchPropertyType.COMPASS)) {
                 ItemModelDefinition.CompassRangeDispatchProperty compassRangeDispatchProperty = (ItemModelDefinition.CompassRangeDispatchProperty) rangeDispatch;
-                ICPlayer icPlayer = player.getPlayer();
+                Player icPlayer = player.getPlayer();
                 ItemStack compass = itemStack;
                 if (CompassUtils.isLodestoneCompass(compass)) {
-                    if (InteractiveChat.hideLodestoneCompassPos) {
+                    if (InteractiveChatDiscordSrvAddon.plugin.hideLodestoneCompassPos) {
                         compass = CompassUtils.hideLodestoneCompassPosition(compass);
                     }
                 }
                 Location location = null;
                 Player bukkitPlayer = null;
-                if (icPlayer != null && icPlayer.isLocal()) {
-                    bukkitPlayer = icPlayer.getLocalPlayer();
+                if (icPlayer != null && PlayerUtils.isLocal(icPlayer)) {
+                    bukkitPlayer = icPlayer;
                     World world = bukkitPlayer.getWorld();
                     switch (compassRangeDispatchProperty.getTarget()) {
                         case SPAWN:
@@ -879,13 +842,12 @@ public class ItemRenderUtils {
                 if (ICMaterial.from(itemStack).isMaterial(XMaterial.CROSSBOW)) {
                     CrossbowMeta crossbowMeta = (CrossbowMeta) itemStack.getItemMeta();
                     if (crossbowMeta.hasChargedProjectiles()) {
-                        ICPlayer icPlayer = player.getPlayer();
+                        Player icPlayer = player.getPlayer();
                         int pullTime;
                         int tickUsedSoFar;
-                        if (icPlayer != null && icPlayer.isLocal()) {
-                            Player bukkitPlayer = icPlayer.getLocalPlayer();
-                            pullTime = NMSAddon.getInstance().getCrossbowPullTime(itemStack, bukkitPlayer);
-                            tickUsedSoFar = NMSAddon.getInstance().getTicksUsedSoFar(itemStack, bukkitPlayer);
+                        if (icPlayer != null && PlayerUtils.isLocal(icPlayer)) {
+                            pullTime = NMSAddon.getInstance().getCrossbowPullTime(itemStack, icPlayer);
+                            tickUsedSoFar = NMSAddon.getInstance().getTicksUsedSoFar(itemStack, icPlayer);
                         } else {
                             pullTime = 0;
                             tickUsedSoFar = 0;
@@ -899,23 +861,21 @@ public class ItemRenderUtils {
                 }
             } else if (propertyType.equals(ItemModelDefinition.RangeDispatchPropertyType.USE_DURATION)) {
                 ItemModelDefinition.UseDurationRangeDispatchProperty useDurationRangeDispatchProperty = (ItemModelDefinition.UseDurationRangeDispatchProperty) rangeDispatch;
-                ICPlayer icPlayer = player.getPlayer();
-                if (icPlayer != null && icPlayer.isLocal() && player.getMainHandItem().equals(itemStack)) {
-                    Player bukkitPlayer = icPlayer.getLocalPlayer();
+                Player icPlayer = player.getPlayer();
+                if (icPlayer != null && PlayerUtils.isLocal(icPlayer) && PlayerUtils.getMainHandItem(icPlayer).equals(itemStack)) {
                     if (useDurationRangeDispatchProperty.isRemaining()) {
-                        value = NMSAddon.getInstance().getItemUseTimeLeft(bukkitPlayer) * rangeDispatch.getScale();
+                        value = NMSAddon.getInstance().getItemUseTimeLeft(icPlayer) * rangeDispatch.getScale();
                     } else {
-                        value = NMSAddon.getInstance().getTicksUsedSoFar(itemStack, bukkitPlayer) * rangeDispatch.getScale();
+                        value = NMSAddon.getInstance().getTicksUsedSoFar(itemStack, icPlayer) * rangeDispatch.getScale();
                     }
                 } else {
                     value = 0F;
                 }
             } else if (propertyType.equals(ItemModelDefinition.RangeDispatchPropertyType.USE_CYCLE)) {
                 ItemModelDefinition.UseCycleRangeDispatchProperty useCycleRangeDispatchProperty = (ItemModelDefinition.UseCycleRangeDispatchProperty) rangeDispatch;
-                ICPlayer icPlayer = player.getPlayer();
-                if (icPlayer != null && icPlayer.isLocal() && player.getMainHandItem().equals(itemStack)) {
-                    Player bukkitPlayer = icPlayer.getLocalPlayer();
-                    value = (NMSAddon.getInstance().getItemUseTimeLeft(bukkitPlayer) % useCycleRangeDispatchProperty.getPeriod()) * useCycleRangeDispatchProperty.getScale();
+                Player icPlayer = player.getPlayer();
+                if (icPlayer != null && PlayerUtils.isLocal(icPlayer) && PlayerUtils.getMainHandItem(icPlayer).equals(itemStack)) {
+                    value = (NMSAddon.getInstance().getItemUseTimeLeft(icPlayer) % useCycleRangeDispatchProperty.getPeriod()) * useCycleRangeDispatchProperty.getScale();
                 } else {
                     value = 0F;
                 }
@@ -979,7 +939,7 @@ public class ItemRenderUtils {
                         TextureResource textureResource = null;
                         ItemStack sherd = new ItemStack(materials.get(i));
                         Key type = NMSAddon.getInstance().getDecoratedPotSherdPatternName(sherd);
-                        if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_20_3)) {
+                        if (VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_3)) {
                             String namespace = type.namespace();
                             String key = type.value();
                             String pattern = key.equals("blank") ? "decorated_pot_side" : key + "_pottery_pattern";

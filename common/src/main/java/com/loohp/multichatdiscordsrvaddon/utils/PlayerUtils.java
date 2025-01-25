@@ -6,6 +6,7 @@ import net.querz.nbt.io.NamedTag;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MainHand;
 
 import java.io.File;
@@ -50,5 +51,12 @@ public class PlayerUtils {
         Map<String, Object> properties = ICPlayerEvents.CACHED_PROPERTIES.get(player.getUniqueId());
         if (properties != null) return properties.get(key);
             else return null;
+    }
+
+    public static ItemStack getMainHandItem(OfflinePlayer player) {
+        if (player.isOnline()) {
+            return player.getPlayer().getInventory().getItemInMainHand();
+        }
+        return null;
     }
 }

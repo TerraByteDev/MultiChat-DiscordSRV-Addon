@@ -20,8 +20,6 @@
 
 package com.loohp.multichatdiscordsrvaddon;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChat;
-import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;

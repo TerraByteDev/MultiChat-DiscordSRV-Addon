@@ -20,18 +20,17 @@
 
 package com.loohp.multichatdiscordsrvaddon;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
+import com.loohp.multichatdiscordsrvaddon.libs.LibraryDownloadManager;
+import com.loohp.multichatdiscordsrvaddon.libs.LibraryLoader;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import com.loohp.multichatdiscordsrvaddon.utils.FileUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.HTTPRequestUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.HashUtils;
 import com.loohp.multichatdiscordsrvaddon.hooks.ItemsAdderHook;
-import LibraryDownloadManager;
-import LibraryLoader;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceDownloadManager;
 import com.loohp.multichatdiscordsrvaddon.utils.ResourcePackUtils;
 import net.md_5.bungee.api.ChatColor;
@@ -96,7 +95,7 @@ public class AssetsDownloader {
             File defaultAssetsFolder = new File(rootFolder + "/built-in", "Default");
             defaultAssetsFolder.mkdirs();
 
-            ResourceDownloadManager downloadManager = new ResourceDownloadManager(InteractiveChat.exactMinecraftVersion, defaultAssetsFolder);
+            ResourceDownloadManager downloadManager = new ResourceDownloadManager(VersionManager.exactMinecraftVersion, defaultAssetsFolder);
 
             String hash = downloadManager.getHash();
 
@@ -164,7 +163,7 @@ public class AssetsDownloader {
     }
 
     public static void loadExtras() {
-        ResourceDownloadManager downloadManager = new ResourceDownloadManager(InteractiveChat.exactMinecraftVersion, null);
+        ResourceDownloadManager downloadManager = new ResourceDownloadManager(VersionManager.exactMinecraftVersion, null);
         downloadManager.downloadExtras(() -> {
             InteractiveChatDiscordSrvAddon.plugin.extras.clear();
         }, (key, dataBytes) -> {

@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
+import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
@@ -31,6 +32,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import com.loohp.multichatdiscordsrvaddon.registry.Registry;
@@ -102,6 +104,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -155,6 +158,7 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
     public boolean itemAltAir = true;
     public String itemTitle = "%player_name%'s Item";
     public long itemDisplayTimeout = 300000;
+    public boolean hideLodestoneCompassPos = true;
     public boolean invShowLevel = true;
     public boolean hoverEnabled = true;
     public boolean hoverImage = true;
@@ -275,12 +279,19 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
     public ItemStack unknownReplaceItem;
     public boolean rgbTags = true;
     public List<Pattern> additionalRGBFormats = new ArrayList<>();
+    public boolean useBungeecord = false;
+    public boolean parsePAPIOnMainThread = false;
+    public boolean chatTabCompletionsEnabled = rue;
+    public boolean useTooltipOnTab = true;
+    public String tabTooltip = "";
 
     private ResourceManager resourceManager;
     public ModelRenderer modelRenderer;
     public ExecutorService mediaReadingService;
 
     protected Map<String, byte[]> extras = new ConcurrentHashMap<>();
+
+    public static Map<Plugin, ValuePairs<Integer, BiFunction<ItemStack, UUID, ItemStack>>> itemStackTransformFunctions = new ConcurrentHashMap<>();
 
     public ResourceManager getResourceManager() {
         if (resourceManager == null) {
@@ -487,7 +498,8 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
         itemUseTooltipImageOnBaseItem = config.getConfiguration().getBoolean("InventoryImage.Item.UseTooltipImageOnBaseItem");
         itemAltAir = config.getConfiguration().getBoolean("InventoryImage.Item.AlternateAirTexture");
         itemTitle = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("InventoryImage.Item.InventoryTitle"));
-        itemDisplayTimeout = config.getConfiguration().getLong("ItemDisplay.Item.Timeout") * 60 * 1000;
+        itemDisplayTimeout = config.getConfiguration().getLong("Settings.Timeout") * 60 * 1000;
+        hideLodestoneCompassPos = config.getConfiguration().getBoolean("Settings.HideLodestoneCompassPos");
 
         invShowLevel = config.getConfiguration().getBoolean("InventoryImage.Inventory.ShowExperienceLevel");
 
@@ -622,6 +634,12 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
         showContainers = config.getConfiguration().getBoolean("DiscordItemDetailsAndInteractions.ShowContainers");
 
         rendererThreads = config.getConfiguration().getInt("Settings.RendererSettings.RendererThreads");
+        useBungeecord = config.getConfiguration().getBoolean("Settings.Bungeecord");
+        parsePAPIOnMainThread = config.getConfiguration().getBoolean("Settings.parsePAPIOnMainThread");
+
+        chatTabCompletionsEnabled = config.getConfiguration().getBoolean("TabCompletion.ChatTabCompletion.Enabled");
+        useTooltipOnTab = config.getConfiguration().getBoolean("TabCompletion.PlayerNameTooltip.Enabled");
+        tabTooltip = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("TabCompletion.PlayerNameTooltip.Tooltip"));
 
         try {
             ItemStack unknown = new ItemStack(Material.valueOf(getConfig().getString("Settings.UnknownItem.ReplaceItem").toUpperCase()));

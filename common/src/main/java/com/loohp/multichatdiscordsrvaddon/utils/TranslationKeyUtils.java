@@ -20,10 +20,9 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChat;
+import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.text.WordUtils;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
 import com.loohp.multichatdiscordsrvaddon.objectholders.EquipmentSlotGroup;
@@ -39,6 +38,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta.Generation;
 import org.bukkit.potion.PotionEffectType;
+import org.checkerframework.org.apache.commons.text.WordUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,7 +144,7 @@ public class TranslationKeyUtils {
     }
 
     public static String getOldIncompatiblePack() {
-        if (InteractiveChat.version.isLegacy()) {
+        if (VersionManager.version.isLegacy()) {
             return "resourcePack.incompatible.old";
         } else {
             return "pack.incompatible.old";
@@ -152,7 +152,7 @@ public class TranslationKeyUtils {
     }
 
     public static String getNewIncompatiblePack() {
-        if (InteractiveChat.version.isLegacy()) {
+        if (VersionManager.version.isLegacy()) {
             return "resourcePack.incompatible.new";
         } else {
             return "pack.incompatible.new";
@@ -164,7 +164,7 @@ public class TranslationKeyUtils {
     }
 
     public static String getServerResourcePackType(ResourcePackType type) {
-        if (InteractiveChat.version.isLegacy()) {
+        if (VersionManager.version.isLegacy()) {
             switch (type) {
                 case BUILT_IN:
                     return "built-in";
@@ -191,7 +191,7 @@ public class TranslationKeyUtils {
     }
 
     public static String getWorldSpecificResources() {
-        if (InteractiveChat.version.isLegacy()) {
+        if (VersionManager.version.isLegacy()) {
             return "addServer.resourcePack";
         } else {
             return "resourcePack.server.name";
@@ -267,7 +267,7 @@ public class TranslationKeyUtils {
     }
 
     public static String getRocketFlightDuration() {
-        if (InteractiveChat.version.isLegacy()) {
+        if (VersionManager.version.isLegacy()) {
             return "item.fireworks.flight";
         } else {
             return "item.minecraft.firework_rocket.flight";
@@ -394,7 +394,7 @@ public class TranslationKeyUtils {
     }
 
     public static String getFireworkType(FireworkEffect.Type type) {
-        if (InteractiveChat.version.isLegacy()) {
+        if (VersionManager.version.isLegacy()) {
             switch (type) {
                 case BALL:
                     return "item.fireworksCharge.type.0";
@@ -428,7 +428,7 @@ public class TranslationKeyUtils {
     }
 
     public static String getFireworkTrail() {
-        if (InteractiveChat.version.isLegacy()) {
+        if (VersionManager.version.isLegacy()) {
             return "item.fireworksCharge.trail";
         } else {
             return "item.minecraft.firework_star.trail";
@@ -436,7 +436,7 @@ public class TranslationKeyUtils {
     }
 
     public static String getFireworkFlicker() {
-        if (InteractiveChat.version.isLegacy()) {
+        if (VersionManager.version.isLegacy()) {
             return "item.fireworksCharge.flicker";
         } else {
             return "item.minecraft.firework_star.flicker";
@@ -444,7 +444,7 @@ public class TranslationKeyUtils {
     }
 
     public static String getFireworkFade() {
-        if (InteractiveChat.version.isLegacy()) {
+        if (VersionManager.version.isLegacy()) {
             return "item.fireworksCharge.fadeTo";
         } else {
             return "item.minecraft.firework_star.fade_to";
@@ -453,7 +453,7 @@ public class TranslationKeyUtils {
 
     public static String getFireworkColor(Color color) {
         DyeColor dyeColor = DyeColor.getByFireworkColor(color);
-        if (InteractiveChat.version.isLegacy()) {
+        if (VersionManager.version.isLegacy()) {
             if (dyeColor == null) {
                 return "item.fireworksCharge.customColor";
             } else {

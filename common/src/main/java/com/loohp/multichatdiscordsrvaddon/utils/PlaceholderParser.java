@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
@@ -45,10 +46,10 @@ public class PlaceholderParser {
 
     static {
         Bukkit.getScheduler().runTaskTimerAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
-            if (InteractiveChatDiscordSrvAddon.plugin.bungeecordMode) {
+            if (InteractiveChatDiscordSrvAddon.plugin.useBungeecord) {
                 if (InteractiveChatDiscordSrvAddon.plugin.useTooltipOnTab) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        parse(Bukkit.getOfflinePlayer(player.getUniqueId()), InteractiveChat.tabTooltip);
+                        parse(Bukkit.getOfflinePlayer(player.getUniqueId()), InteractiveChatDiscordSrvAddon.plugin.tabTooltip);
                     }
                 }
             }
@@ -87,7 +88,7 @@ public class PlaceholderParser {
             return PlaceholderAPI.setPlaceholders(offlineICPlayer.getPlayer(), str);
         } else {
             if (PlayerUtils.isLocal(player)) {
-                if (InteractiveChatDiscordSrvAddon.plugin.bungeecordMode) {
+                if (InteractiveChatDiscordSrvAddon.plugin.useBungeecord) {
                     List<ValuePairs<String, String>> pairs = new ArrayList<>();
                     for (Entry<String, String> entry : getAllPlaceholdersContained(player, str).entrySet()) {
                         pairs.add(new ValuePairs<>(entry.getKey(), entry.getValue()));

@@ -45,6 +45,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.util.Codec.Decoder;
 import net.kyori.adventure.util.Codec.Encoder;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -294,7 +295,7 @@ public class InteractiveChatComponentSerializer {
                     String nbtAsString = "";
                     if (nbt != null) {
                         nbtAsString = nbt.string();
-                        builder.put("tag", StringBinaryTag.stringBinaryTag("{Tag}"));
+                        builder.put("tag", StringBinaryTag.of("{Tag}"));
                     }
 
                     return Component.text(TagStringIO.get().asString(builder.build()).replace("\"{Tag}\"", nbtAsString));

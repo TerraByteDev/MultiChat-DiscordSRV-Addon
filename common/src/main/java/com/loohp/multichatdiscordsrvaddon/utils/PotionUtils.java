@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
+import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.attribute.AttributeModifier;
@@ -28,10 +29,45 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
 public class PotionUtils {
+
+    private static final Map<PotionType, String> potionMapping = new EnumMap<>(PotionType.class);
+
+    static {
+        if (!VersionManager.version.isLegacy()) {
+            potionMapping.put(PotionType.WATER, "water");
+            potionMapping.put(PotionType.MUNDANE, "mundane");
+            potionMapping.put(PotionType.THICK, "thick");
+            potionMapping.put(PotionType.AWKWARD, "awkward");
+            potionMapping.put(PotionType.NIGHT_VISION, "night_vision");
+            potionMapping.put(PotionType.INVISIBILITY, "invisibility");
+            potionMapping.put(PotionType.LEAPING, "leaping");
+            potionMapping.put(PotionType.FIRE_RESISTANCE, "fire_resistance");
+            potionMapping.put(PotionType.SWIFTNESS, "swiftness");
+            potionMapping.put(PotionType.SLOWNESS, "slowness");
+            potionMapping.put(PotionType.TURTLE_MASTER, "turtle_master");
+            potionMapping.put(PotionType.WATER_BREATHING, "water_breathing");
+            potionMapping.put(PotionType.HEALING, "healing");
+            potionMapping.put(PotionType.HARMING, "harming");
+            potionMapping.put(PotionType.POISON, "poison");
+            potionMapping.put(PotionType.REGENERATION, "regeneration");
+            potionMapping.put(PotionType.STRENGTH, "strength");
+            potionMapping.put(PotionType.WEAKNESS, "weakness");
+            potionMapping.put(PotionType.LUCK, "luck");
+            potionMapping.put(PotionType.SLOW_FALLING, "slow_falling");
+        }
+    }
+
+    public static String getVanillaPotionName(PotionType type) {
+        if (potionMapping.containsKey(type)) {
+            return potionMapping.get(type);
+        }
+        return null;
+    }
 
     public static final int WATER_COLOR = 3694022;
     public static final int UNCRAFTABLE_COLOR = 16253176;
