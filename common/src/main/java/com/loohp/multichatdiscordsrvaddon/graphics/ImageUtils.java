@@ -22,19 +22,14 @@ package com.loohp.multichatdiscordsrvaddon.graphics;
 
 import com.loohp.blockmodelrenderer.blending.BlendingModes;
 import com.loohp.blockmodelrenderer.utils.MathUtils;
+import com.loohp.multichatdiscordsrvaddon.utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentFlattening;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentModernizing;
-import com.loohp.multichatdiscordsrvaddon.utils.HashUtils;
 import com.loohp.multichatdiscordsrvaddon.objectholders.CharacterData;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
 import com.loohp.multichatdiscordsrvaddon.resources.fonts.MinecraftFont;
 import com.loohp.multichatdiscordsrvaddon.resources.fonts.MinecraftFont.FontRenderResult;
 import com.loohp.multichatdiscordsrvaddon.resources.languages.LanguageMeta;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentStringUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.I18nUtils;
 import it.unimi.dsi.fastutil.chars.CharObjectPair;
 
 import javax.imageio.ImageIO;

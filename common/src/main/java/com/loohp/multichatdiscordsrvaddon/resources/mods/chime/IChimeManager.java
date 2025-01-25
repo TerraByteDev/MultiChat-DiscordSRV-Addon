@@ -20,17 +20,17 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.mods.chime;
 
-import com.loohp.multichatdiscordsrvaddon.objectholders.OfflineICPlayer;
 import com.loohp.multichatdiscordsrvaddon.resources.languages.SpecificTranslateFunction;
 import com.loohp.multichatdiscordsrvaddon.resources.models.IModelManager;
 import com.loohp.multichatdiscordsrvaddon.resources.textures.ITextureManager;
 import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureResource;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
 public interface IChimeManager extends IModelManager, ITextureManager {
 
-    TextureResource getArmorOverrideTextures(String layer, ItemStack itemStack, OfflineICPlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction);
+    TextureResource getArmorOverrideTextures(String layer, ItemStack itemStack, OfflinePlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction);
 
 }

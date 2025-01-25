@@ -24,6 +24,9 @@ import com.cryptomorin.xseries.XMaterial;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.VersionManager;
+import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -108,7 +111,7 @@ public class DataTypeIO {
                     ICMaterial material = ICMaterial.from(readString(in, charset));
                     ItemStack itemStack = material.parseItem();
                     if (itemStack == null) {
-                        itemStack = InteractiveChat.unknownReplaceItem.clone();
+                        itemStack = InteractiveChatDiscordSrvAddon.plugin.unknownReplaceItem.clone();
                         ItemMeta meta = itemStack.getItemMeta();
                         meta.setDisplayName(meta.getDisplayName().replace("{Type}", material.toString()));
                         itemStack.setItemMeta(meta);
@@ -131,7 +134,7 @@ public class DataTypeIO {
                         } catch (Exception ignore) {
                         }
                         if (setDurability) {
-                            if (InteractiveChat.version.isLegacy()) {
+                            if (VersionManager.version.isLegacy()) {
                                 itemStack.setDurability((short) durability);
                             } else {
                                 ItemMeta meta = itemStack.getItemMeta();
@@ -176,7 +179,7 @@ public class DataTypeIO {
                     boolean isDamagable = itemStack.getType().getMaxDurability() > 0;
                     if (isDamagable) {
                         itemByte.writeBoolean(true);
-                        itemByte.writeInt(InteractiveChat.version.isLegacy() ? itemStack.getDurability() : ((Damageable) itemStack.getItemMeta()).getDamage());
+                        itemByte.writeInt(VersionManager.version.isLegacy() ? itemStack.getDurability() : ((Damageable) itemStack.getItemMeta()).getDamage());
                     } else {
                         itemByte.writeBoolean(false);
                     }

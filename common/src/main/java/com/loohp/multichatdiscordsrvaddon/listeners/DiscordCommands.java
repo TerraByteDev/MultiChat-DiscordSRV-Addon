@@ -738,9 +738,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                             UUID uuid = playerinfo.getFirst();
                             ICPlayer icPlayer = ICPlayerFactory.getICPlayer(uuid);
                             if (icPlayer == null || !icPlayer.isVanished()) {
-                                if (!InteractiveChatDiscordSrvAddon.plugin.playerlistCommandOnlyInteractiveChatServers || ICPlayerFactory.getICPlayer(uuid) != null) {
-                                    players.put(Bukkit.getOfflinePlayer(uuid), playerinfo.getThird());
-                                }
+                                players.put(Bukkit.getOfflinePlayer(uuid), playerinfo.getThird());
                             }
                         }
                     } catch (InterruptedException | ExecutionException e) {

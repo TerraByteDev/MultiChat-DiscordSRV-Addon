@@ -1,7 +1,6 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import org.apache.commons.lang3.text.translate.UnicodeUnescaper;
-import org.apache.commons.text.translate.UnicodeUnescaper;
 
 import java.util.HashSet;
 import java.util.LinkedList;

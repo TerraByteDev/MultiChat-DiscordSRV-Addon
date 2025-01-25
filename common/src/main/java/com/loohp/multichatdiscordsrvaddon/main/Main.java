@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.main;
 
-import LibraryLoader;
+import com.loohp.multichatdiscordsrvaddon.libs.LibraryLoader;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -86,13 +86,13 @@ public class Main {
             } else {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 Toolkit.getDefaultToolkit().beep();
-                JOptionPane.showMessageDialog(null, "InteractiveChat.jar is required run InteractiveChat DiscordSRV Addon tools.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "InteractiveChat.jar is required run the CLI section of MultiChat DiscordSRV Addon tools.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
     public static void run(String[] args) {
-        LibraryLoader.loadLibraries(new File("InteractiveChatDiscordSrvAddon", "libs"));
+        LibraryLoader.loadLibraries(new File("MultiChatDiscordSrvAddon", "libs"));
         if (GraphicsEnvironment.isHeadless() || Arrays.asList(args).contains("--nogui")) {
             CMLMain.launch(args);
         } else {

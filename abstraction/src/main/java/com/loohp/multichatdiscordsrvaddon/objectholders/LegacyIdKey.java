@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChat.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -20,24 +20,44 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
-import org.bukkit.OfflinePlayer;
+public class LegacyIdKey {
 
-public abstract class DiscordDisplayData {
+    private String stringId;
+    private byte byteId;
+    private short damage;
 
-    protected final OfflinePlayer player;
-    protected final int position;
-
-    public DiscordDisplayData(OfflinePlayer player, int position) {
-        this.player = player;
-        this.position = position;
+    public LegacyIdKey(byte byteId, short damage) {
+        this.byteId = byteId;
+        this.damage = damage;
     }
 
-    public OfflinePlayer getPlayer() {
-        return player;
+    public LegacyIdKey(String stringId, short damage) {
+        this.stringId = stringId;
+        this.damage = damage;
     }
 
-    public int getPosition() {
-        return position;
+    public byte getByteId() {
+        return byteId;
+    }
+
+    public boolean hasByteId() {
+        return stringId == null;
+    }
+
+    public String getStringId() {
+        return stringId;
+    }
+
+    public boolean hasStringId() {
+        return stringId != null;
+    }
+
+    public short getDamage() {
+        return damage;
+    }
+
+    public boolean isDamageDataValue() {
+        return damage <= Byte.MAX_VALUE;
     }
 
 }

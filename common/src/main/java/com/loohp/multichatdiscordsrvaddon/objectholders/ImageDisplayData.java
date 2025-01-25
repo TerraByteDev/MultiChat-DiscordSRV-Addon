@@ -20,10 +20,10 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
-import com.loohp.multichatdiscordsrvaddon.objectholders.OfflineICPlayer;
 import com.loohp.multichatdiscordsrvaddon.utils.BookUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.FilledMapUtils;
 import com.loohp.multichatdiscordsrvaddon.wrappers.TitledInventoryWrapper;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
@@ -38,7 +38,7 @@ public class ImageDisplayData extends DiscordDisplayData {
     private final boolean isFilledMap;
     private final boolean isBook;
 
-    private ImageDisplayData(OfflineICPlayer player, int position, String title, ImageDisplayType type, TitledInventoryWrapper inventory, boolean isPlayerInventory, ItemStack item, boolean isFilledMap, boolean isBook) {
+    private ImageDisplayData(OfflinePlayer player, int position, String title, ImageDisplayType type, TitledInventoryWrapper inventory, boolean isPlayerInventory, ItemStack item, boolean isFilledMap, boolean isBook) {
         super(player, position);
         this.type = type;
         this.title = title;
@@ -49,19 +49,19 @@ public class ImageDisplayData extends DiscordDisplayData {
         this.isBook = isBook;
     }
 
-    public ImageDisplayData(OfflineICPlayer player, int position, String title, ImageDisplayType type, TitledInventoryWrapper inventory) {
+    public ImageDisplayData(OfflinePlayer player, int position, String title, ImageDisplayType type, TitledInventoryWrapper inventory) {
         this(player, position, title, type, inventory, false, null, false, false);
     }
 
-    public ImageDisplayData(OfflineICPlayer player, int position, String title, ImageDisplayType type, boolean isPlayerInventory, TitledInventoryWrapper inventory) {
+    public ImageDisplayData(OfflinePlayer player, int position, String title, ImageDisplayType type, boolean isPlayerInventory, TitledInventoryWrapper inventory) {
         this(player, position, title, type, inventory, isPlayerInventory, null, false, false);
     }
 
-    public ImageDisplayData(OfflineICPlayer player, int position, String title, ImageDisplayType type, ItemStack itemstack) {
+    public ImageDisplayData(OfflinePlayer player, int position, String title, ImageDisplayType type, ItemStack itemstack) {
         this(player, position, title, type, null, false, itemstack, FilledMapUtils.isFilledMap(itemstack), BookUtils.isTextBook(itemstack));
     }
 
-    public ImageDisplayData(OfflineICPlayer player, int position, String title, ImageDisplayType type, ItemStack itemstack, TitledInventoryWrapper inventory) {
+    public ImageDisplayData(OfflinePlayer player, int position, String title, ImageDisplayType type, ItemStack itemstack, TitledInventoryWrapper inventory) {
         this(player, position, title, type, inventory, false, itemstack, FilledMapUtils.isFilledMap(itemstack), BookUtils.isTextBook(itemstack));
     }
 

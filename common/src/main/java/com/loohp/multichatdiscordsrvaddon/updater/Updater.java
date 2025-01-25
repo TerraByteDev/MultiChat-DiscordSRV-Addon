@@ -20,16 +20,9 @@
 
 package com.loohp.multichatdiscordsrvaddon.updater;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChat;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.json.simple.JSONObject;
-import com.loohp.multichatdiscordsrvaddon.utils.HTTPRequestUtils;
+import com.loohp.multichatdiscordsrvaddon.utils.GithubBuildInfo;
+import com.loohp.multichatdiscordsrvaddon.utils.GithubUtils;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,64 +30,41 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.io.IOException;
+import java.util.Locale;
+
 public class Updater implements Listener {
 
-    public static final String PLUGIN_NAME = "InteractiveChat-DiscordSRV-Addon";
+    public static boolean checkUpdate(CommandSender... senders) {
+        GithubBuildInfo currentBuild = GithubBuildInfo.CURRENT;
+        GithubBuildInfo latestBuild;
+        GithubUtils.GitHubStatusLookup lookupStatus;
 
-    public static void sendUpdateMessage(CommandSender sender, String version, int spigotPluginId) {
-        sendUpdateMessage(sender, version, spigotPluginId, false);
-    }
-
-    public static void sendUpdateMessage(CommandSender sender, String version, int spigotPluginId, boolean devbuild) {
-        if (!version.equals("error")) {
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
-                if (!devbuild) {
-                    player.sendMessage(ChatColor.YELLOW + "[ICDiscordSrvAddon] A new version is available on SpigotMC: " + version);
-                    Component url = LegacyComponentSerializer.legacySection().deserialize(ChatColor.GOLD + "https://www.spigotmc.org/resources/" + spigotPluginId);
-                    url = url.hoverEvent(HoverEvent.showText(Component.text("Click me!").color(NamedTextColor.AQUA)));
-                    url = url.clickEvent(ClickEvent.openUrl("https://www.spigotmc.org/resources/" + spigotPluginId));
-                    InteractiveChat.sendMessage(player, url);
-                } else {
-                    sender.sendMessage(ChatColor.GREEN + "[ICDiscordSrvAddon] You are running the latest release!");
-                    Component url = LegacyComponentSerializer.legacySection().deserialize(ChatColor.YELLOW + "[InteractiveChat] However, a new Development Build is available if you want to try that!");
-                    url = url.hoverEvent(HoverEvent.showText(Component.text("Click me!").color(NamedTextColor.AQUA)));
-                    url = url.clickEvent(ClickEvent.openUrl("https://ci.loohpjames.com/job/" + PLUGIN_NAME));
-                    InteractiveChat.sendMessage(player, url);
-                }
-            } else {
-                if (!devbuild) {
-                    sender.sendMessage(ChatColor.YELLOW + "[ICDiscordSrvAddon] A new version is available on SpigotMC: " + version);
-                    sender.sendMessage(ChatColor.GOLD + "Download: https://www.spigotmc.org/resources/" + spigotPluginId);
-                } else {
-                    sender.sendMessage(ChatColor.GREEN + "[ICDiscordSrvAddon] You are running the latest release!");
-                    sender.sendMessage(ChatColor.YELLOW + "[ICDiscordSrvAddon] However, a new Development Build is available if you want to try that!");
-                }
-            }
-        }
-    }
-
-    public static UpdaterResponse checkUpdate() {
         try {
-            String localPluginVersion = InteractiveChatDiscordSrvAddon.plugin.getDescription().getVersion();
-            JSONObject response = (JSONObject) HTTPRequestUtils.getJSONResponse("https://api.loohpjames.com/spigot/data").get(PLUGIN_NAME);
-            String spigotPluginVersion = (String) ((JSONObject) response.get("latestversion")).get("release");
-            String devBuildVersion = (String) ((JSONObject) response.get("latestversion")).get("devbuild");
-            int spigotPluginId = (int) (long) ((JSONObject) response.get("spigotmc")).get("pluginid");
-            int posOfThirdDot = localPluginVersion.indexOf(".", localPluginVersion.indexOf(".", localPluginVersion.indexOf(".") + 1) + 1);
-            Version currentDevBuild = new Version(localPluginVersion);
-            Version currentRelease = new Version(localPluginVersion.substring(0, posOfThirdDot >= 0 ? posOfThirdDot : localPluginVersion.length()));
-            Version spigotmc = new Version(spigotPluginVersion);
-            Version devBuild = new Version(devBuildVersion);
-            if (currentRelease.compareTo(spigotmc) < 0) {
-                return new UpdaterResponse(spigotPluginVersion, spigotPluginId, currentDevBuild.compareTo(devBuild) >= 0);
+            if (currentBuild.isStable()) {
+                latestBuild = GithubUtils.lookupLatestRelease();
+                lookupStatus = GithubUtils.compare(latestBuild.getId(), currentBuild.getId());
             } else {
-                return new UpdaterResponse("latest", spigotPluginId, currentDevBuild.compareTo(devBuild) >= 0);
+                latestBuild = null;
+                lookupStatus = GithubUtils.compare(GithubUtils.MAIN_BRANCH, currentBuild.getId());
             }
-        } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[ICDiscordSrvAddon] Failed to check against \"api.loohpjames.com\" for the latest version.. It could be an internet issue or \"api.loohpjames.com\" is down. If you want disable the update checker, you can disable in config.yml, but we still highly-recommend you to keep your plugin up to date!");
+        } catch (IOException error) {
+            InteractiveChatDiscordSrvAddon.plugin.sendMessage("Failed to fetch latest version: " + error, senders);
+            return true;
         }
-        return new UpdaterResponse("error", -1, false);
+
+        if (lookupStatus.isBehind()) {
+            if (currentBuild.isStable()) {
+                InteractiveChatDiscordSrvAddon.plugin.sendMessage("<green>A new version of MultiChat-DiscordSRV-Addon is available: " + latestBuild.getId() + "!", senders);
+                InteractiveChatDiscordSrvAddon.plugin.sendMessage("<grey>Download at: <click:open_url:'https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/releases/tag'>https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/releases/tag</click>", senders);
+            } else {
+                InteractiveChatDiscordSrvAddon.plugin.sendMessage("<yellow>You are running a development build of MultiChat-DiscordSRV-Addon!\nThe latest available development build is " + String.format(Locale.ROOT, "%,d", lookupStatus.getDistance()) + " commits ahead.", senders);
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     @EventHandler
@@ -102,11 +72,8 @@ public class Updater implements Listener {
         Bukkit.getScheduler().runTaskLaterAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
             if (InteractiveChatDiscordSrvAddon.plugin.updaterEnabled) {
                 Player player = event.getPlayer();
-                if (player.hasPermission("interactivechatdiscordsrv.update")) {
-                    UpdaterResponse version = Updater.checkUpdate();
-                    if (!version.getResult().equals("latest")) {
-                        Updater.sendUpdateMessage(player, version.getResult(), version.getSpigotPluginId());
-                    }
+                if (player.hasPermission("multichatdiscordsrv.update")) {
+                    Updater.checkUpdate(player);
                 }
             }
         }, 100);

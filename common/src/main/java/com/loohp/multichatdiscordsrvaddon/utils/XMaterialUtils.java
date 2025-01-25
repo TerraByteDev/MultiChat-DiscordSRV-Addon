@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChat.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -18,10 +18,24 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.loohp.multichatdiscordsrvaddon.registry;
+package com.loohp.multichatdiscordsrvaddon.utils;
 
-public class InteractiveChatRegistry {
+import com.cryptomorin.xseries.XMaterial;
 
-    public static final int MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION = 47;
+import java.util.Optional;
+
+public class XMaterialUtils {
+
+    public static Optional<XMaterial> matchXMaterial(int id, byte data) {
+        if (id < 0 || id > 2267 || data < 0) {
+            return Optional.empty();
+        }
+        for (XMaterial materials : XMaterial.VALUES) {
+            if (materials.getData() == data && materials.getId() == id) {
+                return Optional.of(materials);
+            }
+        }
+        return Optional.empty();
+    }
 
 }

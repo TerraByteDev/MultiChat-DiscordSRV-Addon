@@ -26,10 +26,9 @@ import com.loohp.blockmodelrenderer.render.Hexahedron;
 import com.loohp.blockmodelrenderer.render.Model;
 import com.loohp.blockmodelrenderer.render.Point3D;
 import com.loohp.blockmodelrenderer.utils.ColorUtils;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChat;
+import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
-import com.loohp.multichatdiscordsrvaddon.utils.CustomArrayUtils;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.graphics.BlendingUtils;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
@@ -55,6 +54,7 @@ import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureMeta;
 import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureProperties;
 import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureResource;
 import com.loohp.multichatdiscordsrvaddon.utils.AnimatedTextureUtils;
+import com.loohp.multichatdiscordsrvaddon.utils.CustomArrayUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.ModelUtils;
 
 import java.awt.Graphics2D;
@@ -159,7 +159,7 @@ public class ModelRenderer implements AutoCloseable {
     }
 
     public RenderResult renderPlayer(int width, int height, SteppedIntegerRange animationSpec, ResourceManager manager, boolean post1_8, boolean slim, Map<String, TextureResource> providedTextures, TintColorProvider tintColorProvider, Map<PlayerModelItemPosition, PlayerModelItem> modelItems) {
-        BlockModel playerModel = manager.getModelManager().resolveBlockModel(slim ? PLAYER_MODEL_SLIM_RESOURCELOCATION : PLAYER_MODEL_RESOURCELOCATION, InteractiveChat.version.isOld(), Collections.emptyMap());
+        BlockModel playerModel = manager.getModelManager().resolveBlockModel(slim ? PLAYER_MODEL_SLIM_RESOURCELOCATION : PLAYER_MODEL_RESOURCELOCATION, VersionManager.version.isOld(), Collections.emptyMap());
         if (playerModel == null) {
             return new RenderResult(MODEL_NOT_FOUND);
         }
@@ -168,7 +168,7 @@ public class ModelRenderer implements AutoCloseable {
             List<ValueTrios<BlockModel, Map<String, TextureResource>, TintColorProvider>> layerResolvedItems = new ArrayList<>();
             for (int layerIndex = 0; layerIndex < playerModelItem.getModelLayers().size(); layerIndex++) {
                 ModelLayer modelLayer = playerModelItem.getModelLayers().get(layerIndex);
-                BlockModel itemBlockModel = modelLayer.getModelKey() == null ? null : manager.getModelManager().resolveBlockModel(modelLayer.getModelKey(), InteractiveChat.version.isOld(), modelLayer.getPredicates());
+                BlockModel itemBlockModel = modelLayer.getModelKey() == null ? null : manager.getModelManager().resolveBlockModel(modelLayer.getModelKey(), VersionManager.version.isOld(), modelLayer.getPredicates());
                 ValuePairs<BlockModel, Map<String, TextureResource>> resolveFunctionResult = playerModelItem.getPostResolveFunction().get(layerIndex).apply(itemBlockModel);
                 itemBlockModel = resolveFunctionResult.getFirst();
                 Map<String, TextureResource> overrideTextures = resolveFunctionResult.getSecond();

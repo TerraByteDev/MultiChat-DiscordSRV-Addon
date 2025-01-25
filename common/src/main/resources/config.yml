@@ -9,6 +9,13 @@ InventoryImage:
       Single: "{Item}"
       Multiple: "{Item} x{Amount}"
     AlternateAirTexture: true
+
+    # Title of the inventory view embed
+    InventoryTitle: "%player_names%'s Item"
+
+    # How long should an item display be stored in memory after its creation?
+    # (In minutes) - Default 5 Minutes.
+    Timeout: 5
   #Whether to generate images for the inventory placeholder
   Inventory:
     Enabled: true
@@ -117,7 +124,7 @@ DiscordAttachments:
 DiscordCommands:
   #These settings apply to all discord commands below 
   GlobalSettings:
-    #Set this to true ONLY IF you have multiple servers with interactivechatdiscordsrvaddon AND
+    #Set this to true ONLY IF you have multiple servers with multichatdiscordsrvaddon AND
     #you use a DIFFERENT channel for each server (i.e. not one shared channel for all servers)
     RespondToCommandsInInvalidChannels: true
     Messages:
@@ -148,7 +155,7 @@ DiscordCommands:
         - "&7Status: &cOffline"
   #Settings for /resourcepack
   ResourcePack:
-    #Enable the /resourcepack command to show installed resource packs on interactivechatdiscordsrvaddon
+    #Enable the /resourcepack command to show installed resource packs on multichatdiscordsrvaddon
     Enabled: true
     #If you do NOT use a shared discord channel for multiple servers, this should ALWAYS be true
     #If you do, set this option on ONE of the servers connected to the discord channel to true,
@@ -168,8 +175,6 @@ DiscordCommands:
     IsMainServer: true
     #List other players on the same network if connected to bungeecord
     ListBungeecordPlayers: true
-    #List only players on servers where InteractiveChat is installed and has info about
-    OnlyInteractiveChatServers: true
     #Message to display when no one is online
     EmptyServer: "There are no players online."
     #Delete the tablist message after X seconds (Set to 0 to not have it automatically deleted)
@@ -339,16 +344,20 @@ Messages:
     LoadedResources: "&bLoaded Resources: &a"
 
 Settings:
+  # THIS IS A WORK IN PROGRESS AND NOT FUNCTIONAL AS OF RIGHT NOW!
+  # Uses bungeecord to request the playerlist etc.
+  Bungeecord: false
+
   #This is in seconds
   CacheTimeout: 300
   EscapePlaceholdersSentFromDiscord: true
   EscapeDiscordMarkdownFormattingInItems: true
   ReducedAssetsDownloadInfo: true
-  #Delete the embed messages sent by InteractiveChatDiscordSRVAddon after X seconds (Set to 0 to not have it automatically deleted)
+  #Delete the embed messages sent by MultiChatDiscordSRVAddon after X seconds (Set to 0 to not have it automatically deleted)
   #This does not include ones that have their own config option, such as /playerlist
   EmbedDeleteAfter: 0
   #You might want to adjust this option if you have other plugins listening to DiscordSRV's events
-  #And it is interfering with InteractiveChatDiscordSRVAddon's ability to modify and read game or discord messages
+  #And it is interfering with MultiChatDiscordSRVAddon's ability to modify and read game or discord messages
   #Valid options are
   #LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR
   ListenerPriorities:
@@ -364,9 +373,27 @@ Settings:
     #A negative number or 0 sets the number of thread to be used as the logical processor count of your system minus N
     #Defaults to -1 (Number of logical processor in your system - 1)
     RendererThreads: -1
+  FormattingTags:
+    #Allow the use of "[color=#123456]" RGB tags (1.16+)
+    AllowRGBTags: true
+    #Define custom RGB formats using regex
+    #Matching group 1-6 should be EACH of the characters in the RGB hex code
+    #For example, the regex for "#123456" should be
+    #"#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])"
+    AdditionalRGBFormats:
+      - "#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])"
+
+  UnknownItem:
+    ReplaceItem: BARRIER
+    DisplayName: "&cUnknown Item {Type}"
+    Lore:
+      - "&7Unable to parse item"
+      - "&7This is likely to be an item that"
+      - "&7does not exist in this version of Minecraft"
 
 Debug:
   PrintInfoToConsole: false
+  PluginMessagePacketVerbose: false
 
 Options:
   Updater: true

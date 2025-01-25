@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.registry;
 
+import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.utils.ResourcePackUtils;
 
 public class ResourceRegistry {
@@ -33,8 +34,8 @@ public class ResourceRegistry {
             Class.forName("org.bukkit.plugin.java.JavaPlugin");
             isMinecraftServerEnvironment = true;
             resourcePackVersion = ResourcePackUtils.getServerResourcePackVersion();
-            itemTextureLocation = com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon.version.isLegacy() ? "minecraft:items/" : "minecraft:item/";
-            blockTextureLocation = com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon.version.isLegacy() ? "minecraft:blocks/" : "minecraft:block/";
+            itemTextureLocation = VersionManager.version.isLegacy() ? "minecraft:items/" : "minecraft:item/";
+            blockTextureLocation = VersionManager.version.isLegacy() ? "minecraft:blocks/" : "minecraft:block/";
         } catch (ClassNotFoundException | NoClassDefFoundError e) {
             isMinecraftServerEnvironment = false;
             resourcePackVersion = 46;
@@ -50,7 +51,7 @@ public class ResourceRegistry {
     public static final String DEFAULT_NAMESPACE = "minecraft";
     public static final boolean IS_MINECRAFT_SERVER_ENVIRONMENT;
 
-    public static final String ICD_PREFIX = "minecraft:interactivechatdiscordsrvaddon/";
+    public static final String ICD_PREFIX = "minecraft:multichatdiscordsrvaddon/";
 
     public static final int RESOURCE_PACK_VERSION;
 

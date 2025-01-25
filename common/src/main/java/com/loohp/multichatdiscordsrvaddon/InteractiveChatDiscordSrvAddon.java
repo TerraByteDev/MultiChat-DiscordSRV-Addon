@@ -22,11 +22,15 @@ package com.loohp.multichatdiscordsrvaddon;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import com.loohp.multichatdiscordsrvaddon.registry.Registry;
@@ -98,6 +102,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listener {
 
@@ -122,6 +128,7 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
     public static boolean isReady = false;
 
     public static boolean debug = false;
+    public boolean pluginMessagePacketVerbose = false;
 
     protected final ReentrantLock resourceReloadLock = new ReentrantLock(true);
     public Metrics metrics;
@@ -146,6 +153,8 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
     public Color enderColor = Color.black;
     public boolean itemUseTooltipImageOnBaseItem = false;
     public boolean itemAltAir = true;
+    public String itemTitle = "%player_name%'s Item";
+    public long itemDisplayTimeout = 300000;
     public boolean invShowLevel = true;
     public boolean hoverEnabled = true;
     public boolean hoverImage = true;
@@ -213,7 +222,6 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
     public String playerlistCommandDescription = "";
     public boolean playerlistCommandIsMainServer = true;
     public boolean playerlistCommandBungeecord = true;
-    public boolean playerlistCommandOnlyInteractiveChatServers = true;
     public int playerlistCommandDeleteAfter = 10;
     public String playerlistCommandPlayerFormat = "";
     public boolean playerlistCommandAvatar = true;
@@ -264,6 +272,9 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
     public boolean showBooks = true;
     public boolean showContainers = true;
     public int rendererThreads = -1;
+    public ItemStack unknownReplaceItem;
+    public boolean rgbTags = true;
+    public List<Pattern> additionalRGBFormats = new ArrayList<>();
 
     private ResourceManager resourceManager;
     public ModelRenderer modelRenderer;
@@ -421,7 +432,7 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
 
     public boolean compatible() {
         try {
-            return Registry.class.getField("INTERACTIVE_CHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null) == InteractiveChatRegistry.class.getField("INTERACTIVE_CHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null);
+            return Registry.class.getField("MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null) == InteractiveChatRegistry.class.getField("MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null);
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
             return false;
@@ -449,6 +460,7 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
         loadedResourcesLang = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Messages.StatusCommand.LoadedResources"));
 
         debug = config.getConfiguration().getBoolean("Debug.PrintInfoToConsole");
+        pluginMessagePacketVerbose = config.getConfiguration().getBoolean("Debug.PluginMessagePacketVerbose");
 
         resourceOrder.clear();
         List<String> order = config.getConfiguration().getStringList("Resources.Order");
@@ -474,6 +486,8 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
 
         itemUseTooltipImageOnBaseItem = config.getConfiguration().getBoolean("InventoryImage.Item.UseTooltipImageOnBaseItem");
         itemAltAir = config.getConfiguration().getBoolean("InventoryImage.Item.AlternateAirTexture");
+        itemTitle = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("InventoryImage.Item.InventoryTitle"));
+        itemDisplayTimeout = config.getConfiguration().getLong("ItemDisplay.Item.Timeout") * 60 * 1000;
 
         invShowLevel = config.getConfiguration().getBoolean("InventoryImage.Inventory.ShowExperienceLevel");
 
@@ -562,7 +576,6 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
         playerlistCommandDescription = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordCommands.PlayerList.Description"));
         playerlistCommandIsMainServer = config.getConfiguration().getBoolean("DiscordCommands.PlayerList.IsMainServer");
         playerlistCommandBungeecord = config.getConfiguration().getBoolean("DiscordCommands.PlayerList.ListBungeecordPlayers");
-        playerlistCommandOnlyInteractiveChatServers = config.getConfiguration().getBoolean("DiscordCommands.PlayerList.OnlyInteractiveChatServers");
         playerlistCommandDeleteAfter = config.getConfiguration().getInt("DiscordCommands.PlayerList.DeleteAfter");
         playerlistCommandPlayerFormat = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordCommands.PlayerList.TablistOptions.PlayerFormat"));
         playerlistCommandAvatar = config.getConfiguration().getBoolean("DiscordCommands.PlayerList.TablistOptions.ShowPlayerAvatar");
@@ -609,6 +622,26 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
         showContainers = config.getConfiguration().getBoolean("DiscordItemDetailsAndInteractions.ShowContainers");
 
         rendererThreads = config.getConfiguration().getInt("Settings.RendererSettings.RendererThreads");
+
+        try {
+            ItemStack unknown = new ItemStack(Material.valueOf(getConfig().getString("Settings.UnknownItem.ReplaceItem").toUpperCase()));
+            ItemMeta meta = unknown.getItemMeta();
+            meta.setDisplayName(ChatColorUtils.translateAlternateColorCodes('&', getConfig().getString("Settings.UnknownItem.DisplayName")));
+            meta.setLore(getConfig().getStringList("Settings.UnknownItem.Lore").stream().map(each -> ChatColorUtils.translateAlternateColorCodes('&', each)).collect(Collectors.toList()));
+            unknown.setItemMeta(meta);
+            this.unknownReplaceItem = unknown;
+        } catch (Exception e) {
+            ItemStack unknown = ICMaterial.from(getConfig().getString("Settings.UnknownItem.ReplaceItem")).parseItem();
+            unknown.setAmount(1);
+            ItemMeta meta = unknown.getItemMeta();
+            meta.setDisplayName(ChatColorUtils.translateAlternateColorCodes('&', getConfig().getString("Settings.UnknownItem.DisplayName")));
+            meta.setLore(getConfig().getStringList("Settings.UnknownItem.Lore").stream().map(each -> ChatColorUtils.translateAlternateColorCodes('&', each)).collect(Collectors.toList()));
+            unknown.setItemMeta(meta);
+            this.unknownReplaceItem = unknown;
+        }
+
+        rgbTags = config.getConfiguration().getBoolean("Settings.FormattingTags.AllowRGBTags");
+        additionalRGBFormats = config.getConfiguration().getStringList("Settings.FormattingTags.AdditionalRGBFormats").stream().map(each -> Pattern.compile(each)).collect(Collectors.toList());;
 
         language = config.getConfiguration().getString("Resources.Language");
         LanguageUtils.loadTranslations(language);

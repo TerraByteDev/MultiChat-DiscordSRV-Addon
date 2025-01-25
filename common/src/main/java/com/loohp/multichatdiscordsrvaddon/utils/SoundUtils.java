@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChat.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -18,10 +18,31 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.loohp.multichatdiscordsrvaddon.registry;
+package com.loohp.multichatdiscordsrvaddon.utils;
 
-public class InteractiveChatRegistry {
+import com.cryptomorin.xseries.XSound;
+import org.bukkit.Sound;
 
-    public static final int MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION = 47;
+import java.util.Optional;
+
+public class SoundUtils {
+
+    public static boolean isMinecraftSound(String string) {
+        Optional<XSound> opt = XSound.matchXSound(string);
+        if (opt.isPresent()) {
+            XSound xSound = opt.get();
+            return xSound.parseSound() != null;
+        }
+        return false;
+    }
+
+    public static Sound parseSound(String string) {
+        Optional<XSound> opt = XSound.matchXSound(string);
+        if (opt.isPresent()) {
+            XSound xSound = opt.get();
+            return xSound.parseSound();
+        }
+        return null;
+    }
 
 }

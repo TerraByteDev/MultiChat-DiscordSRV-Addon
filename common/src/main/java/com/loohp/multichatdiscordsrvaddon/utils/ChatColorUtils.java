@@ -20,6 +20,8 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
+import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import net.md_5.bungee.api.ChatColor;
 
 import java.util.Arrays;
@@ -46,7 +48,7 @@ public class ChatColorUtils {
     }
 
     public static String filterIllegalColorCodes(String string) {
-        return filterIllegalColorCodes(string, com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon.version.isLegacyRGB());
+        return filterIllegalColorCodes(string, VersionManager.version.isLegacyRGB());
     }
 
     public static String filterIllegalColorCodes(String string, boolean legacyRGB) {
@@ -168,7 +170,7 @@ public class ChatColorUtils {
     }
 
     public static String translateAlternateColorCodes(char code, String text) {
-        return translateAlternateColorCodes(code, text, com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon.version.isLegacyRGB(), com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon.rgbTags, com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon.additionalRGBFormats);
+        return translateAlternateColorCodes(code, text, VersionManager.version.isLegacyRGB(), InteractiveChatDiscordSrvAddon.plugin.rgbTags, InteractiveChatDiscordSrvAddon.plugin.additionalRGBFormats);
     }
 
     public static String translateAlternateColorCodes(char code, String text, boolean legacyRGB, boolean rgbTags, List<Pattern> additionalRGBFormats) {

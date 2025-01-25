@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.loohp.multichatdiscordsrvaddon.objectholders.LegacyIdKey;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
@@ -38,13 +39,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.apache.commons.lang3.RandomStringUtils;
-import com.loohp.multichatdiscordsrvaddon.objectholders.LegacyIdKey;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentCompacting;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentFlattening;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentModernizing;
-import com.loohp.multichatdiscordsrvaddon.utils.InteractiveChatComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.utils.ItemNBTUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.XMaterialUtils;
 import com.loohp.multichatdiscordsrvaddon.resources.fonts.FontProvider;
 import com.loohp.multichatdiscordsrvaddon.resources.languages.SpecificTranslateFunction;
 import it.unimi.dsi.fastutil.ints.IntList;

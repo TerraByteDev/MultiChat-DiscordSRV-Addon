@@ -23,6 +23,8 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.loohp.multichatdiscordsrvaddon.VersionManager;
+import com.loohp.multichatdiscordsrvaddon.objectholders.LegacyIdKey;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.StringBinaryTag;
@@ -43,7 +45,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.util.Codec.Decoder;
 import net.kyori.adventure.util.Codec.Encoder;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -113,7 +114,7 @@ public class InteractiveChatComponentSerializer {
 
     private static boolean isBukkitAboveV1_20_3() {
         try {
-            return com.loohp.interactivechat.InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_20_3);
+            return VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_3);
         } catch (Throwable e) {
             return true;
         }

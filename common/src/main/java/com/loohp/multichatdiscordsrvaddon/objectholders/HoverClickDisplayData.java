@@ -20,10 +20,10 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
-import net.kyori.adventure.text.Component;
 import com.loohp.multichatdiscordsrvaddon.objectholders.CustomPlaceholder.ClickEventAction;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlayer;
-import com.loohp.multichatdiscordsrvaddon.objectholders.OfflineICPlayer;
+import net.kyori.adventure.text.Component;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.awt.Color;
 
@@ -35,7 +35,7 @@ public class HoverClickDisplayData extends DiscordDisplayData {
     private final ClickEventAction clickAction;
     private final String clickValue;
 
-    public HoverClickDisplayData(OfflineICPlayer player, int position, Color color, String displayText, Component hoverText, ClickEventAction clickAction, String clickValue) {
+    public HoverClickDisplayData(OfflinePlayer player, int position, Color color, String displayText, Component hoverText, ClickEventAction clickAction, String clickValue) {
         super(player, position);
         this.displayText = displayText;
         this.hoverText = hoverText;
@@ -74,7 +74,7 @@ public class HoverClickDisplayData extends DiscordDisplayData {
 
     public static class Builder {
 
-        private ICPlayer player;
+        private Player player;
         private Integer postion;
         private String displayText;
         private Component hoverText;
@@ -86,11 +86,11 @@ public class HoverClickDisplayData extends DiscordDisplayData {
 
         }
 
-        public ICPlayer getPlayer() {
+        public Player getPlayer() {
             return player;
         }
 
-        public Builder player(ICPlayer player) {
+        public Builder player(Player player) {
             this.player = player;
             return this;
         }

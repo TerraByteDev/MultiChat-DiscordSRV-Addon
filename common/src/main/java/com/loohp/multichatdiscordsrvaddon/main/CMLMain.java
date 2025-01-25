@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.main;
 
+import com.loohp.multichatdiscordsrvaddon.libs.LibraryDownloadManager;
 import org.json.simple.JSONObject;
 import org.simpleyaml.configuration.ConfigurationSection;
 import org.simpleyaml.configuration.file.YamlFile;
@@ -27,7 +28,6 @@ import com.loohp.multichatdiscordsrvaddon.registry.Registry;
 import com.loohp.multichatdiscordsrvaddon.updater.Version;
 import com.loohp.multichatdiscordsrvaddon.utils.FileUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.HTTPRequestUtils;
-import LibraryDownloadManager;
 import com.loohp.multichatdiscordsrvaddon.registry.InteractiveChatRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceDownloadManager;
 
@@ -80,7 +80,7 @@ public class CMLMain {
                 System.out.println("GitHub: \"https://github.com/LOOHP/InteractiveChat-DiscordSRV-Addon\"");
                 System.out.println("Discord: \"https://loohpjames.com/dev-discord\"");
                 System.out.println("Build Server: \"https://ci.loohpjames.com\"");
-                if (Registry.INTERACTIVE_CHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION != InteractiveChatRegistry.INTERACTIVE_CHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION) {
+                if (Registry.MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION != InteractiveChatRegistry.MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION) {
                     System.out.println();
                     System.out.println("These versions of InteractiveChat & InteractiveChat DiscordSRV Addon are incompatible! Please Upgrade!");
                     System.out.println("These versions of InteractiveChat & InteractiveChat DiscordSRV Addon are incompatible! Please Upgrade!");

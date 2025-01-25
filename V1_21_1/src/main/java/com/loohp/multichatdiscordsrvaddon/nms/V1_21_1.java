@@ -24,6 +24,7 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonElement;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
+import com.loohp.multichatdiscordsrvaddon.objectholders.CustomModelData;
 import com.loohp.multichatdiscordsrvaddon.utils.NativeJsonConverter;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
@@ -34,13 +35,21 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.gson.GsonDataComponentValue;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.MojangsonParser;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTCompressedStreamTools;
+import net.minecraft.network.protocol.game.*;
+import net.minecraft.server.network.PlayerConnection;
+import net.minecraft.world.item.component.*;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import net.minecraft.world.level.saveddata.maps.MapIcon;
+import net.querz.nbt.io.NBTDeserializer;
+import net.querz.nbt.io.NamedTag;
 import org.apache.commons.lang3.math.Fraction;
 import com.loohp.multichatdiscordsrvaddon.utils.InteractiveChatComponentSerializer;
 import com.loohp.multichatdiscordsrvaddon.utils.ReflectionUtils;
@@ -82,11 +91,6 @@ import net.minecraft.world.item.JukeboxPlayable;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.armortrim.TrimMaterial;
 import net.minecraft.world.item.armortrim.TrimPattern;
-import net.minecraft.world.item.component.BundleContents;
-import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.component.DyedItemColor;
-import net.minecraft.world.item.component.Fireworks;
-import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.enchantment.EnchantmentManager;
 import net.minecraft.world.level.biome.BiomeBase;
 import net.minecraft.world.level.block.Block;
@@ -138,6 +142,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -1009,6 +1016,85 @@ public class V1_21_1 extends NMSAddonWrapper {
             return tag == null ? null : tag.toString();
         }
         return null;
+    }
+
+    @Override
+    public void sendTitle(Player player, Component title, Component subtitle, Component actionbar, int fadeIn, int stay, int fadeOut) {
+        PlayerConnection connection = ((CraftPlayer) player).getHandle().c;
+
+        ClientboundClearTitlesPacket packet1 = new ClientboundClearTitlesPacket(true);
+        connection.sendPacket(packet1);
+
+        if (!PlainTextComponentSerializer.plainText().serialize(title).isEmpty()) {
+            ClientboundSetTitleTextPacket packet2 = new ClientboundSetTitleTextPacket(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(title)));
+            connection.sendPacket(packet2);
+        }
+
+        if (!PlainTextComponentSerializer.plainText().serialize(subtitle).isEmpty()) {
+            ClientboundSetSubtitleTextPacket packet3 = new ClientboundSetSubtitleTextPacket(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(subtitle)));
+            connection.sendPacket(packet3);
+        }
+
+        if (!PlainTextComponentSerializer.plainText().serialize(actionbar).isEmpty()) {
+            ClientboundSetActionBarTextPacket packet4 = new ClientboundSetActionBarTextPacket(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(actionbar)));
+            connection.sendPacket(packet4);
+        }
+
+        ClientboundSetTitlesAnimationPacket packet5 = new ClientboundSetTitlesAnimationPacket(fadeIn, stay, fadeOut);
+        connection.sendPacket(packet5);
+    }
+
+    @Override
+    public NamedTag fromSNBT(String snbt) throws IOException {
+        try {
+            NBTTagCompound nbt = MojangsonParser.a(snbt);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            NBTCompressedStreamTools.c(nbt, new DataOutputStream(out));
+            return new NBTDeserializer(false).fromBytes(out.toByteArray());
+        } catch (CommandSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Component getItemStackDisplayName(ItemStack itemStack) {
+        net.minecraft.world.item.ItemStack nmsItemStack = toNMSCopy(itemStack);
+        return GsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(nmsItemStack.w()));
+    }
+
+    @Override
+    public void setItemStackDisplayName(ItemStack itemStack, Component component) {
+        IChatBaseComponent nmsComponent = CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(component));
+        net.minecraft.world.item.ItemStack nmsItemStack = toNMSCopy(itemStack);
+        DataComponentPatch dataComponentPatch = DataComponentPatch.a().a(DataComponents.g, nmsComponent).a();
+        nmsItemStack.a(dataComponentPatch);
+        ItemStack modifiedStack = toBukkitCopy(nmsItemStack);
+        ItemMeta meta = modifiedStack.getItemMeta();
+        if (meta != null) {
+            itemStack.setItemMeta(meta);
+        }
+    }
+
+    @Override
+    public List<Component> getItemStackLore(ItemStack itemStack) {
+        net.minecraft.world.item.ItemStack nmsItemStack = toNMSCopy(itemStack);
+        ItemLore lore = nmsItemStack.a(DataComponents.i);
+        if (lore == null) {
+            return Collections.emptyList();
+        }
+        return lore.b().stream().map(e -> GsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(e))).collect(Collectors.toList());
+    }
+
+    @Override
+    public String getItemStackTranslationKey(ItemStack itemStack) {
+        return itemStack.getTranslationKey();
+    }
+
+    @Override
+    public ChatColor getRarityColor(ItemStack itemStack) {
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        String str = nmsItemStack.y().a().toString();
+        return ChatColor.getByChar(str.charAt(str.length() - 1));
     }
 
 }

@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.main;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import com.loohp.multichatdiscordsrvaddon.libs.URLClassLoaderAccess;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -32,7 +33,6 @@ import org.simpleyaml.configuration.file.YamlFile;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.ComponentStyling;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
-import URLClassLoaderAccess;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.ICacheManager;
 import com.loohp.multichatdiscordsrvaddon.resources.PackFormat;
@@ -160,7 +160,7 @@ public class MinecraftFontRenderer extends JFrame {
         this.updateTextImageLock = new ReentrantLock(true);
         this.repaintLock = new ReentrantLock(true);
 
-        for (File jarFile : new File("InteractiveChatDiscordSrvAddon", "libs").listFiles()) {
+        for (File jarFile : new File("MultiChatDiscordSrvAddon", "libs").listFiles()) {
             String jarName = jarFile.getName();
             if (jarName.endsWith(".jar")) {
                 try {
@@ -384,7 +384,7 @@ public class MinecraftFontRenderer extends JFrame {
             try {
                 YamlFile yaml = new YamlFile();
                 yaml.options().useComments(true);
-                yaml.load(Files.newInputStream(Paths.get("InteractiveChatDiscordSrvAddon/config.yml")));
+                yaml.load(Files.newInputStream(Paths.get("MultiChatDiscordSrvAddon/config.yml")));
                 resourceOrder = yaml.getStringList("Resources.Order");
                 Collections.reverse(resourceOrder);
                 valuePerPack = (int) ((1.0 / (double) (resourceOrder.size() + 1)) * 10000);
@@ -410,20 +410,20 @@ public class MinecraftFontRenderer extends JFrame {
                         PackFormat.version(packFormat),
                         ResourceManager.Flag.build(false, packFormat < 9, packFormat < 46)
                 );
-                resourceManager.loadResources(new File("InteractiveChatDiscordSrvAddon/built-in", "Default"), ResourcePackType.BUILT_IN, true);
+                resourceManager.loadResources(new File("MultiChatDiscordSrvAddon/built-in", "Default"), ResourcePackType.BUILT_IN, true);
                 resourceBar.setValue(valuePerPack);
                 for (String resourceName : resourceOrder) {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     System.setErr(new PrintStream(baos));
                     try {
-                        File resourcePackFile = new File("InteractiveChatDiscordSrvAddon/resourcepacks/" + resourceName);
+                        File resourcePackFile = new File("MultiChatDiscordSrvAddon/resourcepacks/" + resourceName);
                         ResourcePackInfo info = resourceManager.loadResources(resourcePackFile, ResourcePackType.LOCAL);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     String error = baos.toString();
                     if (!error.isEmpty()) {
-                        ForkJoinPool.commonPool().execute(() -> JOptionPane.showMessageDialog(null, GUIMain.createLabel("There are errors while loading \"" + resourceName + "\":\n" + error, 13, Color.RED), title, JOptionPane.ERROR_MESSAGE));
+                        ForkJoinPool.commonPool().execute(() -> JOptionPane.showMessageDialog(null, GUIMain.createLabel("There were errors while loading \"" + resourceName + "\":\n" + error, 13, Color.RED), title, JOptionPane.ERROR_MESSAGE));
                     }
                     resourceBar.setValue(resourceBar.getValue() + valuePerPack);
                 }
@@ -581,7 +581,7 @@ public class MinecraftFontRenderer extends JFrame {
     }
 
     protected void downloadAllLanguages(String title, BufferedImage image, Icon icon) {
-        File defaultAssetsFolder = new File("InteractiveChatDiscordSrvAddon/built-in", "Default");
+        File defaultAssetsFolder = new File("MultiChatDiscordSrvAddon/built-in", "Default");
         defaultAssetsFolder.mkdirs();
 
         JPanel panel = new JPanel();

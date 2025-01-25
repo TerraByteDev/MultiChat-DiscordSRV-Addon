@@ -29,7 +29,6 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import com.loohp.multichatdiscordsrvaddon.utils.ComponentCompacting;
 import com.loohp.multichatdiscordsrvaddon.utils.ComponentFlattening;
 import it.unimi.dsi.fastutil.chars.CharObjectImmutablePair;

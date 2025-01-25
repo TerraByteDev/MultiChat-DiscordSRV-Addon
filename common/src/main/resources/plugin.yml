@@ -4,8 +4,8 @@ version: ${project.version}
 main: com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon
 api-version: 1.13
 description: DiscordSRV addon to InteractiveChat
-depend: [InteractiveChat, DiscordSRV, ZelChat]
-softdepend: [ItemsAdder]
+depend: [DiscordSRV, ProtocolLib]
+softdepend: [ItemsAdder, InteractiveChat, ZelChat, ChatControl, PlaceholderAPI]
 prefix: MultiChatDiscordSrvAddon
 
 commands:
@@ -27,3 +27,10 @@ permissions:
   mutlichatdiscordsrv.update:
     description: Get updater notifications
     default: op
+
+libraries:
+  - net.kyori:adventure-api:4.18.0
+  - org.apache.commons:commons-lang3:3.17.0
+  - com.github.cryptomorin:XSeres:13.0.0
+  - org.apache.commons:commons-compress:1.27.1
+  - net.kyori:adventure-platform-bukkit:4.3.4

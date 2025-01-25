@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.mods.optifine.cit;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChat;
+import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import net.kyori.adventure.text.Component;
 import net.querz.nbt.tag.ByteTag;
 import net.querz.nbt.tag.CompoundTag;
@@ -314,7 +314,7 @@ public abstract class CITProperties {
         }
         int maxDurability = itemStack.getType().getMaxDurability();
         int damage = 0;
-        if (InteractiveChat.version.isLegacy()) {
+        if (VersionManager.version.isLegacy()) {
             damage = itemStack.getDurability();
         } else {
             if (itemStack.getItemMeta() instanceof Damageable) {

@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.main;
 
+import com.loohp.multichatdiscordsrvaddon.libs.LibraryDownloadManager;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -29,7 +30,6 @@ import com.loohp.multichatdiscordsrvaddon.registry.Registry;
 import com.loohp.multichatdiscordsrvaddon.updater.Version;
 import com.loohp.multichatdiscordsrvaddon.utils.FileUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.HTTPRequestUtils;
-import LibraryDownloadManager;
 import com.loohp.multichatdiscordsrvaddon.registry.InteractiveChatRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceDownloadManager;
 
@@ -289,12 +289,12 @@ public class GUIMain {
             return;
         }
 
-        File defaultAssetsFolder = new File("InteractiveChatDiscordSrvAddon/built-in", "Default");
+        File defaultAssetsFolder = new File("MultiChatDiscordSrvAddon/built-in", "Default");
         if (defaultAssetsFolder.exists()) {
             FileUtils.removeFolderRecursively(defaultAssetsFolder);
         }
         defaultAssetsFolder.mkdirs();
-        File libsFolder = new File("InteractiveChatDiscordSrvAddon", "libs");
+        File libsFolder = new File("MultiChatDiscordSrvAddon", "libs");
         if (libsFolder.exists()) {
             FileUtils.removeFolderRecursively(libsFolder);
         }
@@ -382,7 +382,7 @@ public class GUIMain {
 
     protected static boolean compatible() {
         try {
-            return Registry.class.getField("INTERACTIVE_CHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null) == InteractiveChatRegistry.class.getField("INTERACTIVE_CHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null);
+            return Registry.class.getField("MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null) == InteractiveChatRegistry.class.getField("MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null);
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
             return false;
@@ -391,7 +391,7 @@ public class GUIMain {
 
     protected static int getDefaultPackVersion(int fallback) throws IOException, ParseException {
         int result = -1;
-        File defaultPack = new File("InteractiveChatDiscordSrvAddon/built-in", "Default");
+        File defaultPack = new File("MultiChatDiscordSrvAddon/built-in", "Default");
         File defaultPackMeta = new File(defaultPack, "pack.mcmeta");
         try (BufferedReader reader = Files.newBufferedReader(defaultPackMeta.toPath(), StandardCharsets.UTF_8)) {
             JSONObject json = (JSONObject) new JSONParser().parse(reader);

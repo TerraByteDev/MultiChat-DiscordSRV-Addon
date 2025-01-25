@@ -27,10 +27,7 @@ import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
 import com.loohp.multichatdiscordsrvaddon.wrappers.GraphicsToPacketMapWrapper;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class InteractiveChatDiscordSrvAddonAPI {
 
@@ -86,6 +83,38 @@ public class InteractiveChatDiscordSrvAddonAPI {
         } else {
             return null;
         }
+    }
+
+    public enum SharedType {
+
+        ITEM(0),
+        INVENTORY(1),
+        INVENTORY1_UPPER(2),
+        INVENTORY1_LOWER(3),
+        ENDERCHEST(4);
+
+        private static final Map<Integer, SharedType> MAPPINGS = new HashMap<>();
+
+        static {
+            for (SharedType type : values()) {
+                MAPPINGS.put(type.getValue(), type);
+            }
+        }
+
+        public static SharedType fromValue(int value) {
+            return MAPPINGS.get(value);
+        }
+
+        private final int value;
+
+        SharedType(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
     }
 
 }

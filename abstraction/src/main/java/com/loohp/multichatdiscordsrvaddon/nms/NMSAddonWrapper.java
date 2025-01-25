@@ -26,6 +26,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.text.format.TextColor;
+import net.querz.nbt.io.NamedTag;
 import org.apache.commons.lang3.math.Fraction;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -53,6 +54,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
@@ -239,5 +241,19 @@ public abstract class NMSAddonWrapper {
     public abstract Object toNMSCopy(ItemStack itemstack);
 
     public abstract ItemStack toBukkitCopy(Object handle);
+
+    public abstract void sendTitle(Player player, Component title, Component subtitle, Component actionbar, int fadeIn, int stay, int fadeOut);
+
+    public abstract NamedTag fromSNBT(String snbt) throws IOException;
+
+    public abstract Component getItemStackDisplayName(ItemStack itemStack);
+
+    public abstract void setItemStackDisplayName(ItemStack itemStack, Component component);
+
+    public abstract List<Component> getItemStackLore(ItemStack itemStack);
+
+    public abstract String getItemStackTranslationKey(ItemStack itemStack);
+
+    public abstract ChatColor getRarityColor(ItemStack itemStack);
 
 }

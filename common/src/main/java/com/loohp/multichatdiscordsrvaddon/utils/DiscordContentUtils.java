@@ -20,23 +20,11 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChat;
 import com.cryptomorin.xseries.XMaterial;
+import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICInventoryHolder;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlayer;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlayerFactory;
-import com.loohp.multichatdiscordsrvaddon.objectholders.OfflineICPlayer;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
-import com.loohp.multichatdiscordsrvaddon.utils.BookUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.FilledMapUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.InteractiveChatComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.utils.InventoryUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ItemStackUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.LanguageUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
-import com.loohp.multichatdiscordsrvaddon.utils.PlaceholderParser;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
@@ -70,7 +58,9 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.Webhook
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -105,7 +95,7 @@ public class DiscordContentUtils {
     public static final String LEFT_EMOJI = "\u2B05\uFE0F";
     public static final String RIGHT_EMOJI = "\u27A1\uFE0F";
 
-    public static ValuePairs<List<DiscordMessageContent>, InteractionHandler> createContents(List<DiscordDisplayData> dataList, OfflineICPlayer player) {
+    public static ValuePairs<List<DiscordMessageContent>, InteractionHandler> createContents(List<DiscordDisplayData> dataList, OfflinePlayer player) {
         List<DiscordMessageContent> contents = new ArrayList<>();
         List<ActionRow> interactionsToRegister = new ArrayList<>();
         List<String> interactions = new ArrayList<>();
@@ -185,10 +175,10 @@ public class DiscordContentUtils {
                             if (iData.isFilledMap() && InteractiveChatDiscordSrvAddon.plugin.showMaps) {
                                 MapView mapView = FilledMapUtils.getMapView(item);
                                 boolean isContextual = mapView == null || FilledMapUtils.isContextual(mapView);
-                                ICPlayer icPlayer = iData.getPlayer().getPlayer();
-                                boolean isPlayerLocal = icPlayer != null && icPlayer.isLocal();
+                                Player icPlayer = iData.getPlayer().getPlayer();
+                                boolean isPlayerLocal = icPlayer != null && PlayerUtils.isLocal(icPlayer);
                                 if (!isContextual || isPlayerLocal) {
-                                    BufferedImage map = ImageGeneration.getMapImage(item, isPlayerLocal ? icPlayer.getLocalPlayer() : null).get();
+                                    BufferedImage map = ImageGeneration.getMapImage(item, isPlayerLocal ? icPlayer : null).get();
                                     tooltip = ImageUtils.resizeImage(tooltip, 5);
                                     tooltip = ImageUtils.appendImageBottom(tooltip, map, 10, 0);
                                 }
@@ -250,8 +240,8 @@ public class DiscordContentUtils {
                         DiscordMessageContent content = new DiscordMessageContent(title, null, null, "attachment://Inventory_" + i + ".png", color);
                         content.addAttachment("Inventory_" + i + ".png", imageData);
                         if (type.equals(ImageDisplayType.INVENTORY) && InteractiveChatDiscordSrvAddon.plugin.invShowLevel) {
-                            int level = iData.getPlayer().getExperienceLevel();
-                            byte[] bottleData = ImageUtils.toArray(InteractiveChatDiscordSrvAddon.plugin.modelRenderer.render(32, 32, ModelRenderer.SINGLE_RENDER, InteractiveChatDiscordSrvAddon.plugin.getResourceManager(), InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getResourceRegistry(CustomItemTextureRegistry.IDENTIFIER, CustomItemTextureRegistry.class).getItemPostResolveFunction("minecraft:item/experience_bottle", null, XMaterial.EXPERIENCE_BOTTLE.parseItem(), InteractiveChat.version.isOld(), null, null, null, null, InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(InteractiveChatDiscordSrvAddon.plugin.language)).orElse(null), InteractiveChat.version.isOld(), "minecraft:item/experience_bottle", ModelDisplayPosition.GUI, false, null, null).getImage(0));
+                            int level = iData.getPlayer().getPlayer().getExpToLevel();
+                            byte[] bottleData = ImageUtils.toArray(InteractiveChatDiscordSrvAddon.plugin.modelRenderer.render(32, 32, ModelRenderer.SINGLE_RENDER, InteractiveChatDiscordSrvAddon.plugin.getResourceManager(), InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getResourceRegistry(CustomItemTextureRegistry.IDENTIFIER, CustomItemTextureRegistry.class).getItemPostResolveFunction("minecraft:item/experience_bottle", null, XMaterial.EXPERIENCE_BOTTLE.parseItem(), VersionManager.version.isOld(), null, null, null, null, InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(InteractiveChatDiscordSrvAddon.plugin.language)).orElse(null), VersionManager.version.isOld(), "minecraft:item/experience_bottle", ModelDisplayPosition.GUI, false, null, null).getImage(0));
                             content.addAttachment("Level_" + i + ".png", bottleData);
                             content.setFooter(ComponentStringUtils.convertFormattedString(LanguageUtils.getTranslation(TranslationKeyUtils.getLevelTranslation(level), InteractiveChatDiscordSrvAddon.plugin.language).getResult(), level));
                             content.setFooterImageUrl("attachment://Level_" + i + ".png");
@@ -353,10 +343,10 @@ public class DiscordContentUtils {
                 }
             }
         }
-        return new ValuePairs<>(contents, new InteractionHandler(interactionsToRegister, interactions, InteractiveChat.itemDisplayTimeout, interactionConsumer));
+        return new ValuePairs<>(contents, new InteractionHandler(interactionsToRegister, interactions, InteractiveChatDiscordSrvAddon.plugin.itemDisplayTimeout, interactionConsumer));
     }
 
-    private static BiConsumer<GenericComponentInteractionCreateEvent, List<DiscordMessageContent>> getInventoryHandler(UUID interactionUuid, Inventory inventory, OfflineICPlayer player) {
+    private static BiConsumer<GenericComponentInteractionCreateEvent, List<DiscordMessageContent>> getInventoryHandler(UUID interactionUuid, Inventory inventory, OfflinePlayer player) {
         ItemStack[] items = IntStream.range(0, inventory.getSize()).mapToObj(i -> {
             ItemStack itemStack = inventory.getItem(i);
             if (itemStack == null || itemStack.getType().equals(Material.AIR)) {
@@ -364,7 +354,7 @@ public class DiscordContentUtils {
             }
             return itemStack.clone();
         }).toArray(ItemStack[]::new);
-        AtomicReference<OfflineICPlayer> offlineICPlayerAtomicRef = new AtomicReference<>(player);
+        AtomicReference<OfflinePlayer> offlinePlayerAtomicReference = new AtomicReference<>(player);
         return (event, discordMessageContents) -> {
             User self = DiscordSRV.getPlugin().getJda().getSelfUser();
             User user = event.getUser();
@@ -377,14 +367,14 @@ public class DiscordContentUtils {
                 if (slot >= 0 && slot < items.length) {
                     event.deferReply().setEphemeral(true).queue();
                     Bukkit.getScheduler().runTaskAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
-                        OfflineICPlayer offlineICPlayer = offlineICPlayerAtomicRef.updateAndGet(p -> p instanceof ICPlayer ? (p.isOnline() ? p : ICPlayerFactory.getOfflineICPlayer(p.getUniqueId())) : p);
+                        OfflinePlayer offlineICPlayer = offlinePlayerAtomicReference.updateAndGet(p -> p instanceof Player ? (p.isOnline() ? p : Bukkit.getOfflinePlayer(p.getUniqueId())) : p);
                         try {
                             ItemStack item = items[slot];
                             if (item == null) {
                                 item = new ItemStack(Material.AIR);
                             }
 
-                            String title = PlaceholderParser.parse(offlineICPlayer, ComponentStringUtils.stripColorAndConvertMagic(InteractiveChat.itemTitle));
+                            String title = PlaceholderParser.parse(offlineICPlayer, ComponentStringUtils.stripColorAndConvertMagic(InteractiveChatDiscordSrvAddon.plugin.itemTitle));
                             ImageDisplayData data;
                             Inventory inv = getBlockInventory(item);
                             if (inv != null) {

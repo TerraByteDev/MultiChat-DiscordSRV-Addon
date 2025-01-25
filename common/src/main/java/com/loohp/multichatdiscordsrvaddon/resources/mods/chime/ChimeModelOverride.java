@@ -21,11 +21,11 @@
 package com.loohp.multichatdiscordsrvaddon.resources.mods.chime;
 
 import com.google.common.collect.Range;
-import net.querz.nbt.tag.CompoundTag;
-import org.json.simple.JSONObject;
-import com.loohp.multichatdiscordsrvaddon.objectholders.OfflineICPlayer;
-import com.loohp.multichatdiscordsrvaddon.utils.ItemNBTUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.NBTParsingUtils;
+import net.querz.nbt.tag.CompoundTag;
+import org.bukkit.*;
+import org.json.simple.JSONObject;
+import com.loohp.multichatdiscordsrvaddon.utils.ItemNBTUtils;
 import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
 import com.loohp.multichatdiscordsrvaddon.objectholders.BiomePrecipitation;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
@@ -35,11 +35,6 @@ import com.loohp.multichatdiscordsrvaddon.resources.mods.chime.ChimePredicateEnu
 import com.loohp.multichatdiscordsrvaddon.resources.mods.chime.ChimePredicateEnums.TargetType;
 import com.loohp.multichatdiscordsrvaddon.resources.mods.chime.ChimeUtils.HashPredicate;
 import com.loohp.multichatdiscordsrvaddon.utils.WorldUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.FluidCollisionMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -88,7 +83,7 @@ public class ChimeModelOverride extends ModelOverride {
         return false;
     }
 
-    public boolean test(Map<ModelOverrideType, Float> data, OfflineICPlayer player, World world, LivingEntity entity, ItemStack itemStack, SpecificTranslateFunction translateFunction) {
+    public boolean test(Map<ModelOverrideType, Float> data, OfflinePlayer player, World world, LivingEntity entity, ItemStack itemStack, SpecificTranslateFunction translateFunction) {
         if (!super.test(data)) {
             return false;
         }
@@ -420,7 +415,7 @@ public class ChimeModelOverride extends ModelOverride {
             return predicate;
         }
 
-        public boolean test(Object value, OfflineICPlayer player, World world, LivingEntity entity, ItemStack itemStack, SpecificTranslateFunction translateFunction) {
+        public boolean test(Object value, OfflinePlayer player, World world, LivingEntity entity, ItemStack itemStack, SpecificTranslateFunction translateFunction) {
             try {
                 return predicate.test(value, player, world, entity, itemStack, translateFunction);
             } catch (Throwable e) {
@@ -459,7 +454,7 @@ public class ChimeModelOverride extends ModelOverride {
     @FunctionalInterface
     public interface ChimeOverridePredicate<T> {
 
-        boolean test(T t, OfflineICPlayer player, World world, LivingEntity entity, ItemStack itemStack, SpecificTranslateFunction translateFunction) throws Throwable;
+        boolean test(T t, OfflinePlayer player, World world, LivingEntity entity, ItemStack itemStack, SpecificTranslateFunction translateFunction) throws Throwable;
 
     }
 

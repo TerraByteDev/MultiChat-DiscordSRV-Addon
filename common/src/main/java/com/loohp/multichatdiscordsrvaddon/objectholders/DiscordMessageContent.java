@@ -20,7 +20,6 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
-import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;

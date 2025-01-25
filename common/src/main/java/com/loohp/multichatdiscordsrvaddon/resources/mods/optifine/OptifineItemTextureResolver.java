@@ -20,7 +20,6 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.mods.optifine;
 
-import com.loohp.multichatdiscordsrvaddon.objectholders.OfflineICPlayer;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import com.loohp.multichatdiscordsrvaddon.resources.CustomItemTextureRegistry.CustomItemTextureResolver;
 import com.loohp.multichatdiscordsrvaddon.resources.languages.SpecificTranslateFunction;
@@ -28,6 +27,7 @@ import com.loohp.multichatdiscordsrvaddon.resources.models.BlockModel;
 import com.loohp.multichatdiscordsrvaddon.resources.models.ModelOverride.ModelOverrideType;
 import com.loohp.multichatdiscordsrvaddon.resources.mods.optifine.cit.EnchantmentProperties.OpenGLBlending;
 import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureResource;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EquipmentSlot;
@@ -50,7 +50,7 @@ public class OptifineItemTextureResolver implements CustomItemTextureResolver {
     }
 
     @Override
-    public ValuePairs<BlockModel, Map<String, TextureResource>> getItemPostResolveFunction(ValuePairs<BlockModel, Map<String, TextureResource>> previousResult, String modelKey, EquipmentSlot heldSlot, ItemStack itemStack, boolean is1_8, Map<ModelOverrideType, Float> predicates, OfflineICPlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction) {
+    public ValuePairs<BlockModel, Map<String, TextureResource>> getItemPostResolveFunction(ValuePairs<BlockModel, Map<String, TextureResource>> previousResult, String modelKey, EquipmentSlot heldSlot, ItemStack itemStack, boolean is1_8, Map<ModelOverrideType, Float> predicates, OfflinePlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction) {
         Map<String, TextureResource> map = previousResult.getSecond();
         ValuePairs<BlockModel, Map<String, TextureResource>> pair = optifineManager.getItemPostResolveFunction(heldSlot, itemStack, is1_8, predicates, translateFunction).apply(previousResult.getFirst());
         map.putAll(pair.getSecond());
@@ -68,7 +68,7 @@ public class OptifineItemTextureResolver implements CustomItemTextureResolver {
     }
 
     @Override
-    public Optional<TextureResource> getArmorOverrideTextures(String layer, EquipmentSlot heldSlot, ItemStack itemStack, OfflineICPlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction) {
+    public Optional<TextureResource> getArmorOverrideTextures(String layer, EquipmentSlot heldSlot, ItemStack itemStack, OfflinePlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction) {
         return Optional.ofNullable(optifineManager.getArmorOverrideTextures(layer, heldSlot, itemStack, translateFunction));
     }
 

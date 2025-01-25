@@ -20,7 +20,6 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources;
 
-import com.loohp.multichatdiscordsrvaddon.objectholders.OfflineICPlayer;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager.ResourceRegistrySupplier;
 import com.loohp.multichatdiscordsrvaddon.resources.languages.SpecificTranslateFunction;
@@ -28,6 +27,7 @@ import com.loohp.multichatdiscordsrvaddon.resources.models.BlockModel;
 import com.loohp.multichatdiscordsrvaddon.resources.models.ModelOverride.ModelOverrideType;
 import com.loohp.multichatdiscordsrvaddon.resources.mods.optifine.cit.EnchantmentProperties.OpenGLBlending;
 import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureResource;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EquipmentSlot;
@@ -72,7 +72,7 @@ public class CustomItemTextureRegistry implements IResourceRegistry {
         resolvers.remove(resolver);
     }
 
-    public Optional<Function<BlockModel, ValuePairs<BlockModel, Map<String, TextureResource>>>> getItemPostResolveFunction(String modelKey, EquipmentSlot heldSlot, ItemStack itemStack, boolean is1_8, Map<ModelOverrideType, Float> predicates, OfflineICPlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction) {
+    public Optional<Function<BlockModel, ValuePairs<BlockModel, Map<String, TextureResource>>>> getItemPostResolveFunction(String modelKey, EquipmentSlot heldSlot, ItemStack itemStack, boolean is1_8, Map<ModelOverrideType, Float> predicates, OfflinePlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction) {
         return resolvers.stream()
                 .map(each -> (Function<ValuePairs<BlockModel, Map<String, TextureResource>>, ValuePairs<BlockModel, Map<String, TextureResource>>>) result -> each.getItemPostResolveFunction(result, modelKey, heldSlot, itemStack, is1_8, predicates, player, world, entity, translateFunction))
                 .reduce(Function::andThen)
@@ -87,19 +87,19 @@ public class CustomItemTextureRegistry implements IResourceRegistry {
         return resolvers.stream().map(each -> each.getEnchantmentGlintOverrideTextures(heldSlot, itemStack, translateFunction)).filter(each -> !each.isEmpty()).findFirst().orElseGet(ifEmpty);
     }
 
-    public Optional<TextureResource> getArmorOverrideTextures(String layer, EquipmentSlot heldSlot, ItemStack itemStack, OfflineICPlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction) {
+    public Optional<TextureResource> getArmorOverrideTextures(String layer, EquipmentSlot heldSlot, ItemStack itemStack, OfflinePlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction) {
         return resolvers.stream().map(each -> each.getArmorOverrideTextures(layer, heldSlot, itemStack, player, world, entity, translateFunction)).filter(each -> each.isPresent()).findFirst().flatMap(each -> each);
     }
 
     public interface CustomItemTextureResolver {
 
-        ValuePairs<BlockModel, Map<String, TextureResource>> getItemPostResolveFunction(ValuePairs<BlockModel, Map<String, TextureResource>> previousResult, String modelKey, EquipmentSlot heldSlot, ItemStack itemStack, boolean is1_8, Map<ModelOverrideType, Float> predicates, OfflineICPlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction);
+        ValuePairs<BlockModel, Map<String, TextureResource>> getItemPostResolveFunction(ValuePairs<BlockModel, Map<String, TextureResource>> previousResult, String modelKey, EquipmentSlot heldSlot, ItemStack itemStack, boolean is1_8, Map<ModelOverrideType, Float> predicates, OfflinePlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction);
 
         Optional<TextureResource> getElytraOverrideTextures(EquipmentSlot heldSlot, ItemStack itemStack, SpecificTranslateFunction translateFunction);
 
         List<ValuePairs<TextureResource, OpenGLBlending>> getEnchantmentGlintOverrideTextures(EquipmentSlot heldSlot, ItemStack itemStack, SpecificTranslateFunction translateFunction);
 
-        Optional<TextureResource> getArmorOverrideTextures(String layer, EquipmentSlot heldSlot, ItemStack itemStack, OfflineICPlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction);
+        Optional<TextureResource> getArmorOverrideTextures(String layer, EquipmentSlot heldSlot, ItemStack itemStack, OfflinePlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction);
 
     }
 
