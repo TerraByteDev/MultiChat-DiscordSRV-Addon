@@ -23,8 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import com.loohp.multichatdiscordsrvaddon.utils.SkinUtils;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.Bukkit;
@@ -77,7 +76,7 @@ public class GameProfileUtils {
             }
             Collection<Property> textures = gameProfile.getProperties().get("textures");
             if (textures != null && !textures.isEmpty()) {
-                String value = NMSAddon.getInstance().toProfileProperty(textures.iterator().next()).getValue();
+                String value = NMS.getInstance().toProfileProperty(textures.iterator().next()).getValue();
                 String json = FIX_WEIRD_SKULL_TEXTURE.apply(new String(Base64.getDecoder().decode(value)));
                 try {
                     JSONObject texturesJson = (JSONObject) ((JSONObject) new JSONParser().parse(json)).get("textures");

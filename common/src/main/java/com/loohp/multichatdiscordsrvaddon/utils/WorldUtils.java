@@ -21,7 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import net.kyori.adventure.key.Key;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.BiomePrecipitation;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -29,7 +29,7 @@ import org.bukkit.World;
 public class WorldUtils {
 
     public static Key getNamespacedKey(World world) {
-        return NMSAddon.getInstance().getNamespacedKey(world);
+        return NMS.getInstance().getNamespacedKey(world);
     }
 
     public static boolean isNatural(World world) {
@@ -37,7 +37,7 @@ public class WorldUtils {
     }
 
     public static BiomePrecipitation getPrecipitation(Location location) {
-        return NMSAddon.getInstance().getPrecipitation(location);
+        return NMS.getInstance().getPrecipitation(location);
     }
 
 }

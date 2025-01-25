@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -50,14 +50,14 @@ public class ItemStackUtils {
         ICMaterial icMaterial = ICMaterial.from(itemstack);
         ItemMeta itemMeta = itemstack.getItemMeta();
 
-        Component component = Component.empty().append(NMSAddon.getInstance().getItemStackDisplayName(itemstack));
+        Component component = Component.empty().append(NMS.getInstance().getItemStackDisplayName(itemstack));
 
         if (applyStyle) {
             if (itemMeta != null && itemMeta.hasDisplayName()) {
                 component = component.decorate(TextDecoration.ITALIC);
             }
 
-            ChatColor rarityChatColor = NMSAddon.getInstance().getRarityColor(itemstack);
+            ChatColor rarityChatColor = NMS.getInstance().getRarityColor(itemstack);
             if (rarityChatColor != null) {
                 component = component.colorIfAbsent(ColorUtils.toTextColor(rarityChatColor));
             }
@@ -77,7 +77,7 @@ public class ItemStackUtils {
         if (!meta.hasLore()) {
             return null;
         }
-        return NMSAddon.getInstance().getItemStackLore(itemstack);
+        return NMS.getInstance().getItemStackLore(itemstack);
     }
 
     public static boolean isArmor(ItemStack itemStack) {
@@ -106,11 +106,11 @@ public class ItemStackUtils {
     }
 
     public static ItemStack toBukkitCopy(Object handle) {
-        return NMSAddon.getInstance().toBukkitCopy(handle);
+        return NMS.getInstance().toBukkitCopy(handle);
     }
 
     public static Object toNMSCopy(ItemStack itemstack) {
-        return NMSAddon.getInstance().toNMSCopy(itemstack);
+        return NMS.getInstance().toNMSCopy(itemstack);
     }
 
 }

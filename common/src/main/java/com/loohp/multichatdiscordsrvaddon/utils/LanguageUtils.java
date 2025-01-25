@@ -23,7 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.VersionManager;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
@@ -302,7 +302,7 @@ public class LanguageUtils {
     @SuppressWarnings("deprecation")
     private static String getModernTranslationKey(ItemStack itemStack) {
         Material material = itemStack.getType();
-        String path = NMSAddon.getInstance().getItemStackTranslationKey(itemStack);
+        String path = NMS.getInstance().getItemStackTranslationKey(itemStack);
 
         if (material.equals(Material.POTION) || material.equals(Material.SPLASH_POTION) || material.equals(Material.LINGERING_POTION) || material.equals(Material.TIPPED_ARROW)) {
             PotionMeta meta = (PotionMeta) itemStack.getItemMeta();
@@ -311,14 +311,14 @@ public class LanguageUtils {
         }
 
         if (material.equals(Material.PLAYER_HEAD)) {
-            Component owner = NMSAddon.getInstance().getSkullOwner(itemStack);
+            Component owner = NMS.getInstance().getSkullOwner(itemStack);
             if (owner != null) {
                 path += ".named";
             }
         }
 
         if (material.equals(Material.SHIELD)) {
-            if (NMSAddon.getInstance().hasBlockEntityTag(itemStack)) {
+            if (NMS.getInstance().hasBlockEntityTag(itemStack)) {
                 DyeColor color = DyeColor.WHITE;
                 if (!(itemStack.getItemMeta() instanceof BannerMeta)) {
                     if (itemStack.getItemMeta() instanceof BlockStateMeta) {
@@ -355,10 +355,10 @@ public class LanguageUtils {
                 return "Air";
             }
         }
-        String path = NMSAddon.getInstance().getItemStackTranslationKey(itemStack) + ".name";
+        String path = NMS.getInstance().getItemStackTranslationKey(itemStack) + ".name";
         ICMaterial icMaterial = ICMaterial.from(itemStack);
         if (icMaterial.isMaterial(XMaterial.PLAYER_HEAD)) {
-            Component owner = NMSAddon.getInstance().getSkullOwner(itemStack);
+            Component owner = NMS.getInstance().getSkullOwner(itemStack);
             if (owner != null) {
                 path = "item.skull.player.name";
             }

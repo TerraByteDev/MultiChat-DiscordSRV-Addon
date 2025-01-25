@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import net.querz.nbt.io.NamedTag;
 import net.querz.nbt.tag.CompoundTag;
 import net.querz.nbt.tag.Tag;
@@ -35,7 +35,7 @@ public class NBTParsingUtils {
             if (isList) {
                 snbt = "{List:" + snbt + "}";
             }
-            NamedTag namedTag = NMSAddon.getInstance().fromSNBT(snbt);
+            NamedTag namedTag = NMS.getInstance().fromSNBT(snbt);
             if (namedTag == null) {
                 return null;
             }

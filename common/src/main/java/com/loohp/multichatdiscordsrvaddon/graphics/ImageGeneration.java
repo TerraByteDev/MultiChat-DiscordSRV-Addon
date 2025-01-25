@@ -40,7 +40,7 @@ import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.AdvancementType;
 import com.loohp.multichatdiscordsrvaddon.objectholders.CustomModelData;
 import com.loohp.multichatdiscordsrvaddon.objectholders.PaintingVariant;
@@ -260,7 +260,7 @@ public class ImageGeneration {
         Debug.debug("ImageGeneration creating inventory image of " + player.getName());
 
         String key = INVENTORY_CACHE_KEY + HashUtils.createSha1(title == null ? "Inventory" : InteractiveChatComponentSerializer.gson().serialize(title), inventory);
-        if (!inventory.contains(XMaterial.COMPASS.parseMaterial()) && !inventory.contains(XMaterial.CLOCK.parseMaterial()) && Arrays.stream(inventory.getContents()).noneMatch(each -> each != null && !CustomModelData.isEmpty(NMSAddon.getInstance().getCustomModelData(each)))) {
+        if (!inventory.contains(XMaterial.COMPASS.parseMaterial()) && !inventory.contains(XMaterial.CLOCK.parseMaterial()) && Arrays.stream(inventory.getContents()).noneMatch(each -> each != null && !CustomModelData.isEmpty(NMS.getInstance().getCustomModelData(each)))) {
             CacheObject<?> cache = resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).getCache(key);
             if (cache != null) {
                 return ImageUtils.copyImage((BufferedImage) cache.getObject());
@@ -327,7 +327,7 @@ public class ImageGeneration {
         }
 
         String key = PLAYER_INVENTORY_CACHE_KEY + HashUtils.createSha1(PlayerUtils.isRightHanded(player), PlayerUtils.getSelectedItemSlot(player), 0, player.getUniqueId().toString(), inventory) + ImageUtils.hash(background);
-        if (!inventory.contains(XMaterial.COMPASS.parseMaterial()) && !inventory.contains(XMaterial.CLOCK.parseMaterial()) && Arrays.stream(inventory.getContents()).noneMatch(each -> each != null && !CustomModelData.isEmpty(NMSAddon.getInstance().getCustomModelData(each)))) {
+        if (!inventory.contains(XMaterial.COMPASS.parseMaterial()) && !inventory.contains(XMaterial.CLOCK.parseMaterial()) && Arrays.stream(inventory.getContents()).noneMatch(each -> each != null && !CustomModelData.isEmpty(NMS.getInstance().getCustomModelData(each)))) {
             CacheObject<?> cache = resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).getCache(key);
             if (cache != null) {
                 return ImageUtils.copyImage((BufferedImage) cache.getObject());
@@ -971,7 +971,7 @@ public class ImageGeneration {
 
                 BufferedImage iconImage;
                 if (resourceManager.get().getNativeServerPackFormat() >= 24) {
-                    String assetName = NMSAddon.getInstance().getMapCursorTypeKey(icon).value();
+                    String assetName = NMS.getInstance().getMapCursorTypeKey(icon).value();
                     iconImage = resourceManager.get().getTextureManager().getTexture(ResourceRegistry.DEFAULT_MAP_DECORATION_LOCATION + assetName).getTexture();
                 } else {
                     int typeId = icon.getType().ordinal();

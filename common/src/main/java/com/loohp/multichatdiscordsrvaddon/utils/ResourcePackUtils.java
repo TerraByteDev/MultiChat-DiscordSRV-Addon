@@ -20,20 +20,20 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 
 public class ResourcePackUtils {
 
     public static String getServerResourcePack() {
-        return NMSAddon.getInstance().getServerResourcePack();
+        return NMS.getInstance().getServerResourcePack();
     }
 
     public static String getServerResourcePackHash() {
-        return NMSAddon.getInstance().getServerResourcePackHash();
+        return NMS.getInstance().getServerResourcePackHash();
     }
 
     public static int getServerResourcePackVersion() {
-        return NMSAddon.getInstance().getServerResourcePackVersion();
+        return NMS.getInstance().getServerResourcePackVersion();
     }
 
 }

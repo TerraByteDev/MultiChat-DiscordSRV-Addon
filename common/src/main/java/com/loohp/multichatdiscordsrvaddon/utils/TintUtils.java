@@ -22,7 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.TintColorProvider;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 
@@ -76,7 +76,7 @@ public class TintUtils {
             TINT_PROVIDERS.put(ICMaterial.of(XMaterial.MANGROVE_LEAVES).name(), new TintColorProvider.TintIndexData(() -> FOLIAGE_MANGROVE_COLOR));
             TINT_PROVIDERS.put(ICMaterial.of(XMaterial.LILY_PAD).name(), new TintColorProvider.TintIndexData(() -> LILY_PAD_COLOR));
 
-            for (Map.Entry<ICMaterial, TintColorProvider.SpawnEggTintData> entry : NMSAddon.getInstance().getSpawnEggColorMap().entrySet()) {
+            for (Map.Entry<ICMaterial, TintColorProvider.SpawnEggTintData> entry : NMS.getInstance().getSpawnEggColorMap().entrySet()) {
                 SPAWN_EGG_TINT_DATA.put(entry.getKey().name(), entry.getValue());
             }
         } else {

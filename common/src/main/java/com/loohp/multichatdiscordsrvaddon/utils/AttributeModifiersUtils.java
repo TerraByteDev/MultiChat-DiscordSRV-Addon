@@ -22,7 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.google.common.collect.Multimap;
 import net.kyori.adventure.key.Key;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.EquipmentSlotGroup;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.ItemStack;
@@ -41,7 +41,7 @@ public class AttributeModifiersUtils {
     public static final String GENERIC_KNOCKBACK_RESISTANCE = "attribute.name.generic.knockback_resistance";
 
     public static Map<EquipmentSlotGroup, Multimap<String, AttributeModifier>> getAttributeModifiers(ItemStack itemStack) {
-        return (Map<EquipmentSlotGroup, Multimap<String, AttributeModifier>>) NMSAddon.getInstance().getItemAttributeModifiers(itemStack);
+        return (Map<EquipmentSlotGroup, Multimap<String, AttributeModifier>>) NMS.getInstance().getItemAttributeModifiers(itemStack);
     }
 
 }

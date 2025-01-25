@@ -126,7 +126,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public class V1_20 extends NMSAddonWrapper {
+public class V1_20 extends NMSWrapper {
 
     private final Method craftMapViewIsContextualMethod;
     private final Field craftMetaSkullProfileField;

@@ -21,7 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import org.apache.commons.lang3.math.Fraction;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class BundleUtils {
     }
 
     public static Fraction getWeight(ItemStack itemStack) {
-        return NMSAddon.getInstance().getWeightForBundle(itemStack);
+        return NMS.getInstance().getWeightForBundle(itemStack);
     }
 
 }

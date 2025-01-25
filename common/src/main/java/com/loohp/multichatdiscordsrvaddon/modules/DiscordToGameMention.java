@@ -21,7 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.modules;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.utils.SoundUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -79,7 +79,7 @@ public class DiscordToGameMention {
         Component subtitleComponent = LegacyComponentSerializer.legacySection().deserialize(subtitle);
         Component actionbarComponent = LegacyComponentSerializer.legacySection().deserialize(actionbar);
 
-        NMSAddon.getInstance().sendTitle(receiver, titleComponent, subtitleComponent, actionbarComponent, 10, time, 20);
+        NMS.getInstance().sendTitle(receiver, titleComponent, subtitleComponent, actionbarComponent, 10, time, 20);
         if (sound != null) {
             if (sound.isLeft()) {
                 receiver.playSound(receiver.getLocation(), sound.getLeft(), volume, pitch);

@@ -30,7 +30,7 @@ import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.listeners.DiscordInteractionEvents;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.CustomItemTextureRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.ModelRenderer;
@@ -163,7 +163,7 @@ public class DiscordContentUtils {
                         }
 
                         if ((forceShow || !discordToolTip.isHideTooltip()) && (forceShow || !discordToolTip.isBaseItem() || InteractiveChatDiscordSrvAddon.plugin.itemUseTooltipImageOnBaseItem)) {
-                            BufferedImage tooltip = ImageGeneration.getToolTipImage(toolTipComponents, NMSAddon.getInstance().getCustomTooltipResourceLocation(item));
+                            BufferedImage tooltip = ImageGeneration.getToolTipImage(toolTipComponents, NMS.getInstance().getCustomTooltipResourceLocation(item));
 
                             if (iData.isFilledMap() && InteractiveChatDiscordSrvAddon.plugin.showMaps) {
                                 MapView mapView = FilledMapUtils.getMapView(item);

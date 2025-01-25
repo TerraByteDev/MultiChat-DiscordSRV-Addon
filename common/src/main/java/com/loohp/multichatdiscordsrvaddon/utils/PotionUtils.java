@@ -21,7 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.loohp.multichatdiscordsrvaddon.VersionManager;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.ItemStack;
@@ -87,15 +87,15 @@ public class PotionUtils {
     }
 
     public static List<PotionEffect> getAllPotionEffects(ItemStack potion) {
-        return NMSAddon.getInstance().getAllPotionEffects(potion);
+        return NMS.getInstance().getAllPotionEffects(potion);
     }
 
     public static ChatColor getPotionEffectChatColor(PotionEffectType type) {
-        return NMSAddon.getInstance().getPotionEffectChatColor(type);
+        return NMS.getInstance().getPotionEffectChatColor(type);
     }
 
     public static Map<String, AttributeModifier> getPotionAttributes(PotionEffect effect) {
-        return (Map<String, AttributeModifier>) NMSAddon.getInstance().getPotionAttributeModifiers(effect);
+        return (Map<String, AttributeModifier>) NMS.getInstance().getPotionAttributeModifiers(effect);
     }
 
 }

@@ -148,7 +148,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public class V1_21 extends NMSAddonWrapper {
+public class V1_21 extends NMSWrapper {
 
     private final Method craftMapViewIsContextualMethod;
     private final Field adventureModePredicatePredicatesField;

@@ -35,7 +35,7 @@ import org.apache.commons.lang3.math.Fraction;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.EquipmentSlotGroup;
 import com.loohp.multichatdiscordsrvaddon.objectholders.PaintingVariant;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ToolTipComponent;
@@ -249,7 +249,7 @@ public class DiscordItemStackUtils {
         prints.add(tooltipText(itemDisplayNameComponent));
 
         boolean hasMeta = item.getItemMeta() != null;
-        boolean hideAdditionalFlags = hasMeta && item.getItemMeta().hasItemFlag(NMSAddon.getInstance().getHideAdditionalItemFlag()) && (item.getItemMeta() instanceof PotionMeta || VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_5));
+        boolean hideAdditionalFlags = hasMeta && item.getItemMeta().hasItemFlag(NMS.getInstance().getHideAdditionalItemFlag()) && (item.getItemMeta() instanceof PotionMeta || VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_5));
 
         if (hasMeta && item.getItemMeta().getDisplayName() != null) {
             hasCustomName = true;
@@ -278,8 +278,8 @@ public class DiscordItemStackUtils {
             if (armorTrim != null && !item.getItemMeta().hasItemFlag(ItemFlag.HIDE_ARMOR_TRIM)) {
                 TrimPattern trimPattern = armorTrim.getPattern();
                 TrimMaterial trimMaterial = armorTrim.getMaterial();
-                Component trimPatternDescription = NMSAddon.getInstance().getTrimPatternDescription(trimPattern, trimMaterial);
-                Component trimMaterialDescription = NMSAddon.getInstance().getTrimMaterialDescription(trimMaterial);
+                Component trimPatternDescription = NMS.getInstance().getTrimPatternDescription(trimPattern, trimMaterial);
+                Component trimMaterialDescription = NMS.getInstance().getTrimMaterialDescription(trimMaterial);
                 prints.add(tooltipText(translatable(getSmithingTemplateUpgrade()).color(GRAY)));
                 prints.add(tooltipText(text(" ").append(trimPatternDescription)));
                 prints.add(tooltipText(text(" ").append(trimMaterialDescription)));
@@ -306,7 +306,7 @@ public class DiscordItemStackUtils {
         }
 
         if (icMaterial.isMaterial(XMaterial.PAINTING) && !hideAdditionalFlags) {
-            PaintingVariant paintingVariant = NMSAddon.getInstance().getPaintingVariant(item);
+            PaintingVariant paintingVariant = NMS.getInstance().getPaintingVariant(item);
             if (paintingVariant != null) {
                 paintingVariant.getTitle().ifPresent(title -> prints.add(tooltipText(title)));
                 paintingVariant.getAuthor().ifPresent(author -> prints.add(tooltipText(author)));
@@ -335,7 +335,7 @@ public class DiscordItemStackUtils {
         }
 
         if (icMaterial.isMaterial(XMaterial.GOAT_HORN) && !hideAdditionalFlags) {
-            Component description = NMSAddon.getInstance().getInstrumentDescription(item);
+            Component description = NMS.getInstance().getInstrumentDescription(item);
             if (description != null) {
                 prints.add(tooltipText(description.color(GRAY)));
             }
@@ -371,7 +371,7 @@ public class DiscordItemStackUtils {
         }
 
         if (icMaterial.isMaterial(XMaterial.SHIELD) && (!hideAdditionalFlags)) {
-            if (NMSAddon.getInstance().hasBlockEntityTag(item)) {
+            if (NMS.getInstance().hasBlockEntityTag(item)) {
                 List<Pattern> patterns = Collections.emptyList();
                 if (!(item.getItemMeta() instanceof BannerMeta)) {
                     if (item.getItemMeta() instanceof BlockStateMeta) {
@@ -430,7 +430,7 @@ public class DiscordItemStackUtils {
             }
         }
 
-        if (NMSAddon.getInstance().isJukeboxPlayable(item) && NMSAddon.getInstance().shouldSongShowInToolTip(item)) {
+        if (NMS.getInstance().isJukeboxPlayable(item) && NMS.getInstance().shouldSongShowInToolTip(item)) {
             prints.add(tooltipText(getJukeboxSongDescription(item).color(GRAY)));
         }
 
@@ -443,7 +443,7 @@ public class DiscordItemStackUtils {
         }
 
         if (icMaterial.isMaterial(XMaterial.FIREWORK_ROCKET) && !hideAdditionalFlags) {
-            OptionalInt flight = NMSAddon.getInstance().getFireworkFlightDuration(item);
+            OptionalInt flight = NMS.getInstance().getFireworkFlightDuration(item);
             if (flight.isPresent()) {
                 prints.add(tooltipText(translatable(getRocketFlightDuration()).append(text(" " + flight.getAsInt())).color(GRAY)));
             }
@@ -643,7 +643,7 @@ public class DiscordItemStackUtils {
         }
 
         if (InteractiveChatDiscordSrvAddon.plugin.showArmorColor && hasMeta && item.getItemMeta() instanceof LeatherArmorMeta && item.getItemMeta().getItemFlags().stream().noneMatch(each -> each.name().equals("HIDE_DYE"))) {
-            OptionalInt colorInt = NMSAddon.getInstance().getLeatherArmorColor(item);
+            OptionalInt colorInt = NMS.getInstance().getLeatherArmorColor(item);
             if (colorInt.isPresent()) {
                 Color color = new Color(colorInt.getAsInt());
                 String hex = ColorUtils.rgb2Hex(color).toUpperCase();
@@ -675,7 +675,7 @@ public class DiscordItemStackUtils {
                         boolean flag = false;
 
                         if (bukkitPlayer != null) {
-                            Key attributeModifierKey = NMSAddon.getInstance().getAttributeModifierKey(attributemodifier);
+                            Key attributeModifierKey = NMS.getInstance().getAttributeModifierKey(attributemodifier);
                             if (attributeModifierKey.equals(AttributeModifiersUtils.BASE_ATTACK_DAMAGE_MODIFIER_ID)) {
                                 amount += bukkitPlayer.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getBaseValue();
                                 flag = true;
@@ -727,7 +727,7 @@ public class DiscordItemStackUtils {
                         if (bukkitPlayer != null) {
                             if (attributemodifier.getUniqueId().equals(AttributeModifiersUtils.BASE_ATTACK_DAMAGE_UUID)) {
                                 amount += bukkitPlayer.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getBaseValue();
-                                amount += NMSAddon.getInstance().getEnchantmentDamageBonus(item, null);
+                                amount += NMS.getInstance().getEnchantmentDamageBonus(item, null);
                                 flag = true;
                             } else if (attributemodifier.getUniqueId().equals(AttributeModifiersUtils.BASE_ATTACK_SPEED_UUID)) {
                                 amount += bukkitPlayer.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getBaseValue();
@@ -769,12 +769,12 @@ public class DiscordItemStackUtils {
             }
         }
 
-        if (hasMeta && NMSAddon.getInstance().isItemUnbreakable(item) && !item.getItemMeta().hasItemFlag(ItemFlag.HIDE_UNBREAKABLE)) {
+        if (hasMeta && NMS.getInstance().isItemUnbreakable(item) && !item.getItemMeta().hasItemFlag(ItemFlag.HIDE_UNBREAKABLE)) {
             prints.add(tooltipText(translatable(getUnbreakable()).color(BLUE)));
         }
 
         if (hasMeta && !item.getItemMeta().hasItemFlag(ItemFlag.HIDE_DESTROYS)) {
-            List<ICMaterial> materialList = NMSAddon.getInstance().getItemCanDestroyList(item);
+            List<ICMaterial> materialList = NMS.getInstance().getItemCanDestroyList(item);
             if (!materialList.isEmpty()) {
                 prints.add(tooltipEmpty());
                 prints.add(tooltipText(translatable(getCanDestroy()).color(GRAY)));
@@ -785,7 +785,7 @@ public class DiscordItemStackUtils {
         }
 
         if (hasMeta && !item.getItemMeta().hasItemFlag(ItemFlag.HIDE_PLACED_ON)) {
-            List<ICMaterial> materialList = NMSAddon.getInstance().getItemCanPlaceOnList(item);
+            List<ICMaterial> materialList = NMS.getInstance().getItemCanPlaceOnList(item);
             if (!materialList.isEmpty()) {
                 prints.add(tooltipEmpty());
                 prints.add(tooltipText(translatable(getCanPlace()).color(GRAY)));
@@ -805,7 +805,7 @@ public class DiscordItemStackUtils {
         if (showAdvanceDetails) {
             if (VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_5)) {
                 prints.add(tooltipText(text(item.getType().getKey().toString()).color(DARK_GRAY)));
-                int size = NMSAddon.getInstance().getItemComponentsSize(item);
+                int size = NMS.getInstance().getItemComponentsSize(item);
                 if (size > 0) {
                     prints.add(tooltipText(translatable(getItemComponents()).arguments(text(size)).color(DARK_GRAY)));
                 }
@@ -819,7 +819,7 @@ public class DiscordItemStackUtils {
             }
         }
 
-        return new DiscordToolTip(prints, !hasCustomName && prints.size() <= 1, NMSAddon.getInstance().shouldHideTooltip(item));
+        return new DiscordToolTip(prints, !hasCustomName && prints.size() <= 1, NMS.getInstance().shouldHideTooltip(item));
     }
 
     public static String toDiscordText(List<ToolTipComponent<?>> toolTipComponents, Function<ToolTipComponent<BufferedImage>, Component> imageToolTipHandler, String language, boolean embedLinks) {

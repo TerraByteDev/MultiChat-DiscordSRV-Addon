@@ -22,7 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.VersionManager;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -45,11 +45,11 @@ public class SkinUtils {
     }
 
     public static String getSkinValue(Player player) {
-        return NMSAddon.getInstance().getSkinValue(player);
+        return NMS.getInstance().getSkinValue(player);
     }
 
     public static String getSkinValue(ItemMeta skull) {
-        return NMSAddon.getInstance().getSkinValue(skull);
+        return NMS.getInstance().getSkinValue(skull);
     }
 
     @SuppressWarnings("deprecation")

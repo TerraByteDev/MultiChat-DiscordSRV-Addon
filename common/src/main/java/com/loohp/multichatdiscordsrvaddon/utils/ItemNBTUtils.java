@@ -21,7 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.google.gson.Gson;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.text.serializer.gson.GsonDataComponentValue;
@@ -36,11 +36,11 @@ public class ItemNBTUtils {
     private static final Gson GSON = new Gson();
 
     public static ItemStack getItemFromNBTJson(String json) {
-        return NMSAddon.getInstance().getItemFromNBTJson(json);
+        return NMS.getInstance().getItemFromNBTJson(json);
     }
 
     public static String getNMSItemStackJson(ItemStack itemStack) {
-        return NMSAddon.getInstance().getNMSItemStackJson(itemStack);
+        return NMS.getInstance().getNMSItemStackJson(itemStack);
     }
 
     public static String getNMSItemStackCommandComponent(ItemStack itemStack) {
@@ -57,7 +57,7 @@ public class ItemNBTUtils {
                 componentStrings.add(key + "=" + ((DataComponentValue.TagSerializable) value).asBinaryTag().string());
             }
         }
-        String namespacedKey = NMSAddon.getInstance().getNMSItemStackNamespacedKey(itemStack).asString();
+        String namespacedKey = NMS.getInstance().getNMSItemStackNamespacedKey(itemStack).asString();
         if (componentStrings.isEmpty()) {
             return namespacedKey;
         }
@@ -65,19 +65,19 @@ public class ItemNBTUtils {
     }
 
     public static Key getNMSItemStackNamespacedKey(ItemStack itemStack) {
-        return NMSAddon.getInstance().getNMSItemStackNamespacedKey(itemStack);
+        return NMS.getInstance().getNMSItemStackNamespacedKey(itemStack);
     }
 
     public static String getNMSItemStackTag(ItemStack itemStack) {
-        return NMSAddon.getInstance().getNMSItemStackTag(itemStack);
+        return NMS.getInstance().getNMSItemStackTag(itemStack);
     }
 
     public static Map<Key, DataComponentValue> getNMSItemStackDataComponents(ItemStack itemStack) {
-        return NMSAddon.getInstance().getNMSItemStackDataComponents(itemStack);
+        return NMS.getInstance().getNMSItemStackDataComponents(itemStack);
     }
 
     public static ItemStack getItemStackFromDataComponents(ItemStack itemStack, Map<Key, DataComponentValue> dataComponents) {
-        return NMSAddon.getInstance().getItemStackFromDataComponents(itemStack, dataComponents);
+        return NMS.getInstance().getItemStackFromDataComponents(itemStack, dataComponents);
     }
 
 }

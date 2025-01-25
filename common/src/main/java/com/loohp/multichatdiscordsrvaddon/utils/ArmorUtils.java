@@ -21,7 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import net.kyori.adventure.key.Key;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
 import com.loohp.multichatdiscordsrvaddon.resources.definitions.equipment.EquipmentModelDefinition;
@@ -39,14 +39,14 @@ public class ArmorUtils {
     private static final EquipmentSlot[] PLAYER_ARMOR_SLOTS = new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 
     public static boolean isPlayerArmor(ItemStack itemStack) {
-        return Arrays.stream(PLAYER_ARMOR_SLOTS).anyMatch(s -> NMSAddon.getInstance().matchArmorSlot(itemStack, s));
+        return Arrays.stream(PLAYER_ARMOR_SLOTS).anyMatch(s -> NMS.getInstance().matchArmorSlot(itemStack, s));
     }
 
     public static ArmorTextureResult getArmorTexture(ResourceManager manager, ItemStack armorItem, EquipmentSlot slot) {
         if (armorItem == null || slot.equals(EquipmentSlot.HAND) || slot.equals(EquipmentSlot.OFF_HAND)) {
             return ArmorTextureResult.NONE;
         }
-        Key key = NMSAddon.getInstance().getArmorMaterialKey(armorItem);
+        Key key = NMS.getInstance().getArmorMaterialKey(armorItem);
         if (key == null) {
             return ArmorTextureResult.NONE;
         }
@@ -57,7 +57,7 @@ public class ArmorUtils {
             int layer = slot.equals(EquipmentSlot.LEGS) ? 2 : 1;
             String base = armorMaterialName + "_layer_" + layer;
             if (armorItem.getItemMeta() instanceof LeatherArmorMeta) {
-                OptionalInt color = NMSAddon.getInstance().getLeatherArmorColor(armorItem);
+                OptionalInt color = NMS.getInstance().getLeatherArmorColor(armorItem);
                 return ArmorTextureResult.result(namespace, base, base + "_overlay", color);
             } else {
                 return ArmorTextureResult.result(namespace, base);
@@ -68,7 +68,7 @@ public class ArmorUtils {
                 return ArmorTextureResult.NONE;
             } else {
                 List<EquipmentModelDefinition.EquipmentLayer> layers = equipmentModelDefinition.getLayers(equipmentLayerType);
-                OptionalInt color = NMSAddon.getInstance().getLeatherArmorColor(armorItem);
+                OptionalInt color = NMS.getInstance().getLeatherArmorColor(armorItem);
                 return ArmorTextureResult.result(layers, color);
             }
         }

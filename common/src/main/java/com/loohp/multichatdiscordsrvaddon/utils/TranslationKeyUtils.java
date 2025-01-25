@@ -24,7 +24,7 @@ import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.EquipmentSlotGroup;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourcePackType;
 import org.bukkit.Color;
@@ -132,7 +132,7 @@ public class TranslationKeyUtils {
     }
 
     public static String getEntityTypeName(EntityType type) {
-        return NMSAddon.getInstance().getEntityTypeTranslationKey(type);
+        return NMS.getInstance().getEntityTypeTranslationKey(type);
     }
 
     public static String getResourcePackVanillaName() {
@@ -215,7 +215,7 @@ public class TranslationKeyUtils {
     }
 
     public static String getEffect(PotionEffectType type) {
-        return NMSAddon.getInstance().getEffectTranslationKey(type);
+        return NMS.getInstance().getEffectTranslationKey(type);
     }
 
     public static String getEffectLevel(int level) {
@@ -235,7 +235,7 @@ public class TranslationKeyUtils {
     }
 
     public static Component getEnchantmentDescription(Enchantment enchantment) {
-        return NMSAddon.getInstance().getEnchantmentDescription(enchantment);
+        return NMS.getInstance().getEnchantmentDescription(enchantment);
     }
 
     public static String getEnchantmentLevel(int level) {
@@ -283,7 +283,7 @@ public class TranslationKeyUtils {
     }
 
     public static Component getJukeboxSongDescription(ItemStack disc) {
-        return NMSAddon.getInstance().getJukeboxSongDescription(disc);
+        return NMS.getInstance().getJukeboxSongDescription(disc);
     }
 
     public static String getDiscFragmentName(ItemStack fragment) {
@@ -297,7 +297,7 @@ public class TranslationKeyUtils {
 
     public static List<String> getTropicalFishBucketName(ItemStack bucket) {
         List<String> list = new ArrayList<>();
-        OptionalInt optVariance = NMSAddon.getInstance().getTropicalFishBucketVariantTag(bucket);
+        OptionalInt optVariance = NMS.getInstance().getTropicalFishBucketVariantTag(bucket);
         if (optVariance.isPresent()) {
             int variance = optVariance.getAsInt();
             int predefinedType = FishUtils.getPredefinedType(variance);
@@ -317,7 +317,7 @@ public class TranslationKeyUtils {
     }
 
     public static String getBannerPatternName(PatternType type, DyeColor color) {
-        return NMSAddon.getInstance().getBannerPatternTranslationKey(type, color);
+        return NMS.getInstance().getBannerPatternTranslationKey(type, color);
     }
 
     public static String getAttributeModifierKey(boolean equalFlag, double amount, int operation) {

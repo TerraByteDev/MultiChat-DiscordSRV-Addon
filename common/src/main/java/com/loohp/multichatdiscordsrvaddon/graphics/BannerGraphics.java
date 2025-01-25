@@ -24,7 +24,7 @@ import com.loohp.multichatdiscordsrvaddon.VersionManager;
 import net.kyori.adventure.key.Key;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import org.bukkit.DyeColor;
 import org.bukkit.block.Banner;
@@ -89,7 +89,7 @@ public class BannerGraphics {
         for (Pattern pattern : patterns) {
             PatternType type = pattern.getPattern();
             Color color = new Color(pattern.getColor().getColor().asRGB());
-            Key typeKey = NMSAddon.getInstance().getPatternTypeKey(type);
+            Key typeKey = NMS.getInstance().getPatternTypeKey(type);
             BufferedImage image = InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getTextureManager().getTexture(ResourceRegistry.BANNER_TEXTURE_LOCATION + typeKey.value()).getTexture(64, 64);
             BufferedImage tint = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g3 = tint.createGraphics();
@@ -154,7 +154,7 @@ public class BannerGraphics {
         for (Pattern pattern : patterns) {
             PatternType type = pattern.getPattern();
             Color color = new Color(pattern.getColor().getColor().asRGB());
-            Key typeKey = NMSAddon.getInstance().getPatternTypeKey(type);
+            Key typeKey = NMS.getInstance().getPatternTypeKey(type);
             BufferedImage image = InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getTextureManager().getTexture(ResourceRegistry.SHIELD_TEXTURE_LOCATION + typeKey.value()).getTexture(64, 64);
             BufferedImage tint = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g3 = tint.createGraphics();

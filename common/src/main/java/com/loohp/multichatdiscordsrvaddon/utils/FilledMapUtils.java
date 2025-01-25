@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
@@ -40,27 +40,27 @@ public class FilledMapUtils {
     }
 
     public static MapView getMapView(ItemStack itemStack) {
-        return NMSAddon.getInstance().getMapView(itemStack);
+        return NMS.getInstance().getMapView(itemStack);
     }
 
     public static int getMapId(ItemStack itemStack) {
-        return NMSAddon.getInstance().getMapId(itemStack);
+        return NMS.getInstance().getMapId(itemStack);
     }
 
     public static boolean isContextual(MapView mapView) {
-        return NMSAddon.getInstance().isContextual(mapView);
+        return NMS.getInstance().isContextual(mapView);
     }
 
     public static byte[] getColors(MapView mapView, Player player) {
-        return NMSAddon.getInstance().getColors(mapView, player);
+        return NMS.getInstance().getColors(mapView, player);
     }
 
     public static List<MapCursor> getCursors(MapView mapView, Player player) {
-        return NMSAddon.getInstance().getCursors(mapView, player);
+        return NMS.getInstance().getCursors(mapView, player);
     }
 
     public static List<?> toNMSMapIconList(List<MapCursor> mapCursors) {
-        return NMSAddon.getInstance().toNMSMapIconList(mapCursors);
+        return NMS.getInstance().toNMSMapIconList(mapCursors);
     }
 
 }

@@ -130,7 +130,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public class V1_20_3 extends NMSAddonWrapper {
+public class V1_20_3 extends NMSWrapper {
 
     private final Method craftMapViewIsContextualMethod;
     private final Method bundleItemGetWeightMethod;

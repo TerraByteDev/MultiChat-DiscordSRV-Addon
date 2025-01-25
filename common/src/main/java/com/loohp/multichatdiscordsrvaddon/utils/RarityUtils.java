@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
-import com.loohp.multichatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -28,7 +28,7 @@ import org.bukkit.inventory.ItemStack;
 public class RarityUtils {
 
     public static ChatColor getRarityColor(ItemStack item) {
-        return NMSAddon.getInstance().getRarityColor(item);
+        return NMS.getInstance().getRarityColor(item);
     }
 
     public static ChatColor getRarityColor(Material material) {
