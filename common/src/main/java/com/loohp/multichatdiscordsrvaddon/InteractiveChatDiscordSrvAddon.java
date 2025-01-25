@@ -22,10 +22,7 @@ package com.loohp.multichatdiscordsrvaddon;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
-import com.loohp.multichatdiscordsrvaddon.objectholders.BuiltInPlaceholder;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
+import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
 import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
@@ -34,6 +31,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
@@ -280,12 +278,21 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
     public boolean useTooltipOnTab = true;
     public String tabTooltip = "";
     public long universalCooldown = 0;
-
     public static ICPlaceholder itemPlaceholder = null;
     public static ICPlaceholder inventoryPlaceholder = null;
     public static ICPlaceholder enderChestPlaceholder = null;
-
+    public ItemStack invFrame1 = null;
+    public ItemStack invFrame2 = null;
     public static Map<UUID, ICPlaceholder> placeholderList = new LinkedHashMap<>();
+
+    public ConcurrentCacheHashMap<String, Inventory> itemDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
+    public ConcurrentCacheHashMap<String, Inventory> inventoryDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
+    public ConcurrentCacheHashMap<String, Inventory> inventoryDisplay1Upper = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
+    public ConcurrentCacheHashMap<String, Inventory> inventoryDisplay1Lower = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
+    public ConcurrentCacheHashMap<String, Inventory> enderDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
+    public ConcurrentCacheHashMap<String, ItemStack> mapDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
+    public Set<Inventory> upperSharedInventory = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
+    public Set<Inventory> lowerSharedInventory = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
 
     private ResourceManager resourceManager;
     public ModelRenderer modelRenderer;
@@ -683,6 +690,9 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
             enderChestPlaceholder = new BuiltInPlaceholder(enderChestPlaceholderPattern, "", "", "", config.getConfiguration().getLong("InventoryImage.EnderChest.Cooldown") * 1000);
             placeholderList.put(enderChestPlaceholder.getInternalId(), enderChestPlaceholder);
         }
+
+        invFrame1 = new ItemStack(Material.valueOf(getConfig().getString("InventoryImage.Inventory.Frame.Primary")), 1);
+        invFrame2 = new ItemStack(Material.valueOf(getConfig().getString("InventoryImage.Inventory.Frame.Secondary")), 1);
 
         universalCooldown = config.getConfiguration().getLong("Settings.UniversalCooldown") * 1000;
 

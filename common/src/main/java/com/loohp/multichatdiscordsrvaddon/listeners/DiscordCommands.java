@@ -20,12 +20,13 @@
 
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChat;
-import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatAPI;
-import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatAPI.SharedType;
-import com.loohp.multichatdiscordsrvaddon.api.events.PostPacketComponentProcessEvent;
-import com.loohp.multichatdiscordsrvaddon.bungeemessaging.BungeeMessageSender;
 import com.cryptomorin.xseries.XMaterial;
+import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatDiscordSrvAddonAPI;
+import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
+import com.loohp.multichatdiscordsrvaddon.modules.InventoryDisplay;
+import com.loohp.multichatdiscordsrvaddon.nms.NMS;
+import com.loohp.multichatdiscordsrvaddon.objectholders.*;
+import com.loohp.multichatdiscordsrvaddon.utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -36,46 +37,12 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.modules.InventoryDisplay;
-import com.loohp.multichatdiscordsrvaddon.modules.ItemDisplay;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICInventoryHolder;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlayer;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlayerFactory;
-import com.loohp.multichatdiscordsrvaddon.objectholders.OfflineICPlayer;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
-import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.CompassUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentModernizing;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentReplacing;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentStyling;
-import com.loohp.multichatdiscordsrvaddon.utils.CustomStringUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.HashUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.InteractiveChatComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.utils.InventoryUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ItemStackUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.LanguageUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
-import com.loohp.multichatdiscordsrvaddon.utils.PlaceholderParser;
-import com.loohp.multichatdiscordsrvaddon.utils.PlayerUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.SkinUtils;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.api.events.InteractiveChatDiscordSRVConfigReloadEvent;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
-import com.loohp.multichatdiscordsrvaddon.objectholders.DiscordMessageContent;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ImageDisplayData;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ImageDisplayType;
-import com.loohp.multichatdiscordsrvaddon.objectholders.InteractionHandler;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ToolTipComponent;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourcePackInfo;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentStringUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.DiscordContentUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ResourcePackInfoUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.TranslationKeyUtils;
 import com.loohp.multichatdiscordsrvaddon.wrappers.TitledInventoryWrapper;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.commands.PluginSlashCommand;
@@ -99,6 +66,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.EquipmentSlot;
@@ -161,18 +129,20 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
         DISCORD_COMMANDS = Collections.unmodifiableSet(discordCommands);
     }
 
-    private static void layout0(OfflineICPlayer player, String sha1, String title) throws Exception {
+    private static void layout0(OfflinePlayer player, String sha1, String title) throws Exception {
+        OfflinePlayerData offlinePlayerData = PlayerUtils.getData(player);
+
         Inventory inv = Bukkit.createInventory(ICInventoryHolder.INSTANCE, 54, title);
         int f1 = 0;
         int f2 = 0;
         int u = 45;
-        for (int j = 0; j < Math.min(player.getInventory().getSize(), 45); j++) {
-            ItemStack item = player.getInventory().getItem(j);
+        for (int j = 0; j < Math.min(offlinePlayerData.getInventory().getSize(), 45); j++) {
+            ItemStack item = offlinePlayerData.getInventory().getItem(j);
             if (item != null && !item.getType().equals(Material.AIR)) {
                 if ((j >= 9 && j < 18) || j >= 36) {
-                    if (item.getType().equals(InteractiveChat.invFrame1.getType())) {
+                    if (item.getType().equals(InteractiveChatDiscordSrvAddon.plugin.invFrame1.getType())) {
                         f1++;
-                    } else if (item.getType().equals(InteractiveChat.invFrame2.getType())) {
+                    } else if (item.getType().equals(InteractiveChatDiscordSrvAddon.plugin.invFrame2.getType())) {
                         f2++;
                     }
                 }
@@ -186,7 +156,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                 u++;
             }
         }
-        ItemStack frame = f1 > f2 ? InteractiveChat.invFrame2.clone() : InteractiveChat.invFrame1.clone();
+        ItemStack frame = f1 > f2 ? InteractiveChatDiscordSrvAddon.plugin.invFrame2.clone() : InteractiveChatDiscordSrvAddon.plugin.invFrame1.clone();
         if (frame.getItemMeta() != null) {
             ItemMeta frameMeta = frame.getItemMeta();
             frameMeta.setDisplayName(ChatColor.YELLOW + "");
@@ -196,32 +166,26 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             inv.setItem(j, frame);
         }
 
-        int level = player.getExperienceLevel();
+        int level = offlinePlayerData.getXpLevel();
         ItemStack exp = XMaterial.EXPERIENCE_BOTTLE.parseItem();
-        if (InteractiveChat.version.isNewerThan(MCVersion.V1_15)) {
-            TranslatableComponent expText = Component.translatable(InventoryDisplay.getLevelTranslation(level)).color(NamedTextColor.YELLOW).decorate(TextDecoration.ITALIC);
-            if (level != 1) {
-                expText = expText.arguments(Component.text(level + ""));
-            }
-            NMS.getInstance().setItemStackDisplayName(exp, expText);
-        } else {
-            ItemMeta expMeta = exp.getItemMeta();
-            expMeta.setDisplayName(ChatColor.YELLOW + LanguageUtils.getTranslation(InventoryDisplay.getLevelTranslation(level), InteractiveChat.language).getResult().replaceFirst("%s|%d", level + ""));
-            exp.setItemMeta(expMeta);
+        TranslatableComponent expText = Component.translatable(InventoryDisplay.getLevelTranslation(level)).color(NamedTextColor.YELLOW).decorate(TextDecoration.ITALIC);
+        if (level != 1) {
+            expText = expText.arguments(Component.text(level + ""));
         }
+        NMS.getInstance().setItemStackDisplayName(exp, expText);
         inv.setItem(1, exp);
 
-        inv.setItem(3, player.getInventory().getItem(39));
-        inv.setItem(4, player.getInventory().getItem(38));
-        inv.setItem(5, player.getInventory().getItem(37));
-        inv.setItem(6, player.getInventory().getItem(36));
+        inv.setItem(3, offlinePlayerData.getInventory().getItem(39));
+        inv.setItem(4, offlinePlayerData.getInventory().getItem(38));
+        inv.setItem(5, offlinePlayerData.getInventory().getItem(37));
+        inv.setItem(6, offlinePlayerData.getInventory().getItem(36));
 
-        ItemStack offhand = player.getInventory().getSize() > 40 ? player.getInventory().getItem(40) : null;
-        if (!InteractiveChat.version.isOld() || (offhand != null && offhand.getType().equals(Material.AIR))) {
+        ItemStack offhand = offlinePlayerData.getInventory().getSize() > 40 ? offlinePlayerData.getInventory().getItem(40) : null;
+        if (!VersionManager.version.isOld() || (offhand != null && offhand.getType().equals(Material.AIR))) {
             inv.setItem(8, offhand);
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(InteractiveChat.plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
             ItemStack skull = SkinUtils.getSkull(player.getUniqueId());
             ItemMeta meta = skull.getItemMeta();
             String name = ChatColorUtils.translateAlternateColorCodes('&', InteractiveChatDiscordSrvAddon.plugin.shareInvCommandSkullName.replace("{Player}", player.getName()));
@@ -230,42 +194,43 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             inv.setItem(0, skull);
         });
 
-        if (InteractiveChat.hideLodestoneCompassPos) {
+        if (InteractiveChatDiscordSrvAddon.plugin.hideLodestoneCompassPos) {
             CompassUtils.hideLodestoneCompassesPosition(inv);
         }
 
-        InteractiveChatAPI.addInventoryToItemShareList(SharedType.INVENTORY, sha1, inv);
+        InteractiveChatDiscordSrvAddonAPI.addInventoryToItemShareList(InteractiveChatDiscordSrvAddonAPI.SharedType.INVENTORY, sha1, inv);
 
-        if (InteractiveChat.bungeecordMode) {
+        if (InteractiveChatDiscordSrvAddon.plugin.useBungeecord) {
             try {
                 long time = System.currentTimeMillis();
-                BungeeMessageSender.addInventory(time, SharedType.INVENTORY, sha1, title, inv);
+                BungeeMessageSender.addInventory(time, InteractiveChatDiscordSrvAddonAPI.SharedType.INVENTORY, sha1, title, inv);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private static void layout1(OfflineICPlayer player, String sha1, String title) throws Exception {
-        int selectedSlot = player.getSelectedSlot();
-        int level = player.getExperienceLevel();
+    private static void layout1(OfflinePlayer player, String sha1, String title) throws Exception {
+        OfflinePlayerData offlinePlayerData = PlayerUtils.getData(player);
+        int selectedSlot = offlinePlayerData.getSelectedSlot();
+        int level = offlinePlayerData.getXpLevel();
 
         Inventory inv = Bukkit.createInventory(ICInventoryHolder.INSTANCE, 54, title);
         int f1 = 0;
         int f2 = 0;
-        for (int j = 0; j < Math.min(player.getInventory().getSize(), 45); j++) {
+        for (int j = 0; j < Math.min(offlinePlayerData.getInventory().getSize(), 45); j++) {
             if (j == selectedSlot || j >= 36) {
-                ItemStack item = player.getInventory().getItem(j);
+                ItemStack item = offlinePlayerData.getInventory().getItem(j);
                 if (item != null && !item.getType().equals(Material.AIR)) {
-                    if (item.getType().equals(InteractiveChat.invFrame1.getType())) {
+                    if (item.getType().equals(InteractiveChatDiscordSrvAddon.plugin.invFrame1.getType())) {
                         f1++;
-                    } else if (item.getType().equals(InteractiveChat.invFrame2.getType())) {
+                    } else if (item.getType().equals(InteractiveChatDiscordSrvAddon.plugin.invFrame2.getType())) {
                         f2++;
                     }
                 }
             }
         }
-        ItemStack frame = f1 > f2 ? InteractiveChat.invFrame2.clone() : InteractiveChat.invFrame1.clone();
+        ItemStack frame = f1 > f2 ? InteractiveChatDiscordSrvAddon.plugin.invFrame2.clone() : InteractiveChatDiscordSrvAddon.plugin.invFrame1.clone();
         if (frame.getItemMeta() != null) {
             ItemMeta frameMeta = frame.getItemMeta();
             frameMeta.setDisplayName(ChatColor.YELLOW + "");
@@ -274,42 +239,36 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
         for (int j = 0; j < 54; j++) {
             inv.setItem(j, frame);
         }
-        inv.setItem(12, player.getInventory().getItem(39));
-        inv.setItem(21, player.getInventory().getItem(38));
-        inv.setItem(30, player.getInventory().getItem(37));
-        inv.setItem(39, player.getInventory().getItem(36));
+        inv.setItem(12, offlinePlayerData.getInventory().getItem(39));
+        inv.setItem(21, offlinePlayerData.getInventory().getItem(38));
+        inv.setItem(30, offlinePlayerData.getInventory().getItem(37));
+        inv.setItem(39, offlinePlayerData.getInventory().getItem(36));
 
-        ItemStack offhand = player.getInventory().getSize() > 40 ? player.getInventory().getItem(40) : null;
-        if (InteractiveChat.version.isOld() && (offhand == null || offhand.getType().equals(Material.AIR))) {
-            inv.setItem(24, player.getInventory().getItem(selectedSlot));
+        ItemStack offhand = offlinePlayerData.getInventory().getSize() > 40 ? offlinePlayerData.getInventory().getItem(40) : null;
+        if (VersionManager.version.isOld() && (offhand == null || offhand.getType().equals(Material.AIR))) {
+            inv.setItem(24, offlinePlayerData.getInventory().getItem(selectedSlot));
         } else {
             inv.setItem(23, offhand);
-            inv.setItem(25, player.getInventory().getItem(selectedSlot));
+            inv.setItem(25, offlinePlayerData.getInventory().getItem(selectedSlot));
         }
 
         ItemStack exp = XMaterial.EXPERIENCE_BOTTLE.parseItem();
-        if (InteractiveChat.version.isNewerThan(MCVersion.V1_15)) {
-            TranslatableComponent expText = Component.translatable(InventoryDisplay.getLevelTranslation(level)).color(NamedTextColor.YELLOW).decorate(TextDecoration.ITALIC);
-            if (level != 1) {
-                expText = expText.arguments(Component.text(level + ""));
-            }
-            NMS.getInstance().setItemStackDisplayName(exp, expText);
-        } else {
-            ItemMeta expMeta = exp.getItemMeta();
-            expMeta.setDisplayName(ChatColor.YELLOW + LanguageUtils.getTranslation(InventoryDisplay.getLevelTranslation(level), InteractiveChat.language).getResult().replaceFirst("%s|%d", level + ""));
-            exp.setItemMeta(expMeta);
+        TranslatableComponent expText = Component.translatable(InventoryDisplay.getLevelTranslation(level)).color(NamedTextColor.YELLOW).decorate(TextDecoration.ITALIC);
+        if (level != 1) {
+            expText = expText.arguments(Component.text(level + ""));
         }
+        NMS.getInstance().setItemStackDisplayName(exp, expText);
         inv.setItem(37, exp);
 
         Inventory inv2 = Bukkit.createInventory(ICInventoryHolder.INSTANCE, 45, title);
-        for (int j = 0; j < Math.min(player.getInventory().getSize(), 45); j++) {
-            ItemStack item = player.getInventory().getItem(j);
+        for (int j = 0; j < Math.min(offlinePlayerData.getInventory().getSize(), 45); j++) {
+            ItemStack item = offlinePlayerData.getInventory().getItem(j);
             if (item != null && !item.getType().equals(Material.AIR)) {
                 inv2.setItem(j, item.clone());
             }
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(InteractiveChat.plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
             ItemStack skull = SkinUtils.getSkull(player.getUniqueId());
             ItemMeta meta = skull.getItemMeta();
             String name = ChatColorUtils.translateAlternateColorCodes('&', InteractiveChatDiscordSrvAddon.plugin.shareInvCommandSkullName.replace("{Player}", player.getName()));
@@ -318,68 +277,68 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             inv.setItem(10, skull);
         });
 
-        if (InteractiveChat.hideLodestoneCompassPos) {
+        if (InteractiveChatDiscordSrvAddon.plugin.hideLodestoneCompassPos) {
             CompassUtils.hideLodestoneCompassesPosition(inv);
-        }
-        if (InteractiveChat.hideLodestoneCompassPos) {
             CompassUtils.hideLodestoneCompassesPosition(inv2);
         }
 
-        InteractiveChatAPI.addInventoryToItemShareList(SharedType.INVENTORY1_UPPER, sha1, inv);
-        InteractiveChatAPI.addInventoryToItemShareList(SharedType.INVENTORY1_LOWER, sha1, inv2);
+        InteractiveChatDiscordSrvAddonAPI.addInventoryToItemShareList(InteractiveChatDiscordSrvAddonAPI.SharedType.INVENTORY1_UPPER, sha1, inv);
+        InteractiveChatDiscordSrvAddonAPI.addInventoryToItemShareList(InteractiveChatDiscordSrvAddonAPI.SharedType.INVENTORY1_LOWER, sha1, inv2);
 
-        if (InteractiveChat.bungeecordMode) {
+        if (InteractiveChatDiscordSrvAddon.plugin.useBungeecord) {
             try {
                 long time = System.currentTimeMillis();
-                BungeeMessageSender.addInventory(time, SharedType.INVENTORY1_UPPER, sha1, title, inv);
-                BungeeMessageSender.addInventory(time, SharedType.INVENTORY1_LOWER, sha1, title, inv2);
+                BungeeMessageSender.addInventory(time, InteractiveChatDiscordSrvAddonAPI.SharedType.INVENTORY1_UPPER, sha1, title, inv);
+                BungeeMessageSender.addInventory(time, InteractiveChatDiscordSrvAddonAPI.SharedType.INVENTORY1_LOWER, sha1, title, inv2);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private static void ender(OfflineICPlayer player, String sha1, String title) throws Exception {
-        int size = player.getEnderChest().getSize();
+    private static void ender(OfflinePlayer player, String sha1, String title) throws Exception {
+        OfflinePlayerData offlinePlayerData = PlayerUtils.getData(player);
+        int size = offlinePlayerData.getEnderChest().getSize();
         Inventory inv = Bukkit.createInventory(ICInventoryHolder.INSTANCE, InventoryUtils.toMultipleOf9(size), title);
         for (int j = 0; j < size; j++) {
-            if (player.getEnderChest().getItem(j) != null) {
-                if (!player.getEnderChest().getItem(j).getType().equals(Material.AIR)) {
-                    inv.setItem(j, player.getEnderChest().getItem(j).clone());
+            if (offlinePlayerData.getEnderChest().getItem(j) != null) {
+                if (!offlinePlayerData.getEnderChest().getItem(j).getType().equals(Material.AIR)) {
+                    inv.setItem(j, offlinePlayerData.getEnderChest().getItem(j).clone());
                 }
             }
         }
 
-        if (InteractiveChat.hideLodestoneCompassPos) {
+        if (InteractiveChatDiscordSrvAddon.plugin.hideLodestoneCompassPos) {
             CompassUtils.hideLodestoneCompassesPosition(inv);
         }
 
-        InteractiveChatAPI.addInventoryToItemShareList(SharedType.ENDERCHEST, sha1, inv);
+        InteractiveChatDiscordSrvAddonAPI.addInventoryToItemShareList(InteractiveChatDiscordSrvAddonAPI.SharedType.ENDERCHEST, sha1, inv);
 
-        if (InteractiveChat.bungeecordMode) {
+        if (InteractiveChatDiscordSrvAddon.plugin.bungeecordMode) {
             try {
                 long time = System.currentTimeMillis();
-                BungeeMessageSender.addInventory(time, SharedType.ENDERCHEST, sha1, title, inv);
+                BungeeMessageSender.addInventory(time, InteractiveChatDiscordSrvAddonAPI.SharedType.ENDERCHEST, sha1, title, inv);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static ItemStack resolveItemStack(SlashCommandEvent event, OfflineICPlayer player) {
+    public static ItemStack resolveItemStack(SlashCommandEvent event, OfflinePlayer player) {
+        OfflinePlayerData offlinePlayerData = PlayerUtils.getData(player);
         String subCommand = event.getSubcommandName();
         switch (subCommand) {
             case "mainhand":
-                return player.getMainHandItem();
+                return offlinePlayerData.getInventory().getItem(offlinePlayerData.getSelectedSlot());
             case "offhand":
-                return player.getOffHandItem();
+                return offlinePlayerData.getInventory().getSize() > 40 ? offlinePlayerData.getInventory().getItem(40) : null;
             case "hotbar":
             case "inventory":
-                return player.getInventory().getItem((int) event.getOptions().get(0).getAsLong() - 1);
+                return offlinePlayerData.getInventory().getItem((int) event.getOptions().get(0).getAsLong() - 1);
             case "armor":
-                return player.getEquipment().getItem(EquipmentSlot.valueOf(event.getOptions().get(0).getAsString().toUpperCase()));
+                return offlinePlayerData.getEquipment().getItem(EquipmentSlot.valueOf(event.getOptions().get(0).getAsString().toUpperCase()));
             case "ender":
-                return player.getEnderChest().getItem((int) event.getOptions().get(0).getAsLong() - 1);
+                return offlinePlayerData.getEnderChest().getItem((int) event.getOptions().get(0).getAsLong() - 1);
         }
         return null;
     }
@@ -397,11 +356,11 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
     }
 
     @SuppressWarnings("deprecation")
-    public static List<ValueTrios<OfflineICPlayer, Component, Integer>> sortPlayers(List<String> orderTypes, List<ValueTrios<OfflineICPlayer, Component, Integer>> players, Map<UUID, ValuePairs<List<String>, String>> playerInfo) {
+    public static List<ValueTrios<OfflinePlayer, Component, Integer>> sortPlayers(List<String> orderTypes, List<ValueTrios<OfflinePlayer, Component, Integer>> players, Map<UUID, ValuePairs<List<String>, String>> playerInfo) {
         if (players.size() <= 1) {
             return players;
         }
-        Comparator<ValueTrios<OfflineICPlayer, Component, Integer>> comparator = Comparator.comparing(each -> 0);
+        Comparator<ValueTrios<OfflinePlayer, Component, Integer>> comparator = Comparator.comparing(each -> 0);
         for (String str : orderTypes) {
             String[] sections = str.split(":", 2);
             switch (sections[0].toUpperCase()) {
@@ -428,7 +387,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                     break;
                 case "PLAYERNAME_REVERSE":
                     comparator = comparator.thenComparing(Comparator.comparing(each -> {
-                        ValuePairs<List<String>, String> info = playerInfo.get(((ValueTrios<OfflineICPlayer, Component, Integer>) each).getFirst().getUniqueId());
+                        ValuePairs<List<String>, String> info = playerInfo.get(((ValueTrios<OfflinePlayer, Component, Integer>) each).getFirst().getUniqueId());
                         if (info == null) {
                             return "";
                         }

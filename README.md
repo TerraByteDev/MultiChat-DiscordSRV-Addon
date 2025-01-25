@@ -18,6 +18,11 @@ All code credits go towards LOOHP, who has given permission for this fork to be 
 > If you encounter bugs while using this fork, **do not report this to the original author!**\
 > You should create an issue for [this fork](https://github.com/TerraByteDev/MultiChat-DIscordSRV-Addon/issues).
 
+## Missing Features
+Right now, this fork does not support the following features (that the original plugin *does* support):
+- [ ] Proxy support
+- [ ] Image file previews from discord
+
 ## Built against Spigot
 Built against [Spigot's API](https://www.spigotmc.org/wiki/buildtools/) (required mc versions are listed on the spigot page above).
 Plugins built against Spigot usually also work with [Paper](https://papermc.io/).

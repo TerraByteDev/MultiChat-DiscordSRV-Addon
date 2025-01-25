@@ -20,15 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChat;
-import com.loohp.multichatdiscordsrvaddon.api.events.PrePacketComponentProcessEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentReplacing;
-import com.loohp.multichatdiscordsrvaddon.utils.CustomStringUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.HTTPRequestUtils;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.api.events.DiscordAttachmentConversionEvent;
@@ -116,7 +108,7 @@ public class InboundToGameEvents implements Listener {
         github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component component = event.getMinecraftMessage();
         if (InteractiveChatDiscordSrvAddon.plugin.escapePlaceholdersFromDiscord) {
             Debug.debug("onDiscordToGame escaping placeholders");
-            for (ICPlaceholder placeholder : InteractiveChat.placeholderList.values()) {
+            for (ICPlaceholder placeholder : InteractiveChatDiscordSrvAddon.placeholderList.values()) {
                 component = component.replaceText(github.scarsz.discordsrv.dependencies.kyori.adventure.text.TextReplacementConfig.builder().match(placeholder.getKeyword()).replacement((result, builder) -> builder.content("\\" + result.group())).build());
             }
             event.setMinecraftMessage(component);
@@ -381,7 +373,8 @@ public class InboundToGameEvents implements Listener {
         }
     }
 
-    @EventHandler
+    // todo - migrate to chat plugin specific events
+    /*@EventHandler
     public void onChatPacket(PrePacketComponentProcessEvent event) {
         Debug.debug("Triggering onChatPacket");
         if (InteractiveChatDiscordSrvAddon.plugin.convertDiscordAttachments) {
@@ -412,7 +405,7 @@ public class InboundToGameEvents implements Listener {
                 event.setComponent(component);
             }
         }
-    }
+    }*/
 
     @SuppressWarnings("deprecation")
     @EventHandler

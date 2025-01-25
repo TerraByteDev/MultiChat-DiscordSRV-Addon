@@ -1,12 +1,18 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.loohp.multichatdiscordsrvaddon.listeners.ICPlayerEvents;
+import com.loohp.multichatdiscordsrvaddon.objectholders.ICInventoryHolder;
+import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlayerEquipment;
+import com.loohp.multichatdiscordsrvaddon.objectholders.OfflinePlayerData;
+import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
 import net.querz.nbt.io.NBTUtil;
 import net.querz.nbt.io.NamedTag;
+import net.querz.nbt.io.SNBTUtil;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MainHand;
 
@@ -31,22 +37,59 @@ public class PlayerUtils {
         return player.isOnline() && Bukkit.getPlayer(player.getUniqueId()) != null;
     }
 
-    public static int getSelectedItemSlot(OfflinePlayer player) {
+    public static OfflinePlayerData getData(OfflinePlayer player) {
         int selectedSlot = 0;
-        if (player.isOnline()) {
+        Inventory playerInventory = Bukkit.createInventory(ICInventoryHolder.INSTANCE, 45);
+        Inventory enderChest = Bukkit.createInventory(ICInventoryHolder.INSTANCE, InventoryUtils.getDefaultEnderChestSize());
+        int xp = player.isOnline() ? player.getPlayer().getExpToLevel() : 0;
+        boolean isRightHanded = isRightHanded(player);
+        if (!player.isOnline()) {
             try {
                 File dat = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath() + "/playerdata", player.getUniqueId().toString() + ".dat");
                 if (dat.exists()) {
                     NamedTag nbtData = NBTUtil.read(dat);
                     CompoundTag rootTag = (CompoundTag) nbtData.getTag();
                     selectedSlot = rootTag.getInt("SelectedItemSlot");
+                    isRightHanded = !rootTag.containsKey("LeftHanded") || !rootTag.getBoolean("LeftHanded");
+                    xp = rootTag.getInt("XpLevel");
+
+                    for (CompoundTag entry : rootTag.getListTag("Inventory").asTypedList(CompoundTag.class)) {
+                        int slot = entry.getByte("Slot");
+                        entry.remove("Slot");
+                        ItemStack item = ItemNBTUtils.getItemFromNBTJson(SNBTUtil.toSNBT(entry));
+                        if (slot == 100) {
+                            slot = 36;
+                        } else if (slot == 101) {
+                            slot = 37;
+                        } else if (slot == 102) {
+                            slot = 38;
+                        } else if (slot == 103) {
+                            slot = 39;
+                        } else if (slot == -106) {
+                            slot = 40;
+                        }
+                        if (slot >= 0 && slot < playerInventory.getSize()) {
+                            playerInventory.setItem(slot, item);
+                        }
+                    }
+                    for (CompoundTag entry : rootTag.getListTag("EnderItems").asTypedList(CompoundTag.class)) {
+                        int slot = entry.getByte("Slot");
+                        entry.remove("Slot");
+                        ItemStack item = ItemNBTUtils.getItemFromNBTJson(SNBTUtil.toSNBT(entry));
+                        if (slot >= 0 && slot < enderChest.getSize()) {
+                            enderChest.setItem(slot, item);
+                        }
+                    }
                 }
             } catch (IOException error) {
                 error.printStackTrace();
             }
         }
 
-        return selectedSlot;
+        OfflinePlayerData data = new OfflinePlayerData(isRightHanded, xp, selectedSlot, playerInventory, enderChest, null);
+        data.setEquipment(new ICPlayerEquipment(player, data));
+
+        return data;
     }
 
     public static Object getProperty(OfflinePlayer player, String key) {

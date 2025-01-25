@@ -29,6 +29,7 @@ import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
 import com.loohp.multichatdiscordsrvaddon.wrappers.GraphicsToPacketMapWrapper;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -129,6 +130,41 @@ public class InteractiveChatDiscordSrvAddonAPI {
             return value;
         }
 
+    }
+
+    /**
+     * Add an inventory to the shared inventory list
+     *
+     * @param type
+     * @param hash key
+     * @param inventory
+     * @return The hashed key which can be used to retrieve the inventory
+     * @throws Exception
+     */
+    public static String addInventoryToItemShareList(SharedType type, String hash, Inventory inventory) throws Exception {
+        switch (type) {
+            case ITEM:
+                InteractiveChatDiscordSrvAddon.plugin.itemDisplay.put(hash, inventory);
+                InteractiveChatDiscordSrvAddon.plugin.upperSharedInventory.add(inventory);
+                break;
+            case INVENTORY:
+                InteractiveChatDiscordSrvAddon.plugin.inventoryDisplay.put(hash, inventory);
+                InteractiveChatDiscordSrvAddon.plugin.upperSharedInventory.add(inventory);
+                break;
+            case INVENTORY1_UPPER:
+                InteractiveChatDiscordSrvAddon.plugin.inventoryDisplay1Upper.put(hash, inventory);
+                InteractiveChatDiscordSrvAddon.plugin.upperSharedInventory.add(inventory);
+                break;
+            case INVENTORY1_LOWER:
+                InteractiveChatDiscordSrvAddon.plugin.inventoryDisplay1Lower.put(hash, inventory);
+                InteractiveChatDiscordSrvAddon.plugin.lowerSharedInventory.add(inventory);
+                break;
+            case ENDERCHEST:
+                InteractiveChatDiscordSrvAddon.plugin.enderDisplay.put(hash, inventory);
+                InteractiveChatDiscordSrvAddon.plugin.upperSharedInventory.add(inventory);
+                break;
+        }
+        return hash;
     }
 
     /**
