@@ -24,7 +24,7 @@ Plugins built against Spigot usually also work with [Paper](https://papermc.io/)
 
 ## Development Builds
 
-- TODO
+Get the latest official stable release from the [Releases Tab](https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/releases), or download the latest successful development build from the [Actions Tab](https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/actions?query=is%3Asuccess).
 
 ## Dependencies 
 
