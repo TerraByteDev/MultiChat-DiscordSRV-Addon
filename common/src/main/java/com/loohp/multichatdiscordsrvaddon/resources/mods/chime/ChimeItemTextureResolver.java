@@ -52,7 +52,7 @@ public class ChimeItemTextureResolver implements CustomItemTextureResolver {
 
 
     @Override
-    public ValuePairs<BlockModel, Map<String, TextureResource>> getItemPostResolveFunction(ValuePairs<BlockModel, Map<String, TextureResource>> previousResult, String modelKey, EquipmentSlot heldSlot, ItemStack itemStack, boolean is1_8, Map<ModelOverrideType, Float> predicates, OfflineICPlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction) {
+    public ValuePairs<BlockModel, Map<String, TextureResource>> getItemPostResolveFunction(ValuePairs<BlockModel, Map<String, TextureResource>> previousResult, String modelKey, EquipmentSlot heldSlot, ItemStack itemStack, boolean is1_8, Map<ModelOverrideType, Float> predicates, OfflinePlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction) {
         return new ValuePairs<>(chimeManager.resolveBlockModel(modelKey, is1_8, predicates, player, world, entity, itemStack, translateFunction), previousResult.getSecond());
     }
 

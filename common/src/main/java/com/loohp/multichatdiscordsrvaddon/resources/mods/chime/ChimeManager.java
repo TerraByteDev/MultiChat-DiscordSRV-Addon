@@ -21,9 +21,9 @@
 package com.loohp.multichatdiscordsrvaddon.resources.mods.chime;
 
 import org.apache.commons.io.input.BOMInputStream;
+import org.bukkit.OfflinePlayer;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import com.loohp.multichatdiscordsrvaddon.objectholders.OfflineICPlayer;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.CustomItemTextureRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceLoadingException;
@@ -165,7 +165,7 @@ public class ChimeManager extends ModManager implements IChimeManager {
         return getRawBlockModel(resourceLocation, false);
     }
 
-    public BlockModel resolveBlockModel(String resourceLocation, boolean is1_8, Map<ModelOverrideType, Float> predicates, OfflineICPlayer player, World world, LivingEntity entity, ItemStack itemStack, SpecificTranslateFunction translateFunction) {
+    public BlockModel resolveBlockModel(String resourceLocation, boolean is1_8, Map<ModelOverrideType, Float> predicates, OfflinePlayer player, World world, LivingEntity entity, ItemStack itemStack, SpecificTranslateFunction translateFunction) {
         BlockModel model = getRawBlockModel(resourceLocation, true);
         if (model == null) {
             return null;
@@ -275,7 +275,7 @@ public class ChimeManager extends ModManager implements IChimeManager {
     }
 
     @Override
-    public TextureResource getArmorOverrideTextures(String layer, ItemStack itemStack, OfflineICPlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction) {
+    public TextureResource getArmorOverrideTextures(String layer, ItemStack itemStack, OfflinePlayer player, World world, LivingEntity entity, SpecificTranslateFunction translateFunction) {
         for (String overrideLocation : overrideLocations) {
             String resourceKey = "minecraft:" + overrideLocation + "armor/" + layer;
             BlockModel model = getRawBlockModel(resourceKey, true);
