@@ -23,7 +23,6 @@ package com.loohp.multichatdiscordsrvaddon.nms;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
-import com.loohp.multichatdiscordsrvaddon.utils.InteractiveChatComponentSerializer;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Pair;
 import net.kyori.adventure.key.Key;
