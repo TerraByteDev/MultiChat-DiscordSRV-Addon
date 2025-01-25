@@ -1,4 +1,3 @@
-[![Build Status](https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/actions/workflows/build.yml/badge.svg)](https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/actions)
 # MultiChat DiscordSRV Addon
 <div align="center">
     <img src="https://wakatime.com/badge/github/TerraByteDev/MultiChat-DiscordSRV-Addon.svg" alt = "Project Hours">
