@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.graphics;
 import com.loohp.blockmodelrenderer.blending.BlendingModes;
 import com.loohp.blockmodelrenderer.utils.ColorUtils;
 import com.cryptomorin.xseries.XMaterial;
+import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
 import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
@@ -36,18 +37,9 @@ import org.bukkit.OfflinePlayer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
-import com.loohp.multichatdiscordsrvaddon.objectholders.AdvancementType;
-import com.loohp.multichatdiscordsrvaddon.objectholders.CustomModelData;
-import com.loohp.multichatdiscordsrvaddon.objectholders.PaintingVariant;
-import com.loohp.multichatdiscordsrvaddon.objectholders.SteppedIntegerRange;
-import com.loohp.multichatdiscordsrvaddon.objectholders.TintColorProvider;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ToolTipComponent;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ToolTipComponent.ToolTipType;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.CacheObject;
@@ -260,7 +252,7 @@ public class ImageGeneration {
         InteractiveChatDiscordSrvAddon.plugin.inventoryImageCounter.incrementAndGet();
         Debug.debug("ImageGeneration creating inventory image of " + player.getName());
 
-        String key = INVENTORY_CACHE_KEY + HashUtils.createSha1(title == null ? "Inventory" : InteractiveChatComponentSerializer.gson().serialize(title), inventory);
+        String key = INVENTORY_CACHE_KEY + HashUtils.createSha1(title == null ? "Inventory" : AbstractInteractiveChatComponentSerializer.gson().serialize(title), inventory);
         if (!inventory.contains(XMaterial.COMPASS.parseMaterial()) && !inventory.contains(XMaterial.CLOCK.parseMaterial()) && Arrays.stream(inventory.getContents()).noneMatch(each -> each != null && !CustomModelData.isEmpty(NMS.getInstance().getCustomModelData(each)))) {
             CacheObject<?> cache = resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).getCache(key);
             if (cache != null) {
@@ -327,7 +319,8 @@ public class ImageGeneration {
             }
         }
 
-        String key = PLAYER_INVENTORY_CACHE_KEY + HashUtils.createSha1(PlayerUtils.isRightHanded(player), PlayerUtils.getSelectedItemSlot(player), 0, player.getUniqueId().toString(), inventory) + ImageUtils.hash(background);
+        OfflinePlayerData offlinePlayerData = PlayerUtils.getData(player);
+        String key = PLAYER_INVENTORY_CACHE_KEY + HashUtils.createSha1(PlayerUtils.isRightHanded(player), offlinePlayerData.getSelectedSlot(), 0, player.getUniqueId().toString(), inventory) + ImageUtils.hash(background);
         if (!inventory.contains(XMaterial.COMPASS.parseMaterial()) && !inventory.contains(XMaterial.CLOCK.parseMaterial()) && Arrays.stream(inventory.getContents()).noneMatch(each -> each != null && !CustomModelData.isEmpty(NMS.getInstance().getCustomModelData(each)))) {
             CacheObject<?> cache = resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).getCache(key);
             if (cache != null) {

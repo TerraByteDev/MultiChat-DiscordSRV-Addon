@@ -150,6 +150,8 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
     public boolean itemUseTooltipImageOnBaseItem = false;
     public boolean itemAltAir = true;
     public String itemTitle = "%player_name%'s Item";
+    public String inventoryTitle = "%player_name%'s Inventory";
+    public String enderTitle;
     public long itemDisplayTimeout = 300000;
     public boolean hideLodestoneCompassPos = true;
     public boolean invShowLevel = true;
@@ -283,8 +285,8 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
     public static ICPlaceholder enderChestPlaceholder = null;
     public ItemStack invFrame1 = null;
     public ItemStack invFrame2 = null;
-    public static ItemStack itemFrame1;
-    public static ItemStack itemFrame2;
+    public ItemStack itemFrame1;
+    public ItemStack itemFrame2;
     public static Map<UUID, ICPlaceholder> placeholderList = new LinkedHashMap<>();
 
     public int itemTagMaxLength = 32767;
@@ -306,6 +308,7 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
     private ResourceManager resourceManager;
     public ModelRenderer modelRenderer;
     public ExecutorService mediaReadingService;
+    public static PlaceholderCooldownManager placeholderCooldownManager;
 
     protected Map<String, byte[]> extras = new ConcurrentHashMap<>();
 
@@ -357,6 +360,8 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
         DiscordSRV.api.subscribe(new LegacyDiscordCommandEvents());
         DiscordSRV.api.subscribe(new OutboundToDiscordEvents());
         DiscordSRV.api.subscribe(new InboundToGameEvents());
+
+        placeholderCooldownManager = new PlaceholderCooldownManager();
 
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new InboundToGameEvents(), this);
@@ -515,7 +520,9 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
 
         itemUseTooltipImageOnBaseItem = config.getConfiguration().getBoolean("InventoryImage.Item.UseTooltipImageOnBaseItem");
         itemAltAir = config.getConfiguration().getBoolean("InventoryImage.Item.AlternateAirTexture");
-        itemTitle = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("InventoryImage.Item.InventoryTitle"));
+        itemTitle = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("InventoryImage.Item.ItemTitle"));
+        inventoryTitle = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("InventoryImage.Inventory.InventoryTitle"));
+        enderTitle = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("InventoryImage.EnderChest.Text"));
         itemDisplayTimeout = config.getConfiguration().getLong("Settings.Timeout") * 60 * 1000;
         hideLodestoneCompassPos = config.getConfiguration().getBoolean("Settings.HideLodestoneCompassPos");
 
@@ -707,6 +714,9 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
 
         invFrame1 = new ItemStack(Material.valueOf(getConfig().getString("InventoryImage.Inventory.Frame.Primary")), 1);
         invFrame2 = new ItemStack(Material.valueOf(getConfig().getString("InventoryImage.Inventory.Frame.Secondary")), 1);
+
+        itemFrame1 = new ItemStack(Material.valueOf(getConfig().getString("InventoryImage.Item.Frame.Primary")), 1);
+        itemFrame2 = new ItemStack(Material.valueOf(getConfig().getString("InventoryImage.Item.Frame.Secondary")), 1);
 
         universalCooldown = config.getConfiguration().getLong("Settings.UniversalCooldown") * 1000;
 

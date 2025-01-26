@@ -36,6 +36,7 @@ import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -120,54 +121,58 @@ public class TextureManager extends AbstractManager implements ITextureManager {
         }
         JSONParser parser = new JSONParser();
         Map<String, TextureResource> textures = new HashMap<>();
-        Collection<ResourcePackFile> files = root.listFilesRecursively();
-        for (ResourcePackFile file : files) {
-            try {
-                String relativePath = file.getRelativePathFrom(root);
-                String key = namespace + ":" + relativePath;
-                String extension = "";
-                if (key.lastIndexOf(".") >= 0) {
-                    extension = key.substring(key.lastIndexOf(".") + 1);
-                    key = key.substring(0, key.lastIndexOf("."));
-                }
-                List<TextureAtlases.TextureAtlasSource> atlasSources = textureAtlases == null ? Collections.emptyList() : checkAtlasInclusion(textureAtlases, namespace, relativePath);
-                Map<String, UnaryOperator<BufferedImage>> imageTransformFunctions = null;
-                if (!atlasSources.isEmpty()) {
-                    for (TextureAtlases.TextureAtlasSource atlasSource : atlasSources) {
-                        TextureAtlases.TextureAtlasSourceType<?> sourceType = atlasSource.getType();
-                        if (sourceType.equals(TextureAtlases.TextureAtlasSourceType.DIRECTORY)) {
-                            TextureAtlases.TextureAtlasDirectorySource directorySource = (TextureAtlases.TextureAtlasDirectorySource) atlasSource;
-                            String fileName = file.getRelativePathFrom(root.getChild(directorySource.getSource()));
-                            fileName = fileName.substring(0, fileName.lastIndexOf("."));
-                            key = namespace + ":" + directorySource.getPrefix() + fileName;
-                            break;
-                        } else if (sourceType.equals(TextureAtlases.TextureAtlasSourceType.UNSTITCH)) {
-                            imageTransformFunctions = ((TextureAtlases.TextureAtlasUnstitchSource) atlasSource).getRegions().stream().collect(Collectors.toMap(each -> each.getSpriteName(), each -> each.getImageTransformFunction(), (a, b) -> b));
-                            break;
+        try {
+            Collection<ResourcePackFile> files = root.listFilesRecursively();
+            for (ResourcePackFile file : files) {
+                try {
+                    String relativePath = file.getRelativePathFrom(root);
+                    String key = namespace + ":" + relativePath;
+                    String extension = "";
+                    if (key.lastIndexOf(".") >= 0) {
+                        extension = key.substring(key.lastIndexOf(".") + 1);
+                        key = key.substring(0, key.lastIndexOf("."));
+                    }
+                    List<TextureAtlases.TextureAtlasSource> atlasSources = textureAtlases == null ? Collections.emptyList() : checkAtlasInclusion(textureAtlases, namespace, relativePath);
+                    Map<String, UnaryOperator<BufferedImage>> imageTransformFunctions = null;
+                    if (!atlasSources.isEmpty()) {
+                        for (TextureAtlases.TextureAtlasSource atlasSource : atlasSources) {
+                            TextureAtlases.TextureAtlasSourceType<?> sourceType = atlasSource.getType();
+                            if (sourceType.equals(TextureAtlases.TextureAtlasSourceType.DIRECTORY)) {
+                                TextureAtlases.TextureAtlasDirectorySource directorySource = (TextureAtlases.TextureAtlasDirectorySource) atlasSource;
+                                String fileName = file.getRelativePathFrom(root.getChild(directorySource.getSource()));
+                                fileName = fileName.substring(0, fileName.lastIndexOf("."));
+                                key = namespace + ":" + directorySource.getPrefix() + fileName;
+                                break;
+                            } else if (sourceType.equals(TextureAtlases.TextureAtlasSourceType.UNSTITCH)) {
+                                imageTransformFunctions = ((TextureAtlases.TextureAtlasUnstitchSource) atlasSource).getRegions().stream().collect(Collectors.toMap(each -> each.getSpriteName(), each -> each.getImageTransformFunction(), (a, b) -> b));
+                                break;
+                            }
                         }
                     }
-                }
-                if (extension.equalsIgnoreCase("png")) {
-                    if (imageTransformFunctions == null) {
-                        textures.put(key, new TextureResource(this, key, file, true, null));
+                    if (extension.equalsIgnoreCase("png")) {
+                        if (imageTransformFunctions == null) {
+                            textures.put(key, new TextureResource(this, key, file, true, null));
+                        } else {
+                            for (Map.Entry<String, UnaryOperator<BufferedImage>> entry : imageTransformFunctions.entrySet()) {
+                                String spriteName = entry.getKey();
+                                textures.put(spriteName, new TextureResource(this, spriteName, file, true, entry.getValue()));
+                            }
+                        }
+                    } else if (extension.equalsIgnoreCase("mcmeta")) {
+                        try (InputStreamReader reader = new InputStreamReader(new BOMInputStream(file.getInputStream()), StandardCharsets.UTF_8)) {
+                            JSONObject rootJson = (JSONObject) parser.parse(reader);
+                            TextureMeta textureMeta = TextureMeta.fromJson(this, key + "." + extension, file, rootJson);
+                            textures.put(key + "." + extension, textureMeta);
+                        }
                     } else {
-                        for (Map.Entry<String, UnaryOperator<BufferedImage>> entry : imageTransformFunctions.entrySet()) {
-                            String spriteName = entry.getKey();
-                            textures.put(spriteName, new TextureResource(this, spriteName, file, true, entry.getValue()));
-                        }
+                        textures.put(key + "." + extension, new TextureResource(this, key, file));
                     }
-                } else if (extension.equalsIgnoreCase("mcmeta")) {
-                    try (InputStreamReader reader = new InputStreamReader(new BOMInputStream(file.getInputStream()), StandardCharsets.UTF_8)) {
-                        JSONObject rootJson = (JSONObject) parser.parse(reader);
-                        TextureMeta textureMeta = TextureMeta.fromJson(this, key + "." + extension, file, rootJson);
-                        textures.put(key + "." + extension, textureMeta);
-                    }
-                } else {
-                    textures.put(key + "." + extension, new TextureResource(this, key, file));
+                } catch (Exception e) {
+                    new ResourceLoadingException("Unable to load block model " + file.getAbsolutePath(), e).printStackTrace();
                 }
-            } catch (Exception e) {
-                new ResourceLoadingException("Unable to load block model " + file.getAbsolutePath(), e).printStackTrace();
             }
+        } catch (IOException error) {
+            throw new RuntimeException(error);
         }
         this.textures.putAll(textures);
         if (textureAtlases != null) {

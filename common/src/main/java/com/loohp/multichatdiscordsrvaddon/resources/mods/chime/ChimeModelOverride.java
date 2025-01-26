@@ -21,7 +21,9 @@
 package com.loohp.multichatdiscordsrvaddon.resources.mods.chime;
 
 import com.google.common.collect.Range;
+import com.loohp.multichatdiscordsrvaddon.objectholders.OfflinePlayerData;
 import com.loohp.multichatdiscordsrvaddon.utils.NBTParsingUtils;
+import com.loohp.multichatdiscordsrvaddon.utils.PlayerUtils;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.*;
 import org.json.simple.JSONObject;
@@ -259,8 +261,9 @@ public class ChimeModelOverride extends ModelOverride {
                 if (player == null) {
                     return false;
                 }
-                boolean mainhand = Objects.equals(player.getEquipment().getItemInMainHand(), itemStack);
-                boolean offhand = Objects.equals(player.getEquipment().getItemInOffHand(), itemStack);
+                OfflinePlayerData playerData = PlayerUtils.getData(player);
+                boolean mainhand = Objects.equals(playerData.getEquipment().getItemInMainHand(), itemStack);
+                boolean offhand = Objects.equals(playerData.getEquipment().getItemInOffHand(), itemStack);
                 switch (value) {
                     case MAIN:
                         return mainhand;

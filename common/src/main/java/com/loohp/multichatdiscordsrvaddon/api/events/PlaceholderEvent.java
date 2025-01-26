@@ -20,7 +20,6 @@
 
 package com.loohp.multichatdiscordsrvaddon.api.events;
 
-import com.loohp.interactivechat.objectholders.ICPlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

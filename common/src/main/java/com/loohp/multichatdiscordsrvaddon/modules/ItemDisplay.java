@@ -233,7 +233,7 @@ public class ItemDisplay {
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[InteractiveChat] " + ChatColor.RED + "Trimmed an item display's meta data as it's NBT exceeds the maximum characters allowed in the chat [THIS IS NOT A BUG]");
         }
 
-        Component itemDisplayComponent = LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(player, itemAmount == 1 ? InteractiveChatDiscordSrvAddon.plugin.itemSingularReplaceText : InteractiveChatDiscordSrvAddon.plugin.itemReplaceText.replace("{Amount}", amountString))));
+        Component itemDisplayComponent = LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(player, itemAmount == 1 ? InteractiveChatDiscordSrvAddon.plugin.itemDisplaySingle : InteractiveChatDiscordSrvAddon.plugin.itemDisplayMultiple.replace("{Amount}", amountString))));
         itemDisplayComponent = itemDisplayComponent.replaceText(TextReplacementConfig.builder().matchLiteral("{Item}").replacement(itemDisplayNameComponent).build());
         if (showHover) {
             itemDisplayComponent = itemDisplayComponent.hoverEvent(hoverEvent);

@@ -22,6 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.resources.mods.chime;
 
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
+import com.loohp.multichatdiscordsrvaddon.utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentIteratorType;
 import net.kyori.adventure.text.TextComponent;
@@ -36,16 +37,12 @@ import net.querz.nbt.tag.StringTag;
 import net.querz.nbt.tag.Tag;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import com.loohp.multichatdiscordsrvaddon.utils.InteractiveChatComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.utils.ItemNBTUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.NBTParsingUtils;
 import com.loohp.multichatdiscordsrvaddon.objectholders.BiomePrecipitation;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.languages.SpecificTranslateFunction;
 import com.loohp.multichatdiscordsrvaddon.resources.mods.chime.ChimeModelOverride.ChimeModelOverrideType;
 import com.loohp.multichatdiscordsrvaddon.resources.mods.chime.ChimePredicateEnums.ItemInHand;
 import com.loohp.multichatdiscordsrvaddon.resources.mods.chime.ChimePredicateEnums.TargetType;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentStringUtils;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
@@ -62,7 +59,7 @@ public class ChimeUtils {
         try {
             String rawStringValue = ((CompoundTag) NBTParsingUtils.fromSNBT(ItemNBTUtils.getNMSItemStackJson(itemStack))).getCompoundTag(ResourceRegistry.ITEM_COMPONENT_TAG).getCompoundTag("display").getString("Name");
             try {
-                Component component = InteractiveChatComponentSerializer.gson().deserialize(rawStringValue);
+                Component component = AbstractInteractiveChatComponentSerializer.gson().deserialize(rawStringValue);
                 return componentToString(component, translateFunction);
             } catch (Throwable ignore) {
                 return rawStringValue;

@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.resources;
 
 import com.google.gson.GsonBuilder;
+import com.loohp.multichatdiscordsrvaddon.utils.AbstractInteractiveChatComponentSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -204,7 +205,7 @@ public class ResourceManager implements AutoCloseable {
                 if (descriptionObj instanceof JSONObject) {
                     String descriptionJson = new GsonBuilder().create().toJson(descriptionObj);
                     try {
-                        description = InteractiveChatComponentSerializer.gson().deserialize(descriptionJson);
+                        description = AbstractInteractiveChatComponentSerializer.gson().deserialize(descriptionJson);
                     } catch (Exception e) {
                         description = null;
                     }
@@ -212,7 +213,7 @@ public class ResourceManager implements AutoCloseable {
                 if (description == null) {
                     String rawDescription = packJson.get("description").toString();
                     try {
-                        description = InteractiveChatComponentSerializer.gson().deserialize(rawDescription);
+                        description = AbstractInteractiveChatComponentSerializer.gson().deserialize(rawDescription);
                     } catch (Exception e) {
                         description = null;
                     }

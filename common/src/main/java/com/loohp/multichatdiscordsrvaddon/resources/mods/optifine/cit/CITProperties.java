@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.mods.optifine.cit;
 
-import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
+import com.loohp.multichatdiscordsrvaddon.utils.*;
 import net.kyori.adventure.text.Component;
 import net.querz.nbt.tag.ByteTag;
 import net.querz.nbt.tag.CompoundTag;
@@ -33,9 +33,6 @@ import net.querz.nbt.tag.ShortTag;
 import net.querz.nbt.tag.StringTag;
 import net.querz.nbt.tag.Tag;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
-import com.loohp.multichatdiscordsrvaddon.utils.InteractiveChatComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.utils.ItemNBTUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.NBTParsingUtils;
 import com.loohp.multichatdiscordsrvaddon.objectholders.IntegerRange;
 import com.loohp.multichatdiscordsrvaddon.objectholders.PercentageOrIntegerRange;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
@@ -378,7 +375,7 @@ public abstract class CITProperties {
                                 String rawStringValue = ((StringTag) subTag).getValue();
                                 String jsonResultValue;
                                 try {
-                                    Component component = InteractiveChatComponentSerializer.gson().deserialize(rawStringValue);
+                                    Component component = AbstractInteractiveChatComponentSerializer.gson().deserialize(rawStringValue);
                                     jsonResultValue = OptifineUtils.componentToString(component, translateFunction);
                                 } catch (Throwable ignore) {
                                     jsonResultValue = null;

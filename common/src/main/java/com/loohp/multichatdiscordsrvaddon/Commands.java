@@ -20,12 +20,10 @@
 
 package com.loohp.multichatdiscordsrvaddon;
 
+import com.loohp.multichatdiscordsrvaddon.utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentStyling;
-import com.loohp.multichatdiscordsrvaddon.utils.LanguageUtils;
 import com.loohp.multichatdiscordsrvaddon.api.events.InteractiveChatDiscordSRVConfigReloadEvent;
 import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents;
 import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents.DiscordAttachmentData;
@@ -33,8 +31,6 @@ import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourcePackInfo;
 import com.loohp.multichatdiscordsrvaddon.updater.Updater;
 import com.loohp.multichatdiscordsrvaddon.updater.Updater.UpdaterResponse;
-import com.loohp.multichatdiscordsrvaddon.utils.ResourcePackInfoUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.TranslationKeyUtils;
 import com.loohp.multichatdiscordsrvaddon.wrappers.GraphicsToPacketMapWrapper;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -66,7 +62,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 
         if (args[0].equalsIgnoreCase("status")) {
             if (sender.hasPermission("interactivechatdiscordsrv.status")) {
-                sender.sendMessage(InteractiveChatDiscordSrvAddon.plugin.defaultResourceHashLang.replaceFirst("%s", InteractiveChatDiscordSrvAddon.plugin.defaultResourceHash + " (" + InteractiveChat.exactMinecraftVersion + ")"));
+                sender.sendMessage(InteractiveChatDiscordSrvAddon.plugin.defaultResourceHashLang.replaceFirst("%s", InteractiveChatDiscordSrvAddon.plugin.defaultResourceHash + " (" + VersionManager.exactMinecraftVersion + ")"));
                 sender.sendMessage(InteractiveChatDiscordSrvAddon.plugin.loadedResourcesLang);
                 for (ResourcePackInfo info : InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getResourcePackInfo()) {
                     Component name = ResourcePackInfoUtils.resolveName(info);

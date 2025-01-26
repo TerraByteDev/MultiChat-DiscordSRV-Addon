@@ -17,8 +17,10 @@ InventoryImage:
       Primary: BLACK_STAINED_GLASS_PANE
       Secondary: WHITE_STAINED_GLASS_PANE
 
-    # Title of the inventory view embed
-    InventoryTitle: "%player_names%'s Item"
+    #The text to replace the keyword
+    Text: "&f[&d%player_name%'s Item&f]"
+    # Title of the item view embed
+    ItemTitle: "%player_names%'s Item"
 
     #Preview shared maps instead of showing the item itself
     PreviewMaps: true
@@ -36,6 +38,11 @@ InventoryImage:
     EmbedColor: "#55FFFF"
     ShowExperienceLevel: true
 
+    #The text to replace the keyword
+    Text: "&f[&d%player_name%'s Inventory&f]"
+    #The title of the inventory view
+    InventoryTitle: "%player_name%'s Inventory"
+
     #The item used for the frame of the Inventory GUI
     Frame:
       Primary: BLACK_STAINED_GLASS_PANE
@@ -47,6 +54,11 @@ InventoryImage:
     # Cooldown of usage in seconds
     Cooldown: 0
     EmbedColor: "#FF55FF"
+
+    #The text to replace the keyword
+    Text: "&f[&d%player_name%'s Ender Chest&f]"
+    #The title of the ender chest inventory view
+    InventoryTitle: "%player_name%'s Ender Chest"
 
 #Choose what to include in item tooltips
 ToolTipSettings:

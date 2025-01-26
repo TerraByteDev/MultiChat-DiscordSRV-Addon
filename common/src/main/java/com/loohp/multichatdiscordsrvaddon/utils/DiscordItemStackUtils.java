@@ -248,7 +248,7 @@ public class DiscordItemStackUtils {
         prints.add(tooltipText(itemDisplayNameComponent));
 
         boolean hasMeta = item.getItemMeta() != null;
-        boolean hideAdditionalFlags = hasMeta && item.getItemMeta().hasItemFlag(NMS.getInstance().getHideAdditionalItemFlag()) && (item.getItemMeta() instanceof PotionMeta || VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_5));
+        boolean hideAdditionalFlags = hasMeta && item.getItemMeta().hasItemFlag(NMS.getInstance().getHideAdditionalItemFlag()) && (item.getItemMeta() instanceof PotionMeta || VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_6));
 
         if (hasMeta && item.getItemMeta().getDisplayName() != null) {
             hasCustomName = true;
@@ -802,7 +802,7 @@ public class DiscordItemStackUtils {
             }
         }
         if (showAdvanceDetails) {
-            if (VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_5)) {
+            if (VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_6)) {
                 prints.add(tooltipText(text(item.getType().getKey().toString()).color(DARK_GRAY)));
                 int size = NMS.getInstance().getItemComponentsSize(item);
                 if (size > 0) {
