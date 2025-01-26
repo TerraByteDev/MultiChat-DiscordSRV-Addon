@@ -283,7 +283,12 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
     public static ICPlaceholder enderChestPlaceholder = null;
     public ItemStack invFrame1 = null;
     public ItemStack invFrame2 = null;
+    public static ItemStack itemFrame1;
+    public static ItemStack itemFrame2;
     public static Map<UUID, ICPlaceholder> placeholderList = new LinkedHashMap<>();
+
+    public int itemTagMaxLength = 32767;
+    public boolean sendOriginalIfTooLong = false;
 
     public ConcurrentCacheHashMap<String, Inventory> itemDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
     public ConcurrentCacheHashMap<String, Inventory> inventoryDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
@@ -293,6 +298,10 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
     public ConcurrentCacheHashMap<String, ItemStack> mapDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
     public Set<Inventory> upperSharedInventory = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
     public Set<Inventory> lowerSharedInventory = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
+
+    public static int remoteDelay = 500;
+
+    public boolean previewMaps = true;
 
     private ResourceManager resourceManager;
     public ModelRenderer modelRenderer;
@@ -650,6 +659,8 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
         useTooltipOnTab = config.getConfiguration().getBoolean("TabCompletion.PlayerNameTooltip.Enabled");
         tabTooltip = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("TabCompletion.PlayerNameTooltip.Tooltip"));
 
+        previewMaps = config.getConfiguration().getBoolean("InventoryImage.Item.PreviewMaps");
+
         try {
             ItemStack unknown = new ItemStack(Material.valueOf(getConfig().getString("Settings.UnknownItem.ReplaceItem").toUpperCase()));
             ItemMeta meta = unknown.getItemMeta();
@@ -673,6 +684,9 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
         language = config.getConfiguration().getString("Resources.Language");
         LanguageUtils.loadTranslations(language);
         forceUnicode = config.getConfiguration().getBoolean("Resources.ForceUnicodeFont");
+
+        itemTagMaxLength = config.getConfiguration().getInt("Settings.ItemTagMaxLength");
+        sendOriginalIfTooLong = config.getConfiguration().getBoolean("Settings.SendOriginalMessageIfExceedLengthLimit");
 
         Pattern itemPlaceholderPattern = Pattern.compile(config.getConfiguration().getString("Placeholders.Item"));
         Pattern inventoryPlaceholderPattern = Pattern.compile(config.getConfiguration().getString("Placeholders.Inventory"));

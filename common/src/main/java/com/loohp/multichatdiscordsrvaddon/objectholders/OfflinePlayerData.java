@@ -15,5 +15,6 @@ public class OfflinePlayerData {
     private int selectedSlot;
     private Inventory inventory;
     private Inventory enderChest;
+    private ICPlayerEquipment equipment;
 
 }

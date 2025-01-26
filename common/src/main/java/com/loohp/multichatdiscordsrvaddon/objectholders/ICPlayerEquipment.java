@@ -33,10 +33,12 @@ public class ICPlayerEquipment implements EntityEquipment {
 
     private final Map<EquipmentSlot, Float> dropChance;
     private final OfflinePlayer parent;
+    private final OfflinePlayerData data;
 
-    public ICPlayerEquipment(OfflinePlayer parent) {
+    public ICPlayerEquipment(OfflinePlayer parent, OfflinePlayerData data) {
         this.dropChance = new EnumMap<>(EquipmentSlot.class);
         this.parent = parent;
+        this.data = data;
         resetChances();
     }
 
@@ -56,22 +58,22 @@ public class ICPlayerEquipment implements EntityEquipment {
     public void setItem(EquipmentSlot slot, ItemStack item) {
         switch (slot) {
             case HAND:
-                parent.getInventory().setItem(parent.getSelectedSlot(), item);
+                data.getInventory().setItem(data.getSelectedSlot(), item);
                 break;
             case OFF_HAND:
-                parent.getInventory().setItem(40, item);
+                data.getInventory().setItem(40, item);
                 break;
             case FEET:
-                parent.getInventory().setItem(36, item);
+                data.getInventory().setItem(36, item);
                 break;
             case LEGS:
-                parent.getInventory().setItem(37, item);
+                data.getInventory().setItem(37, item);
                 break;
             case CHEST:
-                parent.getInventory().setItem(38, item);
+                data.getInventory().setItem(38, item);
                 break;
             case HEAD:
-                parent.getInventory().setItem(39, item);
+                data.getInventory().setItem(39, item);
                 break;
         }
     }
@@ -80,17 +82,17 @@ public class ICPlayerEquipment implements EntityEquipment {
     public ItemStack getItem(EquipmentSlot slot) {
         switch (slot) {
             case HAND:
-                return parent.getInventory().getItem(parent.getSelectedSlot());
+                return data.getInventory().getItem(data.getSelectedSlot());
             case OFF_HAND:
-                return parent.getInventory().getItem(40);
+                return data.getInventory().getItem(40);
             case FEET:
-                return parent.getInventory().getItem(36);
+                return data.getInventory().getItem(36);
             case LEGS:
-                return parent.getInventory().getItem(37);
+                return data.getInventory().getItem(37);
             case CHEST:
-                return parent.getInventory().getItem(38);
+                return data.getInventory().getItem(38);
             case HEAD:
-                return parent.getInventory().getItem(39);
+                return data.getInventory().getItem(39);
         }
         return null;
     }

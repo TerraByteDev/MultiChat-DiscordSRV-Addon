@@ -38,7 +38,7 @@ public class PlayerUtils {
     }
 
     public static OfflinePlayerData getData(OfflinePlayer player) {
-        int selectedSlot = 0;
+        int selectedSlot = player.isOnline() ? player.getPlayer().getInventory().getHeldItemSlot() : 0;
         Inventory playerInventory = Bukkit.createInventory(ICInventoryHolder.INSTANCE, 45);
         Inventory enderChest = Bukkit.createInventory(ICInventoryHolder.INSTANCE, InventoryUtils.getDefaultEnderChestSize());
         int xp = player.isOnline() ? player.getPlayer().getExpToLevel() : 0;

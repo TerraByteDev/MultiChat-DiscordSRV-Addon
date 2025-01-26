@@ -24,6 +24,7 @@ import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
 import com.loohp.multichatdiscordsrvaddon.modules.InventoryDisplay;
+import com.loohp.multichatdiscordsrvaddon.modules.ItemDisplay;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
@@ -314,7 +315,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
 
         InteractiveChatDiscordSrvAddonAPI.addInventoryToItemShareList(InteractiveChatDiscordSrvAddonAPI.SharedType.ENDERCHEST, sha1, inv);
 
-        if (InteractiveChatDiscordSrvAddon.plugin.bungeecordMode) {
+        if (InteractiveChatDiscordSrvAddon.plugin.useBungeecord) {
             try {
                 long time = System.currentTimeMillis();
                 BungeeMessageSender.addInventory(time, InteractiveChatDiscordSrvAddonAPI.SharedType.ENDERCHEST, sha1, title, inv);
@@ -398,23 +399,21 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                     if (sections.length > 1) {
                         String placeholder = sections[1];
                         comparator = comparator.thenComparing(Comparator.comparing(each -> {
-                            String parsedString = PlaceholderParser.parse(ICPlayerFactory.getUnsafe().getOfflineICPPlayerWithoutInitialization(((ValueTrios<OfflineICPlayer, Component, Integer>) each).getFirst().getUniqueId()), placeholder);
+                            String parsedString = PlaceholderParser.parse(Bukkit.getOfflinePlayer(((ValueTrios<OfflinePlayer, Component, Integer>) each).getFirst().getUniqueId()), placeholder);
                             double value = Double.MAX_VALUE;
                             try {
                                 value = Double.parseDouble(parsedString);
                             } catch (NumberFormatException ignore) {
                             }
                             return value;
-                        }).thenComparing(each -> {
-                            return PlaceholderParser.parse(ICPlayerFactory.getUnsafe().getOfflineICPPlayerWithoutInitialization(((ValueTrios<OfflineICPlayer, Component, Integer>) each).getFirst().getUniqueId()), placeholder);
-                        }));
+                        }).thenComparing(each -> PlaceholderParser.parse(Bukkit.getOfflinePlayer(((ValueTrios<OfflinePlayer, Component, Integer>) each).getFirst().getUniqueId()), placeholder)));
                     }
                     break;
                 case "PLACEHOLDER_REVERSE":
                     if (sections.length > 1) {
                         String placeholder = sections[1];
                         comparator = comparator.thenComparing(Comparator.comparing(each -> {
-                            String parsedString = PlaceholderParser.parse(ICPlayerFactory.getUnsafe().getOfflineICPPlayerWithoutInitialization(((ValueTrios<OfflineICPlayer, Component, Integer>) each).getFirst().getUniqueId()), placeholder);
+                            String parsedString = PlaceholderParser.parse(Bukkit.getOfflinePlayer(((ValueTrios<OfflinePlayer, Component, Integer>) each).getFirst().getUniqueId()), placeholder);
                             double value = Double.MAX_VALUE;
                             try {
                                 value = Double.parseDouble(parsedString);
@@ -422,7 +421,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                             }
                             return value;
                         }).thenComparing(each -> {
-                            return PlaceholderParser.parse(ICPlayerFactory.getUnsafe().getOfflineICPPlayerWithoutInitialization(((ValueTrios<OfflineICPlayer, Component, Integer>) each).getFirst().getUniqueId()), placeholder);
+                            return PlaceholderParser.parse(Bukkit.getOfflinePlayer(((ValueTrios<OfflinePlayer, Component, Integer>) each).getFirst().getUniqueId()), placeholder);
                         }).reversed());
                     }
                     break;
@@ -445,10 +444,10 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
 
     public void init() {
         Bukkit.getScheduler().runTaskTimerAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
-            if (InteractiveChat.bungeecordMode) {
+            if (InteractiveChatDiscordSrvAddon.plugin.useBungeecord) {
                 if (InteractiveChatDiscordSrvAddon.plugin.playerlistCommandEnabled && InteractiveChatDiscordSrvAddon.plugin.playerlistCommandIsMainServer) {
-                    for (ICPlayer player : ICPlayerFactory.getOnlineICPlayers()) {
-                        if (!player.isLocal()) {
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        if (!PlayerUtils.isLocal(player)) {
                             StringBuilder text = new StringBuilder(InteractiveChatDiscordSrvAddon.plugin.playerlistCommandPlayerFormat +
                                     " " + InteractiveChatDiscordSrvAddon.plugin.playerlistCommandHeader +
                                     " " + InteractiveChatDiscordSrvAddon.plugin.playerlistCommandFooter +
@@ -503,7 +502,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             }
         }
         if (InteractiveChatDiscordSrvAddon.plugin.shareItemCommandIsMainServer) {
-            Optional<ICPlaceholder> optItemPlaceholder = InteractiveChat.placeholderList.values().stream().filter(each -> each.equals(InteractiveChat.itemPlaceholder)).findFirst();
+            Optional<ICPlaceholder> optItemPlaceholder = InteractiveChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(InteractiveChatDiscordSrvAddon.itemPlaceholder)).findFirst();
             if (InteractiveChatDiscordSrvAddon.plugin.shareItemCommandEnabled && optItemPlaceholder.isPresent()) {
                 String itemDescription = ChatColorUtils.stripColor(optItemPlaceholder.get().getDescription());
 
@@ -529,7 +528,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             }
         }
         if (InteractiveChatDiscordSrvAddon.plugin.shareInvCommandIsMainServer) {
-            Optional<ICPlaceholder> optInvPlaceholder = InteractiveChat.placeholderList.values().stream().filter(each -> each.equals(InteractiveChat.invPlaceholder)).findFirst();
+            Optional<ICPlaceholder> optInvPlaceholder = InteractiveChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(InteractiveChatDiscordSrvAddon.inventoryPlaceholder)).findFirst();
             if (InteractiveChatDiscordSrvAddon.plugin.shareInvCommandEnabled && optInvPlaceholder.isPresent()) {
                 commandDataList.add(new CommandData(INVENTORY_LABEL, ChatColorUtils.stripColor(optInvPlaceholder.get().getDescription())));
 
@@ -539,7 +538,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             }
         }
         if (InteractiveChatDiscordSrvAddon.plugin.shareEnderCommandIsMainServer) {
-            Optional<ICPlaceholder> optEnderPlaceholder = InteractiveChat.placeholderList.values().stream().filter(each -> each.equals(InteractiveChat.enderPlaceholder)).findFirst();
+            Optional<ICPlaceholder> optEnderPlaceholder = InteractiveChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(InteractiveChatDiscordSrvAddon.enderChestPlaceholder)).findFirst();
             if (InteractiveChatDiscordSrvAddon.plugin.shareEnderCommandEnabled && optEnderPlaceholder.isPresent()) {
                 commandDataList.add(new CommandData(ENDERCHEST_LABEL, ChatColorUtils.stripColor(optEnderPlaceholder.get().getDescription())));
 
@@ -641,10 +640,10 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
 
                 int errorCode = -1;
                 try {
-                    OfflineICPlayer offlineICPlayer = ICPlayerFactory.getOfflineICPlayer(uuid);
+                    OfflinePlayer offlineICPlayer = Bukkit.getOfflinePlayer(uuid);
                     errorCode--;
                     List<ToolTipComponent<?>> playerInfoComponents;
-                    if (offlineICPlayer.isOnline() && !((ICPlayer) offlineICPlayer).isVanished()) {
+                    if (offlineICPlayer.isOnline() && !PlayerUtils.isVanished(((Player) offlineICPlayer))) {
                         playerInfoComponents = InteractiveChatDiscordSrvAddon.plugin.playerinfoCommandFormatOnline.stream().map(each -> {
                             each = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlineICPlayer, each));
                             return ToolTipComponent.text(LegacyComponentSerializer.legacySection().deserialize(each));
@@ -689,14 +688,14 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                     }
                 });
                 Map<OfflinePlayer, Integer> players;
-                if (InteractiveChat.bungeecordMode && InteractiveChatDiscordSrvAddon.plugin.playerlistCommandBungeecord && !Bukkit.getOnlinePlayers().isEmpty()) {
+                if (InteractiveChatDiscordSrvAddon.plugin.useBungeecord && InteractiveChatDiscordSrvAddon.plugin.playerlistCommandBungeecord && !Bukkit.getOnlinePlayers().isEmpty()) {
                     try {
-                        List<ValueTrios<UUID, String, Integer>> bungeePlayers = InteractiveChatAPI.getBungeecordPlayerList().get();
+                        List<ValueTrios<UUID, String, Integer>> bungeePlayers = InteractiveChatDiscordSrvAddonAPI.getBungeecordPlayerList().get();
                         players = new LinkedHashMap<>(bungeePlayers.size());
                         for (ValueTrios<UUID, String, Integer> playerinfo : bungeePlayers) {
                             UUID uuid = playerinfo.getFirst();
-                            ICPlayer icPlayer = ICPlayerFactory.getICPlayer(uuid);
-                            if (icPlayer == null || !icPlayer.isVanished()) {
+                            Player icPlayer = Bukkit.getPlayer(uuid);
+                            if (icPlayer == null || !PlayerUtils.isVanished(icPlayer)) {
                                 players.put(Bukkit.getOfflinePlayer(uuid), playerinfo.getThird());
                             }
                         }
@@ -707,36 +706,32 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                     }
                 } else {
                     players = Bukkit.getOnlinePlayers().stream().filter(each -> {
-                        ICPlayer icPlayer = ICPlayerFactory.getICPlayer(each);
-                        return icPlayer == null || !icPlayer.isVanished();
-                    }).collect(Collectors.toMap(each -> each, each -> PlayerUtils.getPing(each), (a, b) -> a));
+                        return each == null || !PlayerUtils.isVanished(each);
+                    }).collect(Collectors.toMap(each -> each, each -> each.getPing(), (a, b) -> a));
                 }
                 if (players.isEmpty()) {
                     event.getHook().editOriginal(ChatColorUtils.stripColor(InteractiveChatDiscordSrvAddon.plugin.playerlistCommandEmptyServer)).queue();
                 } else {
                     int errorCode = -2;
                     try {
-                        List<ValueTrios<OfflineICPlayer, Component, Integer>> player = new ArrayList<>();
+                        List<ValueTrios<OfflinePlayer, Component, Integer>> player = new ArrayList<>();
                         Map<UUID, ValuePairs<List<String>, String>> playerInfo = new HashMap<>();
                         for (Entry<OfflinePlayer, Integer> entry : players.entrySet()) {
                             OfflinePlayer bukkitOfflinePlayer = entry.getKey();
-                            @SuppressWarnings("deprecation")
-                            OfflineICPlayer offlinePlayer = ICPlayerFactory.getUnsafe().getOfflineICPPlayerWithoutInitialization(bukkitOfflinePlayer.getUniqueId());
-                            playerInfo.put(offlinePlayer.getUniqueId(), new ValuePairs<>(getPlayerGroups(bukkitOfflinePlayer), offlinePlayer.getName()));
-                            String name = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlinePlayer, InteractiveChatDiscordSrvAddon.plugin.playerlistCommandPlayerFormat));
+                            playerInfo.put(bukkitOfflinePlayer.getUniqueId(), new ValuePairs<>(getPlayerGroups(bukkitOfflinePlayer), bukkitOfflinePlayer.getName()));
+                            String name = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(bukkitOfflinePlayer, InteractiveChatDiscordSrvAddon.plugin.playerlistCommandPlayerFormat));
                             Component nameComponent;
                             if (InteractiveChatDiscordSrvAddon.plugin.playerlistCommandParsePlayerNamesWithMiniMessage) {
                                 nameComponent = MiniMessage.miniMessage().deserialize(name);
                             } else {
                                 nameComponent = InteractiveChatComponentSerializer.legacySection().deserialize(name);
                             }
-                            player.add(new ValueTrios<>(offlinePlayer, nameComponent, entry.getValue()));
+                            player.add(new ValueTrios<>(bukkitOfflinePlayer, nameComponent, entry.getValue()));
                         }
                         errorCode--;
                         sortPlayers(InteractiveChatDiscordSrvAddon.plugin.playerlistOrderingTypes, player, playerInfo);
                         errorCode--;
-                        @SuppressWarnings("deprecation")
-                        OfflineICPlayer firstPlayer = ICPlayerFactory.getUnsafe().getOfflineICPPlayerWithoutInitialization(players.keySet().iterator().next().getUniqueId());
+                        OfflinePlayer firstPlayer = Bukkit.getOfflinePlayer(players.keySet().iterator().next().getUniqueId());
                         List<Component> header = new ArrayList<>();
                         if (!InteractiveChatDiscordSrvAddon.plugin.playerlistCommandHeader.isEmpty()) {
                             header = ComponentStyling.splitAtLineBreaks(LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(firstPlayer, InteractiveChatDiscordSrvAddon.plugin.playerlistCommandHeader.replace("{OnlinePlayers}", players.size() + "")))));
@@ -795,7 +790,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             }
             int errorCode = -1;
             try {
-                OfflineICPlayer offlineICPlayer = ICPlayerFactory.getOfflineICPlayer(uuid);
+                OfflinePlayer offlineICPlayer = Bukkit.getOfflinePlayer(uuid);
                 if (offlineICPlayer == null) {
                     if (InteractiveChatDiscordSrvAddon.plugin.shareItemCommandIsMainServer) {
                         event.reply(ChatColorUtils.stripColor(InteractiveChatDiscordSrvAddon.plugin.unableToRetrieveData) + " (" + errorCode + ")").setEphemeral(true).queue();
@@ -807,23 +802,24 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                     event.deferReply().queue();
                 }
                 errorCode--;
-                ICPlayer icplayer = offlineICPlayer.getPlayer();
-                if (InteractiveChat.bungeecordMode && icplayer != null) {
-                    if (icplayer.isLocal()) {
+                Player icplayer = offlineICPlayer.getPlayer();
+                if (InteractiveChatDiscordSrvAddon.plugin.useBungeecord && icplayer != null) {
+                    if (PlayerUtils.isLocal(icplayer)) {
                         ItemStack[] equipment;
-                        if (InteractiveChat.version.isOld()) {
+                        if (VersionManager.version.isOld()) {
                             //noinspection deprecation
                             equipment = new ItemStack[] {icplayer.getEquipment().getHelmet(), icplayer.getEquipment().getChestplate(), icplayer.getEquipment().getLeggings(), icplayer.getEquipment().getBoots(), icplayer.getEquipment().getItemInHand()};
                         } else {
                             equipment = new ItemStack[] {icplayer.getEquipment().getHelmet(), icplayer.getEquipment().getChestplate(), icplayer.getEquipment().getLeggings(), icplayer.getEquipment().getBoots(), icplayer.getEquipment().getItemInMainHand(), icplayer.getEquipment().getItemInOffHand()};
                         }
                         try {
-                            BungeeMessageSender.forwardEquipment(System.currentTimeMillis(), icplayer.getUniqueId(), icplayer.isRightHanded(), icplayer.getSelectedSlot(), icplayer.getExperienceLevel(), equipment);
+                            OfflinePlayerData offlinePlayerData = PlayerUtils.getData(icplayer);
+                            BungeeMessageSender.forwardEquipment(System.currentTimeMillis(), icplayer.getUniqueId(), PlayerUtils.isRightHanded(icplayer), offlinePlayerData.getSelectedSlot(), offlinePlayerData.getXpLevel(), equipment);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     } else {
-                        TimeUnit.MILLISECONDS.sleep(InteractiveChat.remoteDelay);
+                        TimeUnit.MILLISECONDS.sleep(InteractiveChatDiscordSrvAddon.remoteDelay);
                     }
                 }
                 errorCode--;
@@ -1118,7 +1114,8 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
         }
     }
 
-    @EventHandler
+    // todo migrate
+    /*@EventHandler
     public void onProcessChat(PostPacketComponentProcessEvent event) {
         Component component = event.getComponent();
         for (Entry<String, Component> entry : components.entrySet()) {
@@ -1127,7 +1124,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                 break;
             }
         }
-    }
+    }*/
 
     public static class DiscordCommandRegistrationException extends RuntimeException {
 

@@ -12,8 +12,16 @@ InventoryImage:
       Multiple: "{Item} x{Amount}"
     AlternateAirTexture: true
 
+    #The item used for the frame of the Item GUI
+    Frame:
+      Primary: BLACK_STAINED_GLASS_PANE
+      Secondary: WHITE_STAINED_GLASS_PANE
+
     # Title of the inventory view embed
     InventoryTitle: "%player_names%'s Item"
+
+    #Preview shared maps instead of showing the item itself
+    PreviewMaps: true
 
   #Whether to generate images for the inventory placeholder
   Inventory:
@@ -384,6 +392,9 @@ Settings:
   #Set the cooldown that is shared between all placeholders in this plugin (in seconds)
   #Placeholders will not be parsed in discord messages when a player is in cooldown
   UniversalCooldown: 0
+
+  ItemTagMaxLength: 30767
+  SendOriginalMessageIfExceedLengthLimit: true
 
   #Hide lodestone compass position when sharing them
   HideLodestoneCompassPos: true

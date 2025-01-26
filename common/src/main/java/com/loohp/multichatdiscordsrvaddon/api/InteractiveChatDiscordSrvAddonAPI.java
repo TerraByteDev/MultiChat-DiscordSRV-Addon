@@ -58,6 +58,18 @@ public class InteractiveChatDiscordSrvAddonAPI {
     }
 
     /**
+     * Add a map to the shared map list
+     *
+     * @param hash key
+     * @param item
+     * @return The hashed key which can be used to retrieve the inventory
+     */
+    public static String addMapToMapSharedList(String hash, ItemStack item) {
+        InteractiveChatDiscordSrvAddon.plugin.mapDisplay.put(hash, item);
+        return hash;
+    }
+
+    /**
      * Get all active discord attachments
      *
      * @return A mapping of the assigned UUID to the discord attachments
