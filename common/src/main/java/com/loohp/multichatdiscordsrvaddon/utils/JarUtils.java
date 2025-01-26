@@ -70,7 +70,9 @@ public class JarUtils {
 
             if (fileName.charAt(fileName.length() - 1) == JAR_SEPARATOR) {
                 File file = new File(destFolder + File.separator + fileName);
-                if (file.isFile()) {
+                if (!file.toPath().normalize().startsWith(destFolder.toPath().normalize())) {
+                    throw new IOException("Bad zip entry: " + fileName);
+                } else if (file.isFile()) {
                     file.delete();
                 }
                 file.mkdirs();
@@ -78,7 +80,9 @@ public class JarUtils {
             }
 
             File file = new File(destFolder + File.separator + fileName);
-            if (option == CopyOption.COPY_IF_NOT_EXIST && file.exists()) {
+            if (!file.toPath().normalize().startsWith(destFolder.toPath().normalize())) {
+                throw new IOException("Bad zip entry: " + fileName);
+            } else if (option == CopyOption.COPY_IF_NOT_EXIST && file.exists()) {
                 continue;
             }
 

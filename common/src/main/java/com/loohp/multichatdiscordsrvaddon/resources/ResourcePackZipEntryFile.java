@@ -189,14 +189,17 @@ public class ResourcePackZipEntryFile implements ResourcePackFile {
     }
 
     @Override
-    public Collection<ResourcePackFile> listFilesRecursively(String[] extensions) {
+    public Collection<ResourcePackFile> listFilesRecursively(String[] extensions) throws IOException {
         List<ResourcePackFile> list = new ArrayList<>();
         Enumeration<? extends ZipEntry> itr = zipRoot.entries();
         while (itr.hasMoreElements()) {
             ZipEntry entry = itr.nextElement();
             if (!entry.isDirectory()) {
                 String entryPath = entry.getName();
-                if ((this.zipEntry == null || !entry.getName().equals(this.zipEntry.getName())) && entryPath.startsWith(zipPath)) {
+                File entryFile = new File(absoluteRootPath, entryPath).toPath().normalize().toFile();
+                if (!entryFile.toPath().startsWith(new File(absoluteRootPath).toPath())) {
+                    throw new IOException("Bad zip entry: " + entryPath);
+                } else if ((this.zipEntry == null || !entry.getName().equals(this.zipEntry.getName())) && entryPath.startsWith(zipPath)) {
                     if (extensions == null || Arrays.stream(extensions).anyMatch(each -> entryPath.endsWith("." + each))) {
                         list.add(new ResourcePackZipEntryFile(absoluteRootPath, zipRootFile, zipRoot, entryPath, false, entry));
                     }

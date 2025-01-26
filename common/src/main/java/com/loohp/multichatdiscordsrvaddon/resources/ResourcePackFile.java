@@ -49,11 +49,11 @@ public interface ResourcePackFile extends AutoCloseable {
 
     Collection<ResourcePackFile> listFilesAndFolders();
 
-    default Collection<ResourcePackFile> listFilesRecursively() {
+    default Collection<ResourcePackFile> listFilesRecursively() throws IOException {
         return listFilesRecursively(null);
     }
 
-    Collection<ResourcePackFile> listFilesRecursively(String[] extensions);
+    Collection<ResourcePackFile> listFilesRecursively(String[] extensions) throws IOException;
 
     ResourcePackFile getChild(String name);
 

@@ -160,8 +160,12 @@ public class ResourceDownloadManager {
                     byte[] currentEntry = baos.toByteArray();
 
                     File folder = new File(packFolder, name).getParentFile();
-                    folder.mkdirs();
-                    File file = new File(folder, fileName);
+                    File normalizedFolder = folder.toPath().normalize().toFile();
+                    if (!normalizedFolder.toPath().startsWith(packFolder.toPath())) {
+                        throw new IOException("Bad zip entry: " + name);
+                    }
+                    normalizedFolder.mkdirs();
+                    File file = new File(normalizedFolder, fileName);
                     if (file.exists()) {
                         file.delete();
                     }
