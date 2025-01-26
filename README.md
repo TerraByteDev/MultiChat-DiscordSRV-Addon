@@ -14,9 +14,9 @@ This fork aims to bring the functionality of the original InteractiveChat addon 
 This fork mostly removes the complete dependency on InteractiveChat - A lot of InteractiveChat classes are carried over to still maintain compatibility.\
 All code credits go towards LOOHP, who has given permission for this fork to be created and maintained by me.
 
-This fork also removes support for 1.21 and 1.20.5.\
+This fork also removes support for 1.21, 1.21.2 and 1.20.5.\
 1.20.5 was just a client update, and 1.21 contains bugs and exploits, so it is not recommended to use these versions.\
-1.20, 1.20.1, 1.20.2, 1.20.4, 1.20.6, 1.21.1, 1.21.2, 1.21.3, 1.21.4 are still supported.
+1.20, 1.20.1, 1.20.2, 1.20.4, 1.20.6, 1.21.1, 1.21.3, 1.21.4 are still supported.
 
 > [!WARNING]
 > If you encounter bugs while using this fork, **do not report this to the original author!**\
