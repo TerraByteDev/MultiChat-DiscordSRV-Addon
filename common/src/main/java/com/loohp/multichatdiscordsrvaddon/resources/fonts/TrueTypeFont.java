@@ -199,7 +199,7 @@ public class TrueTypeFont extends MinecraftFont {
             g.drawString(character, x, y + height);
             if (bold) {
                 g.drawString(character, x + (scale * 2) + extraWidth, y + height);
-                finalWidth += scale * 2;
+                finalWidth += (int) (scale * 2);
             }
         } else {
             for (BufferedImage magicCharImage : magicCharImages) {
@@ -209,7 +209,7 @@ public class TrueTypeFont extends MinecraftFont {
                 for (BufferedImage magicCharImage : magicCharImages) {
                     g.drawImage(magicCharImage, (int) (x + (scale * 2)) + extraWidth, y, newW, height, null);
                 }
-                finalWidth += scale * 2;
+                finalWidth += (int) (scale * 2);
             }
         }
         g.dispose();

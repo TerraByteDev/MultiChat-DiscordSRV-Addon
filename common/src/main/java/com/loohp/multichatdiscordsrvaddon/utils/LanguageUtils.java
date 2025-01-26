@@ -130,9 +130,12 @@ public class LanguageUtils {
                                         if (name.matches("^.*assets/minecraft/lang/en_us.(json|lang)$")) {
                                             String enUsFileHash = HashUtils.createSha1String(new ByteArrayInputStream(currentEntry));
                                             String enUsExtension = name.substring(name.indexOf(".") + 1);
+                                            File fileToSave = new File(langFileFolder, "en_us" + "." + enUsExtension);
+                                            if (!fileToSave.toPath().normalize().startsWith(langFileFolder.toPath())) {
+                                                throw new Exception("Bad zip entry: " + name);
+                                            }
                                             if (data.containsKey("en_us")) {
                                                 JSONObject values = (JSONObject) data.get("en_us");
-                                                File fileToSave = new File(langFileFolder, "en_us" + "." + enUsExtension);
                                                 if (!values.get("hash").toString().equals(enUsFileHash) || !fileToSave.exists()) {
                                                     values.put("hash", enUsFileHash);
                                                     if (fileToSave.exists()) {
@@ -143,7 +146,6 @@ public class LanguageUtils {
                                             } else {
                                                 JSONObject values = new JSONObject();
                                                 values.put("hash", enUsFileHash);
-                                                File fileToSave = new File(langFileFolder, "en_us" + "." + enUsExtension);
                                                 if (fileToSave.exists()) {
                                                     fileToSave.delete();
                                                 }
