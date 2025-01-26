@@ -42,7 +42,7 @@ Get the latest official stable release from the [Releases Tab](https://github.co
 - [ChatControl](https://builtbybit.com/resources/chatcontrol-format-filter-chat.18217/)
 
 ## Compiling Yourself
-> [!INFO]
+> [!NOTE]
 > You can get a pre-compiled dev build from the actions workflow here: https://github.com/TerraByteDev/MultiChat-DIscordSRV-Addon/actions
 
 ### Prerequisites
