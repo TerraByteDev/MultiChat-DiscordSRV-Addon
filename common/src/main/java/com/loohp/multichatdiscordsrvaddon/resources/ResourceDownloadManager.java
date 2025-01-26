@@ -159,17 +159,17 @@ public class ResourceDownloadManager {
                     }
                     byte[] currentEntry = baos.toByteArray();
 
-                    File folder = new File(packFolder, name).getParentFile();
-                    File normalizedFolder = folder.toPath().normalize().toFile();
-                    if (!normalizedFolder.toPath().startsWith(packFolder.toPath())) {
+                    File file = new File(packFolder, name);
+                    File normalizedFile = file.toPath().normalize().toFile();
+                    if (!normalizedFile.toPath().startsWith(packFolder.toPath())) {
                         throw new IOException("Bad zip entry: " + name);
                     }
-                    normalizedFolder.mkdirs();
-                    File file = new File(normalizedFolder, fileName);
-                    if (file.exists()) {
-                        file.delete();
+                    File folder = normalizedFile.getParentFile();
+                    folder.mkdirs();
+                    if (normalizedFile.exists()) {
+                        normalizedFile.delete();
                     }
-                    FileUtils.copy(new ByteArrayInputStream(currentEntry), file);
+                    FileUtils.copy(new ByteArrayInputStream(currentEntry), normalizedFile);
                 }
             }
         } catch (Exception e) {
