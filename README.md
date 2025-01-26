@@ -16,11 +16,24 @@ All code credits go towards LOOHP, who has given permission for this fork to be 
 
 This fork also removes support for 1.21, 1.21.2 and 1.20.5.\
 1.20.5 was just a client update, and 1.21 contains bugs and exploits, so it is not recommended to use these versions.\
-1.20, 1.20.1, 1.20.2, 1.20.4, 1.20.6, 1.21.1, 1.21.3, 1.21.4 are still supported.
+1.20, 1.20.1, 1.20.2, 1.20.4, 1.20.6, 1.21.1, 1.21.3, 1.21.4 are still supported.\
+Additionally, this plugin will include the filtered messages from your chat plugin if supported.
 
 > [!WARNING]
 > If you encounter bugs while using this fork, **do not report this to the original author!**\
 > You should create an issue for [this fork](https://github.com/TerraByteDev/MultiChat-DIscordSRV-Addon/issues).
+
+## Why fork this?
+Yes, InteractiveChat can be, and is designed to, work alongside other chat plugins (e.g. ChatControl).\
+However, from what I've seen, InteractiveChat uses a not-insignificant portion of the server thread (TL;DR, it has caused lag in many cases).
+
+Some of this has been addressed very recently, such as the previously-not-configurable fixed processing thread pool of **32 threads** however this will not do much.
+
+Additionally, some will prefer having a plugin that hooks *directly* into their chat plugin!\
+Like mentioned before, this plugin also allows the messages that are passed through to DiscordSRV to be *filtered*.\
+In many cases, chat plugins will not edit the AsyncChatEvent when filtered, or will just cancel it. This results in one of two outcomes:
+1. The message is not sent at all to discord.
+2. The unfiltered message is sent to discord.
 
 ## Missing Features
 Right now, this fork does not support the following features (that the original plugin *does* support):
