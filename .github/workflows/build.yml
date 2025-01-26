@@ -50,13 +50,9 @@ jobs:
         if: steps.cache-maven.outputs.cache-hit != 'true'
         run: if [ ! -f "~/.m2/repository/org/bukkit/craftbukkit/1.20.4-R0.1-SNAPSHOT/craftbukkit-1.20.4-R0.1-SNAPSHOT-remapped-mojang.jar" ]; then cd ~/spigot-buildtools && java -jar BuildTools.jar --rev 1.20.4 --remapped --compile CRAFTBUKKIT; fi
 
-      - name: Install CraftBukkit 1.20.5
-        if: steps.cache-maven.outputs.cache-hit != 'true'
-        run: if [ ! -f "~/.m2/repository/org/bukkit/craftbukkit/1.20.5-R0.1-SNAPSHOT/craftbukkit-1.20.5-R0.1-SNAPSHOT-remapped-mojang.jar" ]; then cd ~/spigot-buildtools && java -jar BuildTools.jar --rev 1.20.5 --remapped --compile CRAFTBUKKIT; fi
-
       - name: Install CraftBukkit 1.20.6
         if: steps.cache-maven.outputs.cache-hit != 'true'
-        run: if [ ! -f "~/.m2/repository/org/bukkit/craftbukkit/1.20.6-R0.1-SNAPSHOT/craftbukkit-1.20.6-R0.1-SNAPSHOT-remapped-mojang.jar" ]; then cd ~/spigot-buildtools && java -jar BuildTools.jar --rev 1.20.6 --remapped; fi
+        run: if [ ! -f "~/.m2/repository/org/bukkit/craftbukkit/1.20.6-R0.1-SNAPSHOT/craftbukkit-1.20.6-R0.1-SNAPSHOT-remapped-mojang.jar" ]; then cd ~/spigot-buildtools && java -jar BuildTools.jar --rev 1.20.6 --remapped --compile CRAFTBUKKIT; fi
 
       - name: Install CraftBukkit 1.21
         if: steps.cache-maven.outputs.cache-hit != 'true'
