@@ -83,4 +83,4 @@ jobs:
         with:
           name: MultiChatDiscordSrvAddon-${{ env.version }}+${{ github.run_number }}
           path: |
-            dist/target/MultiChatDiscordSrvAddon-*.jar
+            common/target/MultiChatDiscordSrvAddon-*.jar
