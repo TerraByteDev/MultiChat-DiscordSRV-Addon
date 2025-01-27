@@ -1,5 +1,5 @@
 name: MultiChatDiscordSrvAddon
-author: "loohp", "Skullians"
+author: ["loohp", "Skullians"]
 version: ${project.version}
 main: com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon
 api-version: 1.13
