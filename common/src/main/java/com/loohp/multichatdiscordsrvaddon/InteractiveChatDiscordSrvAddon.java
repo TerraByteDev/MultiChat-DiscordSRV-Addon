@@ -671,18 +671,18 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
         previewMaps = config.getConfiguration().getBoolean("InventoryImage.Item.PreviewMaps");
 
         try {
-            ItemStack unknown = new ItemStack(Material.valueOf(getConfig().getString("Settings.UnknownItem.ReplaceItem").toUpperCase()));
+            ItemStack unknown = new ItemStack(Material.valueOf(config.getConfiguration().getString("Settings.UnknownItem.ReplaceItem").toUpperCase()));
             ItemMeta meta = unknown.getItemMeta();
-            meta.setDisplayName(ChatColorUtils.translateAlternateColorCodes('&', getConfig().getString("Settings.UnknownItem.DisplayName")));
-            meta.setLore(getConfig().getStringList("Settings.UnknownItem.Lore").stream().map(each -> ChatColorUtils.translateAlternateColorCodes('&', each)).collect(Collectors.toList()));
+            meta.setDisplayName(ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Settings.UnknownItem.DisplayName")));
+            meta.setLore(config.getConfiguration().getStringList("Settings.UnknownItem.Lore").stream().map(each -> ChatColorUtils.translateAlternateColorCodes('&', each)).collect(Collectors.toList()));
             unknown.setItemMeta(meta);
             this.unknownReplaceItem = unknown;
         } catch (Exception e) {
-            ItemStack unknown = ICMaterial.from(getConfig().getString("Settings.UnknownItem.ReplaceItem")).parseItem();
+            ItemStack unknown = ICMaterial.from(config.getConfiguration().getString("Settings.UnknownItem.ReplaceItem")).parseItem();
             unknown.setAmount(1);
             ItemMeta meta = unknown.getItemMeta();
-            meta.setDisplayName(ChatColorUtils.translateAlternateColorCodes('&', getConfig().getString("Settings.UnknownItem.DisplayName")));
-            meta.setLore(getConfig().getStringList("Settings.UnknownItem.Lore").stream().map(each -> ChatColorUtils.translateAlternateColorCodes('&', each)).collect(Collectors.toList()));
+            meta.setDisplayName(ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Settings.UnknownItem.DisplayName")));
+            meta.setLore(config.getConfiguration().getStringList("Settings.UnknownItem.Lore").stream().map(each -> ChatColorUtils.translateAlternateColorCodes('&', each)).collect(Collectors.toList()));
             unknown.setItemMeta(meta);
             this.unknownReplaceItem = unknown;
         }
@@ -714,11 +714,11 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
             placeholderList.put(enderChestPlaceholder.getInternalId(), enderChestPlaceholder);
         }
 
-        invFrame1 = new ItemStack(Material.valueOf(getConfig().getString("InventoryImage.Inventory.Frame.Primary")), 1);
-        invFrame2 = new ItemStack(Material.valueOf(getConfig().getString("InventoryImage.Inventory.Frame.Secondary")), 1);
+        invFrame1 = new ItemStack(Material.valueOf(config.getConfiguration().getString("InventoryImage.Inventory.Frame.Primary")), 1);
+        invFrame2 = new ItemStack(Material.valueOf(config.getConfiguration().getString("InventoryImage.Inventory.Frame.Secondary")), 1);
 
-        itemFrame1 = new ItemStack(Material.valueOf(getConfig().getString("InventoryImage.Item.Frame.Primary")), 1);
-        itemFrame2 = new ItemStack(Material.valueOf(getConfig().getString("InventoryImage.Item.Frame.Secondary")), 1);
+        itemFrame1 = new ItemStack(Material.valueOf(config.getConfiguration().getString("InventoryImage.Item.Frame.Primary")), 1);
+        itemFrame2 = new ItemStack(Material.valueOf(config.getConfiguration().getString("InventoryImage.Item.Frame.Secondary")), 1);
 
         universalCooldown = config.getConfiguration().getLong("Settings.UniversalCooldown") * 1000;
 
