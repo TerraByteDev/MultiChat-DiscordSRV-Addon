@@ -27,6 +27,7 @@ import com.loohp.multichatdiscordsrvaddon.resources.ResourceLoadingException;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourcePackFile;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,23 +51,27 @@ public class EquipmentModelDefinitionManager extends AbstractManager implements 
         if (!root.exists() || !root.isDirectory()) {
             throw new IllegalArgumentException(root.getAbsolutePath() + " is not a directory.");
         }
-        Map<String, EquipmentModelDefinition> equipmentDefinition = new HashMap<>();
-        Collection<ResourcePackFile> files = root.listFilesRecursively(new String[] {"json"});
-        for (ResourcePackFile file : files) {
-            try {
-                String key = namespace + ":" + file.getRelativePathFrom(root);
-                key = key.substring(0, key.lastIndexOf("."));
-                JSONObject json = readJSONObject(file);
-                JSONObject rootJson = (JSONObject) json.get("layers");
-                if (rootJson != null) {
-                    EquipmentModelDefinition equipmentModelDefinition = EquipmentModelDefinition.fromJson(rootJson);
-                    equipmentDefinition.put(key, equipmentModelDefinition);
+        try {
+            Map<String, EquipmentModelDefinition> equipmentDefinition = new HashMap<>();
+            Collection<ResourcePackFile> files = root.listFilesRecursively(new String[] {"json"});
+            for (ResourcePackFile file : files) {
+                try {
+                    String key = namespace + ":" + file.getRelativePathFrom(root);
+                    key = key.substring(0, key.lastIndexOf("."));
+                    JSONObject json = readJSONObject(file);
+                    JSONObject rootJson = (JSONObject) json.get("layers");
+                    if (rootJson != null) {
+                        EquipmentModelDefinition equipmentModelDefinition = EquipmentModelDefinition.fromJson(rootJson);
+                        equipmentDefinition.put(key, equipmentModelDefinition);
+                    }
+                } catch (Exception e) {
+                    new ResourceLoadingException("Unable to load equipment model definition " + file.getAbsolutePath(), e).printStackTrace();
                 }
-            } catch (Exception e) {
-                new ResourceLoadingException("Unable to load equipment model definition " + file.getAbsolutePath(), e).printStackTrace();
             }
+            this.equipmentDefinition.putAll(equipmentDefinition);
+        } catch (IOException error) {
+            throw new RuntimeException(error);
         }
-        this.equipmentDefinition.putAll(equipmentDefinition);
     }
 
     @Override

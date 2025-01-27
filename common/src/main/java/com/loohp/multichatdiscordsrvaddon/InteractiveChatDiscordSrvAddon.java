@@ -912,9 +912,9 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
         });
     }
 
-    public void sendMessage(String message, CommandSender... senders) {
+    public void sendMessage(Object message, CommandSender... senders) {
         for (CommandSender sender : senders) {
-            audience.sender(sender).sendMessage(MiniMessage.miniMessage().deserialize(ICLogger.PREFIX + " " + message));
+            audience.sender(sender).sendMessage(message instanceof Component ? MiniMessage.miniMessage().deserialize(ICLogger.PREFIX).append(Component.text(" ")).append((Component) message) : MiniMessage.miniMessage().deserialize(ICLogger.PREFIX + " " + message));
         }
     }
 

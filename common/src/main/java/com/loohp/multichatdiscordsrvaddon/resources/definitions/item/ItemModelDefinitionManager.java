@@ -27,6 +27,7 @@ import com.loohp.multichatdiscordsrvaddon.resources.ResourceLoadingException;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourcePackFile;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,23 +53,27 @@ public class ItemModelDefinitionManager extends AbstractManager implements IItem
         if (!root.exists() || !root.isDirectory()) {
             throw new IllegalArgumentException(root.getAbsolutePath() + " is not a directory.");
         }
-        Map<String, ItemModelDefinition> itemDefinitions = new HashMap<>();
-        Collection<ResourcePackFile> files = root.listFilesRecursively(new String[] {"json"});
-        for (ResourcePackFile file : files) {
-            try {
-                String key = namespace + ":" + file.getRelativePathFrom(root);
-                key = key.substring(0, key.lastIndexOf("."));
-                JSONObject json = readJSONObject(file);
-                JSONObject rootJson = (JSONObject) json.get("model");
-                if (rootJson != null) {
-                    ItemModelDefinition itemModelDefinition = ItemModelDefinition.fromJson(rootJson);
-                    itemDefinitions.put(key, itemModelDefinition);
+        try {
+            Map<String, ItemModelDefinition> itemDefinitions = new HashMap<>();
+            Collection<ResourcePackFile> files = root.listFilesRecursively(new String[] {"json"});
+            for (ResourcePackFile file : files) {
+                try {
+                    String key = namespace + ":" + file.getRelativePathFrom(root);
+                    key = key.substring(0, key.lastIndexOf("."));
+                    JSONObject json = readJSONObject(file);
+                    JSONObject rootJson = (JSONObject) json.get("model");
+                    if (rootJson != null) {
+                        ItemModelDefinition itemModelDefinition = ItemModelDefinition.fromJson(rootJson);
+                        itemDefinitions.put(key, itemModelDefinition);
+                    }
+                } catch (Exception e) {
+                    new ResourceLoadingException("Unable to load item model definition " + file.getAbsolutePath(), e).printStackTrace();
                 }
-            } catch (Exception e) {
-                new ResourceLoadingException("Unable to load item model definition " + file.getAbsolutePath(), e).printStackTrace();
             }
+            this.itemDefinitions.putAll(itemDefinitions);
+        } catch (IOException error) {
+            throw new RuntimeException(error);
         }
-        this.itemDefinitions.putAll(itemDefinitions);
     }
 
     @Override

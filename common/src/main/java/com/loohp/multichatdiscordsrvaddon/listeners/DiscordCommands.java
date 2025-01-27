@@ -929,7 +929,8 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             }
             int errorCode = -1;
             try {
-                OfflineICPlayer offlineICPlayer = ICPlayerFactory.getOfflineICPlayer(uuid);
+                OfflinePlayer offlineICPlayer = Bukkit.getOfflinePlayer(uuid);
+                OfflinePlayerData offlinePlayerData = PlayerUtils.getData(offlineICPlayer);
                 if (offlineICPlayer == null) {
                     if (InteractiveChatDiscordSrvAddon.plugin.shareInvCommandIsMainServer) {
                         event.reply(ChatColorUtils.stripColor(InteractiveChatDiscordSrvAddon.plugin.unableToRetrieveData) + " (" + errorCode + ")").setEphemeral(true).queue();
@@ -941,12 +942,12 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                     event.deferReply().queue();
                 }
                 errorCode--;
-                ICPlayer icplayer = offlineICPlayer.getPlayer();
-                if (InteractiveChat.bungeecordMode && icplayer != null) {
-                    if (icplayer.isLocal()) {
-                        BungeeMessageSender.forwardInventory(System.currentTimeMillis(), uuid, icplayer.isRightHanded(), icplayer.getSelectedSlot(), icplayer.getExperienceLevel(), null, icplayer.getInventory());
+                Player icplayer = offlineICPlayer.getPlayer();
+                if (InteractiveChatDiscordSrvAddon.plugin.useBungeecord && icplayer != null) {
+                    if (PlayerUtils.isLocal(icplayer)) {
+                        BungeeMessageSender.forwardInventory(System.currentTimeMillis(), uuid, offlinePlayerData.isRightHanded(), offlinePlayerData.getSelectedSlot(), offlinePlayerData.getXpLevel(), null, offlinePlayerData.getInventory());
                     } else {
-                        TimeUnit.MILLISECONDS.sleep(InteractiveChat.remoteDelay);
+                        TimeUnit.MILLISECONDS.sleep(InteractiveChatDiscordSrvAddon.remoteDelay);
                     }
                 }
                 errorCode--;
@@ -954,7 +955,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                 errorCode--;
                 String title = ChatColorUtils.stripColor(InteractiveChatDiscordSrvAddon.plugin.shareInvCommandTitle.replace("{Player}", offlineICPlayer.getName()));
                 errorCode--;
-                String sha1 = HashUtils.createSha1(true, offlineICPlayer.getSelectedSlot(), offlineICPlayer.getExperienceLevel(), title, offlineICPlayer.getInventory());
+                String sha1 = HashUtils.createSha1(true, offlinePlayerData.getSelectedSlot(), offlinePlayerData.getXpLevel(), title, offlinePlayerData.getInventory());
                 errorCode--;
                 layout0(offlineICPlayer, sha1, title);
                 errorCode--;
@@ -971,7 +972,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                     discordsrv.broadcastMessageToMinecraftServer(minecraftChannel, ComponentStringUtils.toDiscordSRVComponent(Component.text(key)), event.getUser());
                 }
                 if (InteractiveChatDiscordSrvAddon.plugin.shareInvCommandIsMainServer) {
-                    ImageDisplayData data = new ImageDisplayData(offlineICPlayer, 0, title, ImageDisplayType.INVENTORY, true, new TitledInventoryWrapper(Component.translatable(TranslationKeyUtils.getDefaultContainerTitle()), offlineICPlayer.getInventory()));
+                    ImageDisplayData data = new ImageDisplayData(offlineICPlayer, 0, title, ImageDisplayType.INVENTORY, true, new TitledInventoryWrapper(Component.translatable(TranslationKeyUtils.getDefaultContainerTitle()), offlinePlayerData.getInventory()));
                     ValuePairs<List<DiscordMessageContent>, InteractionHandler> pair = DiscordContentUtils.createContents(Collections.singletonList(data), offlineICPlayer);
                     List<DiscordMessageContent> contents = pair.getFirst();
                     InteractionHandler interactionHandler = pair.getSecond();
@@ -1032,7 +1033,8 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             }
             int errorCode = -1;
             try {
-                OfflineICPlayer offlineICPlayer = ICPlayerFactory.getOfflineICPlayer(uuid);
+                OfflinePlayer offlineICPlayer = Bukkit.getOfflinePlayer(uuid);
+                OfflinePlayerData offlinePlayerData = PlayerUtils.getData(offlineICPlayer);
                 if (offlineICPlayer == null) {
                     if (InteractiveChatDiscordSrvAddon.plugin.shareEnderCommandIsMainServer) {
                         event.reply(ChatColorUtils.stripColor(InteractiveChatDiscordSrvAddon.plugin.unableToRetrieveData) + " (" + errorCode + ")").setEphemeral(true).queue();
@@ -1044,12 +1046,12 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                     event.deferReply().queue();
                 }
                 errorCode--;
-                ICPlayer icplayer = offlineICPlayer.getPlayer();
-                if (InteractiveChat.bungeecordMode && icplayer != null) {
-                    if (icplayer.isLocal()) {
-                        BungeeMessageSender.forwardEnderchest(System.currentTimeMillis(), uuid, icplayer.isRightHanded(), icplayer.getSelectedSlot(), icplayer.getExperienceLevel(), null, icplayer.getEnderChest());
+                Player icplayer = offlineICPlayer.getPlayer();
+                if (InteractiveChatDiscordSrvAddon.plugin.useBungeecord && icplayer != null) {
+                    if (PlayerUtils.isLocal(icplayer)) {
+                        BungeeMessageSender.forwardEnderchest(System.currentTimeMillis(), uuid, offlinePlayerData.isRightHanded(), offlinePlayerData.getSelectedSlot(), offlinePlayerData.getXpLevel(), null, icplayer.getEnderChest());
                     } else {
-                        TimeUnit.MILLISECONDS.sleep(InteractiveChat.remoteDelay);
+                        TimeUnit.MILLISECONDS.sleep(InteractiveChatDiscordSrvAddon.remoteDelay);
                     }
                 }
                 errorCode--;
@@ -1057,7 +1059,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                 errorCode--;
                 String title = ChatColorUtils.stripColor(InteractiveChatDiscordSrvAddon.plugin.shareEnderCommandTitle.replace("{Player}", offlineICPlayer.getName()));
                 errorCode--;
-                String sha1 = HashUtils.createSha1(true, offlineICPlayer.getSelectedSlot(), offlineICPlayer.getExperienceLevel(), title, offlineICPlayer.getEnderChest());
+                String sha1 = HashUtils.createSha1(true, offlinePlayerData.getSelectedSlot(), offlinePlayerData.getXpLevel(), title, offlinePlayerData.getEnderChest());
                 errorCode--;
                 ender(offlineICPlayer, sha1, title);
                 errorCode--;
@@ -1072,7 +1074,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                     discordsrv.broadcastMessageToMinecraftServer(minecraftChannel, ComponentStringUtils.toDiscordSRVComponent(Component.text(key)), event.getUser());
                 }
                 if (InteractiveChatDiscordSrvAddon.plugin.shareEnderCommandIsMainServer) {
-                    ImageDisplayData data = new ImageDisplayData(offlineICPlayer, 0, title, ImageDisplayType.ENDERCHEST, new TitledInventoryWrapper(Component.translatable(TranslationKeyUtils.getEnderChestContainerTitle()), offlineICPlayer.getEnderChest()));
+                    ImageDisplayData data = new ImageDisplayData(offlineICPlayer, 0, title, ImageDisplayType.ENDERCHEST, new TitledInventoryWrapper(Component.translatable(TranslationKeyUtils.getEnderChestContainerTitle()), offlinePlayerData.getEnderChest()));
                     ValuePairs<List<DiscordMessageContent>, InteractionHandler> pair = DiscordContentUtils.createContents(Collections.singletonList(data), offlineICPlayer);
                     List<DiscordMessageContent> contents = pair.getFirst();
                     InteractionHandler interactionHandler = pair.getSecond();

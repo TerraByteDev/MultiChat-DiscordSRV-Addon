@@ -443,32 +443,33 @@ public class OutboundToDiscordEvents implements Listener {
             Debug.debug("onGameToDiscord processing enderchest display");
             Matcher matcher = InteractiveChatDiscordSrvAddon.enderChestPlaceholder.getKeyword().matcher(plain);
             if (matcher.find()) {
-                if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), InteractiveChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(InteractiveChat.enderPlaceholder)).findFirst().get(), now)) {
-                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, InteractiveChatDiscordSrvAddon.plugin.ender));
+                if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), InteractiveChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(InteractiveChatDiscordSrvAddon.enderChestPlaceholder)).findFirst().get(), now)) {
+                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, InteractiveChatDiscordSrvAddon.plugin.enderTitle));
                     if (reserializer) {
                         replaceText = MessageUtil.reserializeToDiscord(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(replaceText));
                     }
 
                     AtomicBoolean replaced = new AtomicBoolean(false);
                     Component replaceComponent = LegacyComponentSerializer.legacySection().deserialize(replaceText);
-                    component = ComponentReplacing.replace(component, InteractiveChat.enderPlaceholder.getKeyword().pattern(), true, (groups) -> {
+                    component = ComponentReplacing.replace(component, InteractiveChatDiscordSrvAddon.enderChestPlaceholder.getKeyword().pattern(), true, (groups) -> {
                         replaced.set(true);
                         return replaceComponent;
                     });
+
+                    OfflinePlayerData offlinePlayerData = PlayerUtils.getData(icSender);
 
                     if (replaced.get() && InteractiveChatDiscordSrvAddon.plugin.enderImage) {
                         int inventoryId = DATA_ID_PROVIDER.getNext();
                         int position = matcher.start();
 
-                        Inventory inv = Bukkit.createInventory(ICInventoryHolder.INSTANCE, InventoryUtils.toMultipleOf9(icSender.getEnderChest().getSize()));
-                        for (int j = 0; j < icSender.getEnderChest().getSize(); j++) {
-                            if (icSender.getEnderChest().getItem(j) != null) {
-                                if (!icSender.getEnderChest().getItem(j).getType().equals(Material.AIR)) {
-                                    inv.setItem(j, icSender.getEnderChest().getItem(j).clone());
+                        Inventory inv = Bukkit.createInventory(ICInventoryHolder.INSTANCE, InventoryUtils.toMultipleOf9(offlinePlayerData.getEnderChest().getSize()));
+                            if (offlinePlayerData.getEnderChest().getItem(j) != null) {
+                                if (!offlinePlayerData.getEnderChest().getItem(j).getType().equals(Material.AIR)) {
+                                    inv.setItem(j, offlinePlayerData.getEnderChest().getItem(j).clone());
                                 }
                             }
                         }
-                        String title = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, InteractiveChat.enderTitle));
+                        String title = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, InteractiveChatDiscordSrvAddon.plugin.enderTitle));
 
                         GameMessageProcessInventoryEvent gameMessageProcessInventoryEvent = new GameMessageProcessInventoryEvent(icSender, title, component, false, inventoryId, inv);
                         Bukkit.getPluginManager().callEvent(gameMessageProcessInventoryEvent);
@@ -489,16 +490,14 @@ public class OutboundToDiscordEvents implements Listener {
         DiscordSRV srv = InteractiveChatDiscordSrvAddon.discordsrv;
         if (InteractiveChatDiscordSrvAddon.plugin.translateMentions && !InteractiveChatDiscordSrvAddon.plugin.suppressDiscordPings) {
             Debug.debug("onGameToDiscord processing mentions");
-            boolean hasMentionPermission = PlayerUtils.hasPermission(icSender.getUniqueId(), "interactivechat.mention.player", true, 200);
+            //boolean hasMentionPermission = PlayerUtils.hasPermission(icSender.getUniqueId(), "interactivechat.mention.player", true, 200); todo
+            boolean hasMentionPermission = true;
             if (hasMentionPermission) {
                 Map<String, UUID> names = new HashMap<>();
-                for (ICPlayer icPlayer : ICPlayerFactory.getOnlineICPlayers()) {
+                for (Player icPlayer : Bukkit.getOnlinePlayers()) {
                     UUID uuid = icPlayer.getUniqueId();
                     names.put(ChatColorUtils.stripColor(icPlayer.getName()), uuid);
                     names.put(ChatColorUtils.stripColor(icPlayer.getDisplayName()), uuid);
-                    for (String nickname : InteractiveChatAPI.getNicknames(uuid)) {
-                        names.put(ChatColorUtils.stripColor(nickname), uuid);
-                    }
                 }
                 Set<UUID> processedReceivers = new HashSet<>();
                 for (Entry<String, UUID> entry : names.entrySet()) {
@@ -509,16 +508,16 @@ public class OutboundToDiscordEvents implements Listener {
                         User user = srv.getJda().getUserById(userId);
                         if (user != null) {
                             String discordMention = user.getAsMention();
-                            component = ComponentReplacing.replace(component, CustomStringUtils.escapeMetaCharacters(InteractiveChat.mentionPrefix + name), true, PlainTextComponentSerializer.plainText().deserialize(discordMention));
+                            component = ComponentReplacing.replace(component, CustomStringUtils.escapeMetaCharacters('@' + name), true, PlainTextComponentSerializer.plainText().deserialize(discordMention));
                         }
                     }
                 }
             }
-            if (!hasMentionPermission || !PlayerUtils.hasPermission(icSender.getUniqueId(), "interactivechat.mention.here", false, 200)) {
-                component = ComponentReplacing.replace(component, CustomStringUtils.escapeMetaCharacters(InteractiveChat.mentionPrefix + "here"), false, Component.text("`" + InteractiveChat.mentionPrefix + "here`"));
+            if (!hasMentionPermission /*|| !PlayerUtils.hasPermission(icSender.getUniqueId(), "interactivechat.mention.here", false, 200) todo */) {
+                component = ComponentReplacing.replace(component, CustomStringUtils.escapeMetaCharacters('@' + "here"), false, Component.text("`" + '@' + "here`"));
             }
-            if (! hasMentionPermission || !PlayerUtils.hasPermission(icSender.getUniqueId(), "interactivechat.mention.everyone", false, 200)) {
-                component = ComponentReplacing.replace(component, CustomStringUtils.escapeMetaCharacters(InteractiveChat.mentionPrefix + "everyone"), false, Component.text("`" + InteractiveChat.mentionPrefix + "everyone`"));
+            if (! hasMentionPermission /*|| !PlayerUtils.hasPermission(icSender.getUniqueId(), "interactivechat.mention.everyone", false, 200) todo */) {
+                component = ComponentReplacing.replace(component, CustomStringUtils.escapeMetaCharacters('@' + "everyone"), false, Component.text("`" + '@'+ "everyone`"));
             }
         }
 
@@ -589,17 +588,16 @@ public class OutboundToDiscordEvents implements Listener {
             color = Color.black;
         }
         Player player = event.getPlayer();
-        ICPlayer icPlayer = ICPlayerFactory.getICPlayer(player);
 
         DiscordMessageContent content = new DiscordMessageContent(InteractiveChatDiscordSrvAddon.plugin.deathMessageTitle, null, color);
         try {
-            BufferedImage image = ImageGeneration.getItemStackImage(item, ICPlayerFactory.getICPlayer(player), InteractiveChatDiscordSrvAddon.plugin.itemAltAir);
+            BufferedImage image = ImageGeneration.getItemStackImage(item, player, InteractiveChatDiscordSrvAddon.plugin.itemAltAir);
             byte[] itemData = ImageUtils.toArray(image);
             content.setTitle(DiscordItemStackUtils.getItemNameForDiscord(item, null, InteractiveChatDiscordSrvAddon.plugin.language));
             content.setThumbnail("attachment://Item.png");
             content.addAttachment("Item.png", itemData);
 
-            DiscordToolTip discordToolTip = DiscordItemStackUtils.getToolTip(item, icPlayer, InteractiveChatDiscordSrvAddon.plugin.showAdvanceDetails);
+            DiscordToolTip discordToolTip = DiscordItemStackUtils.getToolTip(item, player, InteractiveChatDiscordSrvAddon.plugin.showAdvanceDetails);
             if (!discordToolTip.isHideTooltip() &&(!discordToolTip.isBaseItem() || InteractiveChatDiscordSrvAddon.plugin.itemUseTooltipImageOnBaseItem)) {
                 BufferedImage tooltip = ImageGeneration.getToolTipImage(discordToolTip.getComponents(), NMS.getInstance().getCustomTooltipResourceLocation(item));
                 byte[] tooltipData = ImageUtils.toArray(tooltip);
@@ -610,7 +608,7 @@ public class OutboundToDiscordEvents implements Listener {
             e.printStackTrace();
         }
 
-        Bukkit.getScheduler().runTaskLaterAsynchronously(InteractiveChat.plugin, () -> {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
             Debug.debug("onDeathMessageSend sending item to discord");
             TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(event.getChannel());
             if (event.isUsingWebhooks()) {
@@ -663,7 +661,7 @@ public class OutboundToDiscordEvents implements Listener {
             }
             try {
                 int id = DATA_ID_PROVIDER.getNext();
-                BufferedImage thumbnail = ImageGeneration.getAdvancementIcon(item, advancementType, true, ICPlayerFactory.getICPlayer(event.getPlayer()));
+                BufferedImage thumbnail = ImageGeneration.getAdvancementIcon(item, advancementType, true, event.getPlayer());
                 byte[] thumbnailData = ImageUtils.toArray(thumbnail);
                 content += "<ICA=" + id + ">";
                 messageFormat.setContent(content);
@@ -769,7 +767,7 @@ public class OutboundToDiscordEvents implements Listener {
         }
 
         message.editMessage(text + " ...").queue();
-        OfflineICPlayer player = DATA.get(matches.iterator().nextInt()).getPlayer();
+        OfflinePlayer player = DATA.get(matches.iterator().nextInt()).getPlayer();
 
         List<DiscordDisplayData> dataList = new ArrayList<>();
 
@@ -847,7 +845,7 @@ public class OutboundToDiscordEvents implements Listener {
         String webHookUrl = WebhookUtil.getWebhookUrlToUseForChannel(channel);
         WebhookUtil.editMessage(channel, String.valueOf(messageId), text + " ...", (Collection<? extends MessageEmbed>) null);
 
-        OfflineICPlayer player = DATA.get(matches.iterator().nextInt()).getPlayer();
+        OfflinePlayer player = DATA.get(matches.iterator().nextInt()).getPlayer();
 
         List<DiscordDisplayData> dataList = new ArrayList<>();
 

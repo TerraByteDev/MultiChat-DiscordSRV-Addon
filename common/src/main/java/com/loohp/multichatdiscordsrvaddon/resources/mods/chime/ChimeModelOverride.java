@@ -295,15 +295,17 @@ public class ChimeModelOverride extends ModelOverride {
                 if (player == null) {
                     return false;
                 }
+
+                OfflinePlayerData offlinePlayerData = PlayerUtils.getData(player);
                 switch (value) {
                     case HEAD:
-                        return Objects.equals(player.getEquipment().getHelmet(), itemStack);
+                        return Objects.equals(offlinePlayerData.getEquipment().getHelmet(), itemStack);
                     case CHEST:
-                        return Objects.equals(player.getEquipment().getChestplate(), itemStack);
+                        return Objects.equals(offlinePlayerData.getEquipment().getChestplate(), itemStack);
                     case LEGS:
-                        return Objects.equals(player.getEquipment().getLeggings(), itemStack);
+                        return Objects.equals(offlinePlayerData.getEquipment().getLeggings(), itemStack);
                     case FEET:
-                        return Objects.equals(player.getEquipment().getBoots(), itemStack);
+                        return Objects.equals(offlinePlayerData.getEquipment().getBoots(), itemStack);
                 }
             } else {
                 switch (value) {

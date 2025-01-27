@@ -74,7 +74,7 @@ public class HoverClickDisplayData extends DiscordDisplayData {
 
     public static class Builder {
 
-        private Player player;
+        private OfflinePlayer player;
         private Integer postion;
         private String displayText;
         private Component hoverText;
@@ -86,11 +86,11 @@ public class HoverClickDisplayData extends DiscordDisplayData {
 
         }
 
-        public Player getPlayer() {
+        public OfflinePlayer getPlayer() {
             return player;
         }
 
-        public Builder player(Player player) {
+        public Builder player(OfflinePlayer player) {
             this.player = player;
             return this;
         }
