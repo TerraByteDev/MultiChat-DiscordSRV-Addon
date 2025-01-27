@@ -151,10 +151,6 @@
                                     <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.org.eclipse</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>org.json</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.org.json</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>org.mapdb</pattern>
                                     <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.org.mapdb</shadedPattern>
                                 </relocation>
