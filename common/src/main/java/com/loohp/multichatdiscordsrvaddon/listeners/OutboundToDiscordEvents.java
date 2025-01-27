@@ -463,6 +463,7 @@ public class OutboundToDiscordEvents implements Listener {
                         int position = matcher.start();
 
                         Inventory inv = Bukkit.createInventory(ICInventoryHolder.INSTANCE, InventoryUtils.toMultipleOf9(offlinePlayerData.getEnderChest().getSize()));
+                        for (int j = 0; j < offlinePlayerData.getEnderChest().getSize(); j++) {
                             if (offlinePlayerData.getEnderChest().getItem(j) != null) {
                                 if (!offlinePlayerData.getEnderChest().getItem(j).getType().equals(Material.AIR)) {
                                     inv.setItem(j, offlinePlayerData.getEnderChest().getItem(j).clone());
