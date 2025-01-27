@@ -82,5 +82,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: MultiChatDiscordSrvAddon-${{ env.version }}+${{ github.run_number }}
-          path: |
-            common/target/MultiChatDiscordSrvAddon-*.jar
+          path: common/target/MultiChatDiscordSrvAddon-${{ env.version }}.jar
