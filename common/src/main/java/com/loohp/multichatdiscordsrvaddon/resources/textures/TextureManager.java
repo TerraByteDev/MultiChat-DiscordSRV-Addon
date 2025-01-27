@@ -172,7 +172,7 @@ public class TextureManager extends AbstractManager implements ITextureManager {
                 }
             }
         } catch (IOException error) {
-            throw new RuntimeException(error);
+            throw new ResourceLoadingException(error);
         }
         this.textures.putAll(textures);
         if (textureAtlases != null) {

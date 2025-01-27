@@ -127,7 +127,7 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
     public static boolean debug = false;
     public boolean pluginMessagePacketVerbose = false;
 
-    protected final ReentrantLock resourceReloadLock = new ReentrantLock(true);
+    public final ReentrantLock resourceReloadLock = new ReentrantLock(true);
     public Metrics metrics;
     public AtomicLong messagesCounter = new AtomicLong(0);
     public AtomicLong imageCounter = new AtomicLong(0);

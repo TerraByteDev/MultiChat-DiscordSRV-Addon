@@ -1,7 +1,7 @@
 package com.loohp.multichatdiscordsrvaddon.command;
 
 import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
-import com.loohp.multichatdiscordsrvaddon.command.subcommand.StatusCommand;
+import com.loohp.multichatdiscordsrvaddon.command.subcommand.*;
 import com.loohp.multichatdiscordsrvaddon.utils.ICLogger;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.annotations.AnnotationParser;
@@ -42,6 +42,11 @@ public class CommandHandler {
     }
 
     private void registerCommands() {
+        parser.parse(new MainCommand());
         parser.parse(new StatusCommand());
+        parser.parse(new ReloadConfigCommand());
+        parser.parse(new ReloadTexturesCommand());
+        parser.parse(new CheckUpdateCommand());
+        parser.parse(new ImageMapCommand());
     }
 }

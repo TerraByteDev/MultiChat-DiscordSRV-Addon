@@ -41,6 +41,7 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -83,34 +84,38 @@ public class ChimeManager extends ModManager implements IChimeManager {
         JSONParser parser = new JSONParser();
         Map<String, ChimeBlockModel> models = new HashMap<>();
         Map<String, TextureResource> textures = new HashMap<>();
-        Collection<ResourcePackFile> files = root.listFilesRecursively(new String[] {"json", "png"});
-        for (ResourcePackFile file : files) {
-            try {
-                String name = file.getName();
-                String relativePath = file.getRelativePathFrom(root);
-                String key = namespace + ":" + root.getName() + "/" + relativePath;
-                key = key.substring(0, key.lastIndexOf("."));
-                if (name.endsWith(".json")) {
-                    InputStreamReader reader = new InputStreamReader(new BOMInputStream(file.getInputStream()), StandardCharsets.UTF_8);
-                    JSONObject rootJson = (JSONObject) parser.parse(reader);
-                    reader.close();
-                    rootJson.remove("textures");
-                    String parent = namespace + ":" + relativePath;
-                    if (parent.contains(".")) {
-                        parent = parent.substring(0, parent.lastIndexOf("."));
+        try {
+            Collection<ResourcePackFile> files = root.listFilesRecursively(new String[] {"json", "png"});
+            for (ResourcePackFile file : files) {
+                try {
+                    String name = file.getName();
+                    String relativePath = file.getRelativePathFrom(root);
+                    String key = namespace + ":" + root.getName() + "/" + relativePath;
+                    key = key.substring(0, key.lastIndexOf("."));
+                    if (name.endsWith(".json")) {
+                        InputStreamReader reader = new InputStreamReader(new BOMInputStream(file.getInputStream()), StandardCharsets.UTF_8);
+                        JSONObject rootJson = (JSONObject) parser.parse(reader);
+                        reader.close();
+                        rootJson.remove("textures");
+                        String parent = namespace + ":" + relativePath;
+                        if (parent.contains(".")) {
+                            parent = parent.substring(0, parent.lastIndexOf("."));
+                        }
+                        rootJson.put("parent", parent);
+                        ChimeBlockModel model = CHIME_MODEL_PARSING_FUNCTION.fromJson(this, key, rootJson, useLegacyOverrides);
+                        models.put(key, model);
+                    } else if (name.endsWith(".png")) {
+                        textures.put(key, new TextureResource(this, key, file, true, null));
                     }
-                    rootJson.put("parent", parent);
-                    ChimeBlockModel model = CHIME_MODEL_PARSING_FUNCTION.fromJson(this, key, rootJson, useLegacyOverrides);
-                    models.put(key, model);
-                } else if (name.endsWith(".png")) {
-                    textures.put(key, new TextureResource(this, key, file, true, null));
+                } catch (Exception e) {
+                    new ResourceLoadingException("Unable to load block model " + file.getAbsolutePath(), e).printStackTrace();
                 }
-            } catch (Exception e) {
-                new ResourceLoadingException("Unable to load block model " + file.getAbsolutePath(), e).printStackTrace();
             }
+            this.models.putAll(models);
+            this.textures.putAll(textures);
+        } catch (IOException error) {
+            throw new ResourceLoadingException(error);
         }
-        this.models.putAll(models);
-        this.textures.putAll(textures);
     }
 
     @Override

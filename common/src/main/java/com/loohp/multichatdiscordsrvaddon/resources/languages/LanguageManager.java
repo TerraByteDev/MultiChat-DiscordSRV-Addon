@@ -31,6 +31,7 @@ import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourcePackFile;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -93,47 +94,51 @@ public class LanguageManager extends AbstractManager implements ILanguageManager
         }
         JSONParser parser = new JSONParser();
         Map<String, Map<String, String>> translations = new HashMap<>();
-        for (ResourcePackFile file : root.listFilesRecursively()) {
-            String name = file.getName();
-            if (!manager.hasFlag(ResourceManager.Flag.LEGACY_PRE_FLATTEN) && name.endsWith(".json")) {
-                try {
-                    JSONObject json = readJSONObject(file);
-                    Map<String, String> mapping = new HashMap<>();
-                    for (Object obj : json.keySet()) {
-                        try {
-                            String key = (String) obj;
-                            mapping.put(key, (String) json.get(key));
-                        } catch (Exception e) {
+        try {
+            for (ResourcePackFile file : root.listFilesRecursively()) {
+                String name = file.getName();
+                if (!manager.hasFlag(ResourceManager.Flag.LEGACY_PRE_FLATTEN) && name.endsWith(".json")) {
+                    try {
+                        JSONObject json = readJSONObject(file);
+                        Map<String, String> mapping = new HashMap<>();
+                        for (Object obj : json.keySet()) {
+                            try {
+                                String key = (String) obj;
+                                mapping.put(key, (String) json.get(key));
+                            } catch (Exception e) {
+                            }
                         }
+                        translations.put(file.getName().substring(0, file.getName().lastIndexOf(".")), mapping);
+                    } catch (Exception e) {
+                        new ResourceLoadingException("Unable to load language " + file.getAbsolutePath(), e).printStackTrace();
                     }
-                    translations.put(file.getName().substring(0, file.getName().lastIndexOf(".")), mapping);
-                } catch (Exception e) {
-                    new ResourceLoadingException("Unable to load language " + file.getAbsolutePath(), e).printStackTrace();
-                }
-            } else if (manager.hasFlag(ResourceManager.Flag.LEGACY_PRE_FLATTEN) && name.endsWith(".lang")) {
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(new BOMInputStream(file.getInputStream()), StandardCharsets.UTF_8))) {
-                    Map<String, String> mapping = new HashMap<>();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        int separator = line.indexOf("=");
-                        if (separator >= 0) {
-                            mapping.put(line.substring(0, separator), line.substring(separator + 1));
+                } else if (manager.hasFlag(ResourceManager.Flag.LEGACY_PRE_FLATTEN) && name.endsWith(".lang")) {
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new BOMInputStream(file.getInputStream()), StandardCharsets.UTF_8))) {
+                        Map<String, String> mapping = new HashMap<>();
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            int separator = line.indexOf("=");
+                            if (separator >= 0) {
+                                mapping.put(line.substring(0, separator), line.substring(separator + 1));
+                            }
                         }
+                        translations.put(file.getName().substring(0, file.getName().lastIndexOf(".")), mapping);
+                    } catch (Exception e) {
+                        new ResourceLoadingException("Unable to load language " + file.getAbsolutePath(), e).printStackTrace();
                     }
-                    translations.put(file.getName().substring(0, file.getName().lastIndexOf(".")), mapping);
-                } catch (Exception e) {
-                    new ResourceLoadingException("Unable to load language " + file.getAbsolutePath(), e).printStackTrace();
                 }
             }
-        }
-        for (Entry<String, Map<String, String>> entry : translations.entrySet()) {
-            String key = entry.getKey();
-            Map<String, String> mapping = this.translations.get(key);
-            if (mapping == null) {
-                this.translations.put(key, entry.getValue());
-            } else {
-                mapping.putAll(entry.getValue());
+            for (Entry<String, Map<String, String>> entry : translations.entrySet()) {
+                String key = entry.getKey();
+                Map<String, String> mapping = this.translations.get(key);
+                if (mapping == null) {
+                    this.translations.put(key, entry.getValue());
+                } else {
+                    mapping.putAll(entry.getValue());
+                }
             }
+        } catch (IOException error) {
+            throw new ResourceLoadingException(error);
         }
     }
 

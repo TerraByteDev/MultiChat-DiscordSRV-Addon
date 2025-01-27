@@ -7,7 +7,6 @@ import com.loohp.multichatdiscordsrvaddon.utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.incendo.cloud.annotations.Command;
@@ -24,8 +23,8 @@ public class StatusCommand {
     public void execute(
             CommandSender sender
     ) {
-        plugin.sendMessage("<grey>" + plugin.defaultResourceHashLang.replaceFirst("%s", plugin.defaultResourceHash + " (" + VersionManager.exactMinecraftVersion + ")"), sender);
-        plugin.sendMessage("<grey>" + plugin.loadedResourcesLang, sender);
+        plugin.sendMessage(plugin.defaultResourceHashLang.replaceFirst("%s", plugin.defaultResourceHash + " (" + VersionManager.exactMinecraftVersion + ")"), sender);
+        plugin.sendMessage(plugin.loadedResourcesLang, sender);
         
         for (ResourcePackInfo info : plugin.getResourceManager().getResourcePackInfo()) {
             Component name = ResourcePackInfoUtils.resolveName(info);

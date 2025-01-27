@@ -1,5 +1,5 @@
 name: MultiChatDiscordSrvAddon
-author: ["loohp", "Skullians"]
+author: "loohp", "Skullians"
 version: ${project.version}
 main: com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon
 api-version: 1.13
@@ -18,14 +18,14 @@ permissions:
   mutlichatdiscordsrv.reloadconfig:
     description: Allows you to reload the config
     default: op
-  mutlichatdiscordsrv.reloadtexture:
-    description: Allows you to reload the texture
+  mutlichatdiscordsrv.reloadtextures:
+    description: Allows you to reload the textures of the plugin
     default: op
   mutlichatdiscordsrv.status:
     description: Allows you view the status of the plugin
     default: true
-  mutlichatdiscordsrv.update:
-    description: Get updater notifications
+  mutlichatdiscordsrv.checkupdate:
+    description: Check for updates
     default: op
 
 libraries:

@@ -28,6 +28,7 @@ import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourcePackFile;
 import com.loohp.multichatdiscordsrvaddon.resources.models.ModelOverride.ModelOverrideType;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -58,21 +59,25 @@ public class ModelManager extends AbstractManager implements IModelManager {
         if (!root.exists() || !root.isDirectory()) {
             throw new IllegalArgumentException(root.getAbsolutePath() + " is not a directory.");
         }
-        boolean useLegacyOverrides = manager.hasFlag(ResourceManager.Flag.LEGACY_MODEL_DEFINITION);
-        Map<String, BlockModel> models = new HashMap<>();
-        Collection<ResourcePackFile> files = root.listFilesRecursively(new String[] {"json"});
-        for (ResourcePackFile file : files) {
-            try {
-                String key = namespace + ":" + file.getRelativePathFrom(root);
-                key = key.substring(0, key.lastIndexOf("."));
-                JSONObject rootJson = readJSONObject(file);
-                BlockModel model = modelParsingFunction.fromJson(this, key, rootJson, useLegacyOverrides);
-                models.put(key, model);
-            } catch (Exception e) {
-                new ResourceLoadingException("Unable to load block model " + file.getAbsolutePath(), e).printStackTrace();
+        try {
+            boolean useLegacyOverrides = manager.hasFlag(ResourceManager.Flag.LEGACY_MODEL_DEFINITION);
+            Map<String, BlockModel> models = new HashMap<>();
+            Collection<ResourcePackFile> files = root.listFilesRecursively(new String[] {"json"});
+            for (ResourcePackFile file : files) {
+                try {
+                    String key = namespace + ":" + file.getRelativePathFrom(root);
+                    key = key.substring(0, key.lastIndexOf("."));
+                    JSONObject rootJson = readJSONObject(file);
+                    BlockModel model = modelParsingFunction.fromJson(this, key, rootJson, useLegacyOverrides);
+                    models.put(key, model);
+                } catch (Exception e) {
+                    new ResourceLoadingException("Unable to load block model " + file.getAbsolutePath(), e).printStackTrace();
+                }
             }
+            this.models.putAll(models);
+        } catch (IOException error) {
+            throw new ResourceLoadingException(error);
         }
-        this.models.putAll(models);
     }
 
     @Override

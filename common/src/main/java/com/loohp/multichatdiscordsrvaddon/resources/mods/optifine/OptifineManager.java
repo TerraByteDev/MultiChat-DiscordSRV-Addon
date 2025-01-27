@@ -59,6 +59,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -102,52 +103,56 @@ public class OptifineManager extends ModManager implements IOptifineManager {
     protected void loadDirectory(String namespace, ResourcePackFile root, Object... meta) {
         boolean useLegacyOverrides = manager.hasFlag(ResourceManager.Flag.LEGACY_MODEL_DEFINITION);
         JSONParser parser = new JSONParser();
-        for (ResourcePackFile file : root.listFilesRecursively()) {
-            try {
-                String path = file.getRelativePathFrom(root);
-                String key = namespace + ":" + root.getName() + "/" + path;
-                String extension = "";
-                if (key.lastIndexOf(".") >= 0) {
-                    extension = key.substring(key.lastIndexOf(".") + 1);
-                }
-                if (path.equalsIgnoreCase("cit.properties")) {
-                    if (citGlobalProperties == null) {
-                        InputStreamReader reader = new InputStreamReader(new BOMInputStream(file.getInputStream()), StandardCharsets.UTF_8);
-                        Properties properties = new Properties();
-                        properties.load(reader);
-                        reader.close();
-                        citGlobalProperties = CITGlobalProperties.fromProperties(properties);
+        try {
+            for (ResourcePackFile file : root.listFilesRecursively()) {
+                try {
+                    String path = file.getRelativePathFrom(root);
+                    String key = namespace + ":" + root.getName() + "/" + path;
+                    String extension = "";
+                    if (key.lastIndexOf(".") >= 0) {
+                        extension = key.substring(key.lastIndexOf(".") + 1);
                     }
-                } else {
-                    if (extension.equalsIgnoreCase("json")) {
-                        InputStreamReader reader = new InputStreamReader(new BOMInputStream(file.getInputStream()), StandardCharsets.UTF_8);
-                        JSONObject rootJson = (JSONObject) parser.parse(reader);
-                        reader.close();
-                        assets.put(key, new ValuePairs<>(file, BlockModel.fromJson(this, key.substring(0, key.length() - (extension.isEmpty() ? 0 : extension.length() + 1)), rootJson, useLegacyOverrides)));
-                    } else if (extension.equalsIgnoreCase("png")) {
-                        assets.put(key, new ValuePairs<>(file, new TextureResource(this, key, file, true, null)));
-                    } else if (extension.equalsIgnoreCase("mcmeta")) {
-                        InputStreamReader reader = new InputStreamReader(new BOMInputStream(file.getInputStream()), StandardCharsets.UTF_8);
-                        JSONObject rootJson = (JSONObject) parser.parse(reader);
-                        reader.close();
-                        TextureMeta textureMeta = TextureMeta.fromJson(this, key, file, rootJson);
-                        assets.put(key, new ValuePairs<>(file, textureMeta));
-                    } else if (extension.equalsIgnoreCase("properties")) {
-                        if (path.startsWith("cit/")) {
+                    if (path.equalsIgnoreCase("cit.properties")) {
+                        if (citGlobalProperties == null) {
                             InputStreamReader reader = new InputStreamReader(new BOMInputStream(file.getInputStream()), StandardCharsets.UTF_8);
                             Properties properties = new Properties();
                             properties.load(reader);
                             reader.close();
-                            CITProperties citProperties = CITProperties.fromProperties(file, properties);
-                            citOverrides.put(key, new ValuePairs<>(file, citProperties));
+                            citGlobalProperties = CITGlobalProperties.fromProperties(properties);
                         }
                     } else {
-                        assets.put(key, new ValuePairs<>(file, null));
+                        if (extension.equalsIgnoreCase("json")) {
+                            InputStreamReader reader = new InputStreamReader(new BOMInputStream(file.getInputStream()), StandardCharsets.UTF_8);
+                            JSONObject rootJson = (JSONObject) parser.parse(reader);
+                            reader.close();
+                            assets.put(key, new ValuePairs<>(file, BlockModel.fromJson(this, key.substring(0, key.length() - (extension.isEmpty() ? 0 : extension.length() + 1)), rootJson, useLegacyOverrides)));
+                        } else if (extension.equalsIgnoreCase("png")) {
+                            assets.put(key, new ValuePairs<>(file, new TextureResource(this, key, file, true, null)));
+                        } else if (extension.equalsIgnoreCase("mcmeta")) {
+                            InputStreamReader reader = new InputStreamReader(new BOMInputStream(file.getInputStream()), StandardCharsets.UTF_8);
+                            JSONObject rootJson = (JSONObject) parser.parse(reader);
+                            reader.close();
+                            TextureMeta textureMeta = TextureMeta.fromJson(this, key, file, rootJson);
+                            assets.put(key, new ValuePairs<>(file, textureMeta));
+                        } else if (extension.equalsIgnoreCase("properties")) {
+                            if (path.startsWith("cit/")) {
+                                InputStreamReader reader = new InputStreamReader(new BOMInputStream(file.getInputStream()), StandardCharsets.UTF_8);
+                                Properties properties = new Properties();
+                                properties.load(reader);
+                                reader.close();
+                                CITProperties citProperties = CITProperties.fromProperties(file, properties);
+                                citOverrides.put(key, new ValuePairs<>(file, citProperties));
+                            }
+                        } else {
+                            assets.put(key, new ValuePairs<>(file, null));
+                        }
                     }
+                } catch (Exception e) {
+                    new ResourceLoadingException("Unable to load optifine asset " + file.getAbsolutePath(), e).printStackTrace();
                 }
-            } catch (Exception e) {
-                new ResourceLoadingException("Unable to load optifine asset " + file.getAbsolutePath(), e).printStackTrace();
             }
+        } catch (IOException error) {
+            throw new ResourceLoadingException(error);
         }
     }
 

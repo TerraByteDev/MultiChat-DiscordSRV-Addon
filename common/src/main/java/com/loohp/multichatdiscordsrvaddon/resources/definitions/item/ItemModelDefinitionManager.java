@@ -72,7 +72,7 @@ public class ItemModelDefinitionManager extends AbstractManager implements IItem
             }
             this.itemDefinitions.putAll(itemDefinitions);
         } catch (IOException error) {
-            throw new RuntimeException(error);
+            throw new ResourceLoadingException(error);
         }
     }
 

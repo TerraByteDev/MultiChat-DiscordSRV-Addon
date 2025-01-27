@@ -32,6 +32,7 @@ import com.loohp.multichatdiscordsrvaddon.resources.ResourcePackFile;
 import com.loohp.multichatdiscordsrvaddon.resources.textures.GeneratedTextureResource;
 import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureResource;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -65,50 +66,54 @@ public class FontManager extends AbstractManager implements IFontManager {
         Map<String, ResourcePackFile> fileList = files.computeIfAbsent(namespace, k -> new HashMap<>());
         JSONParser parser = new JSONParser();
         Map<String, FontProvider> fonts = new HashMap<>(this.fonts);
-        Collection<ResourcePackFile> files = root.listFilesRecursively();
-        for (ResourcePackFile file : files) {
-            if (!file.isDirectory()) {
-                fileList.put(file.getRelativePathFrom(root), file);
-            }
-        }
-        for (ResourcePackFile file : files) {
-            if (file.getName().endsWith(".json")) {
-                try {
-                    String key = namespace + ":" + file.getRelativePathFrom(root);
-                    key = key.substring(0, key.lastIndexOf("."));
-                    JSONObject rootJson = readJSONObject(file);
-                    List<MinecraftFont> providedFonts = new ArrayList<>();
-                    int index = -1;
-                    for (Object obj : (JSONArray) rootJson.get("providers")) {
-                        index++;
-                        JSONObject fontJson = (JSONObject) obj;
-                        try {
-                            MinecraftFont minecraftFont = MinecraftFont.fromJson(manager, this, null, fontJson);
-                            providedFonts.add(minecraftFont);
-                        } catch (Exception e) {
-                            new ResourceLoadingException("Unable to load font provider " + index + " in " + file.getAbsolutePath(), e).printStackTrace();
-                        }
-                    }
-                    FontProvider existingProvider = fonts.get(key);
-                    if (existingProvider == null) {
-                        FontProvider provider = new FontProvider(manager, key, providedFonts);
-                        for (MinecraftFont mcFont : provider.getProviders()) {
-                            mcFont.setProvider(provider);
-                        }
-                        fonts.put(key, provider);
-                    } else {
-                        for (MinecraftFont mcFont : providedFonts) {
-                            mcFont.setProvider(existingProvider);
-                        }
-                        existingProvider.prependProviders(providedFonts);
-                    }
-                } catch (Exception e) {
-                    new ResourceLoadingException("Unable to load font " + file.getAbsolutePath(), e).printStackTrace();
+        try {
+            Collection<ResourcePackFile> files = root.listFilesRecursively();
+            for (ResourcePackFile file : files) {
+                if (!file.isDirectory()) {
+                    fileList.put(file.getRelativePathFrom(root), file);
                 }
             }
+            for (ResourcePackFile file : files) {
+                if (file.getName().endsWith(".json")) {
+                    try {
+                        String key = namespace + ":" + file.getRelativePathFrom(root);
+                        key = key.substring(0, key.lastIndexOf("."));
+                        JSONObject rootJson = readJSONObject(file);
+                        List<MinecraftFont> providedFonts = new ArrayList<>();
+                        int index = -1;
+                        for (Object obj : (JSONArray) rootJson.get("providers")) {
+                            index++;
+                            JSONObject fontJson = (JSONObject) obj;
+                            try {
+                                MinecraftFont minecraftFont = MinecraftFont.fromJson(manager, this, null, fontJson);
+                                providedFonts.add(minecraftFont);
+                            } catch (Exception e) {
+                                new ResourceLoadingException("Unable to load font provider " + index + " in " + file.getAbsolutePath(), e).printStackTrace();
+                            }
+                        }
+                        FontProvider existingProvider = fonts.get(key);
+                        if (existingProvider == null) {
+                            FontProvider provider = new FontProvider(manager, key, providedFonts);
+                            for (MinecraftFont mcFont : provider.getProviders()) {
+                                mcFont.setProvider(provider);
+                            }
+                            fonts.put(key, provider);
+                        } else {
+                            for (MinecraftFont mcFont : providedFonts) {
+                                mcFont.setProvider(existingProvider);
+                            }
+                            existingProvider.prependProviders(providedFonts);
+                        }
+                    } catch (Exception e) {
+                        new ResourceLoadingException("Unable to load font " + file.getAbsolutePath(), e).printStackTrace();
+                    }
+                }
+            }
+            this.fonts.clear();
+            this.fonts.putAll(fonts);
+        } catch (IOException error) {
+            throw new ResourceLoadingException(error);
         }
-        this.fonts.clear();
-        this.fonts.putAll(fonts);
     }
 
     @Override
