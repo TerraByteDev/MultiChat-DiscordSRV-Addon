@@ -393,7 +393,7 @@
                     <artifactId>asm-commons</artifactId>
                 </exclusion>
             </exclusions>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.madgag</groupId>
@@ -444,6 +444,18 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-serializer-json</artifactId>
+            <version>4.18.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-serializer-gson</artifactId>
+            <version>4.18.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.loohp</groupId>
             <artifactId>BlockModelRenderer</artifactId>
             <version>1.1.4.0</version>
@@ -465,11 +477,13 @@
             <groupId>org.incendo</groupId>
             <artifactId>cloud-annotations</artifactId>
             <version>2.0.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.incendo</groupId>
             <artifactId>cloud-paper</artifactId>
             <version>2.0.0-beta.10</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.loohp</groupId>
@@ -529,6 +543,7 @@
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
             <version>13.0.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.Carleslc.Simple-YAML</groupId>
@@ -551,12 +566,13 @@
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
             <version>4.3.4</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>26.0.1</version>
-            <scope>compile</scope>
+            <version>26.0.2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
