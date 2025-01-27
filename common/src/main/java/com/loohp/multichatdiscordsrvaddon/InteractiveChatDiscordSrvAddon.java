@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.loohp.multichatdiscordsrvaddon.command.CommandHandler;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
@@ -369,7 +370,8 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
         getServer().getPluginManager().registerEvents(new ICPlayerEvents(), this);
         getServer().getPluginManager().registerEvents(new Debug(), this);
         getServer().getPluginManager().registerEvents(new Updater(), this);
-        getCommand("multichatdiscordsrv").setExecutor(new Commands());
+
+        new CommandHandler();
 
         File resourcepacks = new File(getDataFolder(), "resourcepacks");
         if (!resourcepacks.exists()) {
