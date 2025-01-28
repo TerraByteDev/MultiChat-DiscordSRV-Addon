@@ -24,6 +24,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.loohp.multichatdiscordsrvaddon.command.CommandHandler;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
+import com.loohp.multichatdiscordsrvaddon.registry.MultiChatRegistry;
 import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
 import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
@@ -53,7 +54,6 @@ import com.loohp.multichatdiscordsrvaddon.listeners.LegacyDiscordCommandEvents;
 import com.loohp.multichatdiscordsrvaddon.listeners.OutboundToDiscordEvents;
 import com.loohp.multichatdiscordsrvaddon.metrics.Charts;
 import com.loohp.multichatdiscordsrvaddon.metrics.Metrics;
-import com.loohp.multichatdiscordsrvaddon.registry.InteractiveChatRegistry;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.CustomItemTextureRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.ICacheManager;
@@ -379,7 +379,7 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
                 try {
                     Files.move(resources.toPath(), resourcepacks.toPath(), StandardCopyOption.ATOMIC_MOVE);
                 } catch (IOException e) {
-                    getServer().getConsoleSender().sendMessage("<red>Unable to move folder, are any files opened?");
+                    sendMessage("<red>Unable to move folder, are any files opened?", Bukkit.getConsoleSender());
                     e.printStackTrace();
                     getServer().getPluginManager().disablePlugin(this);
                     return;
@@ -394,7 +394,7 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
         }
 
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("ItemsAdder")) {
-            getServer().getConsoleSender().sendMessage("<aqua>MultiChat DiscordSRV Addon has hooked into ItemsAdder!");
+            sendMessage("<green>MultiChat DiscordSRV Addon has hooked into ItemsAdder!", Bukkit.getConsoleSender());
             itemsAdderHook = true;
         }
 
@@ -406,7 +406,7 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
             return;
         }
 
-        Bukkit.getConsoleSender().sendMessage("<green>MultiChat DiscordSRV Addon has been enabled.");
+        MultiChatDiscordSrvAddon.plugin.sendMessage("<green>MultiChat DiscordSRV Addon has been enabled.");
 
         reloadTextures(false, false);
         modelRenderer = new ModelRenderer(str -> new ThreadFactoryBuilder().setNameFormat(str).build(), () -> MultiChatDiscordSrvAddon.plugin.cacheTimeout, () -> {
@@ -462,12 +462,12 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
         if (resourceManager != null) {
             resourceManager.close();
         }
-        getServer().getConsoleSender().sendMessage("<red>MultiChat DiscordSRV Addon has been Disabled!");
+        MultiChatDiscordSrvAddon.plugin.sendMessage("<red>MultiChat DiscordSRV Addon has been disabled.", Bukkit.getConsoleSender());
     }
 
     public boolean compatible() {
         try {
-            return Registry.class.getField("MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null) == InteractiveChatRegistry.class.getField("MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null);
+            return Registry.class.getField("MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null) == MultiChatRegistry.class.getField("MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null);
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
             return false;
@@ -797,7 +797,7 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
                             sendMessage("<red>Failed to download server resource pack", senders);
                             break;
                         case NO_PACK:
-                            Bukkit.getConsoleSender().sendMessage("<gray>No server resource pack found");
+                            sendMessage("<red>No server resource pack found.", senders);
                             break;
                     }
                 }
@@ -832,7 +832,7 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
                 );
 
                 for (Entry<String, ModManager> entry : resourceManager.getModManagers().entrySet()) {
-                    Bukkit.getConsoleSender().sendMessage("<gray>Registered ModManager \"" + entry.getKey() + "\" of class \"" + entry.getValue().getClass().getName() + "\"");
+                    sendMessage("<gray>Registered ModManager \"" + entry.getKey() + "\" of class \"" + entry.getValue().getClass().getName() + "\"", senders);
                 }
 
                 resourceManager.getFontManager().setDefaultKey(forceUnicode ? FontManager.UNIFORM_FONT : FontManager.DEFAULT_FONT);
@@ -845,11 +845,11 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
                     }
                 });
 
-                Bukkit.getConsoleSender().sendMessage("<aqua>Loading \"Default\" resources...");
+                MultiChatDiscordSrvAddon.plugin.sendMessage("<yellow>Loading \"Default\" resources...", senders);
                 resourceManager.loadResources(new File(getDataFolder() + "/built-in", "Default"), ResourcePackType.BUILT_IN, true);
                 for (String resourceName : resourceOrder) {
                     try {
-                        Bukkit.getConsoleSender().sendMessage("<aqua>Loading \"" + resourceName + "\" resources...");
+                        MultiChatDiscordSrvAddon.plugin.sendMessage("<yellow>Loading \"" + resourceName + "\" resources...", senders);
                         File resourcePackFile = new File(getDataFolder(), "resourcepacks/" + resourceName);
                         ResourcePackInfo info = resourceManager.loadResources(resourcePackFile, ResourcePackType.LOCAL);
                         if (info.getStatus()) {
@@ -873,7 +873,7 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
                 if (includeServerResourcePack && serverResourcePack != null && serverResourcePack.exists()) {
                     String resourceName = serverResourcePack.getName();
                     try {
-                        Bukkit.getConsoleSender().sendMessage("<aqua>Loading \"" + resourceName + "\" resources...");
+                        MultiChatDiscordSrvAddon.plugin.sendMessage("<yellow>Loading \"" + resourceName + "\" resources...", senders);
                         ResourcePackInfo info = resourceManager.loadResources(serverResourcePack, ResourcePackType.SERVER);
                         if (info.getStatus()) {
                             if (info.compareServerPackFormat(ResourceRegistry.RESOURCE_PACK_VERSION) > 0) {

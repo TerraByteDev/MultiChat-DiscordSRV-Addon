@@ -64,7 +64,7 @@ public enum ChatComponentType {
         return NativeAdventureConverter.canHandle(component);
     }),
 
-    AdventureComponent(".*com\\.loohp\\.interactivechat\\.libs\\.net\\.kyori\\.adventure\\.text\\.Component.*", object -> {
+    AdventureComponent(".*.net\\.kyori\\.adventure\\.text\\.Component.*", object -> {
         return (Component) object;
     }, (component, legacyRGB) -> {
         return component;

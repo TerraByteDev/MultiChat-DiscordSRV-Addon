@@ -226,7 +226,7 @@ public class ItemDisplay {
         }
 
         if (trimmed) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[InteractiveChat] " + ChatColor.RED + "Trimmed an item display's meta data as it's NBT exceeds the maximum characters allowed in the chat [THIS IS NOT A BUG]");
+            MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Trimmed an item's display meta data as it's NBT exceeds the maximum characters allowed in the chat [THIS IS NOT A BUG]");
         }
 
         Component itemDisplayComponent = LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(player, itemAmount == 1 ? MultiChatDiscordSrvAddon.plugin.itemDisplaySingle : MultiChatDiscordSrvAddon.plugin.itemDisplayMultiple.replace("{Amount}", amountString))));

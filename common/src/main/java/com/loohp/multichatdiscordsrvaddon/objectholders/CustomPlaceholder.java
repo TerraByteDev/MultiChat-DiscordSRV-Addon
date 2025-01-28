@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 public class CustomPlaceholder extends ICPlaceholder {
 
-    public static final String CUSTOM_PLACEHOLDER_PERMISSION = "interactivechat.module.custom.";
+    public static final String CUSTOM_PLACEHOLDER_PERMISSION = "multichat.module.custom.";
 
     private final String key;
     private final ParsePlayer parsePlayer;

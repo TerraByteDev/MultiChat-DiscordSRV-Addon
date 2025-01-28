@@ -102,37 +102,38 @@ public class AssetsDownloader {
 
             if (force || !hash.equals(oldHash) || !MultiChatDiscordSrvAddon.plugin.getDescription().getVersion().equals(oldVersion)) {
                 if (clean) {
-                    MultiChatDiscordSrvAddon.plugin.sendMessage(ChatColor.AQUA + "[ICDiscordSrvAddon] Cleaning old default resources!", senders);
+                    MultiChatDiscordSrvAddon.plugin.sendMessage("<grey>Cleaning old default resources!", senders);
                     FileUtils.removeFolderRecursively(defaultAssetsFolder);
                     defaultAssetsFolder.mkdirs();
                 }
                 if (force) {
-                    MultiChatDiscordSrvAddon.plugin.sendMessage(ChatColor.AQUA + "[ICDiscordSrvAddon] Forcibly re-downloading default resources! Please wait... (" + oldHash + " -> " + hash + ")", senders);
+                    MultiChatDiscordSrvAddon.plugin.sendMessage("<aqua>Forcibly re-downloading default resources! Please wait... <grey>(" + oldHash + " -> " + hash + ")", senders);
                 } else if (!hash.equals(oldHash)) {
-                    MultiChatDiscordSrvAddon.plugin.sendMessage(ChatColor.AQUA + "[ICDiscordSrvAddon] Hash changed! Re-downloading default resources! Please wait... (" + oldHash + " -> " + hash + ")", senders);
+                    MultiChatDiscordSrvAddon.plugin.sendMessage("<aqua>Hash changed! Re-downloading default resources! Please wait... <grey>(" + oldHash + " -> " + hash + ")", senders);
                 } else {
-                    MultiChatDiscordSrvAddon.plugin.sendMessage(ChatColor.AQUA + "[ICDiscordSrvAddon] Plugin version changed! Re-downloading default resources! Please wait... (" + oldHash + " -> " + hash + ")", senders);
+                    MultiChatDiscordSrvAddon.plugin.sendMessage("<aqua>Plugin version changed! Re-downloading default resources! Please wait... <grey>(" + oldHash + " -> " + hash + ")", senders);
                 }
 
+                CommandSender[] finalSenders = senders;
                 downloadManager.downloadResources((type, fileName, percentage) -> {
                     switch (type) {
                         case CLIENT_DOWNLOAD:
                             if (!MultiChatDiscordSrvAddon.plugin.reducedAssetsDownloadInfo && percentage == 0.0) {
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "[ICDiscordSrvAddon] Downloading client jar");
+                                MultiChatDiscordSrvAddon.plugin.sendMessage("<grey>Downloading client jar", finalSenders);
                             }
                             break;
                         case EXTRACT:
                             if (!MultiChatDiscordSrvAddon.plugin.reducedAssetsDownloadInfo) {
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "[ICDiscordSrvAddon] Extracting " + fileName + " (" + FORMAT.format(percentage) + "%)");
+                                MultiChatDiscordSrvAddon.plugin.sendMessage("<grey>Extracting " + fileName + " (" + FORMAT.format(percentage) + "%)", finalSenders);
                             }
                             break;
                         case DOWNLOAD:
                             if (!MultiChatDiscordSrvAddon.plugin.reducedAssetsDownloadInfo) {
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "[ICDiscordSrvAddon] Downloading " + fileName + " (" + FORMAT.format(percentage) + "%)");
+                                MultiChatDiscordSrvAddon.plugin.sendMessage("<grey>Downloading " + fileName + " (" + FORMAT.format(percentage) + "%)", finalSenders);
                             }
                             break;
                         case DONE:
-                            Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "[ICDiscordSrvAddon] Done!");
+                            MultiChatDiscordSrvAddon.plugin.sendMessage("<green>Done!", finalSenders);
                             break;
                     }
                 });
@@ -263,31 +264,31 @@ public class AssetsDownloader {
                 if (!hash.equals(oldHash) || !MultiChatDiscordSrvAddon.plugin.getDescription().getVersion().equals(oldVersion)) {
                     downloadManager.downloadLibraries((result, jarName, percentage) -> {
                         if (result) {
-                            Bukkit.getConsoleSender().sendMessage("[ICDiscordSrvAddon] Downloaded library \"" + jarName + "\"");
+                            MultiChatDiscordSrvAddon.plugin.sendMessage("<grey>Downloaded library \"" + jarName + "\"", Bukkit.getConsoleSender());
                         } else {
-                            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[ICDiscordSrvAddon] Unable to download library \"" + jarName + "\"");
+                            MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Unable to download library \"" + jarName + "\"", Bukkit.getConsoleSender());
                         }
                     });
                 }
             } catch (Throwable e) {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[ICDiscordSrvAddon] Error while downloading libraries");
+                MultiChatDiscordSrvAddon.plugin.sendMessage("<red>An error occurred while downloading libraries.", Bukkit.getConsoleSender());
                 e.printStackTrace();
             }
 
             LibraryLoader.loadLibraries(libsFolder, (file, e) -> {
                 String jarName = file.getName();
                 if (e == null) {
-                    Bukkit.getConsoleSender().sendMessage("[ICDiscordSrvAddon] Remapped library \"" + jarName + "\"");
+                    MultiChatDiscordSrvAddon.plugin.sendMessage("<green>Remapped library \"" + jarName + "\"", Bukkit.getConsoleSender());
                 } else {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[ICDiscordSrvAddon] Unable to remap library \"" + jarName + "\"");
+                    MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Unable to remap library \"" + jarName + "\"", Bukkit.getConsoleSender());
                     e.printStackTrace();
                 }
             }, (file, e) -> {
                 String jarName = file.getName();
                 if (e == null) {
-                    Bukkit.getConsoleSender().sendMessage("[ICDiscordSrvAddon] Loaded library \"" + jarName + "\"");
+                    MultiChatDiscordSrvAddon.plugin.sendMessage("<green>Loaded library \"" + jarName + "\"", Bukkit.getConsoleSender());
                 } else {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[ICDiscordSrvAddon] Unable to load library \"" + jarName + "\"");
+                    MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Unable to load library \"" + jarName + "\"", Bukkit.getConsoleSender());
                     e.printStackTrace();
                 }
             });

@@ -103,7 +103,7 @@ public class BungeeMessageSender {
         }
 
         if (MultiChatDiscordSrvAddon.plugin.pluginMessagePacketVerbose) {
-            Bukkit.getConsoleSender().sendMessage("IC Outbound - ID " + packetId + " via " + player.getName());
+            MultiChatDiscordSrvAddon.plugin.sendMessage("<gray>IC Outbound - ID <yellow>" + packetId + "<gray> via <yellow>" + player.getName());
         }
 
         int packetNumber = random.nextInt();

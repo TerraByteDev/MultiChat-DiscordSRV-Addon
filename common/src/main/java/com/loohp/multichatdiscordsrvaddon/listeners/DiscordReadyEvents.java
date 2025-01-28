@@ -76,7 +76,7 @@ public class DiscordReadyEvents {
                         Member self = guild.getMember(jda.getSelfUser());
                         for (Permission permission : MultiChatDiscordSrvAddon.requiredPermissions) {
                             if (!self.hasPermission(channel, permission)) {
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[ICDiscordSrvAddon] DiscordSRV Bot is missing the \"" + permission.getName() + "\" permission in the channel \"" + channel.getName() + "\" (Id: " + channel.getId() + ")");
+                                MultiChatDiscordSrvAddon.plugin.sendMessage("<red>The bot used for DiscordSRV is missing the <yellow>" + permission.getName() + "<red> permission in the channel <yellow>" + channel.getName() + "<red> (Id: <yellow>" + channel.getId() + "<red>)");
                             }
                         }
                     }

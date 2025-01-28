@@ -49,7 +49,7 @@ public class Updater implements Listener {
                 lookupStatus = GithubUtils.compare(GithubUtils.MAIN_BRANCH, currentBuild.getId());
             }
         } catch (IOException error) {
-            MultiChatDiscordSrvAddon.plugin.sendMessage("Failed to fetch latest version: " + error, senders);
+            MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Failed to fetch latest version: " + error, senders);
             return true;
         }
 

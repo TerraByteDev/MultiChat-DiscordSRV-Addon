@@ -32,7 +32,7 @@ public class MultiChatGsonComponentSerializer {
     private static final GsonComponentSerializer GSON_SERIALIZER_LEGACY;
     private static final LegacyHoverEventSerializer LEGACY_HOVER_SERIALIZER;
 
-    private static final Pattern LEGACY_ID_PATTERN = Pattern.compile("^interactivechat:legacy_hover/id_(.*?)/damage_([0-9]*)$");
+    private static final Pattern LEGACY_ID_PATTERN = Pattern.compile("^multichat:legacy_hover/id_(.*?)/damage_([0-9]*)$");
 
     static {
         LEGACY_HOVER_SERIALIZER = new InteractiveChatLegacyHoverEventSerializer();
