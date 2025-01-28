@@ -38,6 +38,8 @@ public class CommandHandler {
                 params -> SimpleCommandMeta.empty()
         );
 
+        registerCommands();
+
         ICLogger.info("<green>Registered commands.");
     }
 
