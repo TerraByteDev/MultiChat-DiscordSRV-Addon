@@ -37,7 +37,7 @@ import com.loohp.multichatdiscordsrvaddon.utils.ItemStackUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.LanguageUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.PlaceholderParser;
 import com.loohp.multichatdiscordsrvaddon.utils.PlayerUtils;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.api.events.DiscordImageEvent;
 import com.loohp.multichatdiscordsrvaddon.api.events.GameMessagePostProcessEvent;
 import com.loohp.multichatdiscordsrvaddon.api.events.GameMessagePreProcessEvent;
@@ -132,42 +132,42 @@ public class OutboundToDiscordEvents implements Listener {
 
     @Subscribe(priority = ListenerPriority.LOWEST)
     public void onGameToDiscordLowest(GameChatMessagePreProcessEvent event) {
-        if (InteractiveChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.LOWEST)) {
+        if (MultiChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.LOWEST)) {
             handleGameToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.LOW)
     public void onGameToDiscordLow(GameChatMessagePreProcessEvent event) {
-        if (InteractiveChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.LOW)) {
+        if (MultiChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.LOW)) {
             handleGameToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.NORMAL)
     public void onGameToDiscordNormal(GameChatMessagePreProcessEvent event) {
-        if (InteractiveChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.NORMAL)) {
+        if (MultiChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.NORMAL)) {
             handleGameToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.HIGH)
     public void onGameToDiscordHigh(GameChatMessagePreProcessEvent event) {
-        if (InteractiveChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.HIGH)) {
+        if (MultiChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.HIGH)) {
             handleGameToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.HIGHEST)
     public void onGameToDiscordHighest(GameChatMessagePreProcessEvent event) {
-        if (InteractiveChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.HIGHEST)) {
+        if (MultiChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.HIGHEST)) {
             handleGameToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.MONITOR)
     public void onGameToDiscordMonitor(GameChatMessagePreProcessEvent event) {
-        if (InteractiveChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.MONITOR)) {
+        if (MultiChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.MONITOR)) {
             handleGameToDiscord(event);
         }
     }
@@ -178,7 +178,7 @@ public class OutboundToDiscordEvents implements Listener {
             Debug.debug("onGameToDiscord already cancelled");
             return;
         }
-        InteractiveChatDiscordSrvAddon.plugin.messagesCounter.incrementAndGet();
+        MultiChatDiscordSrvAddon.plugin.messagesCounter.incrementAndGet();
 
         Player sender = event.getPlayer();
         OfflinePlayer icSender = Bukkit.getOfflinePlayer(sender.getUniqueId());
@@ -196,42 +196,42 @@ public class OutboundToDiscordEvents implements Listener {
 
     @Subscribe(priority = ListenerPriority.LOWEST)
     public void onVentureChatHookToDiscordLowest(VentureChatMessagePreProcessEvent event) {
-        if (InteractiveChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.LOWEST)) {
+        if (MultiChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.LOWEST)) {
             handleVentureChatHookToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.LOW)
     public void onVentureChatHookToDiscordLow(VentureChatMessagePreProcessEvent event) {
-        if (InteractiveChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.LOW)) {
+        if (MultiChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.LOW)) {
             handleVentureChatHookToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.NORMAL)
     public void onVentureChatHookToDiscordNormal(VentureChatMessagePreProcessEvent event) {
-        if (InteractiveChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.NORMAL)) {
+        if (MultiChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.NORMAL)) {
             handleVentureChatHookToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.HIGH)
     public void onVentureChatHookToDiscordHigh(VentureChatMessagePreProcessEvent event) {
-        if (InteractiveChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.HIGH)) {
+        if (MultiChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.HIGH)) {
             handleVentureChatHookToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.HIGHEST)
     public void onVentureChatHookToDiscordHighest(VentureChatMessagePreProcessEvent event) {
-        if (InteractiveChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.HIGHEST)) {
+        if (MultiChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.HIGHEST)) {
             handleVentureChatHookToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.MONITOR)
     public void onVentureChatHookToDiscordMonitor(VentureChatMessagePreProcessEvent event) {
-        if (InteractiveChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.MONITOR)) {
+        if (MultiChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.MONITOR)) {
             handleVentureChatHookToDiscord(event);
         }
     }
@@ -242,7 +242,7 @@ public class OutboundToDiscordEvents implements Listener {
             Debug.debug("onVentureChatHookToDiscord already cancelled");
             return;
         }
-        InteractiveChatDiscordSrvAddon.plugin.messagesCounter.incrementAndGet();
+        MultiChatDiscordSrvAddon.plugin.messagesCounter.incrementAndGet();
 
         Player icSender = null;
         MineverseChatPlayer mcPlayer = event.getVentureChatEvent().getMineverseChatPlayer();
@@ -268,7 +268,7 @@ public class OutboundToDiscordEvents implements Listener {
 
     public Component processGameMessage(OfflinePlayer icSender, Component component) {
         boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
-        PlaceholderCooldownManager cooldownManager = InteractiveChatDiscordSrvAddon.placeholderCooldownManager;
+        PlaceholderCooldownManager cooldownManager = MultiChatDiscordSrvAddon.placeholderCooldownManager;
         long now = cooldownManager.checkMessage(icSender.getUniqueId(), PlainTextComponentSerializer.plainText().serialize(component)).getTimeNow();
 
         GameMessagePreProcessEvent gameMessagePreProcessEvent = new GameMessagePreProcessEvent(icSender, component, false);
@@ -300,7 +300,7 @@ public class OutboundToDiscordEvents implements Listener {
                             if (!shown.contains(replaceString)) {
                                 shown.add(replaceString);
                                 int position = result.start();
-                                if (InteractiveChatDiscordSrvAddon.plugin.hoverEnabled && !InteractiveChatDiscordSrvAddon.plugin.hoverIgnore.contains(customP.getKey())) {
+                                if (MultiChatDiscordSrvAddon.plugin.hoverEnabled && !MultiChatDiscordSrvAddon.plugin.hoverIgnore.contains(customP.getKey())) {
                                     HoverClickDisplayData.Builder hoverClick = new HoverClickDisplayData.Builder().player(icSender).postion(position).color(DiscordDataRegistry.DISCORD_HOVER_COLOR).displayText(ChatColorUtils.stripColor(replaceString));
                                     boolean usingHoverClick = false;
 
@@ -338,14 +338,14 @@ public class OutboundToDiscordEvents implements Listener {
             }
         }
 
-        if (InteractiveChatDiscordSrvAddon.plugin.itemImage) {
+        if (MultiChatDiscordSrvAddon.plugin.itemImage) {
             Debug.debug("onGameToDiscord processing item display");
-            Matcher matcher = InteractiveChatDiscordSrvAddon.itemPlaceholder.getKeyword().matcher(plain);
+            Matcher matcher = MultiChatDiscordSrvAddon.itemPlaceholder.getKeyword().matcher(plain);
             if (matcher.find()) {
-                if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), InteractiveChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(InteractiveChatDiscordSrvAddon.itemPlaceholder)).findFirst().get(), now)) {
+                if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.itemPlaceholder)).findFirst().get(), now)) {
                     ItemStack item = PlayerUtils.getMainHandItem(icSender);
                     boolean isAir = item.getType().equals(Material.AIR);
-                    String itemStr = PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(ComponentModernizing.modernize(ItemStackUtils.getDisplayName(item)), InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(InteractiveChatDiscordSrvAddon.plugin.language)));
+                    String itemStr = PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(ComponentModernizing.modernize(ItemStackUtils.getDisplayName(item)), MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language)));
                     itemStr = ComponentStringUtils.stripColorAndConvertMagic(itemStr);
 
                     int amount = item.getAmount();
@@ -353,22 +353,22 @@ public class OutboundToDiscordEvents implements Listener {
                         amount = 1;
                     }
 
-                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, (amount == 1 ? InteractiveChatDiscordSrvAddon.plugin.itemDisplaySingle : InteractiveChatDiscordSrvAddon.plugin.itemDisplayMultiple).replace("{Amount}", String.valueOf(amount))).replace("{Item}", itemStr));
+                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, (amount == 1 ? MultiChatDiscordSrvAddon.plugin.itemDisplaySingle : MultiChatDiscordSrvAddon.plugin.itemDisplayMultiple).replace("{Amount}", String.valueOf(amount))).replace("{Item}", itemStr));
                     if (reserializer) {
                         replaceText = MessageUtil.reserializeToDiscord(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(replaceText));
                     }
 
                     AtomicBoolean replaced = new AtomicBoolean(false);
                     Component replaceComponent = LegacyComponentSerializer.legacySection().deserialize(replaceText);
-                    component = ComponentReplacing.replace(component, InteractiveChatDiscordSrvAddon.itemPlaceholder.getKeyword().pattern(), true, (groups) -> {
+                    component = ComponentReplacing.replace(component, MultiChatDiscordSrvAddon.itemPlaceholder.getKeyword().pattern(), true, (groups) -> {
                         replaced.set(true);
                         return replaceComponent;
                     });
-                    if (replaced.get() && InteractiveChatDiscordSrvAddon.plugin.itemImage) {
+                    if (replaced.get() && MultiChatDiscordSrvAddon.plugin.itemImage) {
                         int inventoryId = DATA_ID_PROVIDER.getNext();
                         int position = matcher.start();
 
-                        String title = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, InteractiveChatDiscordSrvAddon.plugin.itemTitle));
+                        String title = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, MultiChatDiscordSrvAddon.plugin.itemTitle));
 
                         Inventory inv = DiscordContentUtils.getBlockInventory(item);
 
@@ -391,24 +391,24 @@ public class OutboundToDiscordEvents implements Listener {
             }
         }
 
-        if (InteractiveChatDiscordSrvAddon.plugin.invImage) {
+        if (MultiChatDiscordSrvAddon.plugin.invImage) {
             Debug.debug("onGameToDiscord processing inventory display");
-            Matcher matcher = InteractiveChatDiscordSrvAddon.inventoryPlaceholder.getKeyword().matcher(plain);
+            Matcher matcher = MultiChatDiscordSrvAddon.inventoryPlaceholder.getKeyword().matcher(plain);
             if (matcher.find()) {
-                if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), InteractiveChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(InteractiveChatDiscordSrvAddon.inventoryPlaceholder)).findFirst().get(), now)) {
-                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, InteractiveChatDiscordSrvAddon.plugin.itemDisplayMultiple));
+                if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.inventoryPlaceholder)).findFirst().get(), now)) {
+                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, MultiChatDiscordSrvAddon.plugin.itemDisplayMultiple));
                     if (reserializer) {
                         replaceText = MessageUtil.reserializeToDiscord(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(replaceText));
                     }
 
                     AtomicBoolean replaced = new AtomicBoolean(false);
                     Component replaceComponent = LegacyComponentSerializer.legacySection().deserialize(replaceText);
-                    component = ComponentReplacing.replace(component, InteractiveChatDiscordSrvAddon.inventoryPlaceholder.getKeyword().pattern(), true, (groups) -> {
+                    component = ComponentReplacing.replace(component, MultiChatDiscordSrvAddon.inventoryPlaceholder.getKeyword().pattern(), true, (groups) -> {
                         replaced.set(true);
                         return replaceComponent;
                     });
 
-                    if (replaced.get() && InteractiveChatDiscordSrvAddon.plugin.invImage) {
+                    if (replaced.get() && MultiChatDiscordSrvAddon.plugin.invImage) {
                         OfflinePlayerData offlinePlayerData = PlayerUtils.getData(icSender);
                         int inventoryId = DATA_ID_PROVIDER.getNext();
                         int position = matcher.start();
@@ -421,7 +421,7 @@ public class OutboundToDiscordEvents implements Listener {
                                 }
                             }
                         }
-                        String title = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, InteractiveChatDiscordSrvAddon.plugin.inventoryTitle));
+                        String title = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, MultiChatDiscordSrvAddon.plugin.inventoryTitle));
 
                         GameMessageProcessPlayerInventoryEvent gameMessageProcessPlayerInventoryEvent = new GameMessageProcessPlayerInventoryEvent(icSender, title, component, false, inventoryId, inv);
                         Bukkit.getPluginManager().callEvent(gameMessageProcessPlayerInventoryEvent);
@@ -439,26 +439,26 @@ public class OutboundToDiscordEvents implements Listener {
             }
         }
 
-        if (InteractiveChatDiscordSrvAddon.plugin.enderImage) {
+        if (MultiChatDiscordSrvAddon.plugin.enderImage) {
             Debug.debug("onGameToDiscord processing enderchest display");
-            Matcher matcher = InteractiveChatDiscordSrvAddon.enderChestPlaceholder.getKeyword().matcher(plain);
+            Matcher matcher = MultiChatDiscordSrvAddon.enderChestPlaceholder.getKeyword().matcher(plain);
             if (matcher.find()) {
-                if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), InteractiveChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(InteractiveChatDiscordSrvAddon.enderChestPlaceholder)).findFirst().get(), now)) {
-                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, InteractiveChatDiscordSrvAddon.plugin.enderTitle));
+                if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.enderChestPlaceholder)).findFirst().get(), now)) {
+                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, MultiChatDiscordSrvAddon.plugin.enderTitle));
                     if (reserializer) {
                         replaceText = MessageUtil.reserializeToDiscord(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(replaceText));
                     }
 
                     AtomicBoolean replaced = new AtomicBoolean(false);
                     Component replaceComponent = LegacyComponentSerializer.legacySection().deserialize(replaceText);
-                    component = ComponentReplacing.replace(component, InteractiveChatDiscordSrvAddon.enderChestPlaceholder.getKeyword().pattern(), true, (groups) -> {
+                    component = ComponentReplacing.replace(component, MultiChatDiscordSrvAddon.enderChestPlaceholder.getKeyword().pattern(), true, (groups) -> {
                         replaced.set(true);
                         return replaceComponent;
                     });
 
                     OfflinePlayerData offlinePlayerData = PlayerUtils.getData(icSender);
 
-                    if (replaced.get() && InteractiveChatDiscordSrvAddon.plugin.enderImage) {
+                    if (replaced.get() && MultiChatDiscordSrvAddon.plugin.enderImage) {
                         int inventoryId = DATA_ID_PROVIDER.getNext();
                         int position = matcher.start();
 
@@ -470,7 +470,7 @@ public class OutboundToDiscordEvents implements Listener {
                                 }
                             }
                         }
-                        String title = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, InteractiveChatDiscordSrvAddon.plugin.enderTitle));
+                        String title = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, MultiChatDiscordSrvAddon.plugin.enderTitle));
 
                         GameMessageProcessInventoryEvent gameMessageProcessInventoryEvent = new GameMessageProcessInventoryEvent(icSender, title, component, false, inventoryId, inv);
                         Bukkit.getPluginManager().callEvent(gameMessageProcessInventoryEvent);
@@ -488,8 +488,8 @@ public class OutboundToDiscordEvents implements Listener {
             }
         }
 
-        DiscordSRV srv = InteractiveChatDiscordSrvAddon.discordsrv;
-        if (InteractiveChatDiscordSrvAddon.plugin.translateMentions && !InteractiveChatDiscordSrvAddon.plugin.suppressDiscordPings) {
+        DiscordSRV srv = MultiChatDiscordSrvAddon.discordsrv;
+        if (MultiChatDiscordSrvAddon.plugin.translateMentions && !MultiChatDiscordSrvAddon.plugin.suppressDiscordPings) {
             Debug.debug("onGameToDiscord processing mentions");
             //boolean hasMentionPermission = PlayerUtils.hasPermission(icSender.getUniqueId(), "interactivechat.mention.player", true, 200); todo
             boolean hasMentionPermission = true;
@@ -535,7 +535,7 @@ public class OutboundToDiscordEvents implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDeath(PlayerDeathEvent event) {
-        if (!InteractiveChatDiscordSrvAddon.plugin.deathMessageItem) {
+        if (!MultiChatDiscordSrvAddon.plugin.deathMessageItem) {
             return;
         }
         Debug.debug("Triggered onDeath");
@@ -550,14 +550,14 @@ public class OutboundToDiscordEvents implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        if (!InteractiveChatDiscordSrvAddon.plugin.deathMessageTranslated) {
+        if (!MultiChatDiscordSrvAddon.plugin.deathMessageTranslated) {
             return;
         }
         Component deathMessage = DEATH_MESSAGE.get(event.getPlayer().getUniqueId());
         if (deathMessage == null) {
             return;
         }
-        event.setDeathMessage(PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(deathMessage, InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(InteractiveChatDiscordSrvAddon.plugin.language))));
+        event.setDeathMessage(PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(deathMessage, MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language))));
     }
 
     @Subscribe(priority = ListenerPriority.HIGHEST)
@@ -570,7 +570,7 @@ public class OutboundToDiscordEvents implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        if (!InteractiveChatDiscordSrvAddon.plugin.deathMessageItem) {
+        if (!MultiChatDiscordSrvAddon.plugin.deathMessageItem) {
             return;
         }
         ItemStack item = ComponentStringUtils.extractItemStack(deathMessage);
@@ -590,16 +590,16 @@ public class OutboundToDiscordEvents implements Listener {
         }
         Player player = event.getPlayer();
 
-        DiscordMessageContent content = new DiscordMessageContent(InteractiveChatDiscordSrvAddon.plugin.deathMessageTitle, null, color);
+        DiscordMessageContent content = new DiscordMessageContent(MultiChatDiscordSrvAddon.plugin.deathMessageTitle, null, color);
         try {
-            BufferedImage image = ImageGeneration.getItemStackImage(item, player, InteractiveChatDiscordSrvAddon.plugin.itemAltAir);
+            BufferedImage image = ImageGeneration.getItemStackImage(item, player, MultiChatDiscordSrvAddon.plugin.itemAltAir);
             byte[] itemData = ImageUtils.toArray(image);
-            content.setTitle(DiscordItemStackUtils.getItemNameForDiscord(item, null, InteractiveChatDiscordSrvAddon.plugin.language));
+            content.setTitle(DiscordItemStackUtils.getItemNameForDiscord(item, null, MultiChatDiscordSrvAddon.plugin.language));
             content.setThumbnail("attachment://Item.png");
             content.addAttachment("Item.png", itemData);
 
-            DiscordToolTip discordToolTip = DiscordItemStackUtils.getToolTip(item, player, InteractiveChatDiscordSrvAddon.plugin.showAdvanceDetails);
-            if (!discordToolTip.isHideTooltip() &&(!discordToolTip.isBaseItem() || InteractiveChatDiscordSrvAddon.plugin.itemUseTooltipImageOnBaseItem)) {
+            DiscordToolTip discordToolTip = DiscordItemStackUtils.getToolTip(item, player, MultiChatDiscordSrvAddon.plugin.showAdvanceDetails);
+            if (!discordToolTip.isHideTooltip() &&(!discordToolTip.isBaseItem() || MultiChatDiscordSrvAddon.plugin.itemUseTooltipImageOnBaseItem)) {
                 BufferedImage tooltip = ImageGeneration.getToolTipImage(discordToolTip.getComponents(), NMS.getInstance().getCustomTooltipResourceLocation(item));
                 byte[] tooltipData = ImageUtils.toArray(tooltip);
                 content.addAttachment("ToolTip.png", tooltipData);
@@ -609,7 +609,7 @@ public class OutboundToDiscordEvents implements Listener {
             e.printStackTrace();
         }
 
-        Bukkit.getScheduler().runTaskLaterAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
             Debug.debug("onDeathMessageSend sending item to discord");
             TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(event.getChannel());
             if (event.isUsingWebhooks()) {
@@ -646,7 +646,7 @@ public class OutboundToDiscordEvents implements Listener {
         Object advancement = NMS.getInstance().getBukkitAdvancementFromEvent(bukkitEvent);
         AdvancementData data = NMS.getInstance().getAdvancementDataFromBukkitAdvancement(advancement);
 
-        SpecificTranslateFunction translateFunction = InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(InteractiveChatDiscordSrvAddon.plugin.language);
+        SpecificTranslateFunction translateFunction = MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language);
 
         String title = InteractiveChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(data.getTitle(), translateFunction));
         String description = InteractiveChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(data.getDescription(), translateFunction));
@@ -655,7 +655,7 @@ public class OutboundToDiscordEvents implements Listener {
         boolean isMinecraft = data.isMinecraft();
 
         Debug.debug("onAdvancement processing advancement");
-        if (InteractiveChatDiscordSrvAddon.plugin.advancementItem && item != null && advancementType != null) {
+        if (MultiChatDiscordSrvAddon.plugin.advancementItem && item != null && advancementType != null) {
             String content = messageFormat.getContent();
             if (content == null) {
                 content = "";
@@ -672,9 +672,9 @@ public class OutboundToDiscordEvents implements Listener {
                 e.printStackTrace();
             }
         }
-        if (InteractiveChatDiscordSrvAddon.plugin.advancementName && title != null) {
+        if (MultiChatDiscordSrvAddon.plugin.advancementName && title != null) {
             event.setAchievementName(ChatColorUtils.stripColor(title));
-            messageFormat.setAuthorName(ComponentStringUtils.convertFormattedString(LanguageUtils.getTranslation(advancementType.getTranslationKey(), InteractiveChatDiscordSrvAddon.plugin.language).getResult(), event.getPlayer().getName(), ChatColorUtils.stripColor(title)));
+            messageFormat.setAuthorName(ComponentStringUtils.convertFormattedString(LanguageUtils.getTranslation(advancementType.getTranslationKey(), MultiChatDiscordSrvAddon.plugin.language).getResult(), event.getPlayer().getName(), ChatColorUtils.stripColor(title)));
             Color color;
             if (isMinecraft) {
                 color = ColorUtils.getColor(advancementType.getColor());
@@ -687,7 +687,7 @@ public class OutboundToDiscordEvents implements Listener {
             }
             messageFormat.setColorRaw(color.getRGB());
         }
-        if (InteractiveChatDiscordSrvAddon.plugin.advancementDescription && description != null) {
+        if (MultiChatDiscordSrvAddon.plugin.advancementDescription && description != null) {
             messageFormat.setDescription(ChatColorUtils.stripColor(description));
         }
         event.setMessageFormat(messageFormat);
@@ -810,8 +810,8 @@ public class OutboundToDiscordEvents implements Listener {
                 }
             }
             action.setEmbeds(embeds).setActionRows(interactionHandler.getInteractionToRegister()).queue(m -> {
-                if (InteractiveChatDiscordSrvAddon.plugin.embedDeleteAfter > 0) {
-                    m.editMessageEmbeds().setActionRows().retainFiles(Collections.emptyList()).queueAfter(InteractiveChatDiscordSrvAddon.plugin.embedDeleteAfter, TimeUnit.SECONDS);
+                if (MultiChatDiscordSrvAddon.plugin.embedDeleteAfter > 0) {
+                    m.editMessageEmbeds().setActionRows().retainFiles(Collections.emptyList()).queueAfter(MultiChatDiscordSrvAddon.plugin.embedDeleteAfter, TimeUnit.SECONDS);
                 }
             });
             if (!interactionHandler.getInteractions().isEmpty()) {
@@ -892,11 +892,11 @@ public class OutboundToDiscordEvents implements Listener {
             if (!interactionHandler.getInteractions().isEmpty()) {
                 DiscordInteractionEvents.register(message, interactionHandler, contents);
             }
-            if (InteractiveChatDiscordSrvAddon.plugin.embedDeleteAfter > 0) {
+            if (MultiChatDiscordSrvAddon.plugin.embedDeleteAfter > 0) {
                 String finalText = text;
-                Bukkit.getScheduler().runTaskLaterAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
+                Bukkit.getScheduler().runTaskLaterAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
                     WebhookUtil.editMessage(channel, String.valueOf(messageId), finalText, Collections.emptyList(), Collections.emptyMap(), Collections.emptyList());
-                }, InteractiveChatDiscordSrvAddon.plugin.embedDeleteAfter * 20L);
+                }, MultiChatDiscordSrvAddon.plugin.embedDeleteAfter * 20L);
             }
         }
     }
@@ -919,10 +919,10 @@ public class OutboundToDiscordEvents implements Listener {
                 String textOriginal = message.getContentRaw();
                 boolean isWebhookMessage = event.isWebhookMessage();
 
-                if (!InteractiveChatDiscordSrvAddon.plugin.isEnabled()) {
+                if (!MultiChatDiscordSrvAddon.plugin.isEnabled()) {
                     return;
                 }
-                Bukkit.getScheduler().runTaskAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
+                Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
                     if (isWebhookMessage) {
                         handleWebhook(messageId, message, textOriginal, channel);
                     } else {

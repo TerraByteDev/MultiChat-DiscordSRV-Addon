@@ -21,7 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import net.kyori.adventure.text.Component;
@@ -72,7 +72,7 @@ public class LanguageUtils {
     @SuppressWarnings("unchecked")
     public static void loadTranslations(String language) {
         Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[InteractiveChat] Loading languages...");
-        Bukkit.getScheduler().runTaskAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
             while (lock.get()) {
                 try {
                     TimeUnit.MILLISECONDS.sleep(1);
@@ -81,7 +81,7 @@ public class LanguageUtils {
             }
             lock.set(true);
             try {
-                File langFolder = new File(InteractiveChatDiscordSrvAddon.plugin.getDataFolder(), "lang");
+                File langFolder = new File(MultiChatDiscordSrvAddon.plugin.getDataFolder(), "lang");
                 langFolder.mkdirs();
                 File langFileFolder = new File(langFolder, "languages");
                 langFileFolder.mkdirs();

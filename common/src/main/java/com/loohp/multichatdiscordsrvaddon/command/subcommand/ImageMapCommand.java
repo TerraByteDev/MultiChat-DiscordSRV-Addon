@@ -1,7 +1,6 @@
 package com.loohp.multichatdiscordsrvaddon.command.subcommand;
 
 import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents;
-import com.loohp.multichatdiscordsrvaddon.updater.Updater;
 import com.loohp.multichatdiscordsrvaddon.wrappers.GraphicsToPacketMapWrapper;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -11,7 +10,7 @@ import org.incendo.cloud.annotations.CommandDescription;
 
 import java.util.UUID;
 
-import static com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon.plugin;
+import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
 
 @Command("multichat")
 public class ImageMapCommand {

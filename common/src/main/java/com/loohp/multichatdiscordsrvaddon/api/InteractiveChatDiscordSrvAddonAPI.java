@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.api;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
 import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents;
 import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents.DiscordAttachmentData;
@@ -43,7 +43,7 @@ public class InteractiveChatDiscordSrvAddonAPI {
      * @return true/false
      */
     public static boolean isReady() {
-        return InteractiveChatDiscordSrvAddon.isReady;
+        return MultiChatDiscordSrvAddon.isReady;
     }
 
     /**
@@ -54,7 +54,7 @@ public class InteractiveChatDiscordSrvAddonAPI {
      * @return the current resource manager or null
      */
     public static ResourceManager getCurrentResourceManager() {
-        return InteractiveChatDiscordSrvAddon.plugin.isResourceManagerReady() ? InteractiveChatDiscordSrvAddon.plugin.getResourceManager() : null;
+        return MultiChatDiscordSrvAddon.plugin.isResourceManagerReady() ? MultiChatDiscordSrvAddon.plugin.getResourceManager() : null;
     }
 
     /**
@@ -65,7 +65,7 @@ public class InteractiveChatDiscordSrvAddonAPI {
      * @return The hashed key which can be used to retrieve the inventory
      */
     public static String addMapToMapSharedList(String hash, ItemStack item) {
-        InteractiveChatDiscordSrvAddon.plugin.mapDisplay.put(hash, item);
+        MultiChatDiscordSrvAddon.plugin.mapDisplay.put(hash, item);
         return hash;
     }
 
@@ -104,7 +104,7 @@ public class InteractiveChatDiscordSrvAddonAPI {
     }
 
     public static ItemStack transformItemStack(ItemStack itemStack, UUID uuid) {
-        return InteractiveChatDiscordSrvAddon.itemStackTransformFunctions.values().stream()
+        return MultiChatDiscordSrvAddon.itemStackTransformFunctions.values().stream()
                 .sorted(Comparator.comparing(each -> each.getFirst()))
                 .map(each -> each.getSecond())
                 .reduce((a, b) -> (i, u) -> b.apply(a.apply(i, u), u))
@@ -156,24 +156,24 @@ public class InteractiveChatDiscordSrvAddonAPI {
     public static String addInventoryToItemShareList(SharedType type, String hash, Inventory inventory) throws Exception {
         switch (type) {
             case ITEM:
-                InteractiveChatDiscordSrvAddon.plugin.itemDisplay.put(hash, inventory);
-                InteractiveChatDiscordSrvAddon.plugin.upperSharedInventory.add(inventory);
+                MultiChatDiscordSrvAddon.plugin.itemDisplay.put(hash, inventory);
+                MultiChatDiscordSrvAddon.plugin.upperSharedInventory.add(inventory);
                 break;
             case INVENTORY:
-                InteractiveChatDiscordSrvAddon.plugin.inventoryDisplay.put(hash, inventory);
-                InteractiveChatDiscordSrvAddon.plugin.upperSharedInventory.add(inventory);
+                MultiChatDiscordSrvAddon.plugin.inventoryDisplay.put(hash, inventory);
+                MultiChatDiscordSrvAddon.plugin.upperSharedInventory.add(inventory);
                 break;
             case INVENTORY1_UPPER:
-                InteractiveChatDiscordSrvAddon.plugin.inventoryDisplay1Upper.put(hash, inventory);
-                InteractiveChatDiscordSrvAddon.plugin.upperSharedInventory.add(inventory);
+                MultiChatDiscordSrvAddon.plugin.inventoryDisplay1Upper.put(hash, inventory);
+                MultiChatDiscordSrvAddon.plugin.upperSharedInventory.add(inventory);
                 break;
             case INVENTORY1_LOWER:
-                InteractiveChatDiscordSrvAddon.plugin.inventoryDisplay1Lower.put(hash, inventory);
-                InteractiveChatDiscordSrvAddon.plugin.lowerSharedInventory.add(inventory);
+                MultiChatDiscordSrvAddon.plugin.inventoryDisplay1Lower.put(hash, inventory);
+                MultiChatDiscordSrvAddon.plugin.lowerSharedInventory.add(inventory);
                 break;
             case ENDERCHEST:
-                InteractiveChatDiscordSrvAddon.plugin.enderDisplay.put(hash, inventory);
-                InteractiveChatDiscordSrvAddon.plugin.upperSharedInventory.add(inventory);
+                MultiChatDiscordSrvAddon.plugin.enderDisplay.put(hash, inventory);
+                MultiChatDiscordSrvAddon.plugin.upperSharedInventory.add(inventory);
                 break;
         }
         return hash;
@@ -185,7 +185,7 @@ public class InteractiveChatDiscordSrvAddonAPI {
      * @return The placeholder list
      */
     public static List<ICPlaceholder> getPlaceholderList() {
-        return new ArrayList<>(InteractiveChatDiscordSrvAddon.placeholderList.values());
+        return new ArrayList<>(MultiChatDiscordSrvAddon.placeholderList.values());
     }
 
     public static CompletableFuture<List<ValueTrios<UUID, String, Integer>>> getBungeecordPlayerList() {

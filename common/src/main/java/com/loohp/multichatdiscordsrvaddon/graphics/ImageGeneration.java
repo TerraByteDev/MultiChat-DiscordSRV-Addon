@@ -37,7 +37,7 @@ import org.bukkit.OfflinePlayer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ToolTipComponent.ToolTipType;
@@ -137,9 +137,9 @@ public class ImageGeneration {
     public static final Color BUNDLE_WEIGHT_COLOR = new Color(85, 85, 255);
     public static final Color BUNDLE_WEIGHT_FULL_COLOR = new Color(255, 85, 85);
 
-    private static Supplier<ResourceManager> resourceManager = () -> InteractiveChatDiscordSrvAddon.plugin.getResourceManager();
+    private static Supplier<ResourceManager> resourceManager = () -> MultiChatDiscordSrvAddon.plugin.getResourceManager();
     private static Supplier<MCVersion> version = () -> VersionManager.version;
-    private static Supplier<String> language = () -> InteractiveChatDiscordSrvAddon.plugin.language;
+    private static Supplier<String> language = () -> MultiChatDiscordSrvAddon.plugin.language;
     private static Supplier<SpecificTranslateFunction> translateFunction = () -> resourceManager.get().getLanguageManager().getTranslateFunction().ofLanguage(language.get());
 
     public static BufferedImage getMissingImage(int width, int length) {
@@ -215,7 +215,7 @@ public class ImageGeneration {
     }
 
     public static BufferedImage getItemStackImage(ItemStack item, OfflinePlayer player, boolean alternateAir, int renderSize) throws IOException {
-        InteractiveChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
+        MultiChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
         Debug.debug("ImageGeneration creating item stack image " + item);
 
         double scale = (double) renderSize / DEFAULT_ITEM_RENDER_SIZE;
@@ -248,8 +248,8 @@ public class ImageGeneration {
     }
 
     public static BufferedImage getInventoryImage(Inventory inventory, Component title, OfflinePlayer player) throws Exception {
-        InteractiveChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
-        InteractiveChatDiscordSrvAddon.plugin.inventoryImageCounter.incrementAndGet();
+        MultiChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
+        MultiChatDiscordSrvAddon.plugin.inventoryImageCounter.incrementAndGet();
         Debug.debug("ImageGeneration creating inventory image of " + player.getName());
 
         String key = INVENTORY_CACHE_KEY + HashUtils.createSha1(title == null ? "Inventory" : AbstractInteractiveChatComponentSerializer.gson().serialize(title), inventory);
@@ -263,7 +263,7 @@ public class ImageGeneration {
         int rows = inventory.getSize() / 9;
         GenericContainerBackgroundResult result = getGenericContainerBackground(rows, (image, x, y, fontSize, defaultTextColor) -> {
             Component defaultColorTitle = title == null ? Component.translatable(TranslationKeyUtils.getDefaultContainerTitle()).color(defaultTextColor) : title.colorIfAbsent(defaultTextColor);
-            return ImageUtils.printComponentShadowless(resourceManager.get(), image, defaultColorTitle, InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), x, y, fontSize).getImage();
+            return ImageUtils.printComponentShadowless(resourceManager.get(), image, defaultColorTitle, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), x, y, fontSize).getImage();
         });
         BufferedImage background = result.getBackgroundImage();
 
@@ -302,8 +302,8 @@ public class ImageGeneration {
     }
 
     public static BufferedImage getPlayerInventoryImage(Inventory inventory, ItemStack puppetRightHand, ItemStack puppetLeftHand, ItemStack puppetHelmet, ItemStack puppetChestplate, ItemStack puppetLeggings, ItemStack puppetBoots, OfflinePlayer player) throws Exception {
-        InteractiveChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
-        InteractiveChatDiscordSrvAddon.plugin.inventoryImageCounter.incrementAndGet();
+        MultiChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
+        MultiChatDiscordSrvAddon.plugin.inventoryImageCounter.incrementAndGet();
         Debug.debug("ImageGeneration creating player inventory image of " + player.getName());
 
         BufferedImage background = resourceManager.get().getTextureManager().getTexture(ResourceRegistry.IC_GUI_TEXTURE_LOCATION + "player_inventory").getTexture(356, 336);
@@ -441,7 +441,7 @@ public class ImageGeneration {
     }
 
     private static BufferedImage getFullBodyImage(OfflinePlayer player, ItemStack rightHand, ItemStack leftHand, ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots) throws IOException {
-        InteractiveChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
+        MultiChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
         Debug.debug("ImageGeneration creating puppet image of " + player.getName());
 
         World world;
@@ -740,7 +740,7 @@ public class ImageGeneration {
             modelItems.put(PlayerModelItemPosition.HELMET, new PlayerModelItem(PlayerModelItemPosition.HELMET, modelLayers, modelLayers.stream().map(e -> resourceManager.get().getResourceRegistry(CustomItemTextureRegistry.IDENTIFIER, CustomItemTextureRegistry.class).getItemPostResolveFunction(e.getModelKey(), EquipmentSlot.HEAD, helmet, version.get().isOld(), e.getPredicates(), player, world, livingEntity, translateFunction.get()).orElse(null)).collect(Collectors.toList()), enchanted, enchantmentGlintFunction, rawEnchantmentGlintFunction));
         }
 
-        if (InteractiveChatDiscordSrvAddon.plugin.renderHandHeldItems) {
+        if (MultiChatDiscordSrvAddon.plugin.renderHandHeldItems) {
             if (rightHand != null && !rightHand.getType().equals(Material.AIR)) {
                 EquipmentSlot slot = PlayerUtils.isRightHanded(player) ? EquipmentSlot.HAND : EquipmentSlot.valueOf("OFF_HAND");
                 ItemStackProcessResult itemProcessResult = ItemRenderUtils.processItemForRendering(resourceManager.get(), player, rightHand, slot, ModelDisplayPosition.THIRDPERSON_RIGHTHAND, version.get().isOld(), language.get());
@@ -765,7 +765,7 @@ public class ImageGeneration {
 
         boolean upsideDown = ModelUtils.isRenderedUpsideDown(player.getName(), cape != null);
 
-        RenderResult renderResult = InteractiveChatDiscordSrvAddon.plugin.modelRenderer.renderPlayer(image.getWidth(), image.getHeight(), ModelRenderer.SINGLE_RENDER, resourceManager.get(), version.get().isOld(), slim, providedTextures, TintColorProvider.EMPTY_INSTANCE, modelItems);
+        RenderResult renderResult = MultiChatDiscordSrvAddon.plugin.modelRenderer.renderPlayer(image.getWidth(), image.getHeight(), ModelRenderer.SINGLE_RENDER, resourceManager.get(), version.get().isOld(), slim, providedTextures, TintColorProvider.EMPTY_INSTANCE, modelItems);
         Graphics2D g = image.createGraphics();
         BufferedImage resizedImage = ImageUtils.resizeImageAbs(renderResult.getImage(0), 117, 159);
         if (upsideDown) {
@@ -798,7 +798,7 @@ public class ImageGeneration {
     }
 
     private static List<BufferedImage> getRawItemImage(ItemStack item, OfflinePlayer player, int size, SteppedIntegerRange animationSpec) throws IOException {
-        InteractiveChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
+        MultiChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
         Debug.debug("ImageGeneration creating raw item stack image " + (item == null ? "null" : ItemNBTUtils.getNMSItemStackJson(item)));
 
         double scale = (double) size / DEFAULT_ITEM_RENDER_SIZE;
@@ -813,7 +813,7 @@ public class ImageGeneration {
         Debug.debug("ImageGeneration rendering with model key " + modelLayers);
 
         BufferedImage[] itemImages;
-        RenderResult renderResult = InteractiveChatDiscordSrvAddon.plugin.modelRenderer.render(size, size, animationSpec, resourceManager.get(), version.get().isOld(), ModelDisplayPosition.GUI, modelLayers, requiresEnchantmentGlint, processResult.getEnchantmentGlintFunction(), processResult.getRawEnchantmentGlintFunction());
+        RenderResult renderResult = MultiChatDiscordSrvAddon.plugin.modelRenderer.render(size, size, animationSpec, resourceManager.get(), version.get().isOld(), ModelDisplayPosition.GUI, modelLayers, requiresEnchantmentGlint, processResult.getEnchantmentGlintFunction(), processResult.getRawEnchantmentGlintFunction());
         if (renderResult.isSuccessful()) {
             itemImages = renderResult.getImages();
         } else {
@@ -866,7 +866,7 @@ public class ImageGeneration {
                 if (amount <= 0) {
                     component = component.color(NamedTextColor.RED);
                 }
-                itemImages[i] = itemImage = ImageUtils.printComponentRightAligned(resourceManager.get(), newItemImage, component, InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), (int) Math.round(33 * scale), (int) Math.round(17 * scale), (float) (16 * scale), ITEM_AMOUNT_TEXT_DARKEN_FACTOR).getImage();
+                itemImages[i] = itemImage = ImageUtils.printComponentRightAligned(resourceManager.get(), newItemImage, component, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), (int) Math.round(33 * scale), (int) Math.round(17 * scale), (float) (16 * scale), ITEM_AMOUNT_TEXT_DARKEN_FACTOR).getImage();
             }
         }
 
@@ -884,7 +884,7 @@ public class ImageGeneration {
         } else {
             CompletableFuture<BufferedImage> future = new CompletableFuture<>();
             ItemStack finalItem = item.clone();
-            Bukkit.getScheduler().runTask(InteractiveChatDiscordSrvAddon.plugin, () -> {
+            Bukkit.getScheduler().runTask(MultiChatDiscordSrvAddon.plugin, () -> {
                 ItemMapWrapper data;
                 try {
                     data = new ItemMapWrapper(finalItem, player);
@@ -892,7 +892,7 @@ public class ImageGeneration {
                     future.completeExceptionally(e);
                     return;
                 }
-                Bukkit.getScheduler().runTaskAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
+                Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
                     try {
                         future.complete(getMapImage(data.getColors(), data.getMapCursors(), player));
                     } catch (Throwable e) {
@@ -908,7 +908,7 @@ public class ImageGeneration {
         if (colors != null && colors.length != 16384) {
             throw new IllegalArgumentException("Map color array is not null or of length 16384");
         }
-        InteractiveChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
+        MultiChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
         Debug.debug("ImageGeneration creating map image with color and cursors");
 
         BufferedImage background = resourceManager.get().getTextureManager().getTexture(ResourceRegistry.MAP_TEXTURE_LOCATION + "map_background").getTexture();
@@ -992,7 +992,7 @@ public class ImageGeneration {
                 g2.drawImage(iconCan, imageX - (iconCan.getWidth() / 2), imageY - (iconCan.getHeight() / 2), 96, 96, null);
 
                 if (component != null) {
-                    ImageUtils.printComponentShadowlessDynamicSize(resourceManager.get(), image, component, InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), imageX, imageY + 32, 30, true);
+                    ImageUtils.printComponentShadowlessDynamicSize(resourceManager.get(), image, component, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), imageX, imageY + 32, 30, true);
                 }
             }
         }
@@ -1054,7 +1054,7 @@ public class ImageGeneration {
         for (ToolTipComponent<?> print : prints) {
             ToolTipType<?> type = print.getType();
             if (type.equals(ToolTipType.TEXT)) {
-                ImageUtils.ComponentPrintResult printResult = ImageUtils.printComponent(resourceManager.get(), image, print.getToolTipComponent(ToolTipType.TEXT), InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), topX + 8, currentY, 16);
+                ImageUtils.ComponentPrintResult printResult = ImageUtils.printComponent(resourceManager.get(), image, print.getToolTipComponent(ToolTipType.TEXT), MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), topX + 8, currentY, 16);
                 int textWidth = printResult.getTextWidth();
                 if (textWidth > maxX) {
                     maxX = textWidth;
@@ -1214,9 +1214,9 @@ public class ImageGeneration {
                 offsetX += 2;
             }
             g.dispose();
-            ImageUtils.printComponent(resourceManager.get(), image, name, InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), offsetX, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
-            int lastX = InteractiveChatDiscordSrvAddon.plugin.playerlistCommandMinWidth;
-            for (int x = InteractiveChatDiscordSrvAddon.plugin.playerlistCommandMinWidth; x < image.getWidth(); x++) {
+            ImageUtils.printComponent(resourceManager.get(), image, name, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), offsetX, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
+            int lastX = MultiChatDiscordSrvAddon.plugin.playerlistCommandMinWidth;
+            for (int x = MultiChatDiscordSrvAddon.plugin.playerlistCommandMinWidth; x < image.getWidth(); x++) {
                 for (int y = 0; y < image.getHeight(); y++) {
                     if (image.getRGB(x, y) != 0) {
                         lastX = x;
@@ -1268,7 +1268,7 @@ public class ImageGeneration {
         Map<BufferedImage, Integer> headerLines = new LinkedHashMap<>(header.size());
         for (Component line : header) {
             BufferedImage image = new BufferedImage(2048, TABLIST_INTERNAL_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-            ImageUtils.printComponent(resourceManager.get(), image, line, InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), 0, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
+            ImageUtils.printComponent(resourceManager.get(), image, line, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), 0, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
             int lastX = 0;
             for (int x = 0; x < image.getWidth(); x++) {
                 for (int y = 0; y < image.getHeight(); y++) {
@@ -1288,7 +1288,7 @@ public class ImageGeneration {
         Map<BufferedImage, Integer> footerLines = new LinkedHashMap<>(footer.size());
         for (Component line : footer) {
             BufferedImage image = new BufferedImage(2048, TABLIST_INTERNAL_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-            ImageUtils.printComponent(resourceManager.get(), image, line, InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), 0, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
+            ImageUtils.printComponent(resourceManager.get(), image, line, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), 0, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
             int lastX = 0;
             for (int x = 0; x < image.getWidth(); x++) {
                 for (int y = 0; y < image.getHeight(); y++) {
@@ -1550,7 +1550,7 @@ public class ImageGeneration {
 
             if (bundleFullnessMessage != null) {
                 BufferedImage textImage = new BufferedImage(2048, 512, BufferedImage.TYPE_INT_ARGB);
-                ImageUtils.printComponent(resourceManager.get(), textImage, bundleFullnessMessage, InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), 512, 256, 16);
+                ImageUtils.printComponent(resourceManager.get(), textImage, bundleFullnessMessage, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), 512, 256, 16);
                 int lastX = 512;
                 for (int x = 512; x < textImage.getWidth(); x++) {
                     for (int y = 0; y < textImage.getHeight(); y++) {
@@ -1673,7 +1673,7 @@ public class ImageGeneration {
     public static Future<List<BufferedImage>> getBookInterface(List<Component> pages) {
         CompletableFuture<List<BufferedImage>> future = new CompletableFuture<>();
         List<Supplier<BufferedImage>> suppliers = getBookInterfaceSuppliers(pages);
-        Bukkit.getScheduler().runTaskAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> future.complete(suppliers.stream().map(each -> each.get()).collect(Collectors.toList())));
+        Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> future.complete(suppliers.stream().map(each -> each.get()).collect(Collectors.toList())));
         return future;
     }
 
@@ -1704,12 +1704,12 @@ public class ImageGeneration {
                     g.drawImage(previousPage, 48, 313, null);
                 }
                 Component pageHeader = Component.translatable(TranslationKeyUtils.getBookPageIndicator()).arguments(Component.text(pageNumber), Component.text(totalPages)).color(NamedTextColor.BLACK);
-                ImageUtils.printComponentRightAligned(resourceManager.get(), page, pageHeader, InteractiveChatDiscordSrvAddon.plugin.language, VersionManager.version.isLegacyRGB(), 255, 30, 16, Double.NEGATIVE_INFINITY);
+                ImageUtils.printComponentRightAligned(resourceManager.get(), page, pageHeader, MultiChatDiscordSrvAddon.plugin.language, VersionManager.version.isLegacyRGB(), 255, 30, 16, Double.NEGATIVE_INFINITY);
 
                 BufferedImage temp = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
 
                 List<Component> lines = new ArrayList<>();
-                lines.addAll(ComponentStringUtils.applyWordWrap(component, resourceManager.get().getLanguageManager().getTranslateFunction().ofLanguage(InteractiveChatDiscordSrvAddon.plugin.language), BOOK_LINE_LIMIT, new ToIntFunction<CharacterLengthProviderData>() {
+                lines.addAll(ComponentStringUtils.applyWordWrap(component, resourceManager.get().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language), BOOK_LINE_LIMIT, new ToIntFunction<CharacterLengthProviderData>() {
                     int lastItalicExtraWidth = 0;
 
                     @Override
@@ -1724,7 +1724,7 @@ public class ImageGeneration {
                 int y = 58;
                 for (Component each : lines.subList(0, Math.min(lines.size(), BOOK_MAX_LINES))) {
                     each = each.colorIfAbsent(NamedTextColor.BLACK);
-                    ImageUtils.printComponent(resourceManager.get(), page, each, InteractiveChatDiscordSrvAddon.plugin.language, VersionManager.version.isLegacyRGB(), 34, y, 16, Double.NEGATIVE_INFINITY);
+                    ImageUtils.printComponent(resourceManager.get(), page, each, MultiChatDiscordSrvAddon.plugin.language, VersionManager.version.isLegacyRGB(), 34, y, 16, Double.NEGATIVE_INFINITY);
                     y += 18;
                 }
 

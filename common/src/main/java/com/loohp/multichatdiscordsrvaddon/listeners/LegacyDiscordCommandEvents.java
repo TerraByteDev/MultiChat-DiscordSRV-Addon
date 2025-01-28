@@ -30,7 +30,7 @@ import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.ComponentStyling;
 import com.loohp.multichatdiscordsrvaddon.utils.PlaceholderParser;
 import com.loohp.multichatdiscordsrvaddon.utils.PlayerUtils;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -58,26 +58,26 @@ public class LegacyDiscordCommandEvents {
 
     @Subscribe(priority = ListenerPriority.NORMAL)
     public void onListPlayers(DiscordChatChannelListCommandMessageEvent event) {
-        if (!InteractiveChatDiscordSrvAddon.plugin.playerlistCommandEnabled) {
+        if (!MultiChatDiscordSrvAddon.plugin.playerlistCommandEnabled) {
             return;
         }
         DiscordSRV discordsrv = DiscordSRV.getPlugin();
         TextChannel channel = event.getChannel();
-        if (InteractiveChatDiscordSrvAddon.plugin.playerlistCommandIsMainServer) {
+        if (MultiChatDiscordSrvAddon.plugin.playerlistCommandIsMainServer) {
             String minecraftChannel = discordsrv.getChannels().entrySet().stream().filter(entry -> channel.getId().equals(entry.getValue())).map(Map.Entry::getKey).findFirst().orElse(null);
             if (minecraftChannel == null) {
-                if (InteractiveChatDiscordSrvAddon.plugin.respondToCommandsInInvalidChannels) {
+                if (MultiChatDiscordSrvAddon.plugin.respondToCommandsInInvalidChannels) {
                     event.setResult(DiscordChatChannelListCommandMessageEvent.Result.TREAT_AS_REGULAR_MESSAGE);
                 }
                 return;
             }
-            if (InteractiveChatDiscordSrvAddon.plugin.playerlistCommandDeleteAfter > 0) {
-                event.setExpiration(InteractiveChatDiscordSrvAddon.plugin.playerlistCommandDeleteAfter * 1000);
+            if (MultiChatDiscordSrvAddon.plugin.playerlistCommandDeleteAfter > 0) {
+                event.setExpiration(MultiChatDiscordSrvAddon.plugin.playerlistCommandDeleteAfter * 1000);
             } else {
                 event.setExpiration(0);
             }
             Map<OfflinePlayer, Integer> players;
-            if (InteractiveChatDiscordSrvAddon.plugin.useBungeecord && InteractiveChatDiscordSrvAddon.plugin.playerlistCommandBungeecord && !Bukkit.getOnlinePlayers().isEmpty()) {
+            if (MultiChatDiscordSrvAddon.plugin.useBungeecord && MultiChatDiscordSrvAddon.plugin.playerlistCommandBungeecord && !Bukkit.getOnlinePlayers().isEmpty()) {
                 try {
                     List<ValueTrios<UUID, String, Integer>> bungeePlayers = InteractiveChatDiscordSrvAddonAPI.getBungeecordPlayerList().get();
                     players = new LinkedHashMap<>(bungeePlayers.size());
@@ -90,7 +90,7 @@ public class LegacyDiscordCommandEvents {
                     }
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
-                    event.setPlayerListMessage(ChatColorUtils.stripColor(InteractiveChatDiscordSrvAddon.plugin.unableToRetrieveData) + " (-1)");
+                    event.setPlayerListMessage(ChatColorUtils.stripColor(MultiChatDiscordSrvAddon.plugin.unableToRetrieveData) + " (-1)");
                     return;
                 }
             } else {
@@ -100,7 +100,7 @@ public class LegacyDiscordCommandEvents {
                 }).collect(Collectors.toMap(each -> each, each -> each.getPing(), (a, b) -> a));
             }
             if (players.isEmpty()) {
-                event.setPlayerListMessage(ChatColorUtils.stripColor(InteractiveChatDiscordSrvAddon.plugin.playerlistCommandEmptyServer));
+                event.setPlayerListMessage(ChatColorUtils.stripColor(MultiChatDiscordSrvAddon.plugin.playerlistCommandEmptyServer));
             } else {
                 int errorCode = -2;
                 try {
@@ -109,9 +109,9 @@ public class LegacyDiscordCommandEvents {
                     for (Map.Entry<OfflinePlayer, Integer> entry : players.entrySet()) {
                         OfflinePlayer offlinePlayer = entry.getKey();
                         playerInfo.put(offlinePlayer.getUniqueId(), new ValuePairs<>(DiscordCommands.getPlayerGroups(offlinePlayer), offlinePlayer.getName()));
-                        String name = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlinePlayer, InteractiveChatDiscordSrvAddon.plugin.playerlistCommandPlayerFormat));
+                        String name = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlinePlayer, MultiChatDiscordSrvAddon.plugin.playerlistCommandPlayerFormat));
                         Component nameComponent;
-                        if (InteractiveChatDiscordSrvAddon.plugin.playerlistCommandParsePlayerNamesWithMiniMessage) {
+                        if (MultiChatDiscordSrvAddon.plugin.playerlistCommandParsePlayerNamesWithMiniMessage) {
                             nameComponent = MiniMessage.miniMessage().deserialize(name);
                         } else {
                             nameComponent = LegacyComponentSerializer.legacySection().deserialize(name);
@@ -119,28 +119,28 @@ public class LegacyDiscordCommandEvents {
                         player.add(new ValueTrios<>(offlinePlayer, nameComponent, entry.getValue()));
                     }
                     errorCode--;
-                    DiscordCommands.sortPlayers(InteractiveChatDiscordSrvAddon.plugin.playerlistOrderingTypes, player, playerInfo);
+                    DiscordCommands.sortPlayers(MultiChatDiscordSrvAddon.plugin.playerlistOrderingTypes, player, playerInfo);
                     errorCode--;
                     OfflinePlayer firstPlayer = Bukkit.getOfflinePlayer(players.keySet().iterator().next().getUniqueId());
                     List<Component> header = new ArrayList<>();
-                    if (!InteractiveChatDiscordSrvAddon.plugin.playerlistCommandHeader.isEmpty()) {
-                        header = ComponentStyling.splitAtLineBreaks(LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(firstPlayer, InteractiveChatDiscordSrvAddon.plugin.playerlistCommandHeader.replace("{OnlinePlayers}", players.size() + "")))));
+                    if (!MultiChatDiscordSrvAddon.plugin.playerlistCommandHeader.isEmpty()) {
+                        header = ComponentStyling.splitAtLineBreaks(LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(firstPlayer, MultiChatDiscordSrvAddon.plugin.playerlistCommandHeader.replace("{OnlinePlayers}", players.size() + "")))));
                     }
                     errorCode--;
                     List<Component> footer = new ArrayList<>();
-                    if (!InteractiveChatDiscordSrvAddon.plugin.playerlistCommandFooter.isEmpty()) {
-                        footer = ComponentStyling.splitAtLineBreaks(LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(firstPlayer, InteractiveChatDiscordSrvAddon.plugin.playerlistCommandFooter.replace("{OnlinePlayers}", players.size() + "")))));
+                    if (!MultiChatDiscordSrvAddon.plugin.playerlistCommandFooter.isEmpty()) {
+                        footer = ComponentStyling.splitAtLineBreaks(LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(firstPlayer, MultiChatDiscordSrvAddon.plugin.playerlistCommandFooter.replace("{OnlinePlayers}", players.size() + "")))));
                     }
                     errorCode--;
-                    int playerListMaxPlayers = InteractiveChatDiscordSrvAddon.plugin.playerlistMaxPlayers;
+                    int playerListMaxPlayers = MultiChatDiscordSrvAddon.plugin.playerlistMaxPlayers;
                     if (playerListMaxPlayers < 1) {
                         playerListMaxPlayers = Integer.MAX_VALUE;
                     }
-                    BufferedImage image = ImageGeneration.getTabListImage(header, footer, player, InteractiveChatDiscordSrvAddon.plugin.playerlistCommandAvatar, InteractiveChatDiscordSrvAddon.plugin.playerlistCommandPing, playerListMaxPlayers);
+                    BufferedImage image = ImageGeneration.getTabListImage(header, footer, player, MultiChatDiscordSrvAddon.plugin.playerlistCommandAvatar, MultiChatDiscordSrvAddon.plugin.playerlistCommandPing, playerListMaxPlayers);
                     errorCode--;
                     byte[] data = ImageUtils.toArray(image);
                     errorCode--;
-                    channel.sendMessageEmbeds(new EmbedBuilder().setImage("attachment://Tablist.png").setColor(InteractiveChatDiscordSrvAddon.plugin.playerlistCommandColor).build()).addFile(data, "Tablist.png").queue(success -> {
+                    channel.sendMessageEmbeds(new EmbedBuilder().setImage("attachment://Tablist.png").setColor(MultiChatDiscordSrvAddon.plugin.playerlistCommandColor).build()).addFile(data, "Tablist.png").queue(success -> {
                         if (event.getExpiration() > 0) {
                             success.delete().queueAfter(event.getExpiration(), TimeUnit.MILLISECONDS);
                         }
@@ -148,7 +148,7 @@ public class LegacyDiscordCommandEvents {
                     event.setResult(DiscordChatChannelListCommandMessageEvent.Result.NO_ACTION);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    event.setPlayerListMessage(ChatColorUtils.stripColor(InteractiveChatDiscordSrvAddon.plugin.unableToRetrieveData) + " (" + errorCode + ")");
+                    event.setPlayerListMessage(ChatColorUtils.stripColor(MultiChatDiscordSrvAddon.plugin.unableToRetrieveData) + " (" + errorCode + ")");
                     return;
                 }
             }

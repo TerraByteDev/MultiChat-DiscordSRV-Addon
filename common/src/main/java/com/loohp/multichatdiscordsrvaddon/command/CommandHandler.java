@@ -1,6 +1,6 @@
 package com.loohp.multichatdiscordsrvaddon.command;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.command.subcommand.*;
 import com.loohp.multichatdiscordsrvaddon.utils.ICLogger;
 import org.bukkit.command.CommandSender;
@@ -17,7 +17,7 @@ public class CommandHandler {
 
     public CommandHandler() {
         this.manager = LegacyPaperCommandManager.createNative(
-                InteractiveChatDiscordSrvAddon.plugin,
+                MultiChatDiscordSrvAddon.plugin,
                 ExecutionCoordinator.asyncCoordinator()
         );
 

@@ -1,7 +1,7 @@
 name: MultiChatDiscordSrvAddon
 author: ["loohp", "Skullians"]
 version: ${project.version}
-main: com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon
+main: com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon
 api-version: 1.13
 description: DiscordSRV addon to InteractiveChat
 depend: [DiscordSRV, ProtocolLib]

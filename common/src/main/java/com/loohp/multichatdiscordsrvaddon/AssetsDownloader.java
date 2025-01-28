@@ -90,7 +90,7 @@ public class AssetsDownloader {
                 new RuntimeException("Invalid hashes.json! It will be reset.", e).printStackTrace();
                 json = new JSONObject();
             }
-            String oldHash = InteractiveChatDiscordSrvAddon.plugin.defaultResourceHash = json.containsKey("Default") ? json.get("Default").toString() : "EMPTY";
+            String oldHash = MultiChatDiscordSrvAddon.plugin.defaultResourceHash = json.containsKey("Default") ? json.get("Default").toString() : "EMPTY";
             String oldVersion = json.containsKey("version") ? json.get("version").toString() : "EMPTY";
 
             File defaultAssetsFolder = new File(rootFolder + "/built-in", "Default");
@@ -100,34 +100,34 @@ public class AssetsDownloader {
 
             String hash = downloadManager.getHash();
 
-            if (force || !hash.equals(oldHash) || !InteractiveChatDiscordSrvAddon.plugin.getDescription().getVersion().equals(oldVersion)) {
+            if (force || !hash.equals(oldHash) || !MultiChatDiscordSrvAddon.plugin.getDescription().getVersion().equals(oldVersion)) {
                 if (clean) {
-                    InteractiveChatDiscordSrvAddon.plugin.sendMessage(ChatColor.AQUA + "[ICDiscordSrvAddon] Cleaning old default resources!", senders);
+                    MultiChatDiscordSrvAddon.plugin.sendMessage(ChatColor.AQUA + "[ICDiscordSrvAddon] Cleaning old default resources!", senders);
                     FileUtils.removeFolderRecursively(defaultAssetsFolder);
                     defaultAssetsFolder.mkdirs();
                 }
                 if (force) {
-                    InteractiveChatDiscordSrvAddon.plugin.sendMessage(ChatColor.AQUA + "[ICDiscordSrvAddon] Forcibly re-downloading default resources! Please wait... (" + oldHash + " -> " + hash + ")", senders);
+                    MultiChatDiscordSrvAddon.plugin.sendMessage(ChatColor.AQUA + "[ICDiscordSrvAddon] Forcibly re-downloading default resources! Please wait... (" + oldHash + " -> " + hash + ")", senders);
                 } else if (!hash.equals(oldHash)) {
-                    InteractiveChatDiscordSrvAddon.plugin.sendMessage(ChatColor.AQUA + "[ICDiscordSrvAddon] Hash changed! Re-downloading default resources! Please wait... (" + oldHash + " -> " + hash + ")", senders);
+                    MultiChatDiscordSrvAddon.plugin.sendMessage(ChatColor.AQUA + "[ICDiscordSrvAddon] Hash changed! Re-downloading default resources! Please wait... (" + oldHash + " -> " + hash + ")", senders);
                 } else {
-                    InteractiveChatDiscordSrvAddon.plugin.sendMessage(ChatColor.AQUA + "[ICDiscordSrvAddon] Plugin version changed! Re-downloading default resources! Please wait... (" + oldHash + " -> " + hash + ")", senders);
+                    MultiChatDiscordSrvAddon.plugin.sendMessage(ChatColor.AQUA + "[ICDiscordSrvAddon] Plugin version changed! Re-downloading default resources! Please wait... (" + oldHash + " -> " + hash + ")", senders);
                 }
 
                 downloadManager.downloadResources((type, fileName, percentage) -> {
                     switch (type) {
                         case CLIENT_DOWNLOAD:
-                            if (!InteractiveChatDiscordSrvAddon.plugin.reducedAssetsDownloadInfo && percentage == 0.0) {
+                            if (!MultiChatDiscordSrvAddon.plugin.reducedAssetsDownloadInfo && percentage == 0.0) {
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "[ICDiscordSrvAddon] Downloading client jar");
                             }
                             break;
                         case EXTRACT:
-                            if (!InteractiveChatDiscordSrvAddon.plugin.reducedAssetsDownloadInfo) {
+                            if (!MultiChatDiscordSrvAddon.plugin.reducedAssetsDownloadInfo) {
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "[ICDiscordSrvAddon] Extracting " + fileName + " (" + FORMAT.format(percentage) + "%)");
                             }
                             break;
                         case DOWNLOAD:
-                            if (!InteractiveChatDiscordSrvAddon.plugin.reducedAssetsDownloadInfo) {
+                            if (!MultiChatDiscordSrvAddon.plugin.reducedAssetsDownloadInfo) {
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "[ICDiscordSrvAddon] Downloading " + fileName + " (" + FORMAT.format(percentage) + "%)");
                             }
                             break;
@@ -139,15 +139,15 @@ public class AssetsDownloader {
             }
 
             downloadManager.downloadExtras(() -> {
-                InteractiveChatDiscordSrvAddon.plugin.extras.clear();
+                MultiChatDiscordSrvAddon.plugin.extras.clear();
             }, (key, dataBytes) -> {
-                InteractiveChatDiscordSrvAddon.plugin.extras.put(key, dataBytes);
+                MultiChatDiscordSrvAddon.plugin.extras.put(key, dataBytes);
             });
 
-            InteractiveChatDiscordSrvAddon.plugin.defaultResourceHash = hash;
+            MultiChatDiscordSrvAddon.plugin.defaultResourceHash = hash;
 
             json.put("Default", hash);
-            json.put("version", InteractiveChatDiscordSrvAddon.plugin.getDescription().getVersion());
+            json.put("version", MultiChatDiscordSrvAddon.plugin.getDescription().getVersion());
 
             try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(Files.newOutputStream(hashes.toPath()), StandardCharsets.UTF_8))) {
                 Gson g = new GsonBuilder().setPrettyPrinting().create();
@@ -166,16 +166,16 @@ public class AssetsDownloader {
     public static void loadExtras() {
         ResourceDownloadManager downloadManager = new ResourceDownloadManager(VersionManager.exactMinecraftVersion, null);
         downloadManager.downloadExtras(() -> {
-            InteractiveChatDiscordSrvAddon.plugin.extras.clear();
+            MultiChatDiscordSrvAddon.plugin.extras.clear();
         }, (key, dataBytes) -> {
-            InteractiveChatDiscordSrvAddon.plugin.extras.put(key, dataBytes);
+            MultiChatDiscordSrvAddon.plugin.extras.put(key, dataBytes);
         });
     }
 
     public static ServerResourcePackDownloadResult downloadServerResourcePack(File packFolder) {
-        String url = InteractiveChatDiscordSrvAddon.plugin.alternateResourcePackURL;
-        String hash = InteractiveChatDiscordSrvAddon.plugin.alternateResourcePackHash;
-        if (InteractiveChatDiscordSrvAddon.itemsAdderHook && InteractiveChatDiscordSrvAddon.plugin.itemsAdderPackAsServerResourcePack) {
+        String url = MultiChatDiscordSrvAddon.plugin.alternateResourcePackURL;
+        String hash = MultiChatDiscordSrvAddon.plugin.alternateResourcePackHash;
+        if (MultiChatDiscordSrvAddon.itemsAdderHook && MultiChatDiscordSrvAddon.plugin.itemsAdderPackAsServerResourcePack) {
             String iaUrl = ItemsAdderHook.getItemsAdderResourcePackURL();
             if (iaUrl != null) {
                 url = iaUrl;
@@ -248,7 +248,7 @@ public class AssetsDownloader {
                 new RuntimeException("Invalid hashes.json! It will be reset.", e).printStackTrace();
                 json = new JSONObject();
             }
-            String oldHash = InteractiveChatDiscordSrvAddon.plugin.defaultResourceHash = json.containsKey("libs") ? json.get("libs").toString() : "EMPTY";
+            String oldHash = MultiChatDiscordSrvAddon.plugin.defaultResourceHash = json.containsKey("libs") ? json.get("libs").toString() : "EMPTY";
             String oldVersion = json.containsKey("version") ? json.get("version").toString() : "EMPTY";
 
             File libsFolder = new File(rootFolder, "libs");
@@ -260,7 +260,7 @@ public class AssetsDownloader {
             try {
                 hash = downloadManager.getHash();
 
-                if (!hash.equals(oldHash) || !InteractiveChatDiscordSrvAddon.plugin.getDescription().getVersion().equals(oldVersion)) {
+                if (!hash.equals(oldHash) || !MultiChatDiscordSrvAddon.plugin.getDescription().getVersion().equals(oldVersion)) {
                     downloadManager.downloadLibraries((result, jarName, percentage) -> {
                         if (result) {
                             Bukkit.getConsoleSender().sendMessage("[ICDiscordSrvAddon] Downloaded library \"" + jarName + "\"");
@@ -293,7 +293,7 @@ public class AssetsDownloader {
             });
 
             json.put("libs", hash);
-            json.put("version", InteractiveChatDiscordSrvAddon.plugin.getDescription().getVersion());
+            json.put("version", MultiChatDiscordSrvAddon.plugin.getDescription().getVersion());
 
             try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(Files.newOutputStream(hashes.toPath()), StandardCharsets.UTF_8))) {
                 Gson g = new GsonBuilder().setPrettyPrinting().create();

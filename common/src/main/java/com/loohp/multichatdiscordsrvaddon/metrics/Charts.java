@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.metrics;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 
 import java.util.concurrent.Callable;
@@ -32,7 +32,7 @@ public class Charts {
         metrics.addCustomChart(new Metrics.SingleLineChart("discord_servers_present", new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                JDA jda = InteractiveChatDiscordSrvAddon.discordsrv.getJda();
+                JDA jda = MultiChatDiscordSrvAddon.discordsrv.getJda();
                 if (jda == null) {
                     return 0;
                 }
@@ -43,7 +43,7 @@ public class Charts {
         metrics.addCustomChart(new Metrics.SingleLineChart("discord_channels_present", new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                JDA jda = InteractiveChatDiscordSrvAddon.discordsrv.getJda();
+                JDA jda = MultiChatDiscordSrvAddon.discordsrv.getJda();
                 if (jda == null) {
                     return 0;
                 }
@@ -54,7 +54,7 @@ public class Charts {
         metrics.addCustomChart(new Metrics.SingleLineChart("total_discord_members", new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                JDA jda = InteractiveChatDiscordSrvAddon.discordsrv.getJda();
+                JDA jda = MultiChatDiscordSrvAddon.discordsrv.getJda();
                 if (jda == null) {
                     return 0;
                 }
@@ -66,7 +66,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (InteractiveChatDiscordSrvAddon.plugin.itemImage) {
+                if (MultiChatDiscordSrvAddon.plugin.itemImage) {
                     string = "Enabled";
                 }
                 return string;
@@ -77,7 +77,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (InteractiveChatDiscordSrvAddon.plugin.invImage) {
+                if (MultiChatDiscordSrvAddon.plugin.invImage) {
                     string = "Enabled";
                 }
                 return string;
@@ -88,7 +88,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (InteractiveChatDiscordSrvAddon.plugin.enderImage) {
+                if (MultiChatDiscordSrvAddon.plugin.enderImage) {
                     string = "Enabled";
                 }
                 return string;
@@ -99,7 +99,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (InteractiveChatDiscordSrvAddon.plugin.hoverEnabled) {
+                if (MultiChatDiscordSrvAddon.plugin.hoverEnabled) {
                     string = "Enabled";
                 }
                 return string;
@@ -110,7 +110,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (InteractiveChatDiscordSrvAddon.plugin.hoverUseTooltipImage) {
+                if (MultiChatDiscordSrvAddon.plugin.hoverUseTooltipImage) {
                     string = "Enabled";
                 }
                 return string;
@@ -121,7 +121,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (InteractiveChatDiscordSrvAddon.plugin.convertDiscordAttachments) {
+                if (MultiChatDiscordSrvAddon.plugin.convertDiscordAttachments) {
                     string = "Enabled";
                 }
                 return string;
@@ -132,7 +132,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (InteractiveChatDiscordSrvAddon.plugin.deathMessageItem) {
+                if (MultiChatDiscordSrvAddon.plugin.deathMessageItem) {
                     string = "Enabled";
                 }
                 return string;
@@ -143,7 +143,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (InteractiveChatDiscordSrvAddon.plugin.advancementName) {
+                if (MultiChatDiscordSrvAddon.plugin.advancementName) {
                     string = "Enabled";
                 }
                 return string;
@@ -154,7 +154,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (InteractiveChatDiscordSrvAddon.plugin.advancementItem) {
+                if (MultiChatDiscordSrvAddon.plugin.advancementItem) {
                     string = "Enabled";
                 }
                 return string;
@@ -165,7 +165,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (InteractiveChatDiscordSrvAddon.plugin.advancementDescription) {
+                if (MultiChatDiscordSrvAddon.plugin.advancementDescription) {
                     string = "Enabled";
                 }
                 return string;
@@ -176,7 +176,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (InteractiveChatDiscordSrvAddon.plugin.translateMentions) {
+                if (MultiChatDiscordSrvAddon.plugin.translateMentions) {
                     string = "Enabled";
                 }
                 return string;
@@ -187,7 +187,7 @@ public class Charts {
             @Override
             public Integer call() throws Exception {
                 try {
-                    return Math.max(0, InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getResourcePackInfo().size() - 1);
+                    return Math.max(0, MultiChatDiscordSrvAddon.plugin.getResourceManager().getResourcePackInfo().size() - 1);
                 } catch (Throwable e) {
                     return 0;
                 }
@@ -197,7 +197,7 @@ public class Charts {
         metrics.addCustomChart(new Metrics.SingleLineChart("total_messages_processed_per_interval", new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                long amount = InteractiveChatDiscordSrvAddon.plugin.messagesCounter.getAndSet(0);
+                long amount = MultiChatDiscordSrvAddon.plugin.messagesCounter.getAndSet(0);
                 return amount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) amount;
             }
         }));
@@ -205,7 +205,7 @@ public class Charts {
         metrics.addCustomChart(new Metrics.SingleLineChart("total_images_created_per_interval", new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                long amount = InteractiveChatDiscordSrvAddon.plugin.imageCounter.getAndSet(0);
+                long amount = MultiChatDiscordSrvAddon.plugin.imageCounter.getAndSet(0);
                 return amount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) amount;
             }
         }));
@@ -213,7 +213,7 @@ public class Charts {
         metrics.addCustomChart(new Metrics.SingleLineChart("total_inventory_images_created_per_interval", new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                long amount = InteractiveChatDiscordSrvAddon.plugin.inventoryImageCounter.getAndSet(0);
+                long amount = MultiChatDiscordSrvAddon.plugin.inventoryImageCounter.getAndSet(0);
                 return amount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) amount;
             }
         }));
@@ -221,7 +221,7 @@ public class Charts {
         metrics.addCustomChart(new Metrics.SingleLineChart("total_discord_attachments_processed_per_interval", new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                long amount = InteractiveChatDiscordSrvAddon.plugin.attachmentCounter.getAndSet(0);
+                long amount = MultiChatDiscordSrvAddon.plugin.attachmentCounter.getAndSet(0);
                 return amount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) amount;
             }
         }));
@@ -229,7 +229,7 @@ public class Charts {
         metrics.addCustomChart(new Metrics.SingleLineChart("total_discord_images_processed_per_interval", new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                long amount = InteractiveChatDiscordSrvAddon.plugin.attachmentImageCounter.getAndSet(0);
+                long amount = MultiChatDiscordSrvAddon.plugin.attachmentImageCounter.getAndSet(0);
                 return amount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) amount;
             }
         }));
@@ -237,7 +237,7 @@ public class Charts {
         metrics.addCustomChart(new Metrics.SingleLineChart("total_image_maps_viewed_per_interval", new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                long amount = InteractiveChatDiscordSrvAddon.plugin.imagesViewedCounter.getAndSet(0);
+                long amount = MultiChatDiscordSrvAddon.plugin.imagesViewedCounter.getAndSet(0);
                 return amount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) amount;
             }
         }));
@@ -245,7 +245,7 @@ public class Charts {
         metrics.addCustomChart(new Metrics.SingleLineChart("servers_rendering_player_models_with_hand_items", new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                return InteractiveChatDiscordSrvAddon.plugin.usePlayerInvView && InteractiveChatDiscordSrvAddon.plugin.renderHandHeldItems ? 1 : 0;
+                return MultiChatDiscordSrvAddon.plugin.usePlayerInvView && MultiChatDiscordSrvAddon.plugin.renderHandHeldItems ? 1 : 0;
             }
         }));
 
@@ -255,7 +255,7 @@ public class Charts {
                 long combined = 0;
                 Integer i;
                 int counter = 0;
-                while ((i = InteractiveChatDiscordSrvAddon.plugin.playerModelRenderingTimes.poll()) != null) {
+                while ((i = MultiChatDiscordSrvAddon.plugin.playerModelRenderingTimes.poll()) != null) {
                     combined += i;
                     counter++;
                 }

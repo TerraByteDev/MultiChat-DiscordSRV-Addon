@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -43,11 +43,11 @@ public class PlaceholderParser {
     private static final Map<UUID, Map<String, String>> remotePlaceholders = new HashMap<>();
 
     static {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
-            if (InteractiveChatDiscordSrvAddon.plugin.useBungeecord) {
-                if (InteractiveChatDiscordSrvAddon.plugin.useTooltipOnTab) {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
+            if (MultiChatDiscordSrvAddon.plugin.useBungeecord) {
+                if (MultiChatDiscordSrvAddon.plugin.useTooltipOnTab) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        parse(Bukkit.getOfflinePlayer(player.getUniqueId()), InteractiveChatDiscordSrvAddon.plugin.tabTooltip);
+                        parse(Bukkit.getOfflinePlayer(player.getUniqueId()), MultiChatDiscordSrvAddon.plugin.tabTooltip);
                     }
                 }
             }
@@ -55,10 +55,10 @@ public class PlaceholderParser {
     }
 
     public static String parse(OfflinePlayer offlineICPlayer, String str) {
-        if (InteractiveChatDiscordSrvAddon.plugin.parsePAPIOnMainThread && !Bukkit.isPrimaryThread()) {
+        if (MultiChatDiscordSrvAddon.plugin.parsePAPIOnMainThread && !Bukkit.isPrimaryThread()) {
             try {
                 CompletableFuture<String> future = new CompletableFuture<>();
-                Bukkit.getScheduler().runTask(InteractiveChatDiscordSrvAddon.plugin, () -> future.complete(parse0(offlineICPlayer, str)));
+                Bukkit.getScheduler().runTask(MultiChatDiscordSrvAddon.plugin, () -> future.complete(parse0(offlineICPlayer, str)));
                 return future.get(1500, TimeUnit.MILLISECONDS);
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
@@ -86,7 +86,7 @@ public class PlaceholderParser {
             return PlaceholderAPI.setPlaceholders(offlineICPlayer.getPlayer(), str);
         } else {
             if (PlayerUtils.isLocal(player)) {
-                if (InteractiveChatDiscordSrvAddon.plugin.useBungeecord) {
+                if (MultiChatDiscordSrvAddon.plugin.useBungeecord) {
                     List<ValuePairs<String, String>> pairs = new ArrayList<>();
                     for (Entry<String, String> entry : getAllPlaceholdersContained(player, str).entrySet()) {
                         pairs.add(new ValuePairs<>(entry.getKey(), entry.getValue()));

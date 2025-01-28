@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.debug;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.utils.ICLogger;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -32,15 +32,15 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class Debug implements Listener {
 
     public static void debug(String info) {
-        if (InteractiveChatDiscordSrvAddon.debug) {
-            InteractiveChatDiscordSrvAddon.plugin.audience.sender(Bukkit.getConsoleSender()).sendMessage(MiniMessage.miniMessage().deserialize(ICLogger.DEBUG_PREFIX + " <gray>" + info));
+        if (MultiChatDiscordSrvAddon.debug) {
+            MultiChatDiscordSrvAddon.plugin.audience.sender(Bukkit.getConsoleSender()).sendMessage(MiniMessage.miniMessage().deserialize(ICLogger.DEBUG_PREFIX + " <gray>" + info));
         }
     }
 
     @EventHandler
     public void onJoinPluginActive(PlayerJoinEvent event) {
         if (event.getPlayer().getName().equals("LOOHP") || event.getPlayer().getName().equals("AppLEshakE")) {
-            event.getPlayer().sendMessage(ChatColor.AQUA + "InteractiveChatDiscordSrvAddon " + InteractiveChatDiscordSrvAddon.plugin.getDescription().getVersion() + " is running!");
+            event.getPlayer().sendMessage(ChatColor.AQUA + "InteractiveChatDiscordSrvAddon " + MultiChatDiscordSrvAddon.plugin.getDescription().getVersion() + " is running!");
         }
     }
 

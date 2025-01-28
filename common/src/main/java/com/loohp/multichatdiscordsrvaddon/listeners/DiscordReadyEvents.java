@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.ListenerPriority;
@@ -56,14 +56,14 @@ public class DiscordReadyEvents {
 
     public void ready() {
         Debug.debug("Triggering discord ready...");
-        DiscordSRV discordsrv = InteractiveChatDiscordSrvAddon.discordsrv;
+        DiscordSRV discordsrv = MultiChatDiscordSrvAddon.discordsrv;
         JDA jda = discordsrv.getJda();
         jda.addEventListener(new OutboundToDiscordEvents.JDAEvents());
         jda.addEventListener(new DiscordInteractionEvents());
 
         DiscordCommands discordCommands = new DiscordCommands(discordsrv);
         discordCommands.init();
-        Bukkit.getPluginManager().registerEvents(discordCommands, InteractiveChatDiscordSrvAddon.plugin);
+        Bukkit.getPluginManager().registerEvents(discordCommands, MultiChatDiscordSrvAddon.plugin);
         DiscordSRV.api.addSlashCommandProvider(discordCommands);
         discordCommands.reload();
 
@@ -74,7 +74,7 @@ public class DiscordReadyEvents {
                     if (channel != null) {
                         Guild guild = channel.getGuild();
                         Member self = guild.getMember(jda.getSelfUser());
-                        for (Permission permission : InteractiveChatDiscordSrvAddon.requiredPermissions) {
+                        for (Permission permission : MultiChatDiscordSrvAddon.requiredPermissions) {
                             if (!self.hasPermission(channel, permission)) {
                                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[ICDiscordSrvAddon] DiscordSRV Bot is missing the \"" + permission.getName() + "\" permission in the channel \"" + channel.getName() + "\" (Id: " + channel.getId() + ")");
                             }

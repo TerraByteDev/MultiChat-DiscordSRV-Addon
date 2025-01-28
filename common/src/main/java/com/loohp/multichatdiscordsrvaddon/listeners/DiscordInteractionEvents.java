@@ -22,7 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.listeners;
 
 import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.HashUtils;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.metrics.Metrics;
 import com.loohp.multichatdiscordsrvaddon.objectholders.DiscordMessageContent;
 import com.loohp.multichatdiscordsrvaddon.objectholders.InteractionHandler;
@@ -69,7 +69,7 @@ public class DiscordInteractionEvents extends ListenerAdapter {
             }
             REGISTER.put(id, interactionData);
         }
-        Bukkit.getScheduler().runTaskLaterAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
             for (String id : interactionIds) {
                 REGISTER.remove(id);
             }
@@ -104,7 +104,7 @@ public class DiscordInteractionEvents extends ListenerAdapter {
             data.getInteractionHandler().getReactionConsumer().accept(event, data.getContents());
             return;
         }
-        event.reply(ChatColorUtils.stripColor(InteractiveChatDiscordSrvAddon.plugin.interactionExpire)).setEphemeral(true).queue();
+        event.reply(ChatColorUtils.stripColor(MultiChatDiscordSrvAddon.plugin.interactionExpire)).setEphemeral(true).queue();
     }
 
     public static class InteractionData {

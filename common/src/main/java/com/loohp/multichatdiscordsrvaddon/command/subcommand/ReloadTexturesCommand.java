@@ -11,7 +11,7 @@ import org.incendo.cloud.context.CommandInput;
 
 import java.util.List;
 
-import static com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon.plugin;
+import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
 
 @Command("multichat")
 public class ReloadTexturesCommand {

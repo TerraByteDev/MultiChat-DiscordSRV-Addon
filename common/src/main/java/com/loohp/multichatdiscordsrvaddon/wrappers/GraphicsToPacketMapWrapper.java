@@ -21,7 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.wrappers;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageFrame;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
@@ -115,9 +115,9 @@ public class GraphicsToPacketMapWrapper {
             BufferedImage processedFrame = ImageUtils.resizeImageQuality(ImageUtils.squarify(frames.get(currentFrame).getImage()), 128, 128);
             if (playbackBar) {
                 Graphics2D g = processedFrame.createGraphics();
-                g.setColor(InteractiveChatDiscordSrvAddon.plugin.playbackBarEmptyColor);
+                g.setColor(MultiChatDiscordSrvAddon.plugin.playbackBarEmptyColor);
                 g.fillRect(0, 126, 128, 2);
-                g.setColor(InteractiveChatDiscordSrvAddon.plugin.playbackBarFilledColor);
+                g.setColor(MultiChatDiscordSrvAddon.plugin.playbackBarFilledColor);
                 g.fillRect(0, 126, (int) (((double) currentTime / (double) totalTime) * 128), 2);
                 g.dispose();
             }
@@ -163,7 +163,7 @@ public class GraphicsToPacketMapWrapper {
         if (!done) {
             throw new IllegalStateException("Future has not complete!");
         }
-        InteractiveChatDiscordSrvAddon.plugin.imagesViewedCounter.incrementAndGet();
+        MultiChatDiscordSrvAddon.plugin.imagesViewedCounter.incrementAndGet();
         InboundToGameEvents.MAP_VIEWERS.put(player, this);
 
         NMS.getInstance().sendFakeMainHandSlot(player, mapItem);
@@ -185,7 +185,7 @@ public class GraphicsToPacketMapWrapper {
                     index = 0;
                 }
             }
-        }.runTaskTimer(InteractiveChatDiscordSrvAddon.plugin, 0, 1);
+        }.runTaskTimer(MultiChatDiscordSrvAddon.plugin, 0, 1);
     }
 
 }

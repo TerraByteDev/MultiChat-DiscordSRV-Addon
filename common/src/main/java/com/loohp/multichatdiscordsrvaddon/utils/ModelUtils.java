@@ -26,7 +26,7 @@ import com.loohp.blockmodelrenderer.utils.MathUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
@@ -276,12 +276,12 @@ public class ModelUtils {
     }
 
     public static String getItemModelKey(ICMaterial icMaterial) {
-        if (InteractiveChatDiscordSrvAddon.debug) {
+        if (MultiChatDiscordSrvAddon.debug) {
             Debug.debug("Item Model Key: " + icMaterial.parseXMaterial().name() + " | " + icMaterial.parseMaterial().name());
         }
         if (shouldUseLegacyModelName(icMaterial)) {
             String legacyKey = LEGACY_MODEL_NAME.get(icMaterial.name());
-            if (InteractiveChatDiscordSrvAddon.debug) {
+            if (MultiChatDiscordSrvAddon.debug) {
                 Debug.debug("Item Model Legacy Key: " + legacyKey);
             }
             if (legacyKey != null) {

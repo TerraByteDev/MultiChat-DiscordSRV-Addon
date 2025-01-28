@@ -6,7 +6,7 @@ import org.incendo.cloud.annotations.Command;
 import org.incendo.cloud.annotations.CommandDescription;
 import org.incendo.cloud.annotations.Permission;
 
-import static com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon.plugin;
+import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
 
 @Command("multichat")
 public class CheckUpdateCommand {

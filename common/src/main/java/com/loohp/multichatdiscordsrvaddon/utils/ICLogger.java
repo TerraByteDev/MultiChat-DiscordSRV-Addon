@@ -1,6 +1,6 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
@@ -11,17 +11,17 @@ public class ICLogger {
 
     public static void info(Object message, Object... args) {
         Component infoLog = MiniMessage.miniMessage().deserialize(PREFIX + " <#4294ed>" + format(message, args) + "<#4294ed><reset>");
-        InteractiveChatDiscordSrvAddon.plugin.audience.console().sendMessage(infoLog);
+        MultiChatDiscordSrvAddon.plugin.audience.console().sendMessage(infoLog);
     }
 
     public static void warn(Object message, Object... args) {
         Component warnLog = MiniMessage.miniMessage().deserialize(PREFIX + " <#f28f24>" + format(message, args) + "<#f28f24><reset>");
-        InteractiveChatDiscordSrvAddon.plugin.audience.console().sendMessage(warnLog);
+        MultiChatDiscordSrvAddon.plugin.audience.console().sendMessage(warnLog);
     }
 
     public static void fatal(Object message, Object... args) {
         Component fatalLog = MiniMessage.miniMessage().deserialize(PREFIX + " <#e73f38>" + format(message, args) + "<#e73f38><reset>");
-        InteractiveChatDiscordSrvAddon.plugin.audience.console().sendMessage(fatalLog);
+        MultiChatDiscordSrvAddon.plugin.audience.console().sendMessage(fatalLog);
     }
 
     private static String format(Object message, Object... args) {

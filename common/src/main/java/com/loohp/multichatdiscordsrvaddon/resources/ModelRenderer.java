@@ -29,7 +29,7 @@ import com.loohp.blockmodelrenderer.utils.ColorUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.graphics.BlendingUtils;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.objectholders.SteppedIntegerRange;
@@ -723,7 +723,7 @@ public class ModelRenderer implements AutoCloseable {
         renderModel.updateLighting(lightData.getLightVector(), lightData.getAmbientLevel(), lightData.getMaxLevel());
         long start = System.currentTimeMillis();
         renderModel.render(image, true, baseTransform, BlendingModes.NORMAL, renderingService).join();
-        InteractiveChatDiscordSrvAddon.plugin.playerModelRenderingTimes.add((int) Math.min(System.currentTimeMillis() - start, Integer.MAX_VALUE));
+        MultiChatDiscordSrvAddon.plugin.playerModelRenderingTimes.add((int) Math.min(System.currentTimeMillis() - start, Integer.MAX_VALUE));
     }
 
     private void renderBlockModel(Model renderModel, BufferedImage image, ModelDisplay displayData, ModelGUILight lightData, boolean usePlayerPosition) {

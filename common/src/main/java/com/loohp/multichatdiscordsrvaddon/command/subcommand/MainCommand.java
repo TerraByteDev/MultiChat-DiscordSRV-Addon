@@ -4,7 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.incendo.cloud.annotations.Command;
 import org.incendo.cloud.annotations.Permission;
 
-import static com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon.plugin;
+import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
 
 public class MainCommand {
 

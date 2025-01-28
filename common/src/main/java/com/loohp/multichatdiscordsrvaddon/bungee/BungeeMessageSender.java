@@ -22,7 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.bungee;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.objectholders.CustomPlaceholder;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
@@ -58,7 +58,7 @@ public class BungeeMessageSender {
     protected static short inventoryScheme = 0;
 
     static {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
             int size = sent.size();
             for (int i = size; i > 500; i--) {
                 sent.remove(sent.firstKey());
@@ -102,7 +102,7 @@ public class BungeeMessageSender {
             }
         }
 
-        if (InteractiveChatDiscordSrvAddon.plugin.pluginMessagePacketVerbose) {
+        if (MultiChatDiscordSrvAddon.plugin.pluginMessagePacketVerbose) {
             Bukkit.getConsoleSender().sendMessage("IC Outbound - ID " + packetId + " via " + player.getName());
         }
 
@@ -120,7 +120,7 @@ public class BungeeMessageSender {
                 out.writeShort(packetId); //packet id
 
                 out.write(chunk);
-                player.sendPluginMessage(InteractiveChatDiscordSrvAddon.plugin, "interchat:main", out.toByteArray());
+                player.sendPluginMessage(MultiChatDiscordSrvAddon.plugin, "interchat:main", out.toByteArray());
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -27,8 +27,8 @@
     <name>MultiChatDiscordSrvAddon</name>
     <version>4.2.16.0</version>
 
-    <description>Have ZelChat Placeholders translated on DiscordSRV discord messages.</description>
-    <url>https://github.com/LOOHP/InteractiveChat-DiscordSRV-Addon</url>
+    <description>Have ZelChat, ChatControl, CarbonChat and InteractiveChat Placeholders translated on DiscordSRV discord messages.</description>
+    <url>https://github.com/TerraByteDev/MultiChat-DIscordSRV-Addon</url>
     <packaging>jar</packaging>
 
     <properties>

@@ -27,7 +27,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import com.loohp.multichatdiscordsrvaddon.objectholders.Either;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -36,7 +36,7 @@ import java.util.Arrays;
 public class DiscordToGameMention {
 
     public static void playTitleScreen(String sender, String channelName, String guild, Player receiver) {
-        Config config = Config.getConfig(InteractiveChatDiscordSrvAddon.CONFIG_ID);
+        Config config = Config.getConfig(MultiChatDiscordSrvAddon.CONFIG_ID);
 
         String title = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordMention.MentionedTitle").replace("{DiscordUser}", sender).replace("{TextChannel}", "#" + channelName).replace("{Guild}", guild));
         String subtitle = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordMention.DiscordMentionSubtitle").replace("{DiscordUser}", sender).replace("{TextChannel}", "#" + channelName).replace("{Guild}", guild));

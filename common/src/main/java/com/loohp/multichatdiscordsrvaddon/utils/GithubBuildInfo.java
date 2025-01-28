@@ -2,7 +2,7 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -50,7 +50,7 @@ public class GithubBuildInfo {
     }
 
     private static GithubBuildInfo readBuildInfo() {
-        try (InputStream in = InteractiveChatDiscordSrvAddon.plugin.getResource("version.json")) {
+        try (InputStream in = MultiChatDiscordSrvAddon.plugin.getResource("version.json")) {
             if (in == null)
                 throw new IOException("No input");
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {

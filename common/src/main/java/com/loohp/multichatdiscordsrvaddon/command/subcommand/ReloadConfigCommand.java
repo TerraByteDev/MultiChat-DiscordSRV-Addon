@@ -9,7 +9,7 @@ import org.incendo.cloud.annotations.Permission;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon.plugin;
+import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
 
 @Command("multichat")
 public class ReloadConfigCommand {

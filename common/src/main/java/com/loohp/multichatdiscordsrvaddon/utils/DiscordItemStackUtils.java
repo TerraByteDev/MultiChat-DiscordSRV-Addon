@@ -32,7 +32,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.querz.nbt.tag.CompoundTag;
 import org.apache.commons.lang3.math.Fraction;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.EquipmentSlotGroup;
@@ -202,7 +202,7 @@ public class DiscordItemStackUtils {
     }
 
     public static String getItemNameForDiscord(ItemStack item, OfflinePlayer player, String language) {
-        SpecificTranslateFunction translationFunction = InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(language);
+        SpecificTranslateFunction translationFunction = MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(language);
 
         Player bukkitPlayer = player == null || player.getPlayer() == null || !PlayerUtils.isLocal(player) ? null : player.getPlayer();
         if (bukkitPlayer == null && !Bukkit.getOnlinePlayers().isEmpty()) {
@@ -216,9 +216,9 @@ public class DiscordItemStackUtils {
         ICMaterial icMaterial = ICMaterial.from(item);
         String name = InteractiveChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(ItemStackUtils.getDisplayName(item), translationFunction));
         if (item.getAmount() == 1 || item == null || item.getType().equals(Material.AIR)) {
-            name = InteractiveChatDiscordSrvAddon.plugin.itemDisplaySingle.replace("{Item}", ComponentStringUtils.stripColorAndConvertMagic(name)).replace("{Amount}", String.valueOf(item.getAmount()));
+            name = MultiChatDiscordSrvAddon.plugin.itemDisplaySingle.replace("{Item}", ComponentStringUtils.stripColorAndConvertMagic(name)).replace("{Amount}", String.valueOf(item.getAmount()));
         } else {
-            name = InteractiveChatDiscordSrvAddon.plugin.itemDisplayMultiple.replace("{Item}", ComponentStringUtils.stripColorAndConvertMagic(name)).replace("{Amount}", String.valueOf(item.getAmount()));
+            name = MultiChatDiscordSrvAddon.plugin.itemDisplayMultiple.replace("{Item}", ComponentStringUtils.stripColorAndConvertMagic(name)).replace("{Amount}", String.valueOf(item.getAmount()));
         }
 
         return name;
@@ -226,8 +226,8 @@ public class DiscordItemStackUtils {
 
     @SuppressWarnings({"UnstableApiUsage", "PatternValidation"})
     public static DiscordToolTip getToolTip(ItemStack item, OfflinePlayer player, boolean showAdvanceDetails) throws Exception {
-        String language = InteractiveChatDiscordSrvAddon.plugin.language;
-        SpecificTranslateFunction translationFunction = InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(language);
+        String language = MultiChatDiscordSrvAddon.plugin.language;
+        SpecificTranslateFunction translationFunction = MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(language);
 
         Player bukkitPlayer = player == null || player.getPlayer() == null || !PlayerUtils.isLocal(player) ? null : player.getPlayer();
         if (bukkitPlayer == null && !Bukkit.getOnlinePlayers().isEmpty()) {
@@ -492,7 +492,7 @@ public class DiscordItemStackUtils {
                 List<ToolTipComponent<?>> chargedItemInfo = getToolTip(charge, player, false).getComponents();
                 Component chargeItemName = chargedItemInfo.get(0).getToolTipComponent(ToolTipType.TEXT);
                 prints.add(tooltipText(translatable(getCrossbowProjectile()).color(WHITE).append(text(" [").color(WHITE)).append(chargeItemName).append(text("]").color(WHITE))));
-                if (InteractiveChatDiscordSrvAddon.plugin.showFireworkRocketDetailsInCrossbow && ICMaterial.from(charge).isMaterial(XMaterial.FIREWORK_ROCKET)) {
+                if (MultiChatDiscordSrvAddon.plugin.showFireworkRocketDetailsInCrossbow && ICMaterial.from(charge).isMaterial(XMaterial.FIREWORK_ROCKET)) {
                     chargedItemInfo.stream().skip(1).forEachOrdered(each -> {
                         if (each.getType().equals(ToolTipType.TEXT)) {
                             prints.add(tooltipText(text("  ").append(each.getToolTipComponent(ToolTipType.TEXT))));
@@ -504,7 +504,7 @@ public class DiscordItemStackUtils {
             }
         }
 
-        if (InteractiveChatDiscordSrvAddon.plugin.showMapScale && FilledMapUtils.isFilledMap(item) && !hideAdditionalFlags) {
+        if (MultiChatDiscordSrvAddon.plugin.showMapScale && FilledMapUtils.isFilledMap(item) && !hideAdditionalFlags) {
             MapMeta map = (MapMeta) item.getItemMeta();
             MapView mapView = FilledMapUtils.getMapView(item);
             int id = FilledMapUtils.getMapId(item);
@@ -641,7 +641,7 @@ public class DiscordItemStackUtils {
             }
         }
 
-        if (InteractiveChatDiscordSrvAddon.plugin.showArmorColor && hasMeta && item.getItemMeta() instanceof LeatherArmorMeta && item.getItemMeta().getItemFlags().stream().noneMatch(each -> each.name().equals("HIDE_DYE"))) {
+        if (MultiChatDiscordSrvAddon.plugin.showArmorColor && hasMeta && item.getItemMeta() instanceof LeatherArmorMeta && item.getItemMeta().getItemFlags().stream().noneMatch(each -> each.name().equals("HIDE_DYE"))) {
             OptionalInt colorInt = NMS.getInstance().getLeatherArmorColor(item);
             if (colorInt.isPresent()) {
                 Color color = new Color(colorInt.getAsInt());
@@ -794,7 +794,7 @@ public class DiscordItemStackUtils {
             }
         }
 
-        if (InteractiveChatDiscordSrvAddon.plugin.showDurability && item.getType().getMaxDurability() > 0) {
+        if (MultiChatDiscordSrvAddon.plugin.showDurability && item.getType().getMaxDurability() > 0) {
             int durability = item.getType().getMaxDurability() - (VersionManager.version.isLegacy() ? item.getDurability() : ((Damageable) item.getItemMeta()).getDamage());
             int maxDur = item.getType().getMaxDurability();
             if (durability < maxDur) {
@@ -822,7 +822,7 @@ public class DiscordItemStackUtils {
     }
 
     public static String toDiscordText(List<ToolTipComponent<?>> toolTipComponents, Function<ToolTipComponent<BufferedImage>, Component> imageToolTipHandler, String language, boolean embedLinks) {
-        SpecificTranslateFunction translationFunction = InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(language);
+        SpecificTranslateFunction translationFunction = MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(language);
         DiscordSerializer serializerSpecial = new DiscordSerializer(DiscordSerializerOptions.defaults().withEmbedLinks(embedLinks));
         Function<?, String> resolver = component -> serializerSpecial.serialize(ComponentStringUtils.toDiscordSRVComponent(ComponentStringUtils.resolve((Component) component, translationFunction)));
         DiscordSerializer serializerRegular = new DiscordSerializer(new DiscordSerializerOptions(embedLinks, true, (Function<KeybindComponent, String>) resolver, (Function<TranslatableComponent, String>) resolver));

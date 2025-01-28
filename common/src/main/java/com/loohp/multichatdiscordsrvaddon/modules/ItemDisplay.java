@@ -20,13 +20,11 @@
 
 package com.loohp.multichatdiscordsrvaddon.modules;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.api.events.ItemPlaceholderEvent;
-import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICInventoryHolder;
-import com.loohp.multichatdiscordsrvaddon.objectholders.OfflinePlayerData;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
@@ -50,9 +48,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 
 public class ItemDisplay {
 
@@ -88,18 +84,18 @@ public class ItemDisplay {
         Bukkit.getPluginManager().callEvent(event);
         item = event.getItemStack();
 
-        return createItemDisplay(player, item, InteractiveChatDiscordSrvAddon.plugin.itemTitle, showHover, alternativeHover, preview);
+        return createItemDisplay(player, item, MultiChatDiscordSrvAddon.plugin.itemTitle, showHover, alternativeHover, preview);
     }
 
     public static Component createItemDisplay(OfflinePlayer player, ItemStack item) throws Exception {
-        return createItemDisplay(player, item, InteractiveChatDiscordSrvAddon.plugin.itemTitle, true, null, false);
+        return createItemDisplay(player, item, MultiChatDiscordSrvAddon.plugin.itemTitle, true, null, false);
     }
 
     public static Component createItemDisplay(OfflinePlayer player, ItemStack item, String rawTitle, boolean showHover, Component alternativeHover, boolean preview) throws Exception {
         if (item == null) {
             item = new ItemStack(Material.AIR);
         }
-        if (InteractiveChatDiscordSrvAddon.plugin.hideLodestoneCompassPos) {
+        if (MultiChatDiscordSrvAddon.plugin.hideLodestoneCompassPos) {
             item = CompassUtils.hideLodestoneCompassPosition(item);
         }
 
@@ -112,7 +108,7 @@ public class ItemDisplay {
 
         String itemJson = ItemNBTUtils.getNMSItemStackJson(item);
         ItemStack trimmedItem = null;
-        if (InteractiveChatDiscordSrvAddon.plugin.sendOriginalIfTooLong && itemJson.length() > InteractiveChatDiscordSrvAddon.plugin.itemTagMaxLength) {
+        if (MultiChatDiscordSrvAddon.plugin.sendOriginalIfTooLong && itemJson.length() > MultiChatDiscordSrvAddon.plugin.itemTagMaxLength) {
             trimmedItem = new ItemStack(item.getType());
             trimmedItem.addUnsafeEnchantments(item.getEnchantments());
             if (itemMeta != null && itemMeta.hasDisplayName()) {
@@ -120,7 +116,7 @@ public class ItemDisplay {
                 Component name = NMS.getInstance().getItemStackDisplayName(item);
                 NMS.getInstance().setItemStackDisplayName(nameItem, name);
                 String newjson = ItemNBTUtils.getNMSItemStackJson(nameItem);
-                if (newjson.length() <= InteractiveChatDiscordSrvAddon.plugin.itemTagMaxLength) {
+                if (newjson.length() <= MultiChatDiscordSrvAddon.plugin.itemTagMaxLength) {
                     trimmedItem = nameItem;
                 }
             }
@@ -130,7 +126,7 @@ public class ItemDisplay {
                 meta.setLore(item.getItemMeta().getLore());
                 loreItem.setItemMeta(meta);
                 String newjson = ItemNBTUtils.getNMSItemStackJson(loreItem);
-                if (newjson.length() <= InteractiveChatDiscordSrvAddon.plugin.itemTagMaxLength) {
+                if (newjson.length() <= MultiChatDiscordSrvAddon.plugin.itemTagMaxLength) {
                     trimmedItem = loreItem;
                 }
             }
@@ -161,18 +157,18 @@ public class ItemDisplay {
         boolean isMapView = false;
 
         if (!preview) {
-            if (InteractiveChatDiscordSrvAddon.plugin.previewMaps && FilledMapUtils.isFilledMap(item)) {
+            if (MultiChatDiscordSrvAddon.plugin.previewMaps && FilledMapUtils.isFilledMap(item)) {
                 isMapView = true;
-                if (!InteractiveChatDiscordSrvAddon.plugin.mapDisplay.containsKey(sha1)) {
+                if (!MultiChatDiscordSrvAddon.plugin.mapDisplay.containsKey(sha1)) {
                     InteractiveChatDiscordSrvAddonAPI.addMapToMapSharedList(sha1, item);
                 }
-            } else if (!InteractiveChatDiscordSrvAddon.plugin.itemDisplay.containsKey(sha1)) {
+            } else if (!MultiChatDiscordSrvAddon.plugin.itemDisplay.containsKey(sha1)) {
                 if (useInventoryView(item)) {
                     Inventory container = ((InventoryHolder) ((BlockStateMeta) item.getItemMeta()).getBlockState()).getInventory();
                     Inventory inv = Bukkit.createInventory(ICInventoryHolder.INSTANCE, container.getSize() + 9, title);
-                    ItemStack empty = InteractiveChatDiscordSrvAddon.plugin.itemFrame1.clone();
-                    if (item.getType().equals(InteractiveChatDiscordSrvAddon.plugin.itemFrame1.getType())) {
-                        empty = InteractiveChatDiscordSrvAddon.plugin.itemFrame2.clone();
+                    ItemStack empty = MultiChatDiscordSrvAddon.plugin.itemFrame1.clone();
+                    if (item.getType().equals(MultiChatDiscordSrvAddon.plugin.itemFrame1.getType())) {
+                        empty = MultiChatDiscordSrvAddon.plugin.itemFrame2.clone();
                     }
                     if (empty.getItemMeta() != null) {
                         ItemMeta emptyMeta = empty.getItemMeta();
@@ -193,9 +189,9 @@ public class ItemDisplay {
                 } else {
                     if (VersionManager.version.isOld()) {
                         Inventory inv = Bukkit.createInventory(ICInventoryHolder.INSTANCE, 27, title);
-                        ItemStack empty = InteractiveChatDiscordSrvAddon.plugin.itemFrame1.clone();
-                        if (item.getType().equals(InteractiveChatDiscordSrvAddon.plugin.itemFrame1.getType())) {
-                            empty = InteractiveChatDiscordSrvAddon.plugin.itemFrame2.clone();
+                        ItemStack empty = MultiChatDiscordSrvAddon.plugin.itemFrame1.clone();
+                        if (item.getType().equals(MultiChatDiscordSrvAddon.plugin.itemFrame1.getType())) {
+                            empty = MultiChatDiscordSrvAddon.plugin.itemFrame2.clone();
                         }
                         if (empty.getItemMeta() != null) {
                             ItemMeta emptyMeta = empty.getItemMeta();
@@ -209,9 +205,9 @@ public class ItemDisplay {
                         InteractiveChatDiscordSrvAddonAPI.addInventoryToItemShareList(InteractiveChatDiscordSrvAddonAPI.SharedType.ITEM, sha1, inv);
                     } else {
                         Inventory inv = Bukkit.createInventory(ICInventoryHolder.INSTANCE, InventoryType.DROPPER, title);
-                        ItemStack empty = InteractiveChatDiscordSrvAddon.plugin.itemFrame1.clone();
-                        if (item.getType().equals(InteractiveChatDiscordSrvAddon.plugin.itemFrame1.getType())) {
-                            empty = InteractiveChatDiscordSrvAddon.plugin.itemFrame2.clone();
+                        ItemStack empty = MultiChatDiscordSrvAddon.plugin.itemFrame1.clone();
+                        if (item.getType().equals(MultiChatDiscordSrvAddon.plugin.itemFrame1.getType())) {
+                            empty = MultiChatDiscordSrvAddon.plugin.itemFrame2.clone();
                         }
                         if (empty.getItemMeta() != null) {
                             ItemMeta emptyMeta = empty.getItemMeta();
@@ -233,7 +229,7 @@ public class ItemDisplay {
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[InteractiveChat] " + ChatColor.RED + "Trimmed an item display's meta data as it's NBT exceeds the maximum characters allowed in the chat [THIS IS NOT A BUG]");
         }
 
-        Component itemDisplayComponent = LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(player, itemAmount == 1 ? InteractiveChatDiscordSrvAddon.plugin.itemDisplaySingle : InteractiveChatDiscordSrvAddon.plugin.itemDisplayMultiple.replace("{Amount}", amountString))));
+        Component itemDisplayComponent = LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(player, itemAmount == 1 ? MultiChatDiscordSrvAddon.plugin.itemDisplaySingle : MultiChatDiscordSrvAddon.plugin.itemDisplayMultiple.replace("{Amount}", amountString))));
         itemDisplayComponent = itemDisplayComponent.replaceText(TextReplacementConfig.builder().matchLiteral("{Item}").replacement(itemDisplayNameComponent).build());
         if (showHover) {
             itemDisplayComponent = itemDisplayComponent.hoverEvent(hoverEvent);

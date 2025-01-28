@@ -23,7 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.graphics;
 import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import net.kyori.adventure.key.Key;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import org.bukkit.DyeColor;
@@ -46,7 +46,7 @@ public class BannerGraphics {
 
     @SuppressWarnings("deprecation")
     public static BannerAssetResult generateBannerAssets(ItemStack item) {
-        BufferedImage baseImage = InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getTextureManager().getTexture(ResourceRegistry.ENTITY_TEXTURE_LOCATION + "banner_base").getTexture(64, 64);
+        BufferedImage baseImage = MultiChatDiscordSrvAddon.plugin.getResourceManager().getTextureManager().getTexture(ResourceRegistry.ENTITY_TEXTURE_LOCATION + "banner_base").getTexture(64, 64);
         BufferedImage patternsImage = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
 
         Color baseColor;
@@ -90,7 +90,7 @@ public class BannerGraphics {
             PatternType type = pattern.getPattern();
             Color color = new Color(pattern.getColor().getColor().asRGB());
             Key typeKey = NMS.getInstance().getPatternTypeKey(type);
-            BufferedImage image = InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getTextureManager().getTexture(ResourceRegistry.BANNER_TEXTURE_LOCATION + typeKey.value()).getTexture(64, 64);
+            BufferedImage image = MultiChatDiscordSrvAddon.plugin.getResourceManager().getTextureManager().getTexture(ResourceRegistry.BANNER_TEXTURE_LOCATION + typeKey.value()).getTexture(64, 64);
             BufferedImage tint = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g3 = tint.createGraphics();
             g3.setColor(color);
@@ -138,7 +138,7 @@ public class BannerGraphics {
             }
         }
 
-        BufferedImage baseImage = InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getTextureManager().getTexture(ResourceRegistry.ENTITY_TEXTURE_LOCATION + "shield_base").getTexture(64, 64);
+        BufferedImage baseImage = MultiChatDiscordSrvAddon.plugin.getResourceManager().getTextureManager().getTexture(ResourceRegistry.ENTITY_TEXTURE_LOCATION + "shield_base").getTexture(64, 64);
         BufferedImage patternsImage = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
 
         BufferedImage baseTint = new BufferedImage(12, 22, BufferedImage.TYPE_INT_ARGB);
@@ -155,7 +155,7 @@ public class BannerGraphics {
             PatternType type = pattern.getPattern();
             Color color = new Color(pattern.getColor().getColor().asRGB());
             Key typeKey = NMS.getInstance().getPatternTypeKey(type);
-            BufferedImage image = InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getTextureManager().getTexture(ResourceRegistry.SHIELD_TEXTURE_LOCATION + typeKey.value()).getTexture(64, 64);
+            BufferedImage image = MultiChatDiscordSrvAddon.plugin.getResourceManager().getTextureManager().getTexture(ResourceRegistry.SHIELD_TEXTURE_LOCATION + typeKey.value()).getTexture(64, 64);
             BufferedImage tint = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g3 = tint.createGraphics();
             g3.setColor(color);
@@ -170,7 +170,7 @@ public class BannerGraphics {
     }
 
     private static BannerAssetResult getDefaultShieldAssets() {
-        return new BannerAssetResult(InteractiveChatDiscordSrvAddon.plugin.getResourceManager().getTextureManager().getTexture(ResourceRegistry.ENTITY_TEXTURE_LOCATION + "shield_base_nopattern").getTexture(), new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB));
+        return new BannerAssetResult(MultiChatDiscordSrvAddon.plugin.getResourceManager().getTextureManager().getTexture(ResourceRegistry.ENTITY_TEXTURE_LOCATION + "shield_base_nopattern").getTexture(), new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB));
     }
 
     public static class BannerAssetResult {

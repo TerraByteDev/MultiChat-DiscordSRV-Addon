@@ -1,6 +1,6 @@
 package com.loohp.multichatdiscordsrvaddon.command.subcommand;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourcePackInfo;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.incendo.cloud.annotations.Command;
 import org.incendo.cloud.annotations.CommandDescription;
 import org.incendo.cloud.annotations.Permission;
-import static com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon.plugin;
+import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
 
 @Command("multichat")
 public class StatusCommand {
@@ -46,9 +46,9 @@ public class StatusCommand {
                         plugin.sendMessage(Component.text("   - ").color(NamedTextColor.GRAY).append(each), sender);
 
                         if (info.compareServerPackFormat(ResourceRegistry.RESOURCE_PACK_VERSION) > 0) {
-                            plugin.sendMessage("<yellow>     " + LanguageUtils.getTranslation(TranslationKeyUtils.getNewIncompatiblePack(), InteractiveChatDiscordSrvAddon.plugin.language).getResult(), sender);
+                            plugin.sendMessage("<yellow>     " + LanguageUtils.getTranslation(TranslationKeyUtils.getNewIncompatiblePack(), MultiChatDiscordSrvAddon.plugin.language).getResult(), sender);
                         } else if (info.compareServerPackFormat(ResourceRegistry.RESOURCE_PACK_VERSION) < 0) {
-                            plugin.sendMessage("<yellow>     " + LanguageUtils.getTranslation(TranslationKeyUtils.getOldIncompatiblePack(), InteractiveChatDiscordSrvAddon.plugin.language).getResult(), sender);
+                            plugin.sendMessage("<yellow>     " + LanguageUtils.getTranslation(TranslationKeyUtils.getOldIncompatiblePack(), MultiChatDiscordSrvAddon.plugin.language).getResult(), sender);
                         }
                     }
                 }

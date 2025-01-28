@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.nms;
 
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 
 import java.lang.reflect.InvocationTargetException;
@@ -37,7 +37,7 @@ public class NMS {
         try {
             Class<NMSWrapper> nmsImplClass = (Class<NMSWrapper>) Class.forName("com.loohp.multichatdiscordsrvaddon.nms." + VersionManager.version.name());
             instance = nmsImplClass.getConstructor().newInstance();
-            NMSWrapper.setup(instance, InteractiveChatDiscordSrvAddon.plugin);
+            NMSWrapper.setup(instance, MultiChatDiscordSrvAddon.plugin);
             return instance;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
             if (VersionManager.version.isSupported()) {

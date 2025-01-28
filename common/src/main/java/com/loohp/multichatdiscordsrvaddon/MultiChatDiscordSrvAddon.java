@@ -102,7 +102,7 @@ import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listener {
+public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
 
     public static final int BSTATS_PLUGIN_ID = 8863;
     public static final String CONFIG_ID = "multichatdiscordsrvaddon_config";
@@ -116,7 +116,7 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
         Permission.MANAGE_WEBHOOKS
     ));
 
-    public static InteractiveChatDiscordSrvAddon plugin;
+    public static MultiChatDiscordSrvAddon plugin;
     public static DiscordSRV discordsrv;
     public BukkitAudiences audience;
 
@@ -410,7 +410,7 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
         }
 
         reloadTextures(false, false);
-        modelRenderer = new ModelRenderer(str -> new ThreadFactoryBuilder().setNameFormat(str).build(), () -> InteractiveChatDiscordSrvAddon.plugin.cacheTimeout, () -> {
+        modelRenderer = new ModelRenderer(str -> new ThreadFactoryBuilder().setNameFormat(str).build(), () -> MultiChatDiscordSrvAddon.plugin.cacheTimeout, () -> {
             if (rendererThreads > 0) {
                 return rendererThreads;
             }
@@ -752,9 +752,9 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
             }
             try {
                 isReady = false;
-                if (InteractiveChatDiscordSrvAddon.plugin.isResourceManagerReady()) {
+                if (MultiChatDiscordSrvAddon.plugin.isResourceManagerReady()) {
                     Bukkit.getScheduler().callSyncMethod(plugin, () -> {
-                        InteractiveChatDiscordSrvAddon.plugin.getResourceManager().close();
+                        MultiChatDiscordSrvAddon.plugin.getResourceManager().close();
                         return null;
                     }).get();
                 }
@@ -840,9 +840,9 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
                 resourceManager.getLanguageManager().setTranslateFunction((translateKey, fallback, language) -> LanguageUtils.getTranslation(translateKey, language).getResultOrFallback(fallback));
                 resourceManager.getLanguageManager().setAvailableLanguagesSupplier(() -> LanguageUtils.getLoadedLanguages());
                 resourceManager.getLanguageManager().registerReloadListener(e -> {
-                    LanguageUtils.clearPluginTranslations(InteractiveChatDiscordSrvAddon.plugin);
+                    LanguageUtils.clearPluginTranslations(MultiChatDiscordSrvAddon.plugin);
                     for (Entry<String, Map<String, String>> entry : e.getTranslations().entrySet()) {
-                        LanguageUtils.loadPluginTranslations(InteractiveChatDiscordSrvAddon.plugin, entry.getKey(), entry.getValue());
+                        LanguageUtils.loadPluginTranslations(MultiChatDiscordSrvAddon.plugin, entry.getKey(), entry.getValue());
                     }
                 });
 
@@ -896,7 +896,7 @@ public class InteractiveChatDiscordSrvAddon extends JavaPlugin implements Listen
                 }
 
                 Bukkit.getScheduler().callSyncMethod(plugin, () -> {
-                    InteractiveChatDiscordSrvAddon.plugin.resourceManager = resourceManager;
+                    MultiChatDiscordSrvAddon.plugin.resourceManager = resourceManager;
 
                     if (resourceManager.getResourcePackInfo().stream().allMatch(each -> each.getStatus())) {
                         sendMessage("<aqua>Loaded all resources!", senders);

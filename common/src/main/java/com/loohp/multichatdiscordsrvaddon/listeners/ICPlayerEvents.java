@@ -25,7 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.json.simple.JSONObject;
 import com.loohp.multichatdiscordsrvaddon.utils.HTTPRequestUtils;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -42,7 +42,7 @@ public class ICPlayerEvents implements Listener {
     public static final ConcurrentCacheHashMap<UUID, Map<String, Object>> CACHED_PROPERTIES = new ConcurrentCacheHashMap<>(300000);
 
     static {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(InteractiveChatDiscordSrvAddon.plugin, CACHED_PROPERTIES::cleanUp, 12000, 12000);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(MultiChatDiscordSrvAddon.plugin, CACHED_PROPERTIES::cleanUp, 12000, 12000);
     }
 
     public static final String PROFILE_URL = "https://api.loohpjames.com/spigot/plugins/interactivechatdiscordsrvaddon/profile/%s";
@@ -54,7 +54,7 @@ public class ICPlayerEvents implements Listener {
 
     private void populate(Player player, boolean scheduleAsync) {
         if (scheduleAsync) {
-            Bukkit.getScheduler().runTaskAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> populate(player, false));
+            Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> populate(player, false));
             return;
         }
         Map<String, Object> cacheProperties = CACHED_PROPERTIES.get(player.getUniqueId());

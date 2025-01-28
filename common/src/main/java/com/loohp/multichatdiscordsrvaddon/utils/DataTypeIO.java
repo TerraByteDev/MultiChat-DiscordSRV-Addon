@@ -24,7 +24,7 @@ import com.cryptomorin.xseries.XMaterial;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import com.loohp.multichatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -110,7 +110,7 @@ public class DataTypeIO {
                     ICMaterial material = ICMaterial.from(readString(in, charset));
                     ItemStack itemStack = material.parseItem();
                     if (itemStack == null) {
-                        itemStack = InteractiveChatDiscordSrvAddon.plugin.unknownReplaceItem.clone();
+                        itemStack = MultiChatDiscordSrvAddon.plugin.unknownReplaceItem.clone();
                         ItemMeta meta = itemStack.getItemMeta();
                         meta.setDisplayName(meta.getDisplayName().replace("{Type}", material.toString()));
                         itemStack.setItemMeta(meta);
