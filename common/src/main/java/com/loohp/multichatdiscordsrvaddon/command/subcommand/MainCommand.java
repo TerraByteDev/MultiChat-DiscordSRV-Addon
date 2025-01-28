@@ -6,10 +6,11 @@ import org.incendo.cloud.annotations.Permission;
 
 import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
 
+@Command("multichat")
 public class MainCommand {
 
-    @Command("multichat")
-    @Permission(value = {"multichatdiscordsrv.command"})
+    @Command("info")
+    @Permission(value = {"multichatdiscordsrv.info"})
     public void execute(
             CommandSender sender
     ) {
