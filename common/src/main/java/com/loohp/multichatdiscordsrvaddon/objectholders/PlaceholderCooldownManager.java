@@ -21,7 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
-import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatDiscordSrvAddonAPI;
+import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
 import com.loohp.multichatdiscordsrvaddon.utils.PlayerUtils;
 
@@ -45,7 +45,7 @@ public class PlaceholderCooldownManager {
     }
 
     public void reloadPlaceholders() {
-        List<ICPlaceholder> placeholderList = InteractiveChatDiscordSrvAddonAPI.getPlaceholderList();
+        List<ICPlaceholder> placeholderList = MultiChatDiscordSrvAddonAPI.getPlaceholderList();
         Iterator<UUID> itr = placeholderTimestamps.keySet().iterator();
         while (itr.hasNext()) {
             UUID internalId = itr.next();

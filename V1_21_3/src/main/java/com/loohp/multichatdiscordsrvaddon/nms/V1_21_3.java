@@ -57,7 +57,7 @@ import net.minecraft.world.level.saveddata.maps.WorldMap;
 import net.querz.nbt.io.NBTDeserializer;
 import net.querz.nbt.io.NamedTag;
 import org.apache.commons.lang3.math.Fraction;
-import com.loohp.multichatdiscordsrvaddon.utils.AbstractInteractiveChatComponentSerializer;
+import com.loohp.multichatdiscordsrvaddon.utils.MultiChatGsonComponentSerializer;
 import com.loohp.multichatdiscordsrvaddon.utils.ReflectionUtils;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -429,7 +429,7 @@ public class V1_21_3 extends NMSWrapper {
             return null;
         }
         IChatBaseComponent description = holder.a().d();
-        return AbstractInteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
+        return MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
     }
 
     @SuppressWarnings("PatternValidation")
@@ -451,8 +451,8 @@ public class V1_21_3 extends NMSWrapper {
         if (paintingVariant == null) {
             return null;
         }
-        Optional<Component> title = paintingVariant.e().map(c -> AbstractInteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(c)));
-        Optional<Component> author = paintingVariant.f().map(c -> AbstractInteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(c)));
+        Optional<Component> title = paintingVariant.e().map(c -> MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(c)));
+        Optional<Component> author = paintingVariant.f().map(c -> MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(c)));
         return new PaintingVariant(Key.key(key.b(), key.a()), paintingVariant.b(), paintingVariant.c(), title, author);
     }
 
@@ -479,7 +479,7 @@ public class V1_21_3 extends NMSWrapper {
             return NamedTextColor.GRAY;
         }
         TrimMaterial nmsTrimMaterial = ((CraftTrimMaterial) trimMaterial).getHandle();
-        TextColor textColor = AbstractInteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(nmsTrimMaterial.e())).color();
+        TextColor textColor = MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(nmsTrimMaterial.e())).color();
         return textColor == null ? NamedTextColor.GRAY : textColor;
     }
 
@@ -491,8 +491,8 @@ public class V1_21_3 extends NMSWrapper {
             return null;
         }
         AdvancementDisplay display = optAdvancementDisplay.get();
-        Component title = AbstractInteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(display.a()));
-        Component description = AbstractInteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(display.b()));
+        Component title = MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(display.a()));
+        Component description = MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(display.b()));
         ItemStack item = CraftItemStack.asBukkitCopy(display.c());
         AdvancementType advancementType = AdvancementType.fromName(display.e().c());
         boolean isMinecraft = holder.a().b().equals(Key.MINECRAFT_NAMESPACE);
@@ -548,7 +548,7 @@ public class V1_21_3 extends NMSWrapper {
     public Component getDeathMessage(Player player) {
         EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         CombatTracker combatTracker = entityPlayer.eQ();
-        return AbstractInteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(combatTracker.a()));
+        return MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(combatTracker.a()));
     }
 
     @SuppressWarnings("PatternValidation")
@@ -585,13 +585,13 @@ public class V1_21_3 extends NMSWrapper {
             return null;
         }
         IRegistryCustom registryAccess = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().K_();
-        return jukeboxPlayable.a().a(registryAccess).map(h -> AbstractInteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(h.a().c()))).orElse(null);
+        return jukeboxPlayable.a().a(registryAccess).map(h -> MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(h.a().c()))).orElse(null);
     }
 
     @Override
     public Component getEnchantmentDescription(Enchantment enchantment) {
         IChatBaseComponent description = CraftEnchantment.bukkitToMinecraft(enchantment).f();
-        return AbstractInteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
+        return MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
     }
 
     @Override
@@ -796,7 +796,7 @@ public class V1_21_3 extends NMSWrapper {
     public Component getTrimMaterialDescription(Object trimMaterial) {
         TrimMaterial material = CraftTrimMaterial.bukkitToMinecraft((org.bukkit.inventory.meta.trim.TrimMaterial) trimMaterial);
         IChatBaseComponent description = material.e();
-        return AbstractInteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
+        return MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
     }
 
     @Override
@@ -809,7 +809,7 @@ public class V1_21_3 extends NMSWrapper {
             TrimMaterial material = CraftTrimMaterial.bukkitToMinecraft((org.bukkit.inventory.meta.trim.TrimMaterial) trimMaterial);
             description = pattern.a(Holder.a(material));
         }
-        return AbstractInteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
+        return MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
     }
 
     @Override

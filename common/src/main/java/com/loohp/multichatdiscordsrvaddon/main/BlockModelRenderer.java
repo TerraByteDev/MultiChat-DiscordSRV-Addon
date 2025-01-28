@@ -573,13 +573,13 @@ public class BlockModelRenderer extends JFrame {
             try {
                 YamlFile yaml = new YamlFile();
                 yaml.options().useComments(true);
-                yaml.load(Files.newInputStream(Paths.get("InteractiveChatDiscordSrvAddon/config.yml")));
+                yaml.load(Files.newInputStream(Paths.get("MultiChatDiscordSrvAddon/config.yml")));
                 resourceOrder = yaml.getStringList("Resources.Order");
                 Collections.reverse(resourceOrder);
                 valuePerPack = (int) ((1.0 / (double) (resourceOrder.size() + 1)) * 10000);
             } catch (IOException e) {
                 Toolkit.getDefaultToolkit().beep();
-                JOptionPane.showMessageDialog(null, GUIMain.createLabel("There is an error while loading from config:\n" + e.getMessage(), 13, Color.RED), title, JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, GUIMain.createLabel("There was an error while loading from config:\n" + e.getMessage(), 13, Color.RED), title, JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -599,13 +599,13 @@ public class BlockModelRenderer extends JFrame {
                         PackFormat.version(packFormat),
                         ResourceManager.Flag.build(false, packFormat < 9, packFormat < 46)
                 );
-                resourceManager.loadResources(new File("InteractiveChatDiscordSrvAddon/built-in", "Default"), ResourcePackType.BUILT_IN, true);
+                resourceManager.loadResources(new File("MultiChatDiscordSrvAddon/built-in", "Default"), ResourcePackType.BUILT_IN, true);
                 resourceBar.setValue(valuePerPack);
                 for (String resourceName : resourceOrder) {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     System.setErr(new PrintStream(baos));
                     try {
-                        File resourcePackFile = new File("InteractiveChatDiscordSrvAddon/resourcepacks/" + resourceName);
+                        File resourcePackFile = new File("MultiChatDiscordSrvAddon/resourcepacks/" + resourceName);
                         ResourcePackInfo info = resourceManager.loadResources(resourcePackFile, ResourcePackType.LOCAL);
                     } catch (Exception e) {
                         e.printStackTrace();

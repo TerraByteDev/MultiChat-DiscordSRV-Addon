@@ -21,7 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.modules;
 
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
-import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatDiscordSrvAddonAPI;
+import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.api.events.ItemPlaceholderEvent;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICInventoryHolder;
@@ -78,7 +78,7 @@ public class ItemDisplay {
         ItemStack item = player.getEquipment().getItemInMainHand();
         if (item == null) item = new ItemStack(Material.AIR);
 
-        item = InteractiveChatDiscordSrvAddonAPI.transformItemStack(item, receiver.getUniqueId());
+        item = MultiChatDiscordSrvAddonAPI.transformItemStack(item, receiver.getUniqueId());
 
         ItemPlaceholderEvent event = new ItemPlaceholderEvent(player, receiver, component, timeSent, item);
         Bukkit.getPluginManager().callEvent(event);
@@ -160,7 +160,7 @@ public class ItemDisplay {
             if (MultiChatDiscordSrvAddon.plugin.previewMaps && FilledMapUtils.isFilledMap(item)) {
                 isMapView = true;
                 if (!MultiChatDiscordSrvAddon.plugin.mapDisplay.containsKey(sha1)) {
-                    InteractiveChatDiscordSrvAddonAPI.addMapToMapSharedList(sha1, item);
+                    MultiChatDiscordSrvAddonAPI.addMapToMapSharedList(sha1, item);
                 }
             } else if (!MultiChatDiscordSrvAddon.plugin.itemDisplay.containsKey(sha1)) {
                 if (useInventoryView(item)) {
@@ -185,7 +185,7 @@ public class ItemDisplay {
                             inv.setItem(j + 9, shulkerItem == null ? null : shulkerItem.clone());
                         }
                     }
-                    InteractiveChatDiscordSrvAddonAPI.addInventoryToItemShareList(InteractiveChatDiscordSrvAddonAPI.SharedType.ITEM, sha1, inv);
+                    MultiChatDiscordSrvAddonAPI.addInventoryToItemShareList(MultiChatDiscordSrvAddonAPI.SharedType.ITEM, sha1, inv);
                 } else {
                     if (VersionManager.version.isOld()) {
                         Inventory inv = Bukkit.createInventory(ICInventoryHolder.INSTANCE, 27, title);
@@ -202,7 +202,7 @@ public class ItemDisplay {
                             inv.setItem(j, empty);
                         }
                         inv.setItem(13, isAir ? null : originalItem);
-                        InteractiveChatDiscordSrvAddonAPI.addInventoryToItemShareList(InteractiveChatDiscordSrvAddonAPI.SharedType.ITEM, sha1, inv);
+                        MultiChatDiscordSrvAddonAPI.addInventoryToItemShareList(MultiChatDiscordSrvAddonAPI.SharedType.ITEM, sha1, inv);
                     } else {
                         Inventory inv = Bukkit.createInventory(ICInventoryHolder.INSTANCE, InventoryType.DROPPER, title);
                         ItemStack empty = MultiChatDiscordSrvAddon.plugin.itemFrame1.clone();
@@ -218,11 +218,11 @@ public class ItemDisplay {
                             inv.setItem(j, empty);
                         }
                         inv.setItem(4, isAir ? null : originalItem);
-                        InteractiveChatDiscordSrvAddonAPI.addInventoryToItemShareList(InteractiveChatDiscordSrvAddonAPI.SharedType.ITEM, sha1, inv);
+                        MultiChatDiscordSrvAddonAPI.addInventoryToItemShareList(MultiChatDiscordSrvAddonAPI.SharedType.ITEM, sha1, inv);
                     }
                 }
             }
-            command = isMapView ? "/interactivechat viewmap " + sha1 : "/interactivechat viewitem " + sha1;
+            command = isMapView ? "/multichat viewmap " + sha1 : "/multichat viewitem " + sha1;
         }
 
         if (trimmed) {

@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.registry;
 
-public class InteractiveChatRegistry {
+public class MultiChatRegistry {
 
     public static final int MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION = 47;
 

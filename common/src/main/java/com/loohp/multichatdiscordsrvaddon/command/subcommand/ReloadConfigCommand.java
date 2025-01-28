@@ -1,6 +1,6 @@
 package com.loohp.multichatdiscordsrvaddon.command.subcommand;
 
-import com.loohp.multichatdiscordsrvaddon.api.events.InteractiveChatDiscordSRVConfigReloadEvent;
+import com.loohp.multichatdiscordsrvaddon.api.events.MultiChatDiscordSRVConfigReloadEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.annotations.Command;
@@ -24,7 +24,7 @@ public class ReloadConfigCommand {
             if (plugin.resourceReloadLock.tryLock(0, TimeUnit.MILLISECONDS)) {
                 try {
                     plugin.reloadConfig();
-                    Bukkit.getPluginManager().callEvent(new InteractiveChatDiscordSRVConfigReloadEvent());
+                    Bukkit.getPluginManager().callEvent(new MultiChatDiscordSRVConfigReloadEvent());
                     plugin.sendMessage(plugin.reloadConfigMessage, sender);
                 } catch (Throwable e) {
                     e.printStackTrace();

@@ -252,7 +252,7 @@ public class ImageGeneration {
         MultiChatDiscordSrvAddon.plugin.inventoryImageCounter.incrementAndGet();
         Debug.debug("ImageGeneration creating inventory image of " + player.getName());
 
-        String key = INVENTORY_CACHE_KEY + HashUtils.createSha1(title == null ? "Inventory" : AbstractInteractiveChatComponentSerializer.gson().serialize(title), inventory);
+        String key = INVENTORY_CACHE_KEY + HashUtils.createSha1(title == null ? "Inventory" : MultiChatGsonComponentSerializer.gson().serialize(title), inventory);
         if (!inventory.contains(XMaterial.COMPASS.parseMaterial()) && !inventory.contains(XMaterial.CLOCK.parseMaterial()) && Arrays.stream(inventory.getContents()).noneMatch(each -> each != null && !CustomModelData.isEmpty(NMS.getInstance().getCustomModelData(each)))) {
             CacheObject<?> cache = resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).getCache(key);
             if (cache != null) {
@@ -1017,7 +1017,7 @@ public class ImageGeneration {
         if (prints.isEmpty() || !(prints.get(0).getType().equals(ToolTipType.TEXT))) {
             Debug.debug("ImageGeneration creating tooltip image");
         } else {
-            Debug.debug("ImageGeneration creating tooltip image of " + InteractiveChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(prints.get(0).getToolTipComponent(ToolTipType.TEXT), translateFunction.get())));
+            Debug.debug("ImageGeneration creating tooltip image of " + MultiChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(prints.get(0).getToolTipComponent(ToolTipType.TEXT), translateFunction.get())));
         }
 
         if (allowLineBreaks) {

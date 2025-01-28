@@ -26,7 +26,7 @@ import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AbstractInteractiveChatComponentSerializer {
+public class MultiChatGsonComponentSerializer {
 
     private static final GsonComponentSerializer GSON_SERIALIZER;
     private static final GsonComponentSerializer GSON_SERIALIZER_LEGACY;
@@ -252,11 +252,11 @@ public class AbstractInteractiveChatComponentSerializer {
     }
 
     public static Key legacyIdToInteractiveChatKey(byte id, short damage) {
-        return Key.key("interactivechat", "legacy_hover/id_" + id + "/damage_" + damage);
+        return Key.key("multichat", "legacy_hover/id_" + id + "/damage_" + damage);
     }
 
     public static Key legacyIdToInteractiveChatKey(String id, short damage) {
-        return Key.key("interactivechat", "legacy_hover/id_" + id.replace(":", "-") + "/damage_" + damage);
+        return Key.key("multichat", "legacy_hover/id_" + id.replace(":", "-") + "/damage_" + damage);
     }
 
     public static LegacyIdKey interactiveChatKeyToLegacyId(Key key) {

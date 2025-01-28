@@ -29,18 +29,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-public class Debug implements Listener {
+public class Debug {
 
     public static void debug(String info) {
         if (MultiChatDiscordSrvAddon.debug) {
             MultiChatDiscordSrvAddon.plugin.audience.sender(Bukkit.getConsoleSender()).sendMessage(MiniMessage.miniMessage().deserialize(ICLogger.DEBUG_PREFIX + " <gray>" + info));
-        }
-    }
-
-    @EventHandler
-    public void onJoinPluginActive(PlayerJoinEvent event) {
-        if (event.getPlayer().getName().equals("LOOHP") || event.getPlayer().getName().equals("AppLEshakE")) {
-            event.getPlayer().sendMessage(ChatColor.AQUA + "InteractiveChatDiscordSrvAddon " + MultiChatDiscordSrvAddon.plugin.getDescription().getVersion() + " is running!");
         }
     }
 

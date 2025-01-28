@@ -51,13 +51,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("PatternValidation")
-public class InteractiveChatComponentSerializer {
+public class MultiChatComponentSerializer {
 
     private static final InteractiveChatBungeecordAPILegacyComponentSerializer BUNGEECORD_CHAT_LEGACY;
     private static final PlainTextComponentSerializer PLAIN_TEXT_SERIALIZER;
     private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER;
 
-    private static final Pattern LEGACY_ID_PATTERN = Pattern.compile("^interactivechat:legacy_hover/id_(.*?)/damage_([0-9]*)$");
+    private static final Pattern LEGACY_ID_PATTERN = Pattern.compile("^multichat:legacy_hover/id_(.*?)/damage_([0-9]*)$");
 
     private static final LegacyHoverEventSerializer LEGACY_HOVER_SERIALIZER;
 
@@ -98,11 +98,11 @@ public class InteractiveChatComponentSerializer {
     }
 
     public static Key legacyIdToInteractiveChatKey(byte id, short damage) {
-        return Key.key("interactivechat", "legacy_hover/id_" + id + "/damage_" + damage);
+        return Key.key("multichat", "legacy_hover/id_" + id + "/damage_" + damage);
     }
 
     public static Key legacyIdToInteractiveChatKey(String id, short damage) {
-        return Key.key("interactivechat", "legacy_hover/id_" + id.replace(":", "-") + "/damage_" + damage);
+        return Key.key("multichat", "legacy_hover/id_" + id.replace(":", "-") + "/damage_" + damage);
     }
 
     public static LegacyIdKey interactiveChatKeyToLegacyId(Key key) {
@@ -121,7 +121,7 @@ public class InteractiveChatComponentSerializer {
         return null;
     }
 
-    private InteractiveChatComponentSerializer() {
+    private MultiChatComponentSerializer() {
 
     }
 
@@ -133,7 +133,7 @@ public class InteractiveChatComponentSerializer {
 
         @Override
         public String serialize(Component component) {
-            return net.md_5.bungee.api.chat.BaseComponent.toLegacyText(net.md_5.bungee.chat.ComponentSerializer.parse(AbstractInteractiveChatComponentSerializer.gson().serialize(component)));
+            return net.md_5.bungee.api.chat.BaseComponent.toLegacyText(net.md_5.bungee.chat.ComponentSerializer.parse(MultiChatGsonComponentSerializer.gson().serialize(component)));
         }
 
         public String serialize(Component component, String language) {

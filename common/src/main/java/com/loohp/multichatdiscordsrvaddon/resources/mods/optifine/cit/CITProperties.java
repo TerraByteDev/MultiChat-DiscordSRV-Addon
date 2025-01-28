@@ -375,7 +375,7 @@ public abstract class CITProperties {
                                 String rawStringValue = ((StringTag) subTag).getValue();
                                 String jsonResultValue;
                                 try {
-                                    Component component = AbstractInteractiveChatComponentSerializer.gson().deserialize(rawStringValue);
+                                    Component component = MultiChatGsonComponentSerializer.gson().deserialize(rawStringValue);
                                     jsonResultValue = OptifineUtils.componentToString(component, translateFunction);
                                 } catch (Throwable ignore) {
                                     jsonResultValue = null;

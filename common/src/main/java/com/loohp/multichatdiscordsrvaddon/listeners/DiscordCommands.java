@@ -21,7 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatDiscordSrvAddonAPI;
+import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
 import com.loohp.multichatdiscordsrvaddon.modules.InventoryDisplay;
 import com.loohp.multichatdiscordsrvaddon.modules.ItemDisplay;
@@ -39,7 +39,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
-import com.loohp.multichatdiscordsrvaddon.api.events.InteractiveChatDiscordSRVConfigReloadEvent;
+import com.loohp.multichatdiscordsrvaddon.api.events.MultiChatDiscordSRVConfigReloadEvent;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
@@ -199,12 +199,12 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             CompassUtils.hideLodestoneCompassesPosition(inv);
         }
 
-        InteractiveChatDiscordSrvAddonAPI.addInventoryToItemShareList(InteractiveChatDiscordSrvAddonAPI.SharedType.INVENTORY, sha1, inv);
+        MultiChatDiscordSrvAddonAPI.addInventoryToItemShareList(MultiChatDiscordSrvAddonAPI.SharedType.INVENTORY, sha1, inv);
 
         if (MultiChatDiscordSrvAddon.plugin.useBungeecord) {
             try {
                 long time = System.currentTimeMillis();
-                BungeeMessageSender.addInventory(time, InteractiveChatDiscordSrvAddonAPI.SharedType.INVENTORY, sha1, title, inv);
+                BungeeMessageSender.addInventory(time, MultiChatDiscordSrvAddonAPI.SharedType.INVENTORY, sha1, title, inv);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -283,14 +283,14 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             CompassUtils.hideLodestoneCompassesPosition(inv2);
         }
 
-        InteractiveChatDiscordSrvAddonAPI.addInventoryToItemShareList(InteractiveChatDiscordSrvAddonAPI.SharedType.INVENTORY1_UPPER, sha1, inv);
-        InteractiveChatDiscordSrvAddonAPI.addInventoryToItemShareList(InteractiveChatDiscordSrvAddonAPI.SharedType.INVENTORY1_LOWER, sha1, inv2);
+        MultiChatDiscordSrvAddonAPI.addInventoryToItemShareList(MultiChatDiscordSrvAddonAPI.SharedType.INVENTORY1_UPPER, sha1, inv);
+        MultiChatDiscordSrvAddonAPI.addInventoryToItemShareList(MultiChatDiscordSrvAddonAPI.SharedType.INVENTORY1_LOWER, sha1, inv2);
 
         if (MultiChatDiscordSrvAddon.plugin.useBungeecord) {
             try {
                 long time = System.currentTimeMillis();
-                BungeeMessageSender.addInventory(time, InteractiveChatDiscordSrvAddonAPI.SharedType.INVENTORY1_UPPER, sha1, title, inv);
-                BungeeMessageSender.addInventory(time, InteractiveChatDiscordSrvAddonAPI.SharedType.INVENTORY1_LOWER, sha1, title, inv2);
+                BungeeMessageSender.addInventory(time, MultiChatDiscordSrvAddonAPI.SharedType.INVENTORY1_UPPER, sha1, title, inv);
+                BungeeMessageSender.addInventory(time, MultiChatDiscordSrvAddonAPI.SharedType.INVENTORY1_LOWER, sha1, title, inv2);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -313,12 +313,12 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             CompassUtils.hideLodestoneCompassesPosition(inv);
         }
 
-        InteractiveChatDiscordSrvAddonAPI.addInventoryToItemShareList(InteractiveChatDiscordSrvAddonAPI.SharedType.ENDERCHEST, sha1, inv);
+        MultiChatDiscordSrvAddonAPI.addInventoryToItemShareList(MultiChatDiscordSrvAddonAPI.SharedType.ENDERCHEST, sha1, inv);
 
         if (MultiChatDiscordSrvAddon.plugin.useBungeecord) {
             try {
                 long time = System.currentTimeMillis();
-                BungeeMessageSender.addInventory(time, InteractiveChatDiscordSrvAddonAPI.SharedType.ENDERCHEST, sha1, title, inv);
+                BungeeMessageSender.addInventory(time, MultiChatDiscordSrvAddonAPI.SharedType.ENDERCHEST, sha1, title, inv);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -471,7 +471,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
     }
 
     @EventHandler
-    public void onConfigReload(InteractiveChatDiscordSRVConfigReloadEvent event) {
+    public void onConfigReload(MultiChatDiscordSRVConfigReloadEvent event) {
         Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> reload());
     }
 
@@ -571,7 +571,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                 event.deferReply().setEphemeral(true).queue();
                 List<MessageEmbed> messageEmbeds = new ArrayList<>();
                 Map<String, byte[]> attachments = new HashMap<>();
-                String footer = "InteractiveChatDiscordSRVAddon v" + MultiChatDiscordSrvAddon.plugin.getDescription().getVersion();
+                String footer = "MultiChatDiscordSrvAddon v" + MultiChatDiscordSrvAddon.plugin.getDescription().getVersion();
                 int i = 0;
                 List<ResourcePackInfo> packs = MultiChatDiscordSrvAddon.plugin.getResourceManager().getResourcePackInfo();
                 for (ResourcePackInfo packInfo : packs) {
@@ -690,7 +690,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                 Map<OfflinePlayer, Integer> players;
                 if (MultiChatDiscordSrvAddon.plugin.useBungeecord && MultiChatDiscordSrvAddon.plugin.playerlistCommandBungeecord && !Bukkit.getOnlinePlayers().isEmpty()) {
                     try {
-                        List<ValueTrios<UUID, String, Integer>> bungeePlayers = InteractiveChatDiscordSrvAddonAPI.getBungeecordPlayerList().get();
+                        List<ValueTrios<UUID, String, Integer>> bungeePlayers = MultiChatDiscordSrvAddonAPI.getBungeecordPlayerList().get();
                         players = new LinkedHashMap<>(bungeePlayers.size());
                         for (ValueTrios<UUID, String, Integer> playerinfo : bungeePlayers) {
                             UUID uuid = playerinfo.getFirst();
@@ -724,7 +724,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                             if (MultiChatDiscordSrvAddon.plugin.playerlistCommandParsePlayerNamesWithMiniMessage) {
                                 nameComponent = MiniMessage.miniMessage().deserialize(name);
                             } else {
-                                nameComponent = InteractiveChatComponentSerializer.legacySection().deserialize(name);
+                                nameComponent = MultiChatComponentSerializer.legacySection().deserialize(name);
                             }
                             player.add(new ValueTrios<>(bukkitOfflinePlayer, nameComponent, entry.getValue()));
                         }
@@ -962,7 +962,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                 layout1(offlineICPlayer, sha1, title);
                 errorCode--;
                 component = component.hoverEvent(HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(MultiChatDiscordSrvAddon.plugin.shareInvCommandInGameMessageHover)));
-                component = component.clickEvent(ClickEvent.runCommand("/interactivechat viewinv " + sha1));
+                component = component.clickEvent(ClickEvent.runCommand("/multichat viewinv " + sha1));
                 errorCode--;
                 String key = "<DiscordShare=" + UUID.randomUUID() + ">";
                 components.put(key, component);
@@ -1064,7 +1064,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                 ender(offlineICPlayer, sha1, title);
                 errorCode--;
                 component = component.hoverEvent(HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(MultiChatDiscordSrvAddon.plugin.shareEnderCommandInGameMessageHover)));
-                component = component.clickEvent(ClickEvent.runCommand("/interactivechat viewender " + sha1));
+                component = component.clickEvent(ClickEvent.runCommand("/multichat viewender " + sha1));
                 errorCode--;
                 String key = "<DiscordShare=" + UUID.randomUUID() + ">";
                 components.put(key, component);

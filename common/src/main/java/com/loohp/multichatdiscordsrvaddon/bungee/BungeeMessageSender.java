@@ -23,7 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.bungee;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
-import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatDiscordSrvAddonAPI;
+import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.objectholders.CustomPlaceholder;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
@@ -281,7 +281,7 @@ public class BungeeMessageSender {
         return forwardData(time, 0x0D, out.toByteArray());
     }
 
-    public static boolean addInventory(long time, InteractiveChatDiscordSrvAddonAPI.SharedType type, String sha1, String title, Inventory inventory) throws Exception {
+    public static boolean addInventory(long time, MultiChatDiscordSrvAddonAPI.SharedType type, String sha1, String title, Inventory inventory) throws Exception {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeByte(type.getValue());
         DataTypeIO.writeString(out, sha1, StandardCharsets.UTF_8);

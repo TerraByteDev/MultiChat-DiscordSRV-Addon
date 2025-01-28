@@ -35,9 +35,9 @@ import java.util.function.Predicate;
 public enum ChatComponentType {
 
     IChatBaseComponent(".*(?:net\\.minecraft\\..*\\.IChatBaseComponent|net\\.minecraft\\.network\\.chat\\.Component).*", object -> {
-        return AbstractInteractiveChatComponentSerializer.gson().deserialize(WrappedChatComponent.fromHandle(object).getJson());
+        return MultiChatGsonComponentSerializer.gson().deserialize(WrappedChatComponent.fromHandle(object).getJson());
     }, (component, legacyRGB) -> {
-        return WrappedChatComponent.fromJson(legacyRGB ? AbstractInteractiveChatComponentSerializer.legacyGson().serialize(component) : AbstractInteractiveChatComponentSerializer.gson().serialize(component)).getHandle();
+        return WrappedChatComponent.fromJson(legacyRGB ? MultiChatGsonComponentSerializer.legacyGson().serialize(component) : MultiChatGsonComponentSerializer.gson().serialize(component)).getHandle();
     }, object -> {
         return WrappedChatComponent.fromHandle(object).getJson();
     }, component -> {
@@ -45,9 +45,9 @@ public enum ChatComponentType {
     }),
 
     BaseComponentArray(".*\\[Lnet\\.md_5\\.bungee\\.api\\.chat\\.BaseComponent.*", object -> {
-        return AbstractInteractiveChatComponentSerializer.gson().deserialize(ComponentSerializer.toString((BaseComponent[]) object));
+        return MultiChatGsonComponentSerializer.gson().deserialize(ComponentSerializer.toString((BaseComponent[]) object));
     }, (component, legacyRGB) -> {
-        return ComponentSerializer.parse(legacyRGB ? AbstractInteractiveChatComponentSerializer.legacyGson().serialize(component) : AbstractInteractiveChatComponentSerializer.gson().serialize(component));
+        return ComponentSerializer.parse(legacyRGB ? MultiChatGsonComponentSerializer.legacyGson().serialize(component) : MultiChatGsonComponentSerializer.gson().serialize(component));
     }, object -> {
         return ComponentSerializer.toString((BaseComponent[]) object);
     }, component -> {
@@ -69,15 +69,15 @@ public enum ChatComponentType {
     }, (component, legacyRGB) -> {
         return component;
     }, object -> {
-        return AbstractInteractiveChatComponentSerializer.gson().serialize((Component) object);
+        return MultiChatGsonComponentSerializer.gson().serialize((Component) object);
     }, component -> {
         return true;
     }),
 
     JsonString(".*java\\.lang\\.String.*", object -> {
-        return AbstractInteractiveChatComponentSerializer.gson().deserialize((String) object);
+        return MultiChatGsonComponentSerializer.gson().deserialize((String) object);
     }, (component, legacyRGB) -> {
-        return legacyRGB ? AbstractInteractiveChatComponentSerializer.legacyGson().serialize(component) : AbstractInteractiveChatComponentSerializer.gson().serialize(component);
+        return legacyRGB ? MultiChatGsonComponentSerializer.legacyGson().serialize(component) : MultiChatGsonComponentSerializer.gson().serialize(component);
     }, object -> {
         return (String) object;
     }, component -> {

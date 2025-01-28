@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
-import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatDiscordSrvAddonAPI;
+import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -31,7 +31,7 @@ import com.loohp.multichatdiscordsrvaddon.utils.ComponentFlattening;
 import com.loohp.multichatdiscordsrvaddon.utils.ComponentModernizing;
 import com.loohp.multichatdiscordsrvaddon.utils.ComponentReplacing;
 import com.loohp.multichatdiscordsrvaddon.utils.CustomStringUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.InteractiveChatComponentSerializer;
+import com.loohp.multichatdiscordsrvaddon.utils.MultiChatComponentSerializer;
 import com.loohp.multichatdiscordsrvaddon.utils.InventoryUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.ItemStackUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.LanguageUtils;
@@ -278,10 +278,10 @@ public class OutboundToDiscordEvents implements Listener {
         }
         component = ComponentFlattening.flatten(gameMessagePreProcessEvent.getComponent());
 
-        String plain = InteractiveChatComponentSerializer.plainText().serialize(component);
+        String plain = MultiChatComponentSerializer.plainText().serialize(component);
 
         Debug.debug("onGameToDiscord processing custom placeholders");
-        for (ICPlaceholder placeholder : InteractiveChatDiscordSrvAddonAPI.getPlaceholderList()) {
+        for (ICPlaceholder placeholder : MultiChatDiscordSrvAddonAPI.getPlaceholderList()) {
             if (!placeholder.isBuildIn()) {
                 CustomPlaceholder customP = (CustomPlaceholder) placeholder;
                 Matcher matcher = customP.getKeyword().matcher(plain);
@@ -648,8 +648,8 @@ public class OutboundToDiscordEvents implements Listener {
 
         SpecificTranslateFunction translateFunction = MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language);
 
-        String title = InteractiveChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(data.getTitle(), translateFunction));
-        String description = InteractiveChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(data.getDescription(), translateFunction));
+        String title = MultiChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(data.getTitle(), translateFunction));
+        String description = MultiChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(data.getDescription(), translateFunction));
         ItemStack item = data.getItem();
         AdvancementType advancementType = data.getAdvancementType();
         boolean isMinecraft = data.isMinecraft();
@@ -931,7 +931,7 @@ public class OutboundToDiscordEvents implements Listener {
                 });
             } catch (IllegalStateException e) {
                 if (e.getMessage().trim().equalsIgnoreCase("zip file closed")) {
-                    throw new RuntimeException("InteractiveChatDiscordSRVAddon didn't start properly due to an earlier error during startup, please look for that if you are asking for support. Remember to check the pinned messages first when you do so.", e);
+                    throw new RuntimeException("MultiChatDiscordSrvAddon didn't start properly due to an earlier error during startup, please look for that if you are asking for support. Remember to check the pinned messages first when you do so.", e);
                 } else {
                     throw e;
                 }

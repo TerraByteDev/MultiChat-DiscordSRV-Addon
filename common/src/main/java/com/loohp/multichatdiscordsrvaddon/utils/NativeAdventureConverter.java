@@ -159,7 +159,7 @@ public class NativeAdventureConverter {
 
     public static Object componentToNative(Component component, boolean legacyRGB) {
         try {
-            return nativeGsonComponentDeserializeMethod.invoke(nativeGsonComponentSerializerObject, legacyRGB ? AbstractInteractiveChatComponentSerializer.legacyGson().serialize(component) : AbstractInteractiveChatComponentSerializer.gson().serialize(component));
+            return nativeGsonComponentDeserializeMethod.invoke(nativeGsonComponentSerializerObject, legacyRGB ? MultiChatGsonComponentSerializer.legacyGson().serialize(component) : MultiChatGsonComponentSerializer.gson().serialize(component));
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             throw error(e);
         }
@@ -167,7 +167,7 @@ public class NativeAdventureConverter {
 
     public static Component componentFromNative(Object component) {
         try {
-            return AbstractInteractiveChatComponentSerializer.gson().deserialize(nativeGsonComponentSerializeMethod.invoke(nativeGsonComponentSerializerObject, component).toString());
+            return MultiChatGsonComponentSerializer.gson().deserialize(nativeGsonComponentSerializeMethod.invoke(nativeGsonComponentSerializerObject, component).toString());
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             throw error(e);
         }

@@ -368,7 +368,6 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new InboundToGameEvents(), this);
         getServer().getPluginManager().registerEvents(new OutboundToDiscordEvents(), this);
         getServer().getPluginManager().registerEvents(new ICPlayerEvents(), this);
-        getServer().getPluginManager().registerEvents(new Debug(), this);
         getServer().getPluginManager().registerEvents(new Updater(), this);
 
         new CommandHandler();
@@ -401,13 +400,13 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
 
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("InteractiveChat") && !compatible()) {
             for (int i = 0; i < 10; i++) {
-                getServer().getConsoleSender().sendMessage("<red>VERSION NOT COMPATIBLE WITH INSTALLED INTERACTIVECHAT VERSION, PLEASE UPDATE BOTH TO LATEST!!!!");
+                sendMessage("<red>VERSION NOT COMPATIBLE WITH INSTALLED INTERACTIVECHAT VERSION, PLEASE UPDATE BOTH TO LATEST!!!!", Bukkit.getConsoleSender());
             }
             getServer().getPluginManager().disablePlugin(this);
             return;
-        } else {
-            getServer().getConsoleSender().sendMessage("<green>MultiChat DiscordSRV Addon has been Enabled!");
         }
+
+        Bukkit.getConsoleSender().sendMessage("<green>MultiChat DiscordSRV Addon has been enabled.");
 
         reloadTextures(false, false);
         modelRenderer = new ModelRenderer(str -> new ThreadFactoryBuilder().setNameFormat(str).build(), () -> MultiChatDiscordSrvAddon.plugin.cacheTimeout, () -> {

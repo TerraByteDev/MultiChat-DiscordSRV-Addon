@@ -22,7 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.google.common.collect.Multimap;
 import com.cryptomorin.xseries.XMaterial;
-import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatDiscordSrvAddonAPI;
+import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
@@ -208,13 +208,13 @@ public class DiscordItemStackUtils {
         if (bukkitPlayer == null && !Bukkit.getOnlinePlayers().isEmpty()) {
             bukkitPlayer = Bukkit.getOnlinePlayers().iterator().next();
         }
-        item = InteractiveChatDiscordSrvAddonAPI.transformItemStack(item, bukkitPlayer == null ? null : bukkitPlayer.getUniqueId());
+        item = MultiChatDiscordSrvAddonAPI.transformItemStack(item, bukkitPlayer == null ? null : bukkitPlayer.getUniqueId());
 
         if (item == null) {
             item = new ItemStack(Material.AIR);
         }
         ICMaterial icMaterial = ICMaterial.from(item);
-        String name = InteractiveChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(ItemStackUtils.getDisplayName(item), translationFunction));
+        String name = MultiChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(ItemStackUtils.getDisplayName(item), translationFunction));
         if (item.getAmount() == 1 || item == null || item.getType().equals(Material.AIR)) {
             name = MultiChatDiscordSrvAddon.plugin.itemDisplaySingle.replace("{Item}", ComponentStringUtils.stripColorAndConvertMagic(name)).replace("{Amount}", String.valueOf(item.getAmount()));
         } else {
@@ -233,7 +233,7 @@ public class DiscordItemStackUtils {
         if (bukkitPlayer == null && !Bukkit.getOnlinePlayers().isEmpty()) {
             bukkitPlayer = Bukkit.getOnlinePlayers().iterator().next();
         }
-        item = InteractiveChatDiscordSrvAddonAPI.transformItemStack(item, bukkitPlayer == null ? null : bukkitPlayer.getUniqueId());
+        item = MultiChatDiscordSrvAddonAPI.transformItemStack(item, bukkitPlayer == null ? null : bukkitPlayer.getUniqueId());
         World world = bukkitPlayer == null ? null : bukkitPlayer.getWorld();
 
         List<ToolTipComponent<?>> prints = new ArrayList<>();

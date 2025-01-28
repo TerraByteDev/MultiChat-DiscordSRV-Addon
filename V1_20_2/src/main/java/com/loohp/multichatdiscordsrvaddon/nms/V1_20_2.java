@@ -43,7 +43,7 @@ import net.minecraft.world.level.saveddata.maps.WorldMap;
 import net.querz.nbt.io.NBTDeserializer;
 import net.querz.nbt.io.NamedTag;
 import org.apache.commons.lang3.math.Fraction;
-import com.loohp.multichatdiscordsrvaddon.utils.AbstractInteractiveChatComponentSerializer;
+import com.loohp.multichatdiscordsrvaddon.utils.MultiChatGsonComponentSerializer;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.md_5.bungee.api.ChatColor;
@@ -448,7 +448,7 @@ public class V1_20_2 extends NMSWrapper {
             return NamedTextColor.GRAY;
         }
         TrimMaterial nmsTrimMaterial = ((CraftTrimMaterial) trimMaterial).getHandle();
-        TextColor textColor = AbstractInteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(nmsTrimMaterial.e())).color();
+        TextColor textColor = MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(nmsTrimMaterial.e())).color();
         return textColor == null ? NamedTextColor.GRAY : textColor;
     }
 
@@ -460,8 +460,8 @@ public class V1_20_2 extends NMSWrapper {
             return null;
         }
         AdvancementDisplay display = optAdvancementDisplay.get();
-        Component title = AbstractInteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(display.a()));
-        Component description = AbstractInteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(display.b()));
+        Component title = MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(display.a()));
+        Component description = MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(display.b()));
         ItemStack item = CraftItemStack.asBukkitCopy(display.c());
         AdvancementType advancementType = AdvancementType.fromName(display.e().a());
         boolean isMinecraft = holder.a().b().equals(Key.MINECRAFT_NAMESPACE);
@@ -516,7 +516,7 @@ public class V1_20_2 extends NMSWrapper {
     public Component getDeathMessage(Player player) {
         EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         CombatTracker combatTracker = entityPlayer.eJ();
-        return AbstractInteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(combatTracker.a()));
+        return MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(combatTracker.a()));
     }
 
     @SuppressWarnings("PatternValidation")

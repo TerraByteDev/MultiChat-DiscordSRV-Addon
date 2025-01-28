@@ -29,7 +29,7 @@ import org.bukkit.event.HandlerList;
  *
  * @author LOOHP
  */
-public class InteractiveChatDiscordSRVConfigReloadEvent extends Event {
+public class MultiChatDiscordSRVConfigReloadEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
@@ -37,7 +37,7 @@ public class InteractiveChatDiscordSRVConfigReloadEvent extends Event {
         return HANDLERS;
     }
 
-    public InteractiveChatDiscordSRVConfigReloadEvent() {
+    public MultiChatDiscordSRVConfigReloadEvent() {
         super(!Bukkit.isPrimaryThread());
     }
 

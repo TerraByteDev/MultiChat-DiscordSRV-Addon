@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 
 public class Registry {
 
-    public static final String PLUGIN_MESSAGING_PROTOCOL_IDENTIFIER = "InteractiveChatBungeePing";
+    public static final String PLUGIN_MESSAGING_PROTOCOL_IDENTIFIER = "MultiChatBungeePing";
     public static final int PLUGIN_MESSAGING_PROTOCOL_VERSION = 20;
 
     public static final int MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION = 47;

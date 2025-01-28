@@ -70,7 +70,7 @@ public class ComponentStyling {
     }
 
     public static TextColor getFirstColor(Component component) {
-        ChatColor chatColor = ChatColorUtils.getColor(ChatColorUtils.getFirstColors(BaseComponent.toLegacyText(ComponentSerializer.parse(AbstractInteractiveChatComponentSerializer.gson().serialize(component)))));
+        ChatColor chatColor = ChatColorUtils.getColor(ChatColorUtils.getFirstColors(BaseComponent.toLegacyText(ComponentSerializer.parse(MultiChatGsonComponentSerializer.gson().serialize(component)))));
         return chatColor == null ? null : ColorUtils.toTextColor(chatColor);
     }
 

@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
-import com.loohp.multichatdiscordsrvaddon.api.InteractiveChatDiscordSrvAddonAPI;
+import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -79,7 +79,7 @@ public class LegacyDiscordCommandEvents {
             Map<OfflinePlayer, Integer> players;
             if (MultiChatDiscordSrvAddon.plugin.useBungeecord && MultiChatDiscordSrvAddon.plugin.playerlistCommandBungeecord && !Bukkit.getOnlinePlayers().isEmpty()) {
                 try {
-                    List<ValueTrios<UUID, String, Integer>> bungeePlayers = InteractiveChatDiscordSrvAddonAPI.getBungeecordPlayerList().get();
+                    List<ValueTrios<UUID, String, Integer>> bungeePlayers = MultiChatDiscordSrvAddonAPI.getBungeecordPlayerList().get();
                     players = new LinkedHashMap<>(bungeePlayers.size());
                     for (ValueTrios<UUID, String, Integer> playerinfo : bungeePlayers) {
                         UUID uuid = playerinfo.getFirst();

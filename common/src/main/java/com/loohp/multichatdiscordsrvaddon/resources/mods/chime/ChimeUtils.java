@@ -59,7 +59,7 @@ public class ChimeUtils {
         try {
             String rawStringValue = ((CompoundTag) NBTParsingUtils.fromSNBT(ItemNBTUtils.getNMSItemStackJson(itemStack))).getCompoundTag(ResourceRegistry.ITEM_COMPONENT_TAG).getCompoundTag("display").getString("Name");
             try {
-                Component component = AbstractInteractiveChatComponentSerializer.gson().deserialize(rawStringValue);
+                Component component = MultiChatGsonComponentSerializer.gson().deserialize(rawStringValue);
                 return componentToString(component, translateFunction);
             } catch (Throwable ignore) {
                 return rawStringValue;

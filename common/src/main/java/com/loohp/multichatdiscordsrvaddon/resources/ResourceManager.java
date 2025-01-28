@@ -21,7 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.resources;
 
 import com.google.gson.GsonBuilder;
-import com.loohp.multichatdiscordsrvaddon.utils.AbstractInteractiveChatComponentSerializer;
+import com.loohp.multichatdiscordsrvaddon.utils.MultiChatGsonComponentSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -29,7 +29,6 @@ import org.apache.commons.io.input.BOMInputStream;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import com.loohp.multichatdiscordsrvaddon.utils.InteractiveChatComponentSerializer;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.definitions.equipment.EquipmentModelDefinitionManager;
 import com.loohp.multichatdiscordsrvaddon.resources.definitions.item.ItemModelDefinitionManager;
@@ -205,7 +204,7 @@ public class ResourceManager implements AutoCloseable {
                 if (descriptionObj instanceof JSONObject) {
                     String descriptionJson = new GsonBuilder().create().toJson(descriptionObj);
                     try {
-                        description = AbstractInteractiveChatComponentSerializer.gson().deserialize(descriptionJson);
+                        description = MultiChatGsonComponentSerializer.gson().deserialize(descriptionJson);
                     } catch (Exception e) {
                         description = null;
                     }
@@ -213,7 +212,7 @@ public class ResourceManager implements AutoCloseable {
                 if (description == null) {
                     String rawDescription = packJson.get("description").toString();
                     try {
-                        description = AbstractInteractiveChatComponentSerializer.gson().deserialize(rawDescription);
+                        description = MultiChatGsonComponentSerializer.gson().deserialize(rawDescription);
                     } catch (Exception e) {
                         description = null;
                     }

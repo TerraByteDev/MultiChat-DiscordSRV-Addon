@@ -292,7 +292,7 @@ public class DiscordContentUtils {
                             content.addImageUrl("attachment://ToolTip_" + i + ".png");
                             content.addDescription(null);
                         } else {
-                            body += ComponentStringUtils.stripColorAndConvertMagic(InteractiveChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(hData.getHoverText(), MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language))));
+                            body += ComponentStringUtils.stripColorAndConvertMagic(MultiChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(hData.getHoverText(), MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language))));
                         }
                     }
                     if (hData.hasClick()) {

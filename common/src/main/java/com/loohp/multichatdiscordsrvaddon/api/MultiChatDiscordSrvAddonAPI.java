@@ -35,7 +35,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class InteractiveChatDiscordSrvAddonAPI {
+public class MultiChatDiscordSrvAddonAPI {
 
     /**
      * Whether the plugin is ready

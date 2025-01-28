@@ -421,7 +421,7 @@ public class ComponentStringUtils {
                 Key key = showItem.item();
                 int count = showItem.count();
                 ItemStack itemstack = null;
-                LegacyIdKey legacyId = InteractiveChatComponentSerializer.interactiveChatKeyToLegacyId(key);
+                LegacyIdKey legacyId = MultiChatComponentSerializer.interactiveChatKeyToLegacyId(key);
                 if (legacyId == null) {
                     String simpleNbt = "{id:\"" + key.asString() + "\", Count: " + count + "b}";
                     try {
@@ -480,11 +480,11 @@ public class ComponentStringUtils {
     }
 
     public static github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component toDiscordSRVComponent(Component component) {
-        return github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson().deserialize(AbstractInteractiveChatComponentSerializer.gson().serialize(component));
+        return github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson().deserialize(MultiChatGsonComponentSerializer.gson().serialize(component));
     }
 
     public static Component toRegularComponent(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component component) {
-        return AbstractInteractiveChatComponentSerializer.gson().deserialize(github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson().serialize(component));
+        return MultiChatGsonComponentSerializer.gson().deserialize(github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson().serialize(component));
     }
 
     public static class CharacterLengthProviderData {
