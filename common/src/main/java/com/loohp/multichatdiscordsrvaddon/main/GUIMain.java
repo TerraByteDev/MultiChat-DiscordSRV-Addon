@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.main;
 
 import com.loohp.multichatdiscordsrvaddon.libs.LibraryDownloadManager;
+import com.loohp.multichatdiscordsrvaddon.registry.MultiChatRegistry;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -30,7 +31,6 @@ import com.loohp.multichatdiscordsrvaddon.registry.Registry;
 import com.loohp.multichatdiscordsrvaddon.updater.Version;
 import com.loohp.multichatdiscordsrvaddon.utils.FileUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.HTTPRequestUtils;
-import com.loohp.multichatdiscordsrvaddon.registry.InteractiveChatRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceDownloadManager;
 
 import javax.imageio.ImageIO;
@@ -382,7 +382,7 @@ public class GUIMain {
 
     protected static boolean compatible() {
         try {
-            return Registry.class.getField("MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null) == InteractiveChatRegistry.class.getField("MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null);
+            return Registry.class.getField("MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null) == MultiChatRegistry.class.getField("MULTICHAT_DISCORD_SRV_ADDON_COMPATIBLE_VERSION").getInt(null);
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
             return false;
