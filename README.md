@@ -6,25 +6,25 @@
     </a>
 </div>
 
-This is a fork of [InteractiveChat-DiscordSRV-Addon](https://github.com/LOOHP/InteractiveChat-DiscordSRV-Addon)!\
-Have InteractiveChat, ZelChat and ChatControl Placeholders translated on DiscordSRV discord messages. As well as sharing items, inventories to discord and sharing images and gifs to the game from discord!
+This is a fork of [InteractiveChat-DiscordSRV-Addon](https://github.com/LOOHP/InteractiveChat-DiscordSRV-Addon).\
+This fork allows you to have InteractiveChat, ZelChat, ChatControl and Carbon Chat Placeholders translated on DiscordSRV discord messages. As well as sharing items, inventories to discord and sharing images and gifs to the game from discord!
 
 ## Changes by this Fork
 This fork aims to bring the functionality of the original InteractiveChat addon to other plugins which have similar functionalities.\
-This fork mostly removes the complete dependency on InteractiveChat - A lot of InteractiveChat classes are carried over to still maintain compatibility.\
-All code credits go towards LOOHP, who has given permission for this fork to be created and maintained by me.
+This fork removes the complete dependency on InteractiveChat plugin itself - A lot of InteractiveChat classes are carried over to still maintain compatibility.\
+All code credits go towards LOOHP, who has given permission for this fork to be created and maintained by myself.
 
 This fork also removes support for 1.21, 1.21.2 and 1.20.5.\
 1.20.5 was just a client update, and 1.21 contains bugs and exploits, so it is not recommended to use these versions.\
 1.20, 1.20.1, 1.20.2, 1.20.4, 1.20.6, 1.21.1, 1.21.3, 1.21.4 are still supported.\
-Additionally, this plugin will include the filtered messages from your chat plugin if supported.
+Additionally, this plugin will display the filtered messages from your chat plugin in discord if supported.
 
 ### TL;DR
-- Remove dependency on InteractiveChat (still supported)
-- Support ChatControl and ZelChat (filters and item/inv/enderchest showcase)
+- Remove dependency on InteractiveChat plugin itself (still supported)
+- Support ChatControl, ZelChat, and Carbon (filters and item/inv/enderchest showcase)
 - Clean up some code (configs, commands)
 - Remove some support for some minor MC versions (read above)
-- Independent discord system, separate from DiscordSRV (optional)
+- Independent discord system, separate from DiscordSRV (optional) [WIP]
 
 > [!WARNING]
 > If you encounter bugs while using this fork, **do not report this to the original author!**\
