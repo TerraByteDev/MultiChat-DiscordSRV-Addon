@@ -117,7 +117,7 @@ public class ResourceManager implements AutoCloseable {
 
     public ResourceManager(int nativeServerPackFormat, Collection<ModManagerSupplier<?>> modManagerProviders, Collection<ResourceRegistrySupplier<?>> resourceManagerUtilsProviders, PackFormat defaultResourcePackVersion, Flag... flags) {
         this(nativeServerPackFormat, modManagerProviders, resourceManagerUtilsProviders, (resourcePackFile, type) -> {
-            return new ResourceManager.DefaultResourcePackInfo(Component.text(resourcePackFile.getName()), defaultResourcePackVersion, Component.text("The default look and feel of Minecraft (Modified by LOOHP)"));
+            return new ResourceManager.DefaultResourcePackInfo(Component.text(resourcePackFile.getName()), defaultResourcePackVersion, Component.text("The default look and feel of Minecraft"));
         }, flags);
     }
 

@@ -822,7 +822,7 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
                         (resourcePackFile, type) -> new ResourceManager.DefaultResourcePackInfo(
                                 Component.translatable(TranslationKeyUtils.getResourcePackVanillaName()),
                                 PackFormat.version(ResourcePackUtils.getServerResourcePackVersion()),
-                                Component.translatable(TranslationKeyUtils.getResourcePackVanillaDescription()).append(Component.text(" (Modified by LOOHP)"))
+                                Component.translatable(TranslationKeyUtils.getResourcePackVanillaDescription())
                         ),
                         ResourceManager.Flag.build(
                                 VersionManager.version.isLegacy(),
