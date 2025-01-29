@@ -162,6 +162,10 @@
                                     <pattern>org.objectweb</pattern>
                                     <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.org.objectweb</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>net.kyori</pattern>
+                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.net.kyori</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -455,13 +459,11 @@
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-json</artifactId>
             <version>4.18.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-gson</artifactId>
             <version>4.18.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.loohp</groupId>
@@ -574,7 +576,6 @@
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
             <version>4.3.4</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
