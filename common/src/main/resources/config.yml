@@ -20,7 +20,7 @@ InventoryImage:
     #The text to replace the keyword
     Text: "&f[&d%player_name%'s Item&f]"
     # Title of the item view embed
-    ItemTitle: "%player_names%'s Item"
+    ItemTitle: "%player_name%'s Item"
 
     #Preview shared maps instead of showing the item itself
     PreviewMaps: true
