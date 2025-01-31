@@ -21,6 +21,8 @@ InventoryImage:
     Text: "&f[&d%player_name%'s Item&f]"
     # Title of the item view embed
     ItemTitle: "%player_name%'s Item"
+    # Generally used for item description in placeholders and discord commands.
+    Description: "&aShow the Item you are holding in the chat!"
 
     #Preview shared maps instead of showing the item itself
     PreviewMaps: true
@@ -42,6 +44,8 @@ InventoryImage:
     Text: "&f[&d%player_name%'s Inventory&f]"
     #The title of the inventory view
     InventoryTitle: "%player_name%'s Inventory"
+    # Generally used for item description in placeholders and discord commands.
+    Description: "&bShow your Inventory in the chat!"
 
     #The item used for the frame of the Inventory GUI
     Frame:
@@ -59,6 +63,8 @@ InventoryImage:
     Text: "&f[&d%player_name%'s Ender Chest&f]"
     #The title of the ender chest inventory view
     InventoryTitle: "%player_name%'s Ender Chest"
+    # Generally used for item description in placeholders and discord commands.
+    Description: "&dShow your Ender Chest in the chat!"
 
 #Choose what to include in item tooltips
 ToolTipSettings:

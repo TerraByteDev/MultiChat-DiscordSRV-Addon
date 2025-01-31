@@ -700,16 +700,19 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
         Pattern inventoryPlaceholderPattern = Pattern.compile(config.getConfiguration().getString("Placeholders.Inventory"));
         Pattern enderChestPlaceholderPattern = Pattern.compile(config.getConfiguration().getString("Placeholders.EnderChest"));
 
-        if (invImage) {
-            itemPlaceholder = new BuiltInPlaceholder(itemPlaceholderPattern, itemTitle, "", "", config.getConfiguration().getLong("InventoryImage.Item.Cooldown") * 1000);
+        if (itemImage) {
+            String description = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("InventoryImage.Item.Description"));
+            itemPlaceholder = new BuiltInPlaceholder(itemPlaceholderPattern, itemTitle, description, "", config.getConfiguration().getLong("InventoryImage.Item.Cooldown") * 1000);
             placeholderList.put(itemPlaceholder.getInternalId(), itemPlaceholder);
         }
         if (invImage) {
-            inventoryPlaceholder = new BuiltInPlaceholder(inventoryPlaceholderPattern, "", "", "", config.getConfiguration().getLong("InventoryImage.Inventory.Cooldown") * 1000);
+            String description = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("InventoryImage.Inventory.Description"));
+            inventoryPlaceholder = new BuiltInPlaceholder(inventoryPlaceholderPattern, inventoryTitle, description, "", config.getConfiguration().getLong("InventoryImage.Inventory.Cooldown") * 1000);
             placeholderList.put(inventoryPlaceholder.getInternalId(), inventoryPlaceholder);
         }
         if (enderImage) {
-            enderChestPlaceholder = new BuiltInPlaceholder(enderChestPlaceholderPattern, "", "", "", config.getConfiguration().getLong("InventoryImage.EnderChest.Cooldown") * 1000);
+            String description = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("InventoryImage.EnderChest.Description"));
+            enderChestPlaceholder = new BuiltInPlaceholder(enderChestPlaceholderPattern, enderTitle, description, "", config.getConfiguration().getLong("InventoryImage.EnderChest.Cooldown") * 1000);
             placeholderList.put(enderChestPlaceholder.getInternalId(), enderChestPlaceholder);
         }
 

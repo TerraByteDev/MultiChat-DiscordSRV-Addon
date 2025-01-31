@@ -20,7 +20,6 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -33,16 +32,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public enum ChatComponentType {
-
-    IChatBaseComponent(".*(?:net\\.minecraft\\..*\\.IChatBaseComponent|net\\.minecraft\\.network\\.chat\\.Component).*", object -> {
-        return MultiChatGsonComponentSerializer.gson().deserialize(WrappedChatComponent.fromHandle(object).getJson());
-    }, (component, legacyRGB) -> {
-        return WrappedChatComponent.fromJson(legacyRGB ? MultiChatGsonComponentSerializer.legacyGson().serialize(component) : MultiChatGsonComponentSerializer.gson().serialize(component)).getHandle();
-    }, object -> {
-        return WrappedChatComponent.fromHandle(object).getJson();
-    }, component -> {
-        return true;
-    }),
 
     BaseComponentArray(".*\\[Lnet\\.md_5\\.bungee\\.api\\.chat\\.BaseComponent.*", object -> {
         return MultiChatGsonComponentSerializer.gson().deserialize(ComponentSerializer.toString((BaseComponent[]) object));
@@ -84,7 +73,7 @@ public enum ChatComponentType {
         return true;
     });
 
-    private static final List<ChatComponentType> BY_PRIORITY = Collections.unmodifiableList(Arrays.asList(AdventureComponent, NativeAdventureComponent, JsonString, BaseComponentArray, IChatBaseComponent));
+    private static final List<ChatComponentType> BY_PRIORITY = Collections.unmodifiableList(Arrays.asList(AdventureComponent, NativeAdventureComponent, JsonString, BaseComponentArray));
 
     public static List<ChatComponentType> byPriority() {
         return BY_PRIORITY;

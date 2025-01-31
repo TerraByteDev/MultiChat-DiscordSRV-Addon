@@ -21,6 +21,7 @@ Additionally, this plugin will display the filtered messages from your chat plug
 
 ### TL;DR
 - Remove dependency on InteractiveChat plugin itself (still supported)
+- Remove dependency on ProtocolLib
 - Support ChatControl, ZelChat, and Carbon (filters and item/inv/enderchest showcase)
 - Clean up some code (configs, commands)
 - Remove some support for some minor MC versions (read above)

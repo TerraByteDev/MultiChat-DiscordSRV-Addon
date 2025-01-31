@@ -4,7 +4,7 @@ version: ${project.version}
 main: com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon
 api-version: 1.13
 description: DiscordSRV addon to InteractiveChat
-depend: [DiscordSRV, ProtocolLib]
+depend: [DiscordSRV]
 softdepend: [ItemsAdder, InteractiveChat, ZelChat, ChatControl, PlaceholderAPI]
 prefix: MultiChatDiscordSrvAddon
 
