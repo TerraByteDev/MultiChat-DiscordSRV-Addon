@@ -39,13 +39,13 @@ public class PlayerUtils {
 
     public static OfflinePlayerData getData(OfflinePlayer player) {
         int selectedSlot = player.isOnline() ? player.getPlayer().getInventory().getHeldItemSlot() : 0;
-        Inventory playerInventory = Bukkit.createInventory(ICInventoryHolder.INSTANCE, 45);
-        Inventory enderChest = Bukkit.createInventory(ICInventoryHolder.INSTANCE, InventoryUtils.getDefaultEnderChestSize());
+        Inventory playerInventory = player.isOnline() ? player.getPlayer().getInventory() : Bukkit.createInventory(ICInventoryHolder.INSTANCE, 45);
+        Inventory enderChest = player.isOnline() ? player.getPlayer().getEnderChest() : Bukkit.createInventory(ICInventoryHolder.INSTANCE, InventoryUtils.getDefaultEnderChestSize());
         int xp = player.isOnline() ? player.getPlayer().getExpToLevel() : 0;
         boolean isRightHanded = isRightHanded(player);
         if (!player.isOnline()) {
             try {
-                File dat = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath() + "/playerdata", player.getUniqueId().toString() + ".dat");
+                File dat = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath() + "/playerdata", player.getUniqueId() + ".dat");
                 if (dat.exists()) {
                     NamedTag nbtData = NBTUtil.read(dat);
                     CompoundTag rootTag = (CompoundTag) nbtData.getTag();
