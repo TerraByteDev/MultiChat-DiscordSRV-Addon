@@ -773,7 +773,7 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
                 File serverResourcePackFolder = new File(getDataFolder(), "server-resource-packs");
                 File serverResourcePack = null;
                 if (includeServerResourcePack) {
-                    Bukkit.getConsoleSender().sendMessage("<gray>Checking for server resource pack...");
+                    sendMessage("<aqua>Checking for server resource pack...", senders);
                     ServerResourcePackDownloadResult result = AssetsDownloader.downloadServerResourcePack(serverResourcePackFolder);
                     serverResourcePack = result.getResourcePackFile();
                     if (result.getError() != null) {

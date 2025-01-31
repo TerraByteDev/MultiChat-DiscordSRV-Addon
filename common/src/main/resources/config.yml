@@ -384,7 +384,7 @@ Messages:
   ReloadTexture: "<yellow>Reloading textures... <grey>(See console for progress)"
   LinkExpired: "<red>This link has been expired! To view this link, please head over to the linked discord channel!"
   PreviewLoading: "<yellow>Preview is being loaded! Please wait!"
-  AccountNotLinked: "<red>A Minecraft account must be linked to this Discord account in order to use this command!"
+  AccountNotLinked: "A Minecraft account must be linked to this Discord account in order to use this command!"
   UnableToRetrieveData: "<red>Unable to retrieve data."
   InvalidDiscordChannel: "<red>You cannot do that in this channel."
   InteractionExpired: "<red>This interaction had expired."

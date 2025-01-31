@@ -51,7 +51,7 @@ public class ResourceRegistry {
     public static final String DEFAULT_NAMESPACE = "minecraft";
     public static final boolean IS_MINECRAFT_SERVER_ENVIRONMENT;
 
-    public static final String ICD_PREFIX = "minecraft:multichatdiscordsrvaddon/";
+    public static final String ICD_PREFIX = "minecraft:interactivechatdiscordsrvaddon/";
 
     public static final int RESOURCE_PACK_VERSION;
 

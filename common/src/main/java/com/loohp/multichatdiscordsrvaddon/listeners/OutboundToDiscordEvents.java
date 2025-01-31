@@ -396,7 +396,7 @@ public class OutboundToDiscordEvents implements Listener {
             Matcher matcher = MultiChatDiscordSrvAddon.inventoryPlaceholder.getKeyword().matcher(plain);
             if (matcher.find()) {
                 if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.inventoryPlaceholder)).findFirst().get(), now)) {
-                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, MultiChatDiscordSrvAddon.plugin.itemDisplayMultiple));
+                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, MultiChatDiscordSrvAddon.plugin.inventoryTitle));
                     if (reserializer) {
                         replaceText = MessageUtil.reserializeToDiscord(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(replaceText));
                     }
