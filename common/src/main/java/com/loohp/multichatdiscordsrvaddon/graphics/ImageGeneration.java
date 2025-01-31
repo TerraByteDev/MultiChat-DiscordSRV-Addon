@@ -292,13 +292,12 @@ public class ImageGeneration {
     }
 
     public static BufferedImage getPlayerInventoryImage(Inventory inventory, OfflinePlayer offlinePlayer) throws Exception {
-        if (!offlinePlayer.isOnline()) throw new IllegalStateException("Attempted to fetch equipment of player while offline!");
-        Player player = offlinePlayer.getPlayer();
+        OfflinePlayerData offlinePlayerData = PlayerUtils.getData(offlinePlayer);
 
-        EntityEquipment equipment = player.getEquipment();
-        ItemStack rightHand = PlayerUtils.isRightHanded(player) ? player.getEquipment().getItemInMainHand() : player.getEquipment().getItemInOffHand();
-        ItemStack leftHand = PlayerUtils.isRightHanded(player) ? player.getEquipment().getItemInMainHand() : player.getEquipment().getItemInOffHand();
-        return getPlayerInventoryImage(inventory, rightHand, leftHand, equipment.getHelmet(), equipment.getChestplate(), equipment.getLeggings(), equipment.getBoots(), player);
+        ICPlayerEquipment equipment = offlinePlayerData.getEquipment();
+        ItemStack rightHand = offlinePlayerData.isRightHanded() ? equipment.getItemInMainHand() : equipment.getItemInOffHand();
+        ItemStack leftHand = offlinePlayerData.isRightHanded() ? equipment.getItemInMainHand() : equipment.getItemInOffHand();
+        return getPlayerInventoryImage(inventory, rightHand, leftHand, equipment.getHelmet(), equipment.getChestplate(), equipment.getLeggings(), equipment.getBoots(), offlinePlayer);
     }
 
     public static BufferedImage getPlayerInventoryImage(Inventory inventory, ItemStack puppetRightHand, ItemStack puppetLeftHand, ItemStack puppetHelmet, ItemStack puppetChestplate, ItemStack puppetLeggings, ItemStack puppetBoots, OfflinePlayer player) throws Exception {
