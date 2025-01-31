@@ -9,6 +9,10 @@
 This is a fork of [InteractiveChat-DiscordSRV-Addon](https://github.com/LOOHP/InteractiveChat-DiscordSRV-Addon).\
 This fork allows you to have InteractiveChat, ZelChat, ChatControl and Carbon Chat Placeholders translated on DiscordSRV discord messages. As well as sharing items, inventories to discord and sharing images and gifs to the game from discord!
 
+> [!WARNING]
+> This is still a WIP.
+> An official release will be made soon!
+
 ## Changes by this Fork
 This fork aims to bring the functionality of the original InteractiveChat addon to other plugins which have similar functionalities.\
 This fork removes the complete dependency on InteractiveChat plugin itself - A lot of InteractiveChat classes are carried over to still maintain compatibility.\
@@ -44,6 +48,11 @@ In many cases, chat plugins will not edit the AsyncChatEvent when filtered, or w
 2. The unfiltered message is sent to discord.
 
 This fork will also add a completely independent discord implementation, separate from DiscordSRV, which will natively support proxies and will be able to display rank prefixes (LuckPerms), what servers players are on, etc.
+
+## Why remove <1.20.1 support?
+This addon was originally designed for ZelChat, which only supports 1.20.x+.\
+Regardless, if is always best to stay on modern versions that are not riddled with exploits or bugs.
+
 
 ## Missing Features
 Right now, this fork does not support the following features (that the original plugin *does* support):
