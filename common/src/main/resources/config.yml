@@ -386,8 +386,8 @@ Messages:
   PreviewLoading: "<yellow>Preview is being loaded! Please wait!"
   AccountNotLinked: "A Minecraft account must be linked to this Discord account in order to use this command!"
   UnableToRetrieveData: "<red>Unable to retrieve data."
-  InvalidDiscordChannel: "<red>You cannot do that in this channel."
-  InteractionExpired: "<red>This interaction had expired."
+  InvalidDiscordChannel: "You cannot do that in this channel."
+  InteractionExpired: "This interaction had expired."
   TrueLabel: "<green>True"
   FalseLabel: "<red>False"
   StatusCommand:
