@@ -287,7 +287,6 @@ public class ImageGeneration {
         g.dispose();
 
         resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).putCache(key, target);
-
         return target;
     }
 

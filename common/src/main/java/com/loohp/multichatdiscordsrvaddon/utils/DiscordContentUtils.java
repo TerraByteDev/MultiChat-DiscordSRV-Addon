@@ -232,7 +232,9 @@ public class DiscordContentUtils {
                         DiscordMessageContent content = new DiscordMessageContent(title, null, null, "attachment://Inventory_" + i + ".png", color);
                         content.addAttachment("Inventory_" + i + ".png", imageData);
                         if (type.equals(ImageDisplayType.INVENTORY) && MultiChatDiscordSrvAddon.plugin.invShowLevel) {
-                            int level = iData.getPlayer().getPlayer().getExpToLevel();
+                            OfflinePlayerData offlinePlayerData = PlayerUtils.getData(iData.getPlayer());
+                            
+                            int level = offlinePlayerData.getXpLevel();
                             byte[] bottleData = ImageUtils.toArray(MultiChatDiscordSrvAddon.plugin.modelRenderer.render(32, 32, ModelRenderer.SINGLE_RENDER, MultiChatDiscordSrvAddon.plugin.getResourceManager(), MultiChatDiscordSrvAddon.plugin.getResourceManager().getResourceRegistry(CustomItemTextureRegistry.IDENTIFIER, CustomItemTextureRegistry.class).getItemPostResolveFunction("minecraft:item/experience_bottle", null, XMaterial.EXPERIENCE_BOTTLE.parseItem(), VersionManager.version.isOld(), null, null, null, null, MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language)).orElse(null), VersionManager.version.isOld(), "minecraft:item/experience_bottle", ModelDisplayPosition.GUI, false, null, null).getImage(0));
                             content.addAttachment("Level_" + i + ".png", bottleData);
                             content.setFooter(ComponentStringUtils.convertFormattedString(LanguageUtils.getTranslation(TranslationKeyUtils.getLevelTranslation(level), MultiChatDiscordSrvAddon.plugin.language).getResult(), level));
