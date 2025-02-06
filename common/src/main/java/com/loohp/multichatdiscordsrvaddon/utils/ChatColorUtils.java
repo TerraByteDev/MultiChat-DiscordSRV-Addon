@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import net.md_5.bungee.api.ChatColor;
 
 import java.util.Arrays;
@@ -169,7 +170,7 @@ public class ChatColorUtils {
     }
 
     public static String translateAlternateColorCodes(char code, String text) {
-        return translateAlternateColorCodes(code, text, VersionManager.version.isLegacyRGB(), MultiChatDiscordSrvAddon.plugin.rgbTags, MultiChatDiscordSrvAddon.plugin.additionalRGBFormats);
+        return translateAlternateColorCodes(code, text, VersionManager.version.isLegacyRGB(), Config.i().getSettings().formattingTags().allowRGBTags(), MultiChatDiscordSrvAddon.plugin.additionalRGBFormats);
     }
 
     public static String translateAlternateColorCodes(char code, String text, boolean legacyRGB, boolean rgbTags, List<Pattern> additionalRGBFormats) {

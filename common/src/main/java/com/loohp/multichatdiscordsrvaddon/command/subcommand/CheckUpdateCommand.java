@@ -1,6 +1,7 @@
 package com.loohp.multichatdiscordsrvaddon.command.subcommand;
 
 import com.loohp.multichatdiscordsrvaddon.updater.Updater;
+import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.annotations.Command;
 import org.incendo.cloud.annotations.CommandDescription;
@@ -17,9 +18,9 @@ public class CheckUpdateCommand {
     public void execute(
             CommandSender sender
     ) {
-        plugin.sendMessage("<grey>Checking for updates, please wait...", sender);
+        ChatUtils.sendMessage("<grey>Checking for updates, please wait...", sender);
         if (Updater.checkUpdate(sender)) {
-            plugin.sendMessage("<green>You are running the latest version of MultiChat-DiscordSRV-Addon! <grey>[" + plugin.getDescription().getVersion() + "]", sender);
+            ChatUtils.sendMessage("<green>You are running the latest version of MultiChat-DiscordSRV-Addon! <grey>[" + plugin.getDescription().getVersion() + "]", sender);
         }
     }
 

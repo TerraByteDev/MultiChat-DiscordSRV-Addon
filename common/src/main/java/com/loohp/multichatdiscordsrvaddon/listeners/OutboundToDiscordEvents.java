@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
 import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -123,12 +124,13 @@ import java.util.regex.Pattern;
 
 public class OutboundToDiscordEvents implements Listener {
 
-    public static final Comparator<DiscordDisplayData> DISPLAY_DATA_COMPARATOR = Comparator.comparing(each -> each.getPosition());
+    public static final Comparator<DiscordDisplayData> DISPLAY_DATA_COMPARATOR = Comparator.comparing(DiscordDisplayData::getPosition);
     public static final Int2ObjectMap<DiscordDisplayData> DATA = Int2ObjectMaps.synchronize(new Int2ObjectLinkedOpenHashMap<>());
     public static final IntFunction<Pattern> DATA_PATTERN = i -> Pattern.compile("<ICD=" + i + "\\\\?>");
     public static final Int2ObjectMap<AttachmentData> RESEND_WITH_ATTACHMENT = Int2ObjectMaps.synchronize(new Int2ObjectLinkedOpenHashMap<>());
     private static final IDProvider DATA_ID_PROVIDER = new IDProvider();
     private static final Map<UUID, Component> DEATH_MESSAGE = new ConcurrentHashMap<>();
+    public static final List<String> toAllow = new ArrayList<>();
 
     @Subscribe(priority = ListenerPriority.LOWEST)
     public void onGameToDiscordLowest(GameChatMessagePreProcessEvent event) {
@@ -174,10 +176,18 @@ public class OutboundToDiscordEvents implements Listener {
 
     public void handleGameToDiscord(GameChatMessagePreProcessEvent event) {
         Debug.debug("Triggering onGameToDiscord");
+        System.out.println("event raw: " +event.getMessage());
+        System.out.println(toAllow);
         if (event.isCancelled()) {
             Debug.debug("onGameToDiscord already cancelled");
             return;
+        } else if (!toAllow.contains(event.getMessage())) {
+            System.out.println("contains");
+            event.setCancelled(true);
+            return;
         }
+        System.out.println("removing");
+        toAllow.remove(event.getMessage());
         MultiChatDiscordSrvAddon.plugin.messagesCounter.incrementAndGet();
 
         Player sender = event.getPlayer();
@@ -300,7 +310,7 @@ public class OutboundToDiscordEvents implements Listener {
                             if (!shown.contains(replaceString)) {
                                 shown.add(replaceString);
                                 int position = result.start();
-                                if (MultiChatDiscordSrvAddon.plugin.hoverEnabled && !MultiChatDiscordSrvAddon.plugin.hoverIgnore.contains(customP.getKey())) {
+                                if (Config.i().getHoverEventDisplay().enabled() && !Config.i().getHoverEventDisplay().ignoredPlaceholderKeys().contains(customP.getKey())) {
                                     HoverClickDisplayData.Builder hoverClick = new HoverClickDisplayData.Builder().player(icSender).postion(position).color(DiscordDataRegistry.DISCORD_HOVER_COLOR).displayText(ChatColorUtils.stripColor(replaceString));
                                     boolean usingHoverClick = false;
 
@@ -338,14 +348,14 @@ public class OutboundToDiscordEvents implements Listener {
             }
         }
 
-        if (MultiChatDiscordSrvAddon.plugin.itemImage) {
+        if (Config.i().getInventoryImage().item().enabled()) {
             Debug.debug("onGameToDiscord processing item display");
             Matcher matcher = MultiChatDiscordSrvAddon.itemPlaceholder.getKeyword().matcher(plain);
             if (matcher.find()) {
                 if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.itemPlaceholder)).findFirst().get(), now)) {
                     ItemStack item = PlayerUtils.getMainHandItem(icSender);
                     boolean isAir = item.getType().equals(Material.AIR);
-                    String itemStr = PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(ComponentModernizing.modernize(ItemStackUtils.getDisplayName(item)), MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language)));
+                    String itemStr = PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(ComponentModernizing.modernize(ItemStackUtils.getDisplayName(item)), MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(Config.i().getResources().language())));
                     itemStr = ComponentStringUtils.stripColorAndConvertMagic(itemStr);
 
                     int amount = item.getAmount();
@@ -353,7 +363,7 @@ public class OutboundToDiscordEvents implements Listener {
                         amount = 1;
                     }
 
-                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, (amount == 1 ? MultiChatDiscordSrvAddon.plugin.itemDisplaySingle : MultiChatDiscordSrvAddon.plugin.itemDisplayMultiple).replace("{Amount}", String.valueOf(amount))).replace("{Item}", itemStr));
+                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, (amount == 1 ? Config.i().getInventoryImage().item().embedDisplay().single() : Config.i().getInventoryImage().item().embedDisplay().multiple()).replace("{Amount}", String.valueOf(amount))).replace("{Item}", itemStr));
                     if (reserializer) {
                         replaceText = MessageUtil.reserializeToDiscord(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(replaceText));
                     }
@@ -364,11 +374,11 @@ public class OutboundToDiscordEvents implements Listener {
                         replaced.set(true);
                         return replaceComponent;
                     });
-                    if (replaced.get() && MultiChatDiscordSrvAddon.plugin.itemImage) {
+                    if (replaced.get() && Config.i().getInventoryImage().item().enabled()) {
                         int inventoryId = DATA_ID_PROVIDER.getNext();
                         int position = matcher.start();
 
-                        String title = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, MultiChatDiscordSrvAddon.plugin.itemTitle));
+                        String title = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, Config.i().getInventoryImage().item().itemTitle()));
 
                         Inventory inv = DiscordContentUtils.getBlockInventory(item);
 
@@ -391,12 +401,12 @@ public class OutboundToDiscordEvents implements Listener {
             }
         }
 
-        if (MultiChatDiscordSrvAddon.plugin.invImage) {
+        if (Config.i().getInventoryImage().inventory().enabled()) {
             Debug.debug("onGameToDiscord processing inventory display");
             Matcher matcher = MultiChatDiscordSrvAddon.inventoryPlaceholder.getKeyword().matcher(plain);
             if (matcher.find()) {
                 if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.inventoryPlaceholder)).findFirst().get(), now)) {
-                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, MultiChatDiscordSrvAddon.plugin.inventoryTitle));
+                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, Config.i().getInventoryImage().inventory().inventoryTitle()));
                     if (reserializer) {
                         replaceText = MessageUtil.reserializeToDiscord(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(replaceText));
                     }
@@ -408,7 +418,7 @@ public class OutboundToDiscordEvents implements Listener {
                         return replaceComponent;
                     });
 
-                    if (replaced.get() && MultiChatDiscordSrvAddon.plugin.invImage) {
+                    if (replaced.get() && Config.i().getInventoryImage().inventory().enabled()) {
                         OfflinePlayerData offlinePlayerData = PlayerUtils.getData(icSender);
                         int inventoryId = DATA_ID_PROVIDER.getNext();
                         int position = matcher.start();
@@ -421,7 +431,7 @@ public class OutboundToDiscordEvents implements Listener {
                                 }
                             }
                         }
-                        String title = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, MultiChatDiscordSrvAddon.plugin.inventoryTitle));
+                        String title = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, Config.i().getInventoryImage().inventory().inventoryTitle()));
 
                         GameMessageProcessPlayerInventoryEvent gameMessageProcessPlayerInventoryEvent = new GameMessageProcessPlayerInventoryEvent(icSender, title, component, false, inventoryId, inv);
                         Bukkit.getPluginManager().callEvent(gameMessageProcessPlayerInventoryEvent);
@@ -439,12 +449,12 @@ public class OutboundToDiscordEvents implements Listener {
             }
         }
 
-        if (MultiChatDiscordSrvAddon.plugin.enderImage) {
+        if (Config.i().getInventoryImage().enderChest().enabled()) {
             Debug.debug("onGameToDiscord processing enderchest display");
             Matcher matcher = MultiChatDiscordSrvAddon.enderChestPlaceholder.getKeyword().matcher(plain);
             if (matcher.find()) {
                 if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.enderChestPlaceholder)).findFirst().get(), now)) {
-                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, MultiChatDiscordSrvAddon.plugin.enderTitle));
+                    String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, Config.i().getInventoryImage().enderChest().inventoryTitle()));
                     if (reserializer) {
                         replaceText = MessageUtil.reserializeToDiscord(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(replaceText));
                     }
@@ -458,7 +468,7 @@ public class OutboundToDiscordEvents implements Listener {
 
                     OfflinePlayerData offlinePlayerData = PlayerUtils.getData(icSender);
 
-                    if (replaced.get() && MultiChatDiscordSrvAddon.plugin.enderImage) {
+                    if (replaced.get() && Config.i().getInventoryImage().enderChest().enabled()) {
                         int inventoryId = DATA_ID_PROVIDER.getNext();
                         int position = matcher.start();
 
@@ -470,7 +480,7 @@ public class OutboundToDiscordEvents implements Listener {
                                 }
                             }
                         }
-                        String title = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, MultiChatDiscordSrvAddon.plugin.enderTitle));
+                        String title = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, Config.i().getInventoryImage().enderChest().inventoryTitle()));
 
                         GameMessageProcessInventoryEvent gameMessageProcessInventoryEvent = new GameMessageProcessInventoryEvent(icSender, title, component, false, inventoryId, inv);
                         Bukkit.getPluginManager().callEvent(gameMessageProcessInventoryEvent);
@@ -489,7 +499,7 @@ public class OutboundToDiscordEvents implements Listener {
         }
 
         DiscordSRV srv = MultiChatDiscordSrvAddon.discordsrv;
-        if (MultiChatDiscordSrvAddon.plugin.translateMentions && !MultiChatDiscordSrvAddon.plugin.suppressDiscordPings) {
+        if (Config.i().getDiscordMention().translateMentions() && !Config.i().getDiscordMention().suppressDiscordPings()) {
             Debug.debug("onGameToDiscord processing mentions");
             //boolean hasMentionPermission = PlayerUtils.hasPermission(icSender.getUniqueId(), "interactivechat.mention.player", true, 200); todo
             boolean hasMentionPermission = true;
@@ -535,7 +545,7 @@ public class OutboundToDiscordEvents implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDeath(PlayerDeathEvent event) {
-        if (!MultiChatDiscordSrvAddon.plugin.deathMessageItem) {
+        if (!Config.i().getDeathMessage().showItems()) {
             return;
         }
         Debug.debug("Triggered onDeath");
@@ -550,14 +560,14 @@ public class OutboundToDiscordEvents implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        if (!MultiChatDiscordSrvAddon.plugin.deathMessageTranslated) {
+        if (!Config.i().getDeathMessage().translateDeathmessage()) {
             return;
         }
         Component deathMessage = DEATH_MESSAGE.get(event.getPlayer().getUniqueId());
         if (deathMessage == null) {
             return;
         }
-        event.setDeathMessage(PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(deathMessage, MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language))));
+        event.setDeathMessage(PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(deathMessage, MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(Config.i().getResources().language()))));
     }
 
     @Subscribe(priority = ListenerPriority.HIGHEST)
@@ -570,7 +580,7 @@ public class OutboundToDiscordEvents implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        if (!MultiChatDiscordSrvAddon.plugin.deathMessageItem) {
+        if (!Config.i().getDeathMessage().showItems()) {
             return;
         }
         ItemStack item = ComponentStringUtils.extractItemStack(deathMessage);
@@ -590,16 +600,16 @@ public class OutboundToDiscordEvents implements Listener {
         }
         Player player = event.getPlayer();
 
-        DiscordMessageContent content = new DiscordMessageContent(MultiChatDiscordSrvAddon.plugin.deathMessageTitle, null, color);
+        DiscordMessageContent content = new DiscordMessageContent(Config.i().getDeathMessage().title(), null, color);
         try {
-            BufferedImage image = ImageGeneration.getItemStackImage(item, player, MultiChatDiscordSrvAddon.plugin.itemAltAir);
+            BufferedImage image = ImageGeneration.getItemStackImage(item, player, Config.i().getInventoryImage().item().alternateAirTexture());
             byte[] itemData = ImageUtils.toArray(image);
-            content.setTitle(DiscordItemStackUtils.getItemNameForDiscord(item, null, MultiChatDiscordSrvAddon.plugin.language));
+            content.setTitle(DiscordItemStackUtils.getItemNameForDiscord(item, null, Config.i().getResources().language()));
             content.setThumbnail("attachment://Item.png");
             content.addAttachment("Item.png", itemData);
 
-            DiscordToolTip discordToolTip = DiscordItemStackUtils.getToolTip(item, player, MultiChatDiscordSrvAddon.plugin.showAdvanceDetails);
-            if (!discordToolTip.isHideTooltip() &&(!discordToolTip.isBaseItem() || MultiChatDiscordSrvAddon.plugin.itemUseTooltipImageOnBaseItem)) {
+            DiscordToolTip discordToolTip = DiscordItemStackUtils.getToolTip(item, player, Config.i().getToolTipSettings().showAdvanceDetails());
+            if (!discordToolTip.isHideTooltip() &&(!discordToolTip.isBaseItem() || Config.i().getInventoryImage().item().useTooltipImageOnBaseItem())) {
                 BufferedImage tooltip = ImageGeneration.getToolTipImage(discordToolTip.getComponents(), NMS.getInstance().getCustomTooltipResourceLocation(item));
                 byte[] tooltipData = ImageUtils.toArray(tooltip);
                 content.addAttachment("ToolTip.png", tooltipData);
@@ -646,7 +656,7 @@ public class OutboundToDiscordEvents implements Listener {
         Object advancement = NMS.getInstance().getBukkitAdvancementFromEvent(bukkitEvent);
         AdvancementData data = NMS.getInstance().getAdvancementDataFromBukkitAdvancement(advancement);
 
-        SpecificTranslateFunction translateFunction = MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language);
+        SpecificTranslateFunction translateFunction = MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(Config.i().getResources().language());
 
         String title = MultiChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(data.getTitle(), translateFunction));
         String description = MultiChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(data.getDescription(), translateFunction));
@@ -655,7 +665,7 @@ public class OutboundToDiscordEvents implements Listener {
         boolean isMinecraft = data.isMinecraft();
 
         Debug.debug("onAdvancement processing advancement");
-        if (MultiChatDiscordSrvAddon.plugin.advancementItem && item != null && advancementType != null) {
+        if (Config.i().getAdvancements().changeToItemIcon() && item != null && advancementType != null) {
             String content = messageFormat.getContent();
             if (content == null) {
                 content = "";
@@ -672,9 +682,9 @@ public class OutboundToDiscordEvents implements Listener {
                 e.printStackTrace();
             }
         }
-        if (MultiChatDiscordSrvAddon.plugin.advancementName && title != null) {
+        if (Config.i().getAdvancements().correctAdvancementName() && title != null) {
             event.setAchievementName(ChatColorUtils.stripColor(title));
-            messageFormat.setAuthorName(ComponentStringUtils.convertFormattedString(LanguageUtils.getTranslation(advancementType.getTranslationKey(), MultiChatDiscordSrvAddon.plugin.language).getResult(), event.getPlayer().getName(), ChatColorUtils.stripColor(title)));
+            messageFormat.setAuthorName(ComponentStringUtils.convertFormattedString(LanguageUtils.getTranslation(advancementType.getTranslationKey(), Config.i().getResources().language()).getResult(), event.getPlayer().getName(), ChatColorUtils.stripColor(title)));
             Color color;
             if (isMinecraft) {
                 color = ColorUtils.getColor(advancementType.getColor());
@@ -687,7 +697,7 @@ public class OutboundToDiscordEvents implements Listener {
             }
             messageFormat.setColorRaw(color.getRGB());
         }
-        if (MultiChatDiscordSrvAddon.plugin.advancementDescription && description != null) {
+        if (Config.i().getAdvancements().showDescription() && description != null) {
             messageFormat.setDescription(ChatColorUtils.stripColor(description));
         }
         event.setMessageFormat(messageFormat);
@@ -810,8 +820,8 @@ public class OutboundToDiscordEvents implements Listener {
                 }
             }
             action.setEmbeds(embeds).setActionRows(interactionHandler.getInteractionToRegister()).queue(m -> {
-                if (MultiChatDiscordSrvAddon.plugin.embedDeleteAfter > 0) {
-                    m.editMessageEmbeds().setActionRows().retainFiles(Collections.emptyList()).queueAfter(MultiChatDiscordSrvAddon.plugin.embedDeleteAfter, TimeUnit.SECONDS);
+                if (Config.i().getSettings().embedDeleteAfter() > 0) {
+                    m.editMessageEmbeds().setActionRows().retainFiles(Collections.emptyList()).queueAfter(Config.i().getSettings().embedDeleteAfter(), TimeUnit.SECONDS);
                 }
             });
             if (!interactionHandler.getInteractions().isEmpty()) {
@@ -892,11 +902,11 @@ public class OutboundToDiscordEvents implements Listener {
             if (!interactionHandler.getInteractions().isEmpty()) {
                 DiscordInteractionEvents.register(message, interactionHandler, contents);
             }
-            if (MultiChatDiscordSrvAddon.plugin.embedDeleteAfter > 0) {
+            if (Config.i().getSettings().embedDeleteAfter() > 0) {
                 String finalText = text;
                 Bukkit.getScheduler().runTaskLaterAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
                     WebhookUtil.editMessage(channel, String.valueOf(messageId), finalText, Collections.emptyList(), Collections.emptyMap(), Collections.emptyList());
-                }, MultiChatDiscordSrvAddon.plugin.embedDeleteAfter * 20L);
+                }, Config.i().getSettings().embedDeleteAfter() * 20L);
             }
         }
     }

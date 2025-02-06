@@ -233,7 +233,7 @@ public class DiscordContentUtils {
                         content.addAttachment("Inventory_" + i + ".png", imageData);
                         if (type.equals(ImageDisplayType.INVENTORY) && MultiChatDiscordSrvAddon.plugin.invShowLevel) {
                             OfflinePlayerData offlinePlayerData = PlayerUtils.getData(iData.getPlayer());
-                            
+
                             int level = offlinePlayerData.getXpLevel();
                             byte[] bottleData = ImageUtils.toArray(MultiChatDiscordSrvAddon.plugin.modelRenderer.render(32, 32, ModelRenderer.SINGLE_RENDER, MultiChatDiscordSrvAddon.plugin.getResourceManager(), MultiChatDiscordSrvAddon.plugin.getResourceManager().getResourceRegistry(CustomItemTextureRegistry.IDENTIFIER, CustomItemTextureRegistry.class).getItemPostResolveFunction("minecraft:item/experience_bottle", null, XMaterial.EXPERIENCE_BOTTLE.parseItem(), VersionManager.version.isOld(), null, null, null, null, MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language)).orElse(null), VersionManager.version.isOld(), "minecraft:item/experience_bottle", ModelDisplayPosition.GUI, false, null, null).getImage(0));
                             content.addAttachment("Level_" + i + ".png", bottleData);
@@ -535,6 +535,12 @@ public class DiscordContentUtils {
                 }
             });
         };
+    }
+
+    public static String join(List<String> strings, boolean translateCodes) {
+        String joined = String.join("\n", strings);
+        if (translateCodes) return ChatColorUtils.translateAlternateColorCodes('&', joined);
+            else return joined;
     }
 
 }

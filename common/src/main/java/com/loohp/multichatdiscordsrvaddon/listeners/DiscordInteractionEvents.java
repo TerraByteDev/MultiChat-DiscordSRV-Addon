@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.HashUtils;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
@@ -104,7 +105,7 @@ public class DiscordInteractionEvents extends ListenerAdapter {
             data.getInteractionHandler().getReactionConsumer().accept(event, data.getContents());
             return;
         }
-        event.reply(ChatColorUtils.stripColor(MultiChatDiscordSrvAddon.plugin.interactionExpire)).setEphemeral(true).queue();
+        event.reply(ChatColorUtils.stripColor(Config.i().getMessages().interactionExpired())).setEphemeral(true).queue();
     }
 
     public static class InteractionData {

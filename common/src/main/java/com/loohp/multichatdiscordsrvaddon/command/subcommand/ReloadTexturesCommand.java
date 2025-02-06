@@ -1,5 +1,7 @@
 package com.loohp.multichatdiscordsrvaddon.command.subcommand;
 
+import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.annotations.Command;
@@ -33,7 +35,7 @@ public class ReloadTexturesCommand {
         boolean clean = argList.contains("--reset");
         boolean redownload = argList.contains("--redownload") || clean;
 
-        plugin.sendMessage(plugin.reloadTextureMessage, sender);
+        ChatUtils.sendMessage(Config.i().getMessages().reloadTexture(), sender);
         plugin.reloadTextures(redownload, clean, sender);
     }
 }

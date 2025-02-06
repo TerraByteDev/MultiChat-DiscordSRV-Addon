@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.graphics;
 import com.loohp.blockmodelrenderer.blending.BlendingModes;
 import com.loohp.blockmodelrenderer.utils.ColorUtils;
 import com.cryptomorin.xseries.XMaterial;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
 import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
@@ -71,7 +72,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -139,11 +139,15 @@ public class ImageGeneration {
 
     private static Supplier<ResourceManager> resourceManager = () -> MultiChatDiscordSrvAddon.plugin.getResourceManager();
     private static Supplier<MCVersion> version = () -> VersionManager.version;
-    private static Supplier<String> language = () -> MultiChatDiscordSrvAddon.plugin.language;
+    private static Supplier<String> language = () -> Config.i().getResources().language();
     private static Supplier<SpecificTranslateFunction> translateFunction = () -> resourceManager.get().getLanguageManager().getTranslateFunction().ofLanguage(language.get());
 
     public static BufferedImage getMissingImage(int width, int length) {
         return TextureManager.getMissingImage(width, length);
+    }
+
+    public static void onConfigReload() {
+        language = () -> Config.i().getResources().language();
     }
 
     public static BufferedImage getRawEnchantedImage(TextureResource tintResource, BufferedImage source, int tick) {
@@ -263,7 +267,7 @@ public class ImageGeneration {
         int rows = inventory.getSize() / 9;
         GenericContainerBackgroundResult result = getGenericContainerBackground(rows, (image, x, y, fontSize, defaultTextColor) -> {
             Component defaultColorTitle = title == null ? Component.translatable(TranslationKeyUtils.getDefaultContainerTitle()).color(defaultTextColor) : title.colorIfAbsent(defaultTextColor);
-            return ImageUtils.printComponentShadowless(resourceManager.get(), image, defaultColorTitle, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), x, y, fontSize).getImage();
+            return ImageUtils.printComponentShadowless(resourceManager.get(), image, defaultColorTitle, language.get(), version.get().isLegacyRGB(), x, y, fontSize).getImage();
         });
         BufferedImage background = result.getBackgroundImage();
 
@@ -738,7 +742,7 @@ public class ImageGeneration {
             modelItems.put(PlayerModelItemPosition.HELMET, new PlayerModelItem(PlayerModelItemPosition.HELMET, modelLayers, modelLayers.stream().map(e -> resourceManager.get().getResourceRegistry(CustomItemTextureRegistry.IDENTIFIER, CustomItemTextureRegistry.class).getItemPostResolveFunction(e.getModelKey(), EquipmentSlot.HEAD, helmet, version.get().isOld(), e.getPredicates(), player, world, livingEntity, translateFunction.get()).orElse(null)).collect(Collectors.toList()), enchanted, enchantmentGlintFunction, rawEnchantmentGlintFunction));
         }
 
-        if (MultiChatDiscordSrvAddon.plugin.renderHandHeldItems) {
+        if (Config.i().getInventoryImage().inventory().renderHandHeldItems()) {
             if (rightHand != null && !rightHand.getType().equals(Material.AIR)) {
                 EquipmentSlot slot = PlayerUtils.isRightHanded(player) ? EquipmentSlot.HAND : EquipmentSlot.valueOf("OFF_HAND");
                 ItemStackProcessResult itemProcessResult = ItemRenderUtils.processItemForRendering(resourceManager.get(), player, rightHand, slot, ModelDisplayPosition.THIRDPERSON_RIGHTHAND, version.get().isOld(), language.get());
@@ -864,7 +868,7 @@ public class ImageGeneration {
                 if (amount <= 0) {
                     component = component.color(NamedTextColor.RED);
                 }
-                itemImages[i] = itemImage = ImageUtils.printComponentRightAligned(resourceManager.get(), newItemImage, component, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), (int) Math.round(33 * scale), (int) Math.round(17 * scale), (float) (16 * scale), ITEM_AMOUNT_TEXT_DARKEN_FACTOR).getImage();
+                itemImages[i] = itemImage = ImageUtils.printComponentRightAligned(resourceManager.get(), newItemImage, component, language.get(), version.get().isLegacyRGB(), (int) Math.round(33 * scale), (int) Math.round(17 * scale), (float) (16 * scale), ITEM_AMOUNT_TEXT_DARKEN_FACTOR).getImage();
             }
         }
 
@@ -990,7 +994,7 @@ public class ImageGeneration {
                 g2.drawImage(iconCan, imageX - (iconCan.getWidth() / 2), imageY - (iconCan.getHeight() / 2), 96, 96, null);
 
                 if (component != null) {
-                    ImageUtils.printComponentShadowlessDynamicSize(resourceManager.get(), image, component, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), imageX, imageY + 32, 30, true);
+                    ImageUtils.printComponentShadowlessDynamicSize(resourceManager.get(), image, component, language.get(), version.get().isLegacyRGB(), imageX, imageY + 32, 30, true);
                 }
             }
         }
@@ -1052,7 +1056,7 @@ public class ImageGeneration {
         for (ToolTipComponent<?> print : prints) {
             ToolTipType<?> type = print.getType();
             if (type.equals(ToolTipType.TEXT)) {
-                ImageUtils.ComponentPrintResult printResult = ImageUtils.printComponent(resourceManager.get(), image, print.getToolTipComponent(ToolTipType.TEXT), MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), topX + 8, currentY, 16);
+                ImageUtils.ComponentPrintResult printResult = ImageUtils.printComponent(resourceManager.get(), image, print.getToolTipComponent(ToolTipType.TEXT), language.get(), version.get().isLegacyRGB(), topX + 8, currentY, 16);
                 int textWidth = printResult.getTextWidth();
                 if (textWidth > maxX) {
                     maxX = textWidth;
@@ -1212,9 +1216,9 @@ public class ImageGeneration {
                 offsetX += 2;
             }
             g.dispose();
-            ImageUtils.printComponent(resourceManager.get(), image, name, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), offsetX, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
-            int lastX = MultiChatDiscordSrvAddon.plugin.playerlistCommandMinWidth;
-            for (int x = MultiChatDiscordSrvAddon.plugin.playerlistCommandMinWidth; x < image.getWidth(); x++) {
+            ImageUtils.printComponent(resourceManager.get(), image, name, language.get(), version.get().isLegacyRGB(), offsetX, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
+            int lastX = Config.i().getDiscordCommands().playerList().tablistOptions().playerMinWidth();
+            for (int x = Config.i().getDiscordCommands().playerList().tablistOptions().playerMinWidth(); x < image.getWidth(); x++) {
                 for (int y = 0; y < image.getHeight(); y++) {
                     if (image.getRGB(x, y) != 0) {
                         lastX = x;
@@ -1266,7 +1270,7 @@ public class ImageGeneration {
         Map<BufferedImage, Integer> headerLines = new LinkedHashMap<>(header.size());
         for (Component line : header) {
             BufferedImage image = new BufferedImage(2048, TABLIST_INTERNAL_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-            ImageUtils.printComponent(resourceManager.get(), image, line, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), 0, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
+            ImageUtils.printComponent(resourceManager.get(), image, line, language.get(), version.get().isLegacyRGB(), 0, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
             int lastX = 0;
             for (int x = 0; x < image.getWidth(); x++) {
                 for (int y = 0; y < image.getHeight(); y++) {
@@ -1286,7 +1290,7 @@ public class ImageGeneration {
         Map<BufferedImage, Integer> footerLines = new LinkedHashMap<>(footer.size());
         for (Component line : footer) {
             BufferedImage image = new BufferedImage(2048, TABLIST_INTERNAL_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-            ImageUtils.printComponent(resourceManager.get(), image, line, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), 0, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
+            ImageUtils.printComponent(resourceManager.get(), image, line, language.get(), version.get().isLegacyRGB(), 0, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
             int lastX = 0;
             for (int x = 0; x < image.getWidth(); x++) {
                 for (int y = 0; y < image.getHeight(); y++) {
@@ -1548,7 +1552,7 @@ public class ImageGeneration {
 
             if (bundleFullnessMessage != null) {
                 BufferedImage textImage = new BufferedImage(2048, 512, BufferedImage.TYPE_INT_ARGB);
-                ImageUtils.printComponent(resourceManager.get(), textImage, bundleFullnessMessage, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), 512, 256, 16);
+                ImageUtils.printComponent(resourceManager.get(), textImage, bundleFullnessMessage, language.get(), version.get().isLegacyRGB(), 512, 256, 16);
                 int lastX = 512;
                 for (int x = 512; x < textImage.getWidth(); x++) {
                     for (int y = 0; y < textImage.getHeight(); y++) {
@@ -1702,12 +1706,12 @@ public class ImageGeneration {
                     g.drawImage(previousPage, 48, 313, null);
                 }
                 Component pageHeader = Component.translatable(TranslationKeyUtils.getBookPageIndicator()).arguments(Component.text(pageNumber), Component.text(totalPages)).color(NamedTextColor.BLACK);
-                ImageUtils.printComponentRightAligned(resourceManager.get(), page, pageHeader, MultiChatDiscordSrvAddon.plugin.language, VersionManager.version.isLegacyRGB(), 255, 30, 16, Double.NEGATIVE_INFINITY);
+                ImageUtils.printComponentRightAligned(resourceManager.get(), page, pageHeader, language.get(), VersionManager.version.isLegacyRGB(), 255, 30, 16, Double.NEGATIVE_INFINITY);
 
                 BufferedImage temp = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
 
                 List<Component> lines = new ArrayList<>();
-                lines.addAll(ComponentStringUtils.applyWordWrap(component, resourceManager.get().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language), BOOK_LINE_LIMIT, new ToIntFunction<CharacterLengthProviderData>() {
+                lines.addAll(ComponentStringUtils.applyWordWrap(component, resourceManager.get().getLanguageManager().getTranslateFunction().ofLanguage(language.get()), BOOK_LINE_LIMIT, new ToIntFunction<CharacterLengthProviderData>() {
                     int lastItalicExtraWidth = 0;
 
                     @Override
@@ -1722,7 +1726,7 @@ public class ImageGeneration {
                 int y = 58;
                 for (Component each : lines.subList(0, Math.min(lines.size(), BOOK_MAX_LINES))) {
                     each = each.colorIfAbsent(NamedTextColor.BLACK);
-                    ImageUtils.printComponent(resourceManager.get(), page, each, MultiChatDiscordSrvAddon.plugin.language, VersionManager.version.isLegacyRGB(), 34, y, 16, Double.NEGATIVE_INFINITY);
+                    ImageUtils.printComponent(resourceManager.get(), page, each, language.get(), VersionManager.version.isLegacyRGB(), 34, y, 16, Double.NEGATIVE_INFINITY);
                     y += 18;
                 }
 

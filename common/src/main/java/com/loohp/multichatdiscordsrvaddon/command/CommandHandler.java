@@ -2,7 +2,8 @@ package com.loohp.multichatdiscordsrvaddon.command;
 
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.command.subcommand.*;
-import com.loohp.multichatdiscordsrvaddon.utils.ICLogger;
+import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.annotations.AnnotationParser;
 import org.incendo.cloud.bukkit.CloudBukkitCapabilities;
@@ -40,7 +41,7 @@ public class CommandHandler {
 
         registerCommands();
 
-        ICLogger.info("<green>Registered commands.");
+        ChatUtils.sendMessage("<green>Registered commands.", Bukkit.getConsoleSender());
     }
 
     private void registerCommands() {

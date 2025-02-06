@@ -65,15 +65,10 @@ public class PlaceholderParser {
                 return "";
             } catch (TimeoutException e) {
                 Player player = offlineICPlayer.getPlayer();
-                if (player == null) {
-                    return PlaceholderAPI.setPlaceholders(offlineICPlayer, str);
-                } else {
-                    if (PlayerUtils.isLocal(player)) {
-                        return PlaceholderAPI.setPlaceholders(player, str);
-                    } else {
-                        return "";
-                    }
-                }
+
+                if (!offlineICPlayer.isOnline()) return PlaceholderAPI.setPlaceholders(offlineICPlayer, str);
+                    else if (PlayerUtils.isLocal(player)) return PlaceholderAPI.setPlaceholders(player, str);
+                    else return "";
             }
         } else {
             return parse0(offlineICPlayer, str);
@@ -83,7 +78,7 @@ public class PlaceholderParser {
     private static String parse0(OfflinePlayer offlineICPlayer, String str) {
         Player player = offlineICPlayer.getPlayer();
         if (player == null) {
-            return PlaceholderAPI.setPlaceholders(offlineICPlayer.getPlayer(), str);
+            return PlaceholderAPI.setPlaceholders(offlineICPlayer, str);
         } else {
             if (PlayerUtils.isLocal(player)) {
                 if (MultiChatDiscordSrvAddon.plugin.useBungeecord) {

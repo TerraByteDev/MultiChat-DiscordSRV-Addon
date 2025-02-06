@@ -1,6 +1,7 @@
 package com.loohp.multichatdiscordsrvaddon.command.subcommand;
 
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourcePackInfo;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
@@ -23,8 +24,8 @@ public class StatusCommand {
     public void execute(
             CommandSender sender
     ) {
-        plugin.sendMessage(plugin.defaultResourceHashLang.replaceFirst("%s", plugin.defaultResourceHash + " (" + VersionManager.exactMinecraftVersion + ")"), sender);
-        plugin.sendMessage(plugin.loadedResourcesLang, sender);
+        ChatUtils.sendMessage(Config.i().getMessages().statusCommand().defaultResourceHash().replaceFirst("%s", plugin.defaultResourceHash + " (" + VersionManager.exactMinecraftVersion + ")"), sender);
+        ChatUtils.sendMessage(Config.i().getMessages().statusCommand().loadedResources(), sender);
         
         for (ResourcePackInfo info : plugin.getResourceManager().getResourcePackInfo()) {
             Component name = ResourcePackInfoUtils.resolveName(info);
@@ -39,16 +40,16 @@ public class StatusCommand {
                 }
 
                 component = component.hoverEvent(HoverEvent.showText(hoverComponent));
-                plugin.sendMessage(component, sender);
+                ChatUtils.sendMessage(component, sender);
 
                 if (!(sender instanceof Player)) {
                     for (Component each : ComponentStyling.splitAtLineBreaks(ResourcePackInfoUtils.resolveDescription(info))) {
-                        plugin.sendMessage(Component.text("   - ").color(NamedTextColor.GRAY).append(each), sender);
+                        ChatUtils.sendMessage(Component.text("   - ").color(NamedTextColor.GRAY).append(each), sender);
 
                         if (info.compareServerPackFormat(ResourceRegistry.RESOURCE_PACK_VERSION) > 0) {
-                            plugin.sendMessage("<yellow>     " + LanguageUtils.getTranslation(TranslationKeyUtils.getNewIncompatiblePack(), MultiChatDiscordSrvAddon.plugin.language).getResult(), sender);
+                            ChatUtils.sendMessage("<yellow>     " + LanguageUtils.getTranslation(TranslationKeyUtils.getNewIncompatiblePack(), Config.i().getResources().language()).getResult(), sender);
                         } else if (info.compareServerPackFormat(ResourceRegistry.RESOURCE_PACK_VERSION) < 0) {
-                            plugin.sendMessage("<yellow>     " + LanguageUtils.getTranslation(TranslationKeyUtils.getOldIncompatiblePack(), MultiChatDiscordSrvAddon.plugin.language).getResult(), sender);
+                            ChatUtils.sendMessage("<yellow>     " + LanguageUtils.getTranslation(TranslationKeyUtils.getOldIncompatiblePack(), Config.i().getResources().language()).getResult(), sender);
                         }
                     }
                 }
@@ -58,9 +59,9 @@ public class StatusCommand {
                     component = component.hoverEvent(HoverEvent.showText(Component.text(info.getRejectedReason()).color(NamedTextColor.RED)));
                 }
 
-                plugin.sendMessage(component, sender);
+                ChatUtils.sendMessage(component, sender);
                 if (!(sender instanceof Player)) {
-                    plugin.sendMessage(Component.text("   - ").append(Component.text(info.getRejectedReason()).color(NamedTextColor.RED)).color(NamedTextColor.RED), sender);
+                    ChatUtils.sendMessage(Component.text("   - ").append(Component.text(info.getRejectedReason()).color(NamedTextColor.RED)).color(NamedTextColor.RED), sender);
                 }
             }
         }

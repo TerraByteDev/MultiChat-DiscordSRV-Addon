@@ -32,8 +32,8 @@
     <packaging>jar</packaging>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.number></project.build.number>
         <project.fullVersion>${project.version}</project.fullVersion>
@@ -162,10 +162,6 @@
                                     <pattern>org.objectweb</pattern>
                                     <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.org.objectweb</shadedPattern>
                                 </relocation>
-                                <relocation>
-                                    <pattern>net.kyori</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.net.kyori</shadedPattern>
-                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -176,8 +172,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
 
@@ -256,23 +252,6 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>4.0.0-beta-1</version>
-                        <configuration>
-                            <encoding>${project.build.sourceEncoding}</encoding>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>3.11.2</version>
                         <configuration>
@@ -298,6 +277,26 @@
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
         <repository>
+            <id>spigotmc-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
+        </repository>
+        <repository>
+            <id>MikeRepo</id>
+            <url>https://repo.mikeprimm.com/</url>
+        </repository>
+        <repository>
             <id>Scarsz-Nexus</id>
             <url>https://nexus.scarsz.me/content/groups/public/</url>
         </repository>
@@ -308,18 +307,6 @@
         <repository>
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
-        </repository>
-        <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
-            <id>dmulloy2-repo</id>
-            <url>https://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
         <repository>
             <id>bungeecord-repo</id>
@@ -408,21 +395,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.20.6-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.discordsrv</groupId>
             <artifactId>discordsrv</artifactId>
             <version>1.29.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>mineverse.aust1n46</groupId>
-            <artifactId>venturechat</artifactId>
-            <version>3.5.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -550,12 +525,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.Carleslc.Simple-YAML</groupId>
-            <artifactId>Simple-Yaml</artifactId>
-            <version>1.8.4</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>1.27.1</version>
@@ -567,15 +536,45 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.kyori</groupId>
-            <artifactId>adventure-platform-bukkit</artifactId>
-            <version>4.3.4</version>
-        </dependency>
-        <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>26.0.2</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.lucko</groupId>
+            <artifactId>helper</artifactId>
+            <version>5.6.14</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.minecademy</groupId>
+            <artifactId>chatcontrol</artifactId>
+            <version>11.1.7</version>
+            <scope>system</scope>
+            <systemPath>${project.build.directory}/../../lib/ChatControl.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.minecademy</groupId>
+            <artifactId>chatcontrolred</artifactId>
+            <version>10.28.4</version>
+            <scope>system</scope>
+            <systemPath>${project.build.directory}/../../lib/ChatControl-Red.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>mineverse.aust1n46</groupId>
+            <artifactId>venturechat</artifactId>
+            <version>3.5.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.Carleslc.Simple-YAML</groupId>
+            <artifactId>Simple-Yaml</artifactId>
+            <version>1.8.4</version>
         </dependency>
     </dependencies>
 </project>

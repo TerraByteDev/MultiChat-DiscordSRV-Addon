@@ -1,5 +1,6 @@
 package com.loohp.multichatdiscordsrvaddon.command.subcommand;
 
+import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.annotations.Command;
 import org.incendo.cloud.annotations.Permission;
@@ -14,7 +15,7 @@ public class MainCommand {
     public void execute(
             CommandSender sender
     ) {
-        plugin.sendMessage("<aqua>MultiChat DiscordSRV Addon, written by LOOHP, adapted by Skullians.", sender);
-        plugin.sendMessage("<grey>You are running MultiChatDiscordSRVAddon version <yellow>" + plugin.getDescription().getVersion(), sender);
+        ChatUtils.sendMessage("<aqua>MultiChat DiscordSRV Addon, written by LOOHP, adapted by Skullians.", sender);
+        ChatUtils.sendMessage("<grey>You are running MultiChatDiscordSRVAddon version <yellow>" + plugin.getDescription().getVersion(), sender);
     }
 }

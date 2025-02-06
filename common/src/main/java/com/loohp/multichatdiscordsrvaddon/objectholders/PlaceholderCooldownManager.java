@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.objectholders;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.utils.PlayerUtils;
 
 import java.util.Iterator;
@@ -72,10 +73,10 @@ public class PlaceholderCooldownManager {
                 if (placeholder.getKeyword().matcher(message).find()) {
                     if (first) {
                         first = false;
-                        if (MultiChatDiscordSrvAddon.plugin.universalCooldown > 0) {
+                        if ((Config.i().getSettings().universalCooldown() * 1000L) > 0) {
                             Long lastUniversal = universalTimestamps.get(uuid);
-                            if (lastUniversal != null && now - lastUniversal < MultiChatDiscordSrvAddon.plugin.universalCooldown) {
-                                return new CooldownResult(CooldownResult.CooldownOutcome.DENY_UNIVERSAL, now, lastUniversal + MultiChatDiscordSrvAddon.plugin.universalCooldown, null);
+                            if (lastUniversal != null && now - lastUniversal < (Config.i().getSettings().universalCooldown() * 1000L)) {
+                                return new CooldownResult(CooldownResult.CooldownOutcome.DENY_UNIVERSAL, now, lastUniversal + (Config.i().getSettings().universalCooldown() * 1000L), null);
                             }
                         }
                         tasksIfSucessful.add(() -> setPlayerUniversalLastTimestamp(uuid, now));
@@ -101,7 +102,7 @@ public class PlaceholderCooldownManager {
     }
 
     public void setPlayerUniversalLastTimestamp(UUID uuid, long time) {
-        if (MultiChatDiscordSrvAddon.plugin.useBungeecord && MultiChatDiscordSrvAddon.plugin.universalCooldown > 0) {
+        if (Config.i().getSettings().bungeecord() && (Config.i().getSettings().universalCooldown() * 1000L) > 0) {
             try {
                 BungeeMessageSender.sendPlayerUniversalCooldown(uuid, time);
             } catch (Exception e) {
@@ -126,7 +127,7 @@ public class PlaceholderCooldownManager {
     }
 
     public void setPlayerPlaceholderLastTimestamp(UUID uuid, ICPlaceholder placeholder, long time) {
-        if (MultiChatDiscordSrvAddon.plugin.useBungeecord && placeholder.getCooldown() > 0) {
+        if (Config.i().getSettings().bungeecord() && placeholder.getCooldown() > 0) {
             try {
                 BungeeMessageSender.sendPlayerPlaceholderCooldown(uuid, placeholder, time);
             } catch (Exception e) {
@@ -150,7 +151,7 @@ public class PlaceholderCooldownManager {
             return false;
         }
         long universalLastTimestamp = getPlayerUniversalLastTimestamp(uuid);
-        if (universalLastTimestamp >= 0 && MultiChatDiscordSrvAddon.plugin.universalCooldown > 0 && time - universalLastTimestamp < MultiChatDiscordSrvAddon.plugin.universalCooldown && universalLastTimestamp < time) {
+        if (universalLastTimestamp >= 0 && Config.i().getSettings().universalCooldown() > 0 && time - universalLastTimestamp < (Config.i().getSettings().universalCooldown() * 1000L) && universalLastTimestamp < time) {
             return true;
         }
         long placeholderLastTimestamp = getPlayerPlaceholderLastTimestamp(uuid, placeholder);

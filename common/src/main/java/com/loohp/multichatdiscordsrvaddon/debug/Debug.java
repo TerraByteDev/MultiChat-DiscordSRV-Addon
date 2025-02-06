@@ -20,20 +20,15 @@
 
 package com.loohp.multichatdiscordsrvaddon.debug;
 
-import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
-import com.loohp.multichatdiscordsrvaddon.utils.ICLogger;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 public class Debug {
 
     public static void debug(String info) {
-        if (MultiChatDiscordSrvAddon.debug) {
-            MultiChatDiscordSrvAddon.plugin.audience.sender(Bukkit.getConsoleSender()).sendMessage(MiniMessage.miniMessage().deserialize(ICLogger.DEBUG_PREFIX + " <gray>" + info));
+        if (Config.i().getDebug().printInfoToConsole()) {
+            ChatUtils.audience.console().sendMessage(MiniMessage.miniMessage().deserialize(ChatUtils.DEBUG_PREFIX + " <grey>" + info));
         }
     }
 
