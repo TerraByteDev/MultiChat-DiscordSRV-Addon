@@ -20,6 +20,8 @@
 
 package com.loohp.multichatdiscordsrvaddon.updater;
 
+import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.GithubBuildInfo;
 import com.loohp.multichatdiscordsrvaddon.utils.GithubUtils;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
@@ -49,16 +51,16 @@ public class Updater implements Listener {
                 lookupStatus = GithubUtils.compare(GithubUtils.MAIN_BRANCH, currentBuild.getId());
             }
         } catch (IOException error) {
-            MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Failed to fetch latest version: " + error, senders);
+            ChatUtils.sendMessage("<red>Failed to fetch latest version: " + error, senders);
             return true;
         }
 
         if (lookupStatus.isBehind()) {
             if (currentBuild.isStable()) {
-                MultiChatDiscordSrvAddon.plugin.sendMessage("<green>A new version of MultiChat-DiscordSRV-Addon is available: " + latestBuild.getId() + "!", senders);
-                MultiChatDiscordSrvAddon.plugin.sendMessage("<grey>Download at: <click:open_url:'https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/releases/tag'>https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/releases/tag</click>", senders);
+                ChatUtils.sendMessage("<green>A new version of MultiChat-DiscordSRV-Addon is available: " + latestBuild.getId() + "!", senders);
+                ChatUtils.sendMessage("<grey>Download at: <click:open_url:'https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/releases/tag'>https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/releases/tag</click>", senders);
             } else {
-                MultiChatDiscordSrvAddon.plugin.sendMessage("<yellow>You are running a development build of MultiChat-DiscordSRV-Addon!\nThe latest available development build is " + String.format(Locale.ROOT, "%,d", lookupStatus.getDistance()) + " commits ahead.", senders);
+                ChatUtils.sendMessage("<yellow>You are running a development build of MultiChat-DiscordSRV-Addon!\nThe latest available development build is " + String.format(Locale.ROOT, "%,d", lookupStatus.getDistance()) + " commits ahead.", senders);
             }
 
             return false;
@@ -70,7 +72,7 @@ public class Updater implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Bukkit.getScheduler().runTaskLaterAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
-            if (MultiChatDiscordSrvAddon.plugin.updaterEnabled) {
+            if (Config.i().getSettings().updater()) {
                 Player player = event.getPlayer();
                 if (player.hasPermission("multichatdiscordsrv.update")) {
                     Updater.checkUpdate(player);

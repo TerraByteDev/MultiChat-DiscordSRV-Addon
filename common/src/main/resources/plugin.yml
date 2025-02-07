@@ -5,13 +5,13 @@ main: com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon
 api-version: 1.13
 description: DiscordSRV addon to InteractiveChat
 depend: [DiscordSRV]
-softdepend: [ItemsAdder, InteractiveChat, ZelChat, ChatControl, PlaceholderAPI]
+softdepend: [ItemsAdder, InteractiveChat, ZelChat, ChatControl, CarbonChat, PlaceholderAPI, dynmap]
 prefix: MultiChatDiscordSrvAddon
 
 commands:
   mutlichatdiscordsrv:
     usage: /<command>
-    aliases: [icd]
+    aliases: [mcd]
     description: Plugin main command
 
 permissions:
@@ -40,3 +40,4 @@ libraries:
   - org.checkerframework:checker:3.48.4
   - com.intellij:forms_rt:7.0.3
   - com.googlecode.json-simple:json-simple:1.1.1
+  - de.exlll:configlib-yaml:4.5.0

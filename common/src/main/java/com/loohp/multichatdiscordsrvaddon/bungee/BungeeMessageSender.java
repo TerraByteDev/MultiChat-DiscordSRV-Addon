@@ -24,10 +24,12 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.objectholders.CustomPlaceholder;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
+import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.CustomArrayUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.DataTypeIO;
 import com.loohp.multichatdiscordsrvaddon.utils.HashUtils;
@@ -102,8 +104,8 @@ public class BungeeMessageSender {
             }
         }
 
-        if (MultiChatDiscordSrvAddon.plugin.pluginMessagePacketVerbose) {
-            MultiChatDiscordSrvAddon.plugin.sendMessage("<gray>IC Outbound - ID <yellow>" + packetId + "<gray> via <yellow>" + player.getName());
+        if (Config.i().getDebug().pluginMessagePacketVerbose()) {
+            ChatUtils.sendMessage("<gray>MC Outbound - ID <yellow>" + packetId + "<gray> via <yellow>" + player.getName());
         }
 
         int packetNumber = random.nextInt();
@@ -120,7 +122,7 @@ public class BungeeMessageSender {
                 out.writeShort(packetId); //packet id
 
                 out.write(chunk);
-                player.sendPluginMessage(MultiChatDiscordSrvAddon.plugin, "interchat:main", out.toByteArray());
+                player.sendPluginMessage(MultiChatDiscordSrvAddon.plugin, "multichat:main", out.toByteArray());
             }
         } catch (Exception e) {
             e.printStackTrace();

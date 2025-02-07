@@ -23,8 +23,8 @@ package com.loohp.multichatdiscordsrvaddon.main;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.simpleyaml.configuration.file.YamlFile;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.objectholders.SteppedIntegerRange;
@@ -570,18 +570,10 @@ public class BlockModelRenderer extends JFrame {
 
             List<String> resourceOrder;
             int valuePerPack;
-            try {
-                YamlFile yaml = new YamlFile();
-                yaml.options().useComments(true);
-                yaml.load(Files.newInputStream(Paths.get("MultiChatDiscordSrvAddon/config.yml")));
-                resourceOrder = yaml.getStringList("Resources.Order");
-                Collections.reverse(resourceOrder);
-                valuePerPack = (int) ((1.0 / (double) (resourceOrder.size() + 1)) * 10000);
-            } catch (IOException e) {
-                Toolkit.getDefaultToolkit().beep();
-                JOptionPane.showMessageDialog(null, GUIMain.createLabel("There was an error while loading from config:\n" + e.getMessage(), 13, Color.RED), title, JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+            Config.saveConfig(Paths.get("MultiChatDiscordSrvAddon/config.yml").toFile());
+            resourceOrder = Config.i().getResources().order();
+            Collections.reverse(resourceOrder);
+            valuePerPack = (int) ((1.0 / (double) (resourceOrder.size() + 1)) * 10000);
 
             if (resourceManager != null) {
                 resourceManager.close();

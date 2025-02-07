@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.metrics;
 
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 
 import java.util.concurrent.Callable;
@@ -66,7 +67,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (MultiChatDiscordSrvAddon.plugin.itemImage) {
+                if (Config.i().getInventoryImage().item().enabled()) {
                     string = "Enabled";
                 }
                 return string;
@@ -77,7 +78,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (MultiChatDiscordSrvAddon.plugin.invImage) {
+                if (Config.i().getInventoryImage().inventory().enabled()) {
                     string = "Enabled";
                 }
                 return string;
@@ -88,7 +89,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (MultiChatDiscordSrvAddon.plugin.enderImage) {
+                if (Config.i().getInventoryImage().enderChest().enabled()) {
                     string = "Enabled";
                 }
                 return string;
@@ -99,7 +100,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (MultiChatDiscordSrvAddon.plugin.hoverEnabled) {
+                if (Config.i().getHoverEventDisplay().enabled()) {
                     string = "Enabled";
                 }
                 return string;
@@ -110,7 +111,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (MultiChatDiscordSrvAddon.plugin.hoverUseTooltipImage) {
+                if (Config.i().getHoverEventDisplay().useTooltipImage()) {
                     string = "Enabled";
                 }
                 return string;
@@ -121,7 +122,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (MultiChatDiscordSrvAddon.plugin.convertDiscordAttachments) {
+                if (Config.i().getDiscordAttachments().convert()) {
                     string = "Enabled";
                 }
                 return string;
@@ -132,7 +133,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (MultiChatDiscordSrvAddon.plugin.deathMessageItem) {
+                if (Config.i().getDeathMessage().showItems()) {
                     string = "Enabled";
                 }
                 return string;
@@ -143,7 +144,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (MultiChatDiscordSrvAddon.plugin.advancementName) {
+                if (Config.i().getAdvancements().correctAdvancementName()) {
                     string = "Enabled";
                 }
                 return string;
@@ -154,7 +155,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (MultiChatDiscordSrvAddon.plugin.advancementItem) {
+                if (Config.i().getAdvancements().changeToItemIcon()) {
                     string = "Enabled";
                 }
                 return string;
@@ -165,7 +166,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (MultiChatDiscordSrvAddon.plugin.advancementDescription) {
+                if (Config.i().getAdvancements().showDescription()) {
                     string = "Enabled";
                 }
                 return string;
@@ -176,7 +177,7 @@ public class Charts {
             @Override
             public String call() throws Exception {
                 String string = "Disabled";
-                if (MultiChatDiscordSrvAddon.plugin.translateMentions) {
+                if (Config.i().getDiscordMention().translateMentions()) {
                     string = "Enabled";
                 }
                 return string;
@@ -245,7 +246,7 @@ public class Charts {
         metrics.addCustomChart(new Metrics.SingleLineChart("servers_rendering_player_models_with_hand_items", new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                return MultiChatDiscordSrvAddon.plugin.usePlayerInvView && MultiChatDiscordSrvAddon.plugin.renderHandHeldItems ? 1 : 0;
+                return Config.i().getInventoryImage().inventory().usePlayerInventoryView() && Config.i().getInventoryImage().inventory().renderHandHeldItems() ? 1 : 0;
             }
         }));
 

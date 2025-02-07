@@ -21,16 +21,13 @@
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
 import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
-import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentStyling;
-import com.loohp.multichatdiscordsrvaddon.utils.PlaceholderParser;
-import com.loohp.multichatdiscordsrvaddon.utils.PlayerUtils;
-import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -58,26 +55,26 @@ public class LegacyDiscordCommandEvents {
 
     @Subscribe(priority = ListenerPriority.NORMAL)
     public void onListPlayers(DiscordChatChannelListCommandMessageEvent event) {
-        if (!MultiChatDiscordSrvAddon.plugin.playerlistCommandEnabled) {
+        if (!Config.i().getDiscordCommands().playerList().enabled()) {
             return;
         }
         DiscordSRV discordsrv = DiscordSRV.getPlugin();
         TextChannel channel = event.getChannel();
-        if (MultiChatDiscordSrvAddon.plugin.playerlistCommandIsMainServer) {
+        if (Config.i().getDiscordCommands().playerList().isMainServer()) {
             String minecraftChannel = discordsrv.getChannels().entrySet().stream().filter(entry -> channel.getId().equals(entry.getValue())).map(Map.Entry::getKey).findFirst().orElse(null);
             if (minecraftChannel == null) {
-                if (MultiChatDiscordSrvAddon.plugin.respondToCommandsInInvalidChannels) {
+                if (Config.i().getDiscordCommands().globalSettings().respondToCommandsInInvalidChannels()) {
                     event.setResult(DiscordChatChannelListCommandMessageEvent.Result.TREAT_AS_REGULAR_MESSAGE);
                 }
                 return;
             }
-            if (MultiChatDiscordSrvAddon.plugin.playerlistCommandDeleteAfter > 0) {
-                event.setExpiration(MultiChatDiscordSrvAddon.plugin.playerlistCommandDeleteAfter * 1000);
+            if (Config.i().getDiscordCommands().playerList().deleteAfter() > 0) {
+                event.setExpiration(Config.i().getDiscordCommands().playerList().deleteAfter() * 1000);
             } else {
                 event.setExpiration(0);
             }
             Map<OfflinePlayer, Integer> players;
-            if (MultiChatDiscordSrvAddon.plugin.useBungeecord && MultiChatDiscordSrvAddon.plugin.playerlistCommandBungeecord && !Bukkit.getOnlinePlayers().isEmpty()) {
+            if (Config.i().getSettings().bungeecord() && Config.i().getDiscordCommands().playerList().listBungeecordPlayers() && !Bukkit.getOnlinePlayers().isEmpty()) {
                 try {
                     List<ValueTrios<UUID, String, Integer>> bungeePlayers = MultiChatDiscordSrvAddonAPI.getBungeecordPlayerList().get();
                     players = new LinkedHashMap<>(bungeePlayers.size());
@@ -90,7 +87,7 @@ public class LegacyDiscordCommandEvents {
                     }
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
-                    event.setPlayerListMessage(ChatColorUtils.stripColor(MultiChatDiscordSrvAddon.plugin.unableToRetrieveData) + " (-1)");
+                    event.setPlayerListMessage(ChatColorUtils.stripColor(Config.i().getMessages().unableToRetrieveData()) + " (-1)");
                     return;
                 }
             } else {
@@ -100,7 +97,7 @@ public class LegacyDiscordCommandEvents {
                 }).collect(Collectors.toMap(each -> each, each -> each.getPing(), (a, b) -> a));
             }
             if (players.isEmpty()) {
-                event.setPlayerListMessage(ChatColorUtils.stripColor(MultiChatDiscordSrvAddon.plugin.playerlistCommandEmptyServer));
+                event.setPlayerListMessage(ChatColorUtils.stripColor(Config.i().getDiscordCommands().playerList().emptyServer()));
             } else {
                 int errorCode = -2;
                 try {
@@ -109,9 +106,9 @@ public class LegacyDiscordCommandEvents {
                     for (Map.Entry<OfflinePlayer, Integer> entry : players.entrySet()) {
                         OfflinePlayer offlinePlayer = entry.getKey();
                         playerInfo.put(offlinePlayer.getUniqueId(), new ValuePairs<>(DiscordCommands.getPlayerGroups(offlinePlayer), offlinePlayer.getName()));
-                        String name = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlinePlayer, MultiChatDiscordSrvAddon.plugin.playerlistCommandPlayerFormat));
+                        String name = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlinePlayer, Config.i().getDiscordCommands().playerList().tablistOptions().playerFormat()));
                         Component nameComponent;
-                        if (MultiChatDiscordSrvAddon.plugin.playerlistCommandParsePlayerNamesWithMiniMessage) {
+                        if (Config.i().getDiscordCommands().playerList().tablistOptions().parsePlayerNamesWithMiniMessage()) {
                             nameComponent = MiniMessage.miniMessage().deserialize(name);
                         } else {
                             nameComponent = LegacyComponentSerializer.legacySection().deserialize(name);
@@ -119,28 +116,28 @@ public class LegacyDiscordCommandEvents {
                         player.add(new ValueTrios<>(offlinePlayer, nameComponent, entry.getValue()));
                     }
                     errorCode--;
-                    DiscordCommands.sortPlayers(MultiChatDiscordSrvAddon.plugin.playerlistOrderingTypes, player, playerInfo);
+                    DiscordCommands.sortPlayers(Config.i().getDiscordCommands().playerList().tablistOptions().playerOrder().orderBy(), player, playerInfo);
                     errorCode--;
                     OfflinePlayer firstPlayer = Bukkit.getOfflinePlayer(players.keySet().iterator().next().getUniqueId());
                     List<Component> header = new ArrayList<>();
-                    if (!MultiChatDiscordSrvAddon.plugin.playerlistCommandHeader.isEmpty()) {
-                        header = ComponentStyling.splitAtLineBreaks(LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(firstPlayer, MultiChatDiscordSrvAddon.plugin.playerlistCommandHeader.replace("{OnlinePlayers}", players.size() + "")))));
+                    if (!Config.i().getDiscordCommands().playerList().tablistOptions().headerText().isEmpty()) {
+                        header = ComponentStyling.splitAtLineBreaks(LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(firstPlayer, DiscordContentUtils.join(Config.i().getDiscordCommands().playerList().tablistOptions().headerText(), true).replace("{OnlinePlayers}", players.size() + "")))));
                     }
                     errorCode--;
                     List<Component> footer = new ArrayList<>();
-                    if (!MultiChatDiscordSrvAddon.plugin.playerlistCommandFooter.isEmpty()) {
-                        footer = ComponentStyling.splitAtLineBreaks(LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(firstPlayer, MultiChatDiscordSrvAddon.plugin.playerlistCommandFooter.replace("{OnlinePlayers}", players.size() + "")))));
+                    if (!Config.i().getDiscordCommands().playerList().tablistOptions().footerText().isEmpty()) {
+                        footer = ComponentStyling.splitAtLineBreaks(LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(firstPlayer, DiscordContentUtils.join(Config.i().getDiscordCommands().playerList().tablistOptions().footerText(), true).replace("{OnlinePlayers}", players.size() + "")))));
                     }
                     errorCode--;
-                    int playerListMaxPlayers = MultiChatDiscordSrvAddon.plugin.playerlistMaxPlayers;
+                    int playerListMaxPlayers = Config.i().getDiscordCommands().playerList().tablistOptions().maxPlayersDisplayable();
                     if (playerListMaxPlayers < 1) {
                         playerListMaxPlayers = Integer.MAX_VALUE;
                     }
-                    BufferedImage image = ImageGeneration.getTabListImage(header, footer, player, MultiChatDiscordSrvAddon.plugin.playerlistCommandAvatar, MultiChatDiscordSrvAddon.plugin.playerlistCommandPing, playerListMaxPlayers);
+                    BufferedImage image = ImageGeneration.getTabListImage(header, footer, player, Config.i().getDiscordCommands().playerList().tablistOptions().showPlayerAvatar(), Config.i().getDiscordCommands().playerList().tablistOptions().showPlayerPing(), playerListMaxPlayers);
                     errorCode--;
                     byte[] data = ImageUtils.toArray(image);
                     errorCode--;
-                    channel.sendMessageEmbeds(new EmbedBuilder().setImage("attachment://Tablist.png").setColor(MultiChatDiscordSrvAddon.plugin.playerlistCommandColor).build()).addFile(data, "Tablist.png").queue(success -> {
+                    channel.sendMessageEmbeds(new EmbedBuilder().setImage("attachment://Tablist.png").setColor(ColorUtils.hex2Rgb(Config.i().getDiscordCommands().playerList().tablistOptions().sidebarColor())).build()).addFile(data, "Tablist.png").queue(success -> {
                         if (event.getExpiration() > 0) {
                             success.delete().queueAfter(event.getExpiration(), TimeUnit.MILLISECONDS);
                         }
@@ -148,7 +145,7 @@ public class LegacyDiscordCommandEvents {
                     event.setResult(DiscordChatChannelListCommandMessageEvent.Result.NO_ACTION);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    event.setPlayerListMessage(ChatColorUtils.stripColor(MultiChatDiscordSrvAddon.plugin.unableToRetrieveData) + " (" + errorCode + ")");
+                    event.setPlayerListMessage(ChatColorUtils.stripColor(Config.i().getMessages().unableToRetrieveData()) + " (" + errorCode + ")");
                     return;
                 }
             }

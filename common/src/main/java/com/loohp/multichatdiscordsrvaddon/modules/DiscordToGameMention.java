@@ -27,7 +27,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import com.loohp.multichatdiscordsrvaddon.objectholders.Either;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
-import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -36,13 +35,12 @@ import java.util.Arrays;
 public class DiscordToGameMention {
 
     public static void playTitleScreen(String sender, String channelName, String guild, Player receiver) {
-        Config config = Config.getConfig(MultiChatDiscordSrvAddon.CONFIG_ID);
 
-        String title = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordMention.MentionedTitle").replace("{DiscordUser}", sender).replace("{TextChannel}", "#" + channelName).replace("{Guild}", guild));
-        String subtitle = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordMention.DiscordMentionSubtitle").replace("{DiscordUser}", sender).replace("{TextChannel}", "#" + channelName).replace("{Guild}", guild));
-        String actionbar = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordMention.DiscordMentionActionbar").replace("{DiscordUser}", sender).replace("{TextChannel}", "#" + channelName).replace("{Guild}", guild));
+        String title = ChatColorUtils.translateAlternateColorCodes('&', Config.i().getDiscordMention().mentionedTitle().replace("{DiscordUser}", sender).replace("{TextChannel}", "#" + channelName).replace("{Guild}", guild));
+        String subtitle = ChatColorUtils.translateAlternateColorCodes('&', Config.i().getDiscordMention().discordMentionSubtitle().replace("{DiscordUser}", sender).replace("{TextChannel}", "#" + channelName).replace("{Guild}", guild));
+        String actionbar = ChatColorUtils.translateAlternateColorCodes('&', Config.i().getDiscordMention().discordMentionActionbar().replace("{DiscordUser}", sender).replace("{TextChannel}", "#" + channelName).replace("{Guild}", guild));
 
-        String settings = config.getConfiguration().getString("DiscordMention.MentionedSound");
+        String settings = Config.i().getDiscordMention().mentionedSound();
         Either<Sound, String> sound;
         float volume = 3.0F;
         float pitch = 1.0F;
@@ -73,7 +71,7 @@ public class DiscordToGameMention {
             sound = Either.left(bukkitSound);
         }
 
-        int time = (int) Math.round(config.getConfiguration().getDouble("DiscordMention.MentionedTitleDuration") * 20);
+        int time = (int) Math.round(Config.i().getDiscordMention().mentionedTitleDuration() * 20);
 
         Component titleComponent = LegacyComponentSerializer.legacySection().deserialize(title);
         Component subtitleComponent = LegacyComponentSerializer.legacySection().deserialize(subtitle);

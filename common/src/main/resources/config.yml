@@ -460,6 +460,26 @@ Settings:
       - "&7This is likely to be an item that"
       - "&7does not exist in this version of Minecraft"
 
+Hook:
+  # Chat plugin to hook into.
+  # Supported: "ZelChat", "ChatControl" (v11+), "ChatControlRed" (Legacy), "CarbonChat", "InteractiveChat"
+  # CASE SENSITIVE - Must be as shown above
+  Selected: "ZelChat"
+
+  # Whether to only use channels in the chat plugin hook.
+  UseChannels: true
+
+  # If your chat plugin supports "channels", you can blacklist certain channels here.
+  IgnoredChannels:
+    - "Staff"
+    - "SomeChannelName"
+
+  Dynmap:
+    # Whether to filter dynmap chats through the chat plugin - this will also send them to discord.
+    Filter: true
+    # Fallback if the dynmap chat username is not an online player,
+    FallbackName: "Dynmap"
+
 Debug:
   PrintInfoToConsole: false
   PluginMessagePacketVerbose: false

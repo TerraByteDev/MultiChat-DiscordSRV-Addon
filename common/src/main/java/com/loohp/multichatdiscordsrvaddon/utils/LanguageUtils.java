@@ -71,7 +71,7 @@ public class LanguageUtils {
 
     @SuppressWarnings("unchecked")
     public static void loadTranslations(String language) {
-        MultiChatDiscordSrvAddon.plugin.sendMessage("<gray>Loading languages...", Bukkit.getConsoleSender());
+        ChatUtils.sendMessage("<gray>Loading languages...", Bukkit.getConsoleSender());
         Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
             while (lock.get()) {
                 try {
@@ -100,16 +100,16 @@ public class LanguageUtils {
                 try {
                     JSONObject manifest = HTTPRequestUtils.getJSONResponse(VERSION_MANIFEST_URL);
                     if (manifest == null) {
-                        MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Unable to fetch version_manifest from " + VERSION_MANIFEST_URL, Bukkit.getConsoleSender());
+                        ChatUtils.sendMessage("<red>Unable to fetch version_manifest from " + VERSION_MANIFEST_URL, Bukkit.getConsoleSender());
                     } else {
                         String mcVersion = VersionManager.exactMinecraftVersion;
                         Object urlObj = ((JSONArray) manifest.get("versions")).stream().filter(each -> ((JSONObject) each).get("id").toString().equalsIgnoreCase(mcVersion)).map(each -> ((JSONObject) each).get("url").toString()).findFirst().orElse(null);
                         if (urlObj == null) {
-                            MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Unable to find " + mcVersion + " from version_manifest", Bukkit.getConsoleSender());
+                            ChatUtils.sendMessage("<red>Unable to find " + mcVersion + " from version_manifest", Bukkit.getConsoleSender());
                         } else {
                             JSONObject versionData = HTTPRequestUtils.getJSONResponse(urlObj.toString());
                             if (versionData == null) {
-                                MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Unable to fetch version data from " + urlObj, Bukkit.getConsoleSender());
+                                ChatUtils.sendMessage("<red>Unable to fetch version data from " + urlObj, Bukkit.getConsoleSender());
                             } else {
                                 String clientUrl = ((JSONObject) ((JSONObject) versionData.get("downloads")).get("client")).get("url").toString();
                                 try (ZipArchiveInputStream zip = new ZipArchiveInputStream(new ByteArrayInputStream(HTTPRequestUtils.download(clientUrl)), StandardCharsets.UTF_8.toString(), false, true, true)) {
@@ -163,7 +163,7 @@ public class LanguageUtils {
                                 String indexUrl = ((JSONObject) versionData.get("assetIndex")).get("url").toString();
                                 JSONObject assets = HTTPRequestUtils.getJSONResponse(indexUrl);
                                 if (assets == null) {
-                                    MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Unable to fetch assets data from " + indexUrl, Bukkit.getConsoleSender());
+                                    ChatUtils.sendMessage("<red>Unable to fetch assets data from " + indexUrl, Bukkit.getConsoleSender());
                                 } else {
                                     JSONObject objects = (JSONObject) assets.get("objects");
                                     for (Object obj : objects.keySet()) {
@@ -182,7 +182,7 @@ public class LanguageUtils {
                                                         fileToSave.delete();
                                                     }
                                                     if (!HTTPRequestUtils.download(fileToSave, fileUrl)) {
-                                                        MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Unable to download " + key + " from " + fileUrl, Bukkit.getConsoleSender());
+                                                        ChatUtils.sendMessage("<red>Unable to download " + key + " from " + fileUrl, Bukkit.getConsoleSender());
                                                     }
                                                 }
                                             } else {
@@ -193,7 +193,7 @@ public class LanguageUtils {
                                                     fileToSave.delete();
                                                 }
                                                 if (!HTTPRequestUtils.download(fileToSave, fileUrl)) {
-                                                    MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Unable to download " + key + " from " + fileUrl, Bukkit.getConsoleSender());
+                                                    ChatUtils.sendMessage("<red>Unable to download " + key + " from " + fileUrl, Bukkit.getConsoleSender());
                                                 }
                                                 data.put(lang, values);
                                             }
@@ -205,7 +205,7 @@ public class LanguageUtils {
                     }
                     JsonUtils.saveToFilePretty(data, hashFile);
                 } catch (Exception e) {
-                    MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Unable to download latest languages files from Mojang", Bukkit.getConsoleSender());
+                    ChatUtils.sendMessage("<red>Unable to download latest languages files from Mojang", Bukkit.getConsoleSender());
                     e.printStackTrace();
                 }
 
@@ -238,7 +238,7 @@ public class LanguageUtils {
                             translations.put(file.getName().substring(0, file.getName().lastIndexOf(".")), mapping);
                         }
                     } catch (Exception e) {
-                        MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Unable to load " + file.getName(), Bukkit.getConsoleSender());
+                        ChatUtils.sendMessage("<red>Unable to load " + file.getName(), Bukkit.getConsoleSender());
                         e.printStackTrace();
                     }
                 }
@@ -257,9 +257,9 @@ public class LanguageUtils {
                         }
                     }
                 }
-                MultiChatDiscordSrvAddon.plugin.sendMessage("<green>Loaded all " + translations.size() + " languages!", Bukkit.getConsoleSender());
+                ChatUtils.sendMessage("<green>Loaded all " + translations.size() + " languages!", Bukkit.getConsoleSender());
             } catch (Exception e) {
-                MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Unable to setup languages", Bukkit.getConsoleSender());
+                ChatUtils.sendMessage("<red>Unable to setup languages", Bukkit.getConsoleSender());
                 e.printStackTrace();
             }
             lock.set(false);

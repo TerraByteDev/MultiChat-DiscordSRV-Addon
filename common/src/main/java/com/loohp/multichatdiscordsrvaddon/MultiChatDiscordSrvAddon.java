@@ -23,14 +23,13 @@ package com.loohp.multichatdiscordsrvaddon;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.loohp.multichatdiscordsrvaddon.command.CommandHandler;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.integration.IntegrationManager;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import com.loohp.multichatdiscordsrvaddon.registry.MultiChatRegistry;
 import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
 import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
@@ -81,7 +80,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -118,14 +116,13 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
 
     public static MultiChatDiscordSrvAddon plugin;
     public static DiscordSRV discordsrv;
-    public BukkitAudiences audience;
-
-    public static boolean itemsAdderHook = false;
 
     public static boolean isReady = false;
-
-    public static boolean debug = false;
-    public boolean pluginMessagePacketVerbose = false;
+    public String defaultResourceHash = "N/A";
+    public List<String> resourceOrder = new ArrayList<>();
+    public ItemStack unknownReplaceItem;
+    public boolean itemsAdderHook = false;
+    public List<Pattern> additionalRGBFormats;
 
     public final ReentrantLock resourceReloadLock = new ReentrantLock(true);
     public Metrics metrics;
@@ -139,177 +136,30 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
     public ListenerPriority gameToDiscordPriority = ListenerPriority.HIGHEST;
     public ListenerPriority ventureChatToDiscordPriority = ListenerPriority.HIGHEST;
     public ListenerPriority discordToGamePriority = ListenerPriority.HIGH;
-    public boolean itemImage = true;
-    public boolean invImage = true;
-    public boolean enderImage = true;
-    public boolean usePlayerInvView = true;
-    public boolean renderHandHeldItems = true;
-    public String itemDisplaySingle = "";
-    public String itemDisplayMultiple = "";
-    public Color invColor = Color.black;
-    public Color enderColor = Color.black;
-    public boolean itemUseTooltipImageOnBaseItem = false;
-    public boolean itemAltAir = true;
-    public String itemTitle = "%player_name%'s Item";
-    public String inventoryTitle = "%player_name%'s Inventory";
-    public String enderTitle;
-    public long itemDisplayTimeout = 300000;
-    public boolean hideLodestoneCompassPos = true;
-    public boolean invShowLevel = true;
-    public boolean hoverEnabled = true;
-    public boolean hoverImage = true;
-    public Set<String> hoverIgnore = new HashSet<>();
-    public boolean hoverUseTooltipImage = true;
-    public String reloadConfigMessage;
-    public String reloadTextureMessage;
-    public String linkExpired;
-    public String interactionExpire;
-    public String previewLoading;
-    public String accountNotLinked;
-    public String unableToRetrieveData;
-    public String invalidDiscordChannel;
-    public String trueLabel;
-    public String falseLabel;
-    public String defaultResourceHashLang;
-    public String fontsActiveLang;
-    public String loadedResourcesLang;
-    public boolean convertDiscordAttachments = true;
-    public String discordAttachmentsFormattingText;
-    public boolean discordAttachmentsFormattingHoverEnabled = true;
-    public String discordAttachmentsFormattingHoverText;
-    public boolean discordAttachmentsImagesUseMaps = true;
-    public long discordAttachmentsPreviewLimit = 0;
-    public int discordAttachmentTimeout = 0;
-    public String discordAttachmentsFormattingImageAppend;
-    public String discordAttachmentsFormattingImageAppendHover;
-    public Color discordAttachmentsMapBackgroundColor = null;
-    public boolean imageWhitelistEnabled = false;
-    public List<String> whitelistedImageUrls = new ArrayList<>();
-    public boolean translateMentions = true;
-    public boolean suppressDiscordPings = false;
-    public String mentionHighlight = "";
-    public boolean deathMessageItem = true;
-    public boolean deathMessageTranslated = true;
-    public String deathMessageTitle = "";
-    public boolean advancementName = true;
-    public boolean advancementItem = true;
-    public boolean advancementDescription = true;
-    public boolean updaterEnabled = true;
-    public int cacheTimeout = 1200;
-    public boolean escapePlaceholdersFromDiscord = true;
-    public boolean escapeDiscordMarkdownInItems = true;
-    public boolean reducedAssetsDownloadInfo = false;
-    public boolean playbackBarEnabled = true;
-    public Color playbackBarFilledColor;
-    public Color playbackBarEmptyColor;
-    public String language = "en_us";
-    public boolean respondToCommandsInInvalidChannels = true;
-    public String discordMemberLabel = "";
-    public String discordMemberDescription = "";
-    public String discordSlotLabel = "";
-    public String discordSlotDescription = "";
-    public boolean resourcepackCommandEnabled = true;
-    public String resourcepackCommandDescription = "";
-    public boolean resourcepackCommandIsMainServer = true;
-    public boolean playerinfoCommandEnabled = true;
-    public String playerinfoCommandDescription = "";
-    public boolean playerinfoCommandIsMainServer = true;
-    public String playerinfoCommandFormatTitle = "";
-    public String playerinfoCommandFormatSubTitle = "";
-    public List<String> playerinfoCommandFormatOnline = new ArrayList<>();
-    public List<String> playerinfoCommandFormatOffline = new ArrayList<>();
-    public boolean playerlistCommandEnabled = true;
-    public String playerlistCommandDescription = "";
-    public boolean playerlistCommandIsMainServer = true;
-    public boolean playerlistCommandBungeecord = true;
-    public int playerlistCommandDeleteAfter = 10;
-    public String playerlistCommandPlayerFormat = "";
-    public boolean playerlistCommandAvatar = true;
-    public boolean playerlistCommandPing = true;
-    public String playerlistCommandHeader = "";
-    public String playerlistCommandFooter = "";
-    public boolean playerlistCommandParsePlayerNamesWithMiniMessage = false;
-    public String playerlistCommandEmptyServer = "";
-    public Color playerlistCommandColor = new Color(153, 153, 153);
-    public int playerlistCommandMinWidth = 0;
-    public int playerlistMaxPlayers = 80;
-    public List<String> playerlistOrderingTypes = new ArrayList<>();
-    public boolean shareItemCommandEnabled = true;
-    public boolean shareItemCommandAsOthers = true;
-    public boolean shareItemCommandIsMainServer = true;
-    public String shareItemCommandInGameMessageText = "";
-    public String shareItemCommandTitle = "";
-    public boolean shareInvCommandEnabled = true;
-    public boolean shareInvCommandAsOthers = true;
-    public boolean shareInvCommandIsMainServer = true;
-    public String shareInvCommandInGameMessageText = "";
-    public String shareInvCommandInGameMessageHover = "";
-    public String shareInvCommandTitle = "";
-    public String shareInvCommandSkullName = "";
-    public boolean shareEnderCommandEnabled = true;
-    public boolean shareEnderCommandAsOthers = true;
-    public boolean shareEnderCommandIsMainServer = true;
-    public String shareEnderCommandInGameMessageText = "";
-    public String shareEnderCommandInGameMessageHover = "";
-    public String shareEnderCommandTitle = "";
-    public String defaultResourceHash = "N/A";
-    public List<String> resourceOrder = new ArrayList<>();
-    public boolean forceUnicode = false;
-    public boolean includeServerResourcePack = true;
-    public boolean itemsAdderPackAsServerResourcePack = true;
-    public String alternateResourcePackURL = "";
-    public String alternateResourcePackHash = "";
-    public boolean optifineCustomTextures = true;
-    public boolean chimeOverrideModels = true;
-    public int embedDeleteAfter = 0;
-    public boolean showDurability = true;
-    public boolean showArmorColor = true;
-    public boolean showMapScale = true;
-    public boolean showFireworkRocketDetailsInCrossbow = true;
-    public boolean showAdvanceDetails = true;
-    public boolean allowSlotSelection = true;
-    public boolean showMaps = true;
-    public boolean showBooks = true;
-    public boolean showContainers = true;
-    public int rendererThreads = -1;
-    public ItemStack unknownReplaceItem;
-    public boolean rgbTags = true;
-    public List<Pattern> additionalRGBFormats = new ArrayList<>();
-    public boolean useBungeecord = false;
-    public boolean parsePAPIOnMainThread = false;
-    public boolean chatTabCompletionsEnabled = true;
-    public boolean useTooltipOnTab = true;
-    public String tabTooltip = "";
-    public long universalCooldown = 0;
     public static ICPlaceholder itemPlaceholder = null;
     public static ICPlaceholder inventoryPlaceholder = null;
     public static ICPlaceholder enderChestPlaceholder = null;
-    public ItemStack invFrame1 = null;
-    public ItemStack invFrame2 = null;
-    public ItemStack itemFrame1;
-    public ItemStack itemFrame2;
     public static Map<UUID, ICPlaceholder> placeholderList = new LinkedHashMap<>();
 
-    public int itemTagMaxLength = 32767;
-    public boolean sendOriginalIfTooLong = false;
-
-    public ConcurrentCacheHashMap<String, Inventory> itemDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
-    public ConcurrentCacheHashMap<String, Inventory> inventoryDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
-    public ConcurrentCacheHashMap<String, Inventory> inventoryDisplay1Upper = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
-    public ConcurrentCacheHashMap<String, Inventory> inventoryDisplay1Lower = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
-    public ConcurrentCacheHashMap<String, Inventory> enderDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
-    public ConcurrentCacheHashMap<String, ItemStack> mapDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
+    public ConcurrentCacheHashMap<String, Inventory> itemDisplay;
+    public ConcurrentCacheHashMap<String, Inventory> inventoryDisplay;
+    public ConcurrentCacheHashMap<String, Inventory> inventoryDisplay1Upper;
+    public ConcurrentCacheHashMap<String, Inventory> inventoryDisplay1Lower;
+    public ConcurrentCacheHashMap<String, Inventory> enderDisplay;
+    public ConcurrentCacheHashMap<String, ItemStack> mapDisplay;
     public Set<Inventory> upperSharedInventory = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
     public Set<Inventory> lowerSharedInventory = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
 
     public static int remoteDelay = 500;
 
-    public boolean previewMaps = true;
-
     private ResourceManager resourceManager;
     public ModelRenderer modelRenderer;
     public ExecutorService mediaReadingService;
     public static PlaceholderCooldownManager placeholderCooldownManager;
+
+    public IntegrationManager integrationManager;
+
+    public static final UUID ZERO_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
     protected Map<String, byte[]> extras = new ConcurrentHashMap<>();
 
@@ -335,7 +185,7 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         plugin = this;
-        audience = BukkitAudiences.create(this);
+        ChatUtils.init(this);
         VersionManager.init();
         discordsrv = DiscordSRV.getPlugin();
 
@@ -345,14 +195,19 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
 
         AssetsDownloader.loadLibraries(getDataFolder());
 
-        try {
-            Config.loadConfig(CONFIG_ID, new File(getDataFolder(), "config.yml"), getClass().getClassLoader().getResourceAsStream("config.yml"), getClass().getClassLoader().getResourceAsStream("config.yml"), true);
-        } catch (IOException e) {
-            e.printStackTrace();
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-        reloadConfig();
+        Config.saveConfig(getDataFolder());
+        processConfigs();
+
+        long itemDisplayTimeout = Config.i().getSettings().timeout() * 60L * 1000L;
+        itemDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
+        inventoryDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
+        inventoryDisplay1Upper = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
+        inventoryDisplay1Lower = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
+        enderDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
+        mapDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
+
+        integrationManager = new IntegrationManager();
+        integrationManager.load(Config.i().getHook().selected());
 
         metrics = new Metrics(this, BSTATS_PLUGIN_ID);
         Charts.setup(metrics);
@@ -379,7 +234,7 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
                 try {
                     Files.move(resources.toPath(), resourcepacks.toPath(), StandardCopyOption.ATOMIC_MOVE);
                 } catch (IOException e) {
-                    sendMessage("<red>Unable to move folder, are any files opened?", Bukkit.getConsoleSender());
+                    ChatUtils.sendMessage("<red>Unable to move folder, are any files opened?", Bukkit.getConsoleSender());
                     e.printStackTrace();
                     getServer().getPluginManager().disablePlugin(this);
                     return;
@@ -394,26 +249,26 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
         }
 
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("ItemsAdder")) {
-            sendMessage("<green>MultiChat DiscordSRV Addon has hooked into ItemsAdder!", Bukkit.getConsoleSender());
+            ChatUtils.sendMessage("<green>MultiChat DiscordSRV Addon has hooked into ItemsAdder!", Bukkit.getConsoleSender());
             itemsAdderHook = true;
         }
 
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("InteractiveChat") && !compatible()) {
             for (int i = 0; i < 10; i++) {
-                sendMessage("<red>VERSION NOT COMPATIBLE WITH INSTALLED INTERACTIVECHAT VERSION, PLEASE UPDATE BOTH TO LATEST!!!!", Bukkit.getConsoleSender());
+                ChatUtils.sendMessage("<red>VERSION NOT COMPATIBLE WITH INSTALLED INTERACTIVECHAT VERSION, PLEASE UPDATE BOTH TO LATEST!!!!", Bukkit.getConsoleSender());
             }
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
-        MultiChatDiscordSrvAddon.plugin.sendMessage("<green>MultiChat DiscordSRV Addon has been enabled.");
+        ChatUtils.sendMessage("<green>MultiChat DiscordSRV Addon has been enabled.");
 
         reloadTextures(false, false);
-        modelRenderer = new ModelRenderer(str -> new ThreadFactoryBuilder().setNameFormat(str).build(), () -> MultiChatDiscordSrvAddon.plugin.cacheTimeout, () -> {
-            if (rendererThreads > 0) {
-                return rendererThreads;
+        modelRenderer = new ModelRenderer(str -> new ThreadFactoryBuilder().setNameFormat(str).build(), () -> Config.i().getSettings().cacheTimeout() * 20L, () -> {
+            if (Config.i().getSettings().rendererSettings().rendererThreads() > 0) {
+                return Config.i().getSettings().rendererSettings().rendererThreads();
             }
-            return Runtime.getRuntime().availableProcessors() + rendererThreads;
+            return Runtime.getRuntime().availableProcessors() + Config.i().getSettings().rendererSettings().rendererThreads();
         });
 
         ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("MultiChatDiscordSrvAddon Async Media Reading Thread #%d").build();
@@ -462,7 +317,7 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
         if (resourceManager != null) {
             resourceManager.close();
         }
-        MultiChatDiscordSrvAddon.plugin.sendMessage("<red>MultiChat DiscordSRV Addon has been disabled.", Bukkit.getConsoleSender());
+        ChatUtils.sendMessage("<red>MultiChat DiscordSRV Addon has been disabled.", Bukkit.getConsoleSender());
     }
 
     public boolean compatible() {
@@ -474,257 +329,57 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
         }
     }
 
-    @Override
-    public void reloadConfig() {
-        Config config = Config.getConfig(CONFIG_ID);
-        config.reload();
-
-        reloadConfigMessage = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Messages.ReloadConfig"));
-        reloadTextureMessage = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Messages.ReloadTexture"));
-        linkExpired = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Messages.LinkExpired"));
-        previewLoading = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Messages.PreviewLoading"));
-        accountNotLinked = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Messages.AccountNotLinked"));
-        unableToRetrieveData = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Messages.UnableToRetrieveData"));
-        invalidDiscordChannel = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Messages.InvalidDiscordChannel"));
-        interactionExpire = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Messages.InteractionExpired"));
-        trueLabel = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Messages.TrueLabel"));
-        falseLabel = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Messages.FalseLabel"));
-
-        defaultResourceHashLang = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Messages.StatusCommand.DefaultResourceHash"));
-        fontsActiveLang = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Messages.StatusCommand.FontsActive"));
-        loadedResourcesLang = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Messages.StatusCommand.LoadedResources"));
-
-        debug = config.getConfiguration().getBoolean("Debug.PrintInfoToConsole");
-        pluginMessagePacketVerbose = config.getConfiguration().getBoolean("Debug.PluginMessagePacketVerbose");
-
+    public void processConfigs() {
         resourceOrder.clear();
-        List<String> order = config.getConfiguration().getStringList("Resources.Order");
+        List<String> order = Config.i().getResources().order();
         ListIterator<String> itr = order.listIterator(order.size());
         while (itr.hasPrevious()) {
             String pack = itr.previous();
             resourceOrder.add(pack);
         }
 
-        includeServerResourcePack = config.getConfiguration().getBoolean("Resources.IncludeServerResourcePack");
-        itemsAdderPackAsServerResourcePack = config.getConfiguration().getBoolean("Resources.ItemsAdderPackAsServerResourcePack");
-        alternateResourcePackURL = config.getConfiguration().getString("Resources.AlternateServerResourcePack.URL");
-        alternateResourcePackHash = config.getConfiguration().getString("Resources.AlternateServerResourcePack.Hash");
-        optifineCustomTextures = config.getConfiguration().getBoolean("Resources.OptifineCustomTextures");
-        chimeOverrideModels = config.getConfiguration().getBoolean("Resources.ChimeOverrideModels");
-
-        itemImage = config.getConfiguration().getBoolean("InventoryImage.Item.Enabled");
-        invImage = config.getConfiguration().getBoolean("InventoryImage.Inventory.Enabled");
-        enderImage = config.getConfiguration().getBoolean("InventoryImage.EnderChest.Enabled");
-
-        usePlayerInvView = config.getConfiguration().getBoolean("InventoryImage.Inventory.UsePlayerInventoryView");
-        renderHandHeldItems = config.getConfiguration().getBoolean("InventoryImage.Inventory.RenderHandHeldItems");
-
-        itemUseTooltipImageOnBaseItem = config.getConfiguration().getBoolean("InventoryImage.Item.UseTooltipImageOnBaseItem");
-        itemAltAir = config.getConfiguration().getBoolean("InventoryImage.Item.AlternateAirTexture");
-        itemTitle = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("InventoryImage.Item.ItemTitle"));
-        inventoryTitle = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("InventoryImage.Inventory.InventoryTitle"));
-        enderTitle = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("InventoryImage.EnderChest.Text"));
-        itemDisplayTimeout = config.getConfiguration().getLong("Settings.Timeout") * 60 * 1000;
-        hideLodestoneCompassPos = config.getConfiguration().getBoolean("Settings.HideLodestoneCompassPos");
-
-        invShowLevel = config.getConfiguration().getBoolean("InventoryImage.Inventory.ShowExperienceLevel");
-
-        hoverEnabled = config.getConfiguration().getBoolean("HoverEventDisplay.Enabled");
-        hoverImage = config.getConfiguration().getBoolean("HoverEventDisplay.ShowCursorImage");
-        hoverIgnore.clear();
-        hoverIgnore = new HashSet<>(config.getConfiguration().getStringList("HoverEventDisplay.IgnoredPlaceholderKeys"));
-
-        hoverUseTooltipImage = config.getConfiguration().getBoolean("HoverEventDisplay.UseTooltipImage");
-
-        convertDiscordAttachments = config.getConfiguration().getBoolean("DiscordAttachments.Convert");
-        discordAttachmentsFormattingText = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordAttachments.Formatting.Text"));
-        discordAttachmentsFormattingHoverEnabled = config.getConfiguration().getBoolean("DiscordAttachments.Formatting.Hover.Enabled");
-        discordAttachmentsFormattingHoverText = ChatColorUtils.translateAlternateColorCodes('&', String.join("\n", config.getConfiguration().getStringList("DiscordAttachments.Formatting.Hover.HoverText")));
-        discordAttachmentsImagesUseMaps = config.getConfiguration().getBoolean("DiscordAttachments.ShowImageUsingMaps");
-        discordAttachmentsPreviewLimit = config.getConfiguration().getLong("DiscordAttachments.FileSizeLimit");
-        discordAttachmentTimeout = config.getConfiguration().getInt("DiscordAttachments.Timeout") * 20;
-        discordAttachmentsFormattingImageAppend = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordAttachments.Formatting.ImageOriginal"));
-        discordAttachmentsFormattingImageAppendHover = ChatColorUtils.translateAlternateColorCodes('&', String.join("\n", config.getConfiguration().getStringList("DiscordAttachments.Formatting.Hover.ImageOriginalHover")));
-
-        boolean transparent = config.getConfiguration().getBoolean("DiscordAttachments.ImageMapBackground.Transparent");
-        if (transparent) {
-            discordAttachmentsMapBackgroundColor = null;
-        } else {
-            discordAttachmentsMapBackgroundColor = ColorUtils.hex2Rgb(config.getConfiguration().getString("DiscordAttachments.ImageMapBackground.Color"));
-        }
-
-        imageWhitelistEnabled = config.getConfiguration().getBoolean("DiscordAttachments.RestrictImageUrl.Enabled");
-        whitelistedImageUrls = config.getConfiguration().getStringList("DiscordAttachments.RestrictImageUrl.Whitelist");
-
-        updaterEnabled = config.getConfiguration().getBoolean("Options.UpdaterEnabled");
-
-        cacheTimeout = config.getConfiguration().getInt("Settings.CacheTimeout") * 20;
-
-        escapePlaceholdersFromDiscord = config.getConfiguration().getBoolean("Settings.EscapePlaceholdersSentFromDiscord");
-        escapeDiscordMarkdownInItems = config.getConfiguration().getBoolean("Settings.EscapeDiscordMarkdownFormattingInItems");
-        reducedAssetsDownloadInfo = config.getConfiguration().getBoolean("Settings.ReducedAssetsDownloadInfo");
-
-        embedDeleteAfter = config.getConfiguration().getInt("Settings.EmbedDeleteAfter");
-
-        gameToDiscordPriority = ListenerPriority.valueOf(config.getConfiguration().getString("Settings.ListenerPriorities.GameToDiscord").toUpperCase());
-        ventureChatToDiscordPriority = ListenerPriority.valueOf(config.getConfiguration().getString("Settings.ListenerPriorities.VentureChatToDiscord").toUpperCase());
-        discordToGamePriority = ListenerPriority.valueOf(config.getConfiguration().getString("Settings.ListenerPriorities.DiscordToGame").toUpperCase());
-
-        itemDisplaySingle = config.getConfiguration().getString("InventoryImage.Item.EmbedDisplay.Single");
-        itemDisplayMultiple = config.getConfiguration().getString("InventoryImage.Item.EmbedDisplay.Multiple");
-        invColor = ColorUtils.hex2Rgb(config.getConfiguration().getString("InventoryImage.Inventory.EmbedColor"));
-        enderColor = ColorUtils.hex2Rgb(config.getConfiguration().getString("InventoryImage.EnderChest.EmbedColor"));
-
-        deathMessageItem = config.getConfiguration().getBoolean("DeathMessage.ShowItems");
-        deathMessageTranslated = config.getConfiguration().getBoolean("DeathMessage.TranslatedDeathMessage");
-        deathMessageTitle = config.getConfiguration().getString("DeathMessage.Title");
-
-        advancementName = config.getConfiguration().getBoolean("Advancements.CorrectAdvancementName");
-        advancementItem = config.getConfiguration().getBoolean("Advancements.ChangeToItemIcon");
-        advancementDescription = config.getConfiguration().getBoolean("Advancements.ShowDescription");
-
-        translateMentions = config.getConfiguration().getBoolean("DiscordMention.TranslateMentions");
-        suppressDiscordPings = config.getConfiguration().getBoolean("DiscordMention.SuppressDiscordPings");
-        mentionHighlight = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordMention.MentionHighlight"));
-
-        playbackBarEnabled = config.getConfiguration().getBoolean("DiscordAttachments.PlaybackBar.Enabled");
-        playbackBarFilledColor = ColorUtils.hex2Rgb(config.getConfiguration().getString("DiscordAttachments.PlaybackBar.FilledColor"));
-        playbackBarEmptyColor = ColorUtils.hex2Rgb(config.getConfiguration().getString("DiscordAttachments.PlaybackBar.EmptyColor"));
-
-        respondToCommandsInInvalidChannels = config.getConfiguration().getBoolean("DiscordCommands.GlobalSettings.RespondToCommandsInInvalidChannels");
-
-        discordMemberLabel = config.getConfiguration().getString("DiscordCommands.GlobalSettings.Messages.MemberLabel").toLowerCase();
-        discordMemberDescription = config.getConfiguration().getString("DiscordCommands.GlobalSettings.Messages.MemberDescription");
-        discordSlotLabel = config.getConfiguration().getString("DiscordCommands.GlobalSettings.Messages.SlotLabel").toLowerCase();
-        discordSlotDescription = config.getConfiguration().getString("DiscordCommands.GlobalSettings.Messages.SlotDescription");
-
-        resourcepackCommandEnabled = config.getConfiguration().getBoolean("DiscordCommands.ResourcePack.Enabled");
-        resourcepackCommandDescription = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordCommands.ResourcePack.Description"));
-        resourcepackCommandIsMainServer = config.getConfiguration().getBoolean("DiscordCommands.ResourcePack.IsMainServer");
-
-        playerinfoCommandEnabled = config.getConfiguration().getBoolean("DiscordCommands.PlayerInfo.Enabled");
-        playerinfoCommandDescription = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordCommands.PlayerInfo.Description"));
-        playerinfoCommandIsMainServer = config.getConfiguration().getBoolean("DiscordCommands.PlayerInfo.IsMainServer");
-        playerinfoCommandFormatTitle = config.getConfiguration().getString("DiscordCommands.PlayerInfo.InfoFormatting.Title");
-        playerinfoCommandFormatSubTitle = config.getConfiguration().getString("DiscordCommands.PlayerInfo.InfoFormatting.SubTitle");
-        playerinfoCommandFormatOnline = config.getConfiguration().getStringList("DiscordCommands.PlayerInfo.InfoFormatting.WhenOnline");
-        playerinfoCommandFormatOffline = config.getConfiguration().getStringList("DiscordCommands.PlayerInfo.InfoFormatting.WhenOffline");
-
-        playerlistCommandEnabled = config.getConfiguration().getBoolean("DiscordCommands.PlayerList.Enabled");
-        playerlistCommandDescription = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordCommands.PlayerList.Description"));
-        playerlistCommandIsMainServer = config.getConfiguration().getBoolean("DiscordCommands.PlayerList.IsMainServer");
-        playerlistCommandBungeecord = config.getConfiguration().getBoolean("DiscordCommands.PlayerList.ListBungeecordPlayers");
-        playerlistCommandDeleteAfter = config.getConfiguration().getInt("DiscordCommands.PlayerList.DeleteAfter");
-        playerlistCommandPlayerFormat = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordCommands.PlayerList.TablistOptions.PlayerFormat"));
-        playerlistCommandAvatar = config.getConfiguration().getBoolean("DiscordCommands.PlayerList.TablistOptions.ShowPlayerAvatar");
-        playerlistCommandPing = config.getConfiguration().getBoolean("DiscordCommands.PlayerList.TablistOptions.ShowPlayerPing");
-        playerlistCommandHeader = ChatColorUtils.translateAlternateColorCodes('&', String.join("\n", config.getConfiguration().getStringList("DiscordCommands.PlayerList.TablistOptions.HeaderText")));
-        playerlistCommandFooter = ChatColorUtils.translateAlternateColorCodes('&', String.join("\n", config.getConfiguration().getStringList("DiscordCommands.PlayerList.TablistOptions.FooterText")));
-        playerlistCommandParsePlayerNamesWithMiniMessage = config.getConfiguration().getBoolean("DiscordCommands.PlayerList.TablistOptions.ParsePlayerNamesWithMiniMessage");
-        playerlistCommandEmptyServer = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordCommands.PlayerList.EmptyServer"));
-        playerlistCommandColor = ColorUtils.hex2Rgb(config.getConfiguration().getString("DiscordCommands.PlayerList.TablistOptions.SidebarColor"));
-        playerlistCommandMinWidth = config.getConfiguration().getInt("DiscordCommands.PlayerList.TablistOptions.PlayerMinWidth");
-        playerlistMaxPlayers = config.getConfiguration().getInt("DiscordCommands.PlayerList.TablistOptions.MaxPlayersDisplayable");
-        playerlistOrderingTypes = config.getConfiguration().getStringList("DiscordCommands.PlayerList.TablistOptions.PlayerOrder.OrderBy");
-
-        shareItemCommandEnabled = config.getConfiguration().getBoolean("DiscordCommands.ShareItem.Enabled");
-        shareItemCommandAsOthers = config.getConfiguration().getBoolean("DiscordCommands.ShareItem.AllowAsOthers");
-        shareItemCommandIsMainServer = config.getConfiguration().getBoolean("DiscordCommands.ShareItem.IsMainServer");
-        shareItemCommandInGameMessageText = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordCommands.ShareItem.InGameMessage.Text"));
-        shareItemCommandTitle = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordCommands.ShareItem.InventoryTitle"));
-
-        shareInvCommandEnabled = config.getConfiguration().getBoolean("DiscordCommands.ShareInventory.Enabled");
-        shareInvCommandAsOthers = config.getConfiguration().getBoolean("DiscordCommands.ShareInventory.AllowAsOthers");
-        shareInvCommandIsMainServer = config.getConfiguration().getBoolean("DiscordCommands.ShareInventory.IsMainServer");
-        shareInvCommandInGameMessageText = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordCommands.ShareInventory.InGameMessage.Text"));
-        shareInvCommandInGameMessageHover = ChatColorUtils.translateAlternateColorCodes('&', String.join("\n", config.getConfiguration().getStringList("DiscordCommands.ShareInventory.InGameMessage.Hover")));
-        shareInvCommandTitle = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordCommands.ShareInventory.InventoryTitle"));
-        shareInvCommandSkullName = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordCommands.ShareInventory.SkullDisplayName"));
-
-        shareEnderCommandEnabled = config.getConfiguration().getBoolean("DiscordCommands.ShareEnderChest.Enabled");
-        shareEnderCommandAsOthers = config.getConfiguration().getBoolean("DiscordCommands.ShareEnderChest.AllowAsOthers");
-        shareEnderCommandIsMainServer = config.getConfiguration().getBoolean("DiscordCommands.ShareEnderChest.IsMainServer");
-        shareEnderCommandInGameMessageText = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordCommands.ShareEnderChest.InGameMessage.Text"));
-        shareEnderCommandInGameMessageHover = ChatColorUtils.translateAlternateColorCodes('&', String.join("\n", config.getConfiguration().getStringList("DiscordCommands.ShareEnderChest.InGameMessage.Hover")));
-        shareEnderCommandTitle = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("DiscordCommands.ShareEnderChest.InventoryTitle"));
-
-        showDurability = config.getConfiguration().getBoolean("ToolTipSettings.ShowDurability");
-        showArmorColor = config.getConfiguration().getBoolean("ToolTipSettings.ShowArmorColor");
-        showMapScale = config.getConfiguration().getBoolean("ToolTipSettings.ShowMapScale");
-        showFireworkRocketDetailsInCrossbow = config.getConfiguration().getBoolean("ToolTipSettings.ShowFireworkRocketDetailsInCrossbow");
-        showAdvanceDetails = config.getConfiguration().getBoolean("ToolTipSettings.ShowAdvanceDetails");
-
-        allowSlotSelection = config.getConfiguration().getBoolean("DiscordItemDetailsAndInteractions.AllowInventorySelection");
-        showMaps = config.getConfiguration().getBoolean("DiscordItemDetailsAndInteractions.ShowMaps");
-        showBooks = config.getConfiguration().getBoolean("DiscordItemDetailsAndInteractions.ShowBooks");
-        showContainers = config.getConfiguration().getBoolean("DiscordItemDetailsAndInteractions.ShowContainers");
-
-        rendererThreads = config.getConfiguration().getInt("Settings.RendererSettings.RendererThreads");
-        useBungeecord = config.getConfiguration().getBoolean("Settings.Bungeecord");
-        parsePAPIOnMainThread = config.getConfiguration().getBoolean("Settings.parsePAPIOnMainThread");
-
-        chatTabCompletionsEnabled = config.getConfiguration().getBoolean("TabCompletion.ChatTabCompletion.Enabled");
-        useTooltipOnTab = config.getConfiguration().getBoolean("TabCompletion.PlayerNameTooltip.Enabled");
-        tabTooltip = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("TabCompletion.PlayerNameTooltip.Tooltip"));
-
-        previewMaps = config.getConfiguration().getBoolean("InventoryImage.Item.PreviewMaps");
-
         try {
-            ItemStack unknown = new ItemStack(Material.valueOf(config.getConfiguration().getString("Settings.UnknownItem.ReplaceItem").toUpperCase()));
+            ItemStack unknown = new ItemStack(Material.valueOf(Config.i().getSettings().unknownItem().replaceItem().toUpperCase()));
             ItemMeta meta = unknown.getItemMeta();
-            meta.setDisplayName(ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Settings.UnknownItem.DisplayName")));
-            meta.setLore(config.getConfiguration().getStringList("Settings.UnknownItem.Lore").stream().map(each -> ChatColorUtils.translateAlternateColorCodes('&', each)).collect(Collectors.toList()));
+            meta.setDisplayName(ChatColorUtils.translateAlternateColorCodes('&', Config.i().getSettings().unknownItem().displayName()));
+            meta.setLore(Config.i().getSettings().unknownItem().lore().stream().map(each -> ChatColorUtils.translateAlternateColorCodes('&', each)).collect(Collectors.toList()));
             unknown.setItemMeta(meta);
             this.unknownReplaceItem = unknown;
         } catch (Exception e) {
-            ItemStack unknown = ICMaterial.from(config.getConfiguration().getString("Settings.UnknownItem.ReplaceItem")).parseItem();
+            ItemStack unknown = ICMaterial.from(Config.i().getSettings().unknownItem().replaceItem()).parseItem();
             unknown.setAmount(1);
             ItemMeta meta = unknown.getItemMeta();
-            meta.setDisplayName(ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("Settings.UnknownItem.DisplayName")));
-            meta.setLore(config.getConfiguration().getStringList("Settings.UnknownItem.Lore").stream().map(each -> ChatColorUtils.translateAlternateColorCodes('&', each)).collect(Collectors.toList()));
+            meta.setDisplayName(ChatColorUtils.translateAlternateColorCodes('&', Config.i().getSettings().unknownItem().displayName()));
+            meta.setLore(Config.i().getSettings().unknownItem().lore().stream().map(each -> ChatColorUtils.translateAlternateColorCodes('&', each)).collect(Collectors.toList()));
             unknown.setItemMeta(meta);
             this.unknownReplaceItem = unknown;
         }
 
-        rgbTags = config.getConfiguration().getBoolean("Settings.FormattingTags.AllowRGBTags");
-        additionalRGBFormats = config.getConfiguration().getStringList("Settings.FormattingTags.AdditionalRGBFormats").stream().map(each -> Pattern.compile(each)).collect(Collectors.toList());;
+        additionalRGBFormats = Config.i().getSettings().formattingTags().additionalRGBFormats().stream().map(each -> Pattern.compile(each)).collect(Collectors.toList());
 
-        language = config.getConfiguration().getString("Resources.Language");
-        LanguageUtils.loadTranslations(language);
-        forceUnicode = config.getConfiguration().getBoolean("Resources.ForceUnicodeFont");
+        LanguageUtils.loadTranslations(Config.i().getResources().language());
 
-        itemTagMaxLength = config.getConfiguration().getInt("Settings.ItemTagMaxLength");
-        sendOriginalIfTooLong = config.getConfiguration().getBoolean("Settings.SendOriginalMessageIfExceedLengthLimit");
+        Pattern itemPlaceholderPattern = Pattern.compile(Config.i().getPlaceholders().item());
+        Pattern inventoryPlaceholderPattern = Pattern.compile(Config.i().getPlaceholders().inventory());
+        Pattern enderChestPlaceholderPattern = Pattern.compile(Config.i().getPlaceholders().enderChest());
 
-        Pattern itemPlaceholderPattern = Pattern.compile(config.getConfiguration().getString("Placeholders.Item"));
-        Pattern inventoryPlaceholderPattern = Pattern.compile(config.getConfiguration().getString("Placeholders.Inventory"));
-        Pattern enderChestPlaceholderPattern = Pattern.compile(config.getConfiguration().getString("Placeholders.EnderChest"));
-
-        if (itemImage) {
-            String description = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("InventoryImage.Item.Description"));
-            itemPlaceholder = new BuiltInPlaceholder(itemPlaceholderPattern, itemTitle, description, "", config.getConfiguration().getLong("InventoryImage.Item.Cooldown") * 1000);
+        if (Config.i().getInventoryImage().item().enabled()) {
+            String description = ChatColorUtils.translateAlternateColorCodes('&', Config.i().getInventoryImage().item().description());
+            itemPlaceholder = new BuiltInPlaceholder(itemPlaceholderPattern, Config.i().getInventoryImage().item().itemTitle(), description, "", Config.i().getInventoryImage().item().cooldown() * 1000L);
             placeholderList.put(itemPlaceholder.getInternalId(), itemPlaceholder);
         }
-        if (invImage) {
-            String description = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("InventoryImage.Inventory.Description"));
-            inventoryPlaceholder = new BuiltInPlaceholder(inventoryPlaceholderPattern, inventoryTitle, description, "", config.getConfiguration().getLong("InventoryImage.Inventory.Cooldown") * 1000);
+        if (Config.i().getInventoryImage().inventory().enabled()) {
+            String description = ChatColorUtils.translateAlternateColorCodes('&', Config.i().getInventoryImage().inventory().description());
+            inventoryPlaceholder = new BuiltInPlaceholder(inventoryPlaceholderPattern, Config.i().getInventoryImage().inventory().inventoryTitle(), description, "", Config.i().getInventoryImage().inventory().cooldown() * 1000L);
             placeholderList.put(inventoryPlaceholder.getInternalId(), inventoryPlaceholder);
         }
-        if (enderImage) {
-            String description = ChatColorUtils.translateAlternateColorCodes('&', config.getConfiguration().getString("InventoryImage.EnderChest.Description"));
-            enderChestPlaceholder = new BuiltInPlaceholder(enderChestPlaceholderPattern, enderTitle, description, "", config.getConfiguration().getLong("InventoryImage.EnderChest.Cooldown") * 1000);
+        if (Config.i().getInventoryImage().enderChest().enabled()) {
+            String description = ChatColorUtils.translateAlternateColorCodes('&', Config.i().getInventoryImage().enderChest().description());
+            enderChestPlaceholder = new BuiltInPlaceholder(enderChestPlaceholderPattern, Config.i().getInventoryImage().enderChest().inventoryTitle(), description, "", Config.i().getInventoryImage().enderChest().cooldown() * 1000L);
             placeholderList.put(enderChestPlaceholder.getInternalId(), enderChestPlaceholder);
         }
 
-        invFrame1 = new ItemStack(Material.valueOf(config.getConfiguration().getString("InventoryImage.Inventory.Frame.Primary")), 1);
-        invFrame2 = new ItemStack(Material.valueOf(config.getConfiguration().getString("InventoryImage.Inventory.Frame.Secondary")), 1);
-
-        itemFrame1 = new ItemStack(Material.valueOf(config.getConfiguration().getString("InventoryImage.Item.Frame.Primary")), 1);
-        itemFrame2 = new ItemStack(Material.valueOf(config.getConfiguration().getString("InventoryImage.Item.Frame.Secondary")), 1);
-
-        universalCooldown = config.getConfiguration().getLong("Settings.UniversalCooldown") * 1000;
-
-        FontTextureResource.setCacheTime(cacheTimeout);
+        FontTextureResource.setCacheTime(Config.i().getSettings().cacheTimeout() * 20L);
 
         discordsrv.reloadRegexes();
     }
@@ -745,7 +400,7 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
             try {
                 if (!resourceReloadLock.tryLock(0, TimeUnit.MILLISECONDS)) {
-                    sendMessage("<yellow>Resource reloading already in progress!", senders);
+                    ChatUtils.sendMessage("<yellow>Resource reloading already in progress!", senders);
                     return;
                 }
             } catch (InterruptedException e) {
@@ -772,8 +427,8 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
 
                 File serverResourcePackFolder = new File(getDataFolder(), "server-resource-packs");
                 File serverResourcePack = null;
-                if (includeServerResourcePack) {
-                    sendMessage("<aqua>Checking for server resource pack...", senders);
+                if (Config.i().getResources().includeServerResourcePack()) {
+                    ChatUtils.sendMessage("<aqua>Checking for server resource pack...", senders);
                     ServerResourcePackDownloadResult result = AssetsDownloader.downloadServerResourcePack(serverResourcePackFolder);
                     serverResourcePack = result.getResourcePackFile();
                     if (result.getError() != null) {
@@ -781,38 +436,38 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
                     }
                     switch (result.getType()) {
                         case SUCCESS_NO_CHANGES:
-                            sendMessage("<green>Server resource pack found with verification hash: No changes", senders);
+                            ChatUtils.sendMessage("<green>Server resource pack found with verification hash: No changes", senders);
                             resourceList.add(serverResourcePack.getName());
                             break;
                         case SUCCESS_WITH_HASH:
-                            sendMessage("<green>Server resource pack found with verification hash: Hash changed, downloaded", senders);
+                            ChatUtils.sendMessage("<green>Server resource pack found with verification hash: Hash changed, downloaded", senders);
                             resourceList.add(serverResourcePack.getName());
                             break;
                         case SUCCESS_NO_HASH:
-                            sendMessage("<green>Server resource pack found without verification hash: Downloaded", senders);
+                            ChatUtils.sendMessage("<green>Server resource pack found without verification hash: Downloaded", senders);
                             resourceList.add(serverResourcePack.getName());
                             break;
                         case FAILURE_WRONG_HASH:
-                            sendMessage("<red>Server resource pack had wrong hash (expected " + result.getExpectedHash() + ", found " + result.getPackHash() + ")", senders);
-                            sendMessage("<red>Server resource pack will not be applied: Hash check failure", senders);
+                            ChatUtils.sendMessage("<red>Server resource pack had wrong hash (expected " + result.getExpectedHash() + ", found " + result.getPackHash() + ")", senders);
+                            ChatUtils.sendMessage("<red>Server resource pack will not be applied: Hash check failure", senders);
                             break;
                         case FAILURE_DOWNLOAD:
-                            sendMessage("<red>Failed to download server resource pack", senders);
+                            ChatUtils.sendMessage("<red>Failed to download server resource pack", senders);
                             break;
                         case NO_PACK:
-                            sendMessage("<red>No server resource pack found.", senders);
+                            ChatUtils.sendMessage("<red>No server resource pack found.", senders);
                             break;
                     }
                 }
 
-                sendMessage("<aqua>Reloading ResourceManager: <yellow>" + String.join(", ", resourceList), senders);
+                ChatUtils.sendMessage("<aqua>Reloading ResourceManager: <yellow>" + String.join(", ", resourceList), senders);
 
                 List<ModManagerSupplier<?>> mods = new ArrayList<>();
-                if (chimeOverrideModels) {
-                    mods.add(manager -> new ChimeManager(manager));
+                if (Config.i().getResources().chimeOverrideModels()) {
+                    mods.add(ChimeManager::new);
                 }
-                if (optifineCustomTextures) {
-                    mods.add(manager -> new OptifineManager(manager));
+                if (Config.i().getResources().optifineCustomTextures()) {
+                    mods.add(OptifineManager::new);
                 }
 
                 Bukkit.getPluginManager().callEvent(new ResourceManagerInitializeEvent(mods));
@@ -835,10 +490,10 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
                 );
 
                 for (Entry<String, ModManager> entry : resourceManager.getModManagers().entrySet()) {
-                    sendMessage("<gray>Registered ModManager \"" + entry.getKey() + "\" of class \"" + entry.getValue().getClass().getName() + "\"", senders);
+                    ChatUtils.sendMessage("<gray>Registered ModManager \"" + entry.getKey() + "\" of class \"" + entry.getValue().getClass().getName() + "\"", senders);
                 }
 
-                resourceManager.getFontManager().setDefaultKey(forceUnicode ? FontManager.UNIFORM_FONT : FontManager.DEFAULT_FONT);
+                resourceManager.getFontManager().setDefaultKey(Config.i().getResources().forceUnicodeFont() ? FontManager.UNIFORM_FONT : FontManager.DEFAULT_FONT);
                 resourceManager.getLanguageManager().setTranslateFunction((translateKey, fallback, language) -> LanguageUtils.getTranslation(translateKey, language).getResultOrFallback(fallback));
                 resourceManager.getLanguageManager().setAvailableLanguagesSupplier(() -> LanguageUtils.getLoadedLanguages());
                 resourceManager.getLanguageManager().registerReloadListener(e -> {
@@ -848,51 +503,51 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
                     }
                 });
 
-                MultiChatDiscordSrvAddon.plugin.sendMessage("<yellow>Loading \"Default\" resources...", senders);
+                ChatUtils.sendMessage("<yellow>Loading \"Default\" resources...", senders);
                 resourceManager.loadResources(new File(getDataFolder() + "/built-in", "Default"), ResourcePackType.BUILT_IN, true);
                 for (String resourceName : resourceOrder) {
                     try {
-                        MultiChatDiscordSrvAddon.plugin.sendMessage("<yellow>Loading \"" + resourceName + "\" resources...", senders);
+                        ChatUtils.sendMessage("<yellow>Loading \"" + resourceName + "\" resources...", senders);
                         File resourcePackFile = new File(getDataFolder(), "resourcepacks/" + resourceName);
                         ResourcePackInfo info = resourceManager.loadResources(resourcePackFile, ResourcePackType.LOCAL);
                         if (info.getStatus()) {
                             if (info.compareServerPackFormat(ResourceRegistry.RESOURCE_PACK_VERSION) > 0) {
-                                sendMessage("<yellow>Warning: \"" + resourceName + "\" was made for a newer version of Minecraft!", senders);
+                                ChatUtils.sendMessage("<yellow>Warning: \"" + resourceName + "\" was made for a newer version of Minecraft!", senders);
                             } else if (info.compareServerPackFormat(ResourceRegistry.RESOURCE_PACK_VERSION) < 0) {
-                                sendMessage("<yellow>Warning: \"" + resourceName + "\" was made for an older version of Minecraft!", senders);
+                                ChatUtils.sendMessage("<yellow>Warning: \"" + resourceName + "\" was made for an older version of Minecraft!", senders);
                             }
                         } else {
                             if (info.getRejectedReason() == null) {
-                                sendMessage("<red>Unable to load \"" + resourceName + "\"", senders);
+                                ChatUtils.sendMessage("<red>Unable to load \"" + resourceName + "\"", senders);
                             } else {
-                                sendMessage("<red>Unable to load \"" + resourceName + "\", Reason: " + info.getRejectedReason(), senders);
+                                ChatUtils.sendMessage("<red>Unable to load \"" + resourceName + "\", Reason: " + info.getRejectedReason(), senders);
                             }
                         }
                     } catch (Exception e) {
-                        sendMessage("<red>Unable to load \"" + resourceName + "\"", senders);
+                        ChatUtils.sendMessage("<red>Unable to load \"" + resourceName + "\"", senders);
                         e.printStackTrace();
                     }
                 }
-                if (includeServerResourcePack && serverResourcePack != null && serverResourcePack.exists()) {
+                if (Config.i().getResources().includeServerResourcePack() && serverResourcePack != null && serverResourcePack.exists()) {
                     String resourceName = serverResourcePack.getName();
                     try {
-                        MultiChatDiscordSrvAddon.plugin.sendMessage("<yellow>Loading \"" + resourceName + "\" resources...", senders);
+                        ChatUtils.sendMessage("<yellow>Loading \"" + resourceName + "\" resources...", senders);
                         ResourcePackInfo info = resourceManager.loadResources(serverResourcePack, ResourcePackType.SERVER);
                         if (info.getStatus()) {
                             if (info.compareServerPackFormat(ResourceRegistry.RESOURCE_PACK_VERSION) > 0) {
-                                sendMessage("<yellow>Warning: \"" + resourceName + "\" was made for a newer version of Minecraft!", senders);
+                                ChatUtils.sendMessage("<yellow>Warning: \"" + resourceName + "\" was made for a newer version of Minecraft!", senders);
                             } else if (info.compareServerPackFormat(ResourceRegistry.RESOURCE_PACK_VERSION) < 0) {
-                                sendMessage("<yellow>Warning: \"" + resourceName + "\" was made for an older version of Minecraft!", senders);
+                                ChatUtils.sendMessage("<yellow>Warning: \"" + resourceName + "\" was made for an older version of Minecraft!", senders);
                             }
                         } else {
                             if (info.getRejectedReason() == null) {
-                                sendMessage("<red>Unable to load \"" + resourceName + "\"", senders);
+                                ChatUtils.sendMessage("<red>Unable to load \"" + resourceName + "\"", senders);
                             } else {
-                                sendMessage("<red>Unable to load \"" + resourceName + "\", Reason: " + info.getRejectedReason(), senders);
+                                ChatUtils.sendMessage("<red>Unable to load \"" + resourceName + "\", Reason: " + info.getRejectedReason(), senders);
                             }
                         }
                     } catch (Exception e) {
-                        sendMessage("<red>Unable to load \"" + resourceName + "\"", senders);
+                        ChatUtils.sendMessage("<red>Unable to load \"" + resourceName + "\"", senders);
                         e.printStackTrace();
                     }
                 }
@@ -901,10 +556,10 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
                     MultiChatDiscordSrvAddon.plugin.resourceManager = resourceManager;
 
                     if (resourceManager.getResourcePackInfo().stream().allMatch(each -> each.getStatus())) {
-                        sendMessage("<aqua>Loaded all resources!", senders);
+                        ChatUtils.sendMessage("<aqua>Loaded all resources!", senders);
                         isReady = true;
                     } else {
-                        sendMessage("<red>There is a problem while loading resources.", senders);
+                        ChatUtils.sendMessage("<red>There is a problem while loading resources.", senders);
                     }
                     return null;
                 }).get();
@@ -914,12 +569,6 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
                 resourceReloadLock.unlock();
             }
         });
-    }
-
-    public void sendMessage(Object message, CommandSender... senders) {
-        for (CommandSender sender : senders) {
-            audience.sender(sender).sendMessage(message instanceof Component ? MiniMessage.miniMessage().deserialize(ICLogger.PREFIX).append(Component.text(" ")).append((Component) message) : MiniMessage.miniMessage().deserialize(ICLogger.PREFIX + " " + message));
-        }
     }
 
 }

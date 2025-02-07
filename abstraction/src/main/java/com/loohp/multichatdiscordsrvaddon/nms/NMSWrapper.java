@@ -177,7 +177,7 @@ public abstract class NMSWrapper {
 
     public abstract CustomModelData getCustomModelData(ItemStack itemStack);
 
-    public abstract boolean hasDataComponent(ItemStack itemStack, String componentName, boolean ignoreDefault);
+    public abstract boolean hasDataComponent(ItemStack itemStack, Key componentName, boolean ignoreDefault);
 
     public abstract String getBlockStateProperty(ItemStack itemStack, String property);
 

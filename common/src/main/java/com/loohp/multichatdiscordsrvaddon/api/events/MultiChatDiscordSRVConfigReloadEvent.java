@@ -25,7 +25,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Fired when /icd reloadconfig is used
+ * Fired when /multichat reloadconfig is used
  *
  * @author LOOHP
  */

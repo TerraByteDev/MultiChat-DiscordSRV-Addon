@@ -22,6 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.listeners;
 
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
+import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.ListenerPriority;
 import github.scarsz.discordsrv.api.Subscribe;
@@ -76,7 +77,7 @@ public class DiscordReadyEvents {
                         Member self = guild.getMember(jda.getSelfUser());
                         for (Permission permission : MultiChatDiscordSrvAddon.requiredPermissions) {
                             if (!self.hasPermission(channel, permission)) {
-                                MultiChatDiscordSrvAddon.plugin.sendMessage("<red>The bot used for DiscordSRV is missing the <yellow>" + permission.getName() + "<red> permission in the channel <yellow>" + channel.getName() + "<red> (Id: <yellow>" + channel.getId() + "<red>)");
+                                ChatUtils.sendMessage("<red>The bot used for DiscordSRV is missing the <yellow>" + permission.getName() + "<red> permission in the channel <yellow>" + channel.getName() + "<red> (Id: <yellow>" + channel.getId() + "<red>)");
                             }
                         }
                     }

@@ -30,6 +30,7 @@ Additionally, this plugin will display the filtered messages from your chat plug
 - Clean up some code (configs, commands)
 - Remove some support for some minor MC versions (read above)
 - Independent discord system, separate from DiscordSRV (optional) [WIP]
+- [Dynmap](https://github.com/webbukkit/dynmap) message filtering.
 
 > [!WARNING]
 > If you encounter bugs while using this fork, **do not report this to the original author!**\

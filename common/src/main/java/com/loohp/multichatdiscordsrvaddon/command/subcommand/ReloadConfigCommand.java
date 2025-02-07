@@ -1,6 +1,9 @@
 package com.loohp.multichatdiscordsrvaddon.command.subcommand;
 
 import com.loohp.multichatdiscordsrvaddon.api.events.MultiChatDiscordSRVConfigReloadEvent;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
+import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.annotations.Command;
@@ -24,18 +27,19 @@ public class ReloadConfigCommand {
             if (plugin.resourceReloadLock.tryLock(0, TimeUnit.MILLISECONDS)) {
                 try {
                     plugin.reloadConfig();
+                    ImageGeneration.onConfigReload();
                     Bukkit.getPluginManager().callEvent(new MultiChatDiscordSRVConfigReloadEvent());
-                    plugin.sendMessage(plugin.reloadConfigMessage, sender);
+                    ChatUtils.sendMessage(Config.i().getMessages().reloadConfig(), sender);
                 } catch (Throwable e) {
                     e.printStackTrace();
-                    plugin.sendMessage("<red>Whoops! Looks like something went wrong: <grey>" + e.getMessage(), sender);
+                    ChatUtils.sendMessage("<red>Whoops! Looks like something went wrong: <grey>" + e.getMessage(), sender);
                 } finally {
                     plugin.resourceReloadLock.unlock();
                 }
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
-            plugin.sendMessage("<red>Whoops! Looks like something went wrong: <grey>" + e.getMessage(), sender);
+            ChatUtils.sendMessage("<red>Whoops! Looks like something went wrong: <grey>" + e.getMessage(), sender);
         }
     }
 }

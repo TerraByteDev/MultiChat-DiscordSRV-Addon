@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.modules;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.api.events.ItemPlaceholderEvent;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICInventoryHolder;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
@@ -84,18 +85,18 @@ public class ItemDisplay {
         Bukkit.getPluginManager().callEvent(event);
         item = event.getItemStack();
 
-        return createItemDisplay(player, item, MultiChatDiscordSrvAddon.plugin.itemTitle, showHover, alternativeHover, preview);
+        return createItemDisplay(player, item, Config.i().getInventoryImage().item().itemTitle(), showHover, alternativeHover, preview);
     }
 
     public static Component createItemDisplay(OfflinePlayer player, ItemStack item) throws Exception {
-        return createItemDisplay(player, item, MultiChatDiscordSrvAddon.plugin.itemTitle, true, null, false);
+        return createItemDisplay(player, item, Config.i().getInventoryImage().item().itemTitle(), true, null, false);
     }
 
     public static Component createItemDisplay(OfflinePlayer player, ItemStack item, String rawTitle, boolean showHover, Component alternativeHover, boolean preview) throws Exception {
         if (item == null) {
             item = new ItemStack(Material.AIR);
         }
-        if (MultiChatDiscordSrvAddon.plugin.hideLodestoneCompassPos) {
+        if (Config.i().getSettings().hideLodestoneCompassPos()) {
             item = CompassUtils.hideLodestoneCompassPosition(item);
         }
 
@@ -108,7 +109,7 @@ public class ItemDisplay {
 
         String itemJson = ItemNBTUtils.getNMSItemStackJson(item);
         ItemStack trimmedItem = null;
-        if (MultiChatDiscordSrvAddon.plugin.sendOriginalIfTooLong && itemJson.length() > MultiChatDiscordSrvAddon.plugin.itemTagMaxLength) {
+        if (Config.i().getSettings().sendOriginalMessageIfExceedLengthLimit() && itemJson.length() > Config.i().getSettings().itemTagMaxLength()) {
             trimmedItem = new ItemStack(item.getType());
             trimmedItem.addUnsafeEnchantments(item.getEnchantments());
             if (itemMeta != null && itemMeta.hasDisplayName()) {
@@ -116,7 +117,7 @@ public class ItemDisplay {
                 Component name = NMS.getInstance().getItemStackDisplayName(item);
                 NMS.getInstance().setItemStackDisplayName(nameItem, name);
                 String newjson = ItemNBTUtils.getNMSItemStackJson(nameItem);
-                if (newjson.length() <= MultiChatDiscordSrvAddon.plugin.itemTagMaxLength) {
+                if (newjson.length() <= Config.i().getSettings().itemTagMaxLength()) {
                     trimmedItem = nameItem;
                 }
             }
@@ -126,7 +127,7 @@ public class ItemDisplay {
                 meta.setLore(item.getItemMeta().getLore());
                 loreItem.setItemMeta(meta);
                 String newjson = ItemNBTUtils.getNMSItemStackJson(loreItem);
-                if (newjson.length() <= MultiChatDiscordSrvAddon.plugin.itemTagMaxLength) {
+                if (newjson.length() <= Config.i().getSettings().itemTagMaxLength()) {
                     trimmedItem = loreItem;
                 }
             }
@@ -157,7 +158,7 @@ public class ItemDisplay {
         boolean isMapView = false;
 
         if (!preview) {
-            if (MultiChatDiscordSrvAddon.plugin.previewMaps && FilledMapUtils.isFilledMap(item)) {
+            if (Config.i().getInventoryImage().item().previewMaps() && FilledMapUtils.isFilledMap(item)) {
                 isMapView = true;
                 if (!MultiChatDiscordSrvAddon.plugin.mapDisplay.containsKey(sha1)) {
                     MultiChatDiscordSrvAddonAPI.addMapToMapSharedList(sha1, item);
@@ -166,9 +167,9 @@ public class ItemDisplay {
                 if (useInventoryView(item)) {
                     Inventory container = ((InventoryHolder) ((BlockStateMeta) item.getItemMeta()).getBlockState()).getInventory();
                     Inventory inv = Bukkit.createInventory(ICInventoryHolder.INSTANCE, container.getSize() + 9, title);
-                    ItemStack empty = MultiChatDiscordSrvAddon.plugin.itemFrame1.clone();
-                    if (item.getType().equals(MultiChatDiscordSrvAddon.plugin.itemFrame1.getType())) {
-                        empty = MultiChatDiscordSrvAddon.plugin.itemFrame2.clone();
+                    ItemStack empty = Config.i().getInventoryImage().item().frame().primary().clone();
+                    if (item.getType().equals(Config.i().getInventoryImage().item().frame().primary().getType())) {
+                        empty = Config.i().getInventoryImage().item().frame().secondary().clone();
                     }
                     if (empty.getItemMeta() != null) {
                         ItemMeta emptyMeta = empty.getItemMeta();
@@ -189,9 +190,9 @@ public class ItemDisplay {
                 } else {
                     if (VersionManager.version.isOld()) {
                         Inventory inv = Bukkit.createInventory(ICInventoryHolder.INSTANCE, 27, title);
-                        ItemStack empty = MultiChatDiscordSrvAddon.plugin.itemFrame1.clone();
-                        if (item.getType().equals(MultiChatDiscordSrvAddon.plugin.itemFrame1.getType())) {
-                            empty = MultiChatDiscordSrvAddon.plugin.itemFrame2.clone();
+                        ItemStack empty = Config.i().getInventoryImage().item().frame().primary().clone();
+                        if (item.getType().equals(Config.i().getInventoryImage().item().frame().primary().getType())) {
+                            empty = Config.i().getInventoryImage().item().frame().secondary().clone();
                         }
                         if (empty.getItemMeta() != null) {
                             ItemMeta emptyMeta = empty.getItemMeta();
@@ -205,9 +206,9 @@ public class ItemDisplay {
                         MultiChatDiscordSrvAddonAPI.addInventoryToItemShareList(MultiChatDiscordSrvAddonAPI.SharedType.ITEM, sha1, inv);
                     } else {
                         Inventory inv = Bukkit.createInventory(ICInventoryHolder.INSTANCE, InventoryType.DROPPER, title);
-                        ItemStack empty = MultiChatDiscordSrvAddon.plugin.itemFrame1.clone();
-                        if (item.getType().equals(MultiChatDiscordSrvAddon.plugin.itemFrame1.getType())) {
-                            empty = MultiChatDiscordSrvAddon.plugin.itemFrame2.clone();
+                        ItemStack empty = Config.i().getInventoryImage().item().frame().primary().clone();
+                        if (item.getType().equals(Config.i().getInventoryImage().item().frame().primary().getType())) {
+                            empty = Config.i().getInventoryImage().item().frame().secondary().clone();
                         }
                         if (empty.getItemMeta() != null) {
                             ItemMeta emptyMeta = empty.getItemMeta();
@@ -226,10 +227,10 @@ public class ItemDisplay {
         }
 
         if (trimmed) {
-            MultiChatDiscordSrvAddon.plugin.sendMessage("<red>Trimmed an item's display meta data as it's NBT exceeds the maximum characters allowed in the chat [THIS IS NOT A BUG]");
+            ChatUtils.sendMessage("<red>Trimmed an item's display meta data as it's NBT exceeds the maximum characters allowed in the chat [THIS IS NOT A BUG]");
         }
 
-        Component itemDisplayComponent = LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(player, itemAmount == 1 ? MultiChatDiscordSrvAddon.plugin.itemDisplaySingle : MultiChatDiscordSrvAddon.plugin.itemDisplayMultiple.replace("{Amount}", amountString))));
+        Component itemDisplayComponent = LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(player, itemAmount == 1 ? Config.i().getInventoryImage().item().embedDisplay().single() : Config.i().getInventoryImage().item().embedDisplay().multiple().replace("{Amount}", amountString))));
         itemDisplayComponent = itemDisplayComponent.replaceText(TextReplacementConfig.builder().matchLiteral("{Item}").replacement(itemDisplayNameComponent).build());
         if (showHover) {
             itemDisplayComponent = itemDisplayComponent.hoverEvent(hoverEvent);

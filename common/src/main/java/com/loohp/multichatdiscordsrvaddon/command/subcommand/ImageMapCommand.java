@@ -1,6 +1,8 @@
 package com.loohp.multichatdiscordsrvaddon.command.subcommand;
 
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents;
+import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import com.loohp.multichatdiscordsrvaddon.wrappers.GraphicsToPacketMapWrapper;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,7 +24,8 @@ public class ImageMapCommand {
             @Argument(value = "uuid") String uuid
     ) {
         if (!(sender instanceof Player)) {
-            plugin.sendMessage("<red>This command can only be executed by a player!", sender);
+            ChatUtils.sendMessage("<red>This command can only be executed by a player!", sender);
+            return;
         }
 
         try {
@@ -31,21 +34,21 @@ public class ImageMapCommand {
 
                 GraphicsToPacketMapWrapper imageMap = data.getImageMap();
                 if (imageMap.futureCancelled()) {
-                    plugin.sendMessage(plugin.linkExpired, sender);
+                    ChatUtils.sendMessage(Config.i().getMessages().linkExpired(), sender);
                 } else if (imageMap.futureCompleted()) {
                     if (imageMap.getColors() == null || imageMap.getColors().isEmpty()) {
-                        plugin.sendMessage(plugin.linkExpired, sender);
+                        ChatUtils.sendMessage(Config.i().getMessages().linkExpired(), sender);
                     } else {
                         imageMap.show((Player) sender);
                     }
                 } else {
-                    plugin.sendMessage(plugin.previewLoading, sender);
+                    ChatUtils.sendMessage(Config.i().getMessages().previewLoading(), sender);
                 }
             } else {
-                plugin.sendMessage(plugin.linkExpired, sender);
+                ChatUtils.sendMessage(Config.i().getMessages().linkExpired(), sender);
             }
         } catch (Exception e) {
-            plugin.sendMessage(plugin.linkExpired, sender);
+            ChatUtils.sendMessage(Config.i().getMessages().linkExpired(), sender);
         }
     }
 

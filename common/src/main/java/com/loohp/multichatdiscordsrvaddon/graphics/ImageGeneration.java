@@ -18,54 +18,79 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.loohp.multichatdiscordsrvaddon.graphics;
+package com.loohp.interactivechatdiscordsrvaddon.graphics;
 
 import com.loohp.blockmodelrenderer.blending.BlendingModes;
 import com.loohp.blockmodelrenderer.utils.ColorUtils;
-import com.cryptomorin.xseries.XMaterial;
-import com.loohp.multichatdiscordsrvaddon.objectholders.*;
-import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
-import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
-import com.loohp.multichatdiscordsrvaddon.utils.*;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.apache.commons.lang3.math.Fraction;
-import org.bukkit.OfflinePlayer;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
-import com.loohp.multichatdiscordsrvaddon.debug.Debug;
-import com.loohp.multichatdiscordsrvaddon.nms.NMS;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ToolTipComponent.ToolTipType;
-import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
-import com.loohp.multichatdiscordsrvaddon.resources.CacheObject;
-import com.loohp.multichatdiscordsrvaddon.resources.CustomItemTextureRegistry;
-import com.loohp.multichatdiscordsrvaddon.resources.ICacheManager;
-import com.loohp.multichatdiscordsrvaddon.resources.ModelLayer;
-import com.loohp.multichatdiscordsrvaddon.resources.ModelRenderer;
-import com.loohp.multichatdiscordsrvaddon.resources.ModelRenderer.PlayerModelItem;
-import com.loohp.multichatdiscordsrvaddon.resources.ModelRenderer.PlayerModelItemPosition;
-import com.loohp.multichatdiscordsrvaddon.resources.ModelRenderer.RawEnchantmentGlintData;
-import com.loohp.multichatdiscordsrvaddon.resources.ModelRenderer.RenderResult;
-import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
-import com.loohp.multichatdiscordsrvaddon.resources.definitions.equipment.EquipmentModelDefinition;
-import com.loohp.multichatdiscordsrvaddon.resources.fonts.MinecraftFont.FontRenderResult;
-import com.loohp.multichatdiscordsrvaddon.resources.languages.SpecificTranslateFunction;
-import com.loohp.multichatdiscordsrvaddon.resources.models.ModelDisplay.ModelDisplayPosition;
-import com.loohp.multichatdiscordsrvaddon.resources.mods.optifine.cit.EnchantmentProperties.OpenGLBlending;
-import com.loohp.multichatdiscordsrvaddon.resources.textures.EnchantmentGlintType;
-import com.loohp.multichatdiscordsrvaddon.resources.textures.GeneratedTextureResource;
-import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureManager;
-import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureMeta;
-import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureProperties;
-import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureResource;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentStringUtils.CharacterLengthProviderData;
-import com.loohp.multichatdiscordsrvaddon.utils.ItemRenderUtils.ItemStackProcessResult;
-import com.loohp.multichatdiscordsrvaddon.wrappers.ItemMapWrapper;
+import com.loohp.interactivechat.InteractiveChat;
+import com.loohp.interactivechat.libs.com.cryptomorin.xseries.XMaterial;
+import com.loohp.interactivechat.libs.net.kyori.adventure.key.Key;
+import com.loohp.interactivechat.libs.net.kyori.adventure.text.Component;
+import com.loohp.interactivechat.libs.net.kyori.adventure.text.format.NamedTextColor;
+import com.loohp.interactivechat.libs.net.kyori.adventure.text.format.TextColor;
+import com.loohp.interactivechat.libs.net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import com.loohp.interactivechat.libs.org.apache.commons.lang3.math.Fraction;
+import com.loohp.interactivechat.libs.org.json.simple.JSONArray;
+import com.loohp.interactivechat.libs.org.json.simple.JSONObject;
+import com.loohp.interactivechat.libs.org.json.simple.parser.JSONParser;
+import com.loohp.interactivechat.objectholders.ICMaterial;
+import com.loohp.interactivechat.objectholders.ICPlayer;
+import com.loohp.interactivechat.objectholders.OfflineICPlayer;
+import com.loohp.interactivechat.objectholders.ValuePairs;
+import com.loohp.interactivechat.objectholders.ValueTrios;
+import com.loohp.interactivechat.utils.ComponentStyling;
+import com.loohp.interactivechat.utils.CustomStringUtils;
+import com.loohp.interactivechat.utils.FilledMapUtils;
+import com.loohp.interactivechat.utils.HTTPRequestUtils;
+import com.loohp.interactivechat.utils.HashUtils;
+import com.loohp.interactivechat.utils.InteractiveChatComponentSerializer;
+import com.loohp.interactivechat.utils.ItemNBTUtils;
+import com.loohp.interactivechat.utils.MCVersion;
+import com.loohp.interactivechat.utils.SkinUtils;
+import com.loohp.interactivechatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
+import com.loohp.interactivechatdiscordsrvaddon.debug.Debug;
+import com.loohp.interactivechatdiscordsrvaddon.nms.NMSAddon;
+import com.loohp.interactivechatdiscordsrvaddon.objectholders.AdvancementType;
+import com.loohp.interactivechatdiscordsrvaddon.objectholders.CustomModelData;
+import com.loohp.interactivechatdiscordsrvaddon.objectholders.PaintingVariant;
+import com.loohp.interactivechatdiscordsrvaddon.objectholders.SteppedIntegerRange;
+import com.loohp.interactivechatdiscordsrvaddon.objectholders.TintColorProvider;
+import com.loohp.interactivechatdiscordsrvaddon.objectholders.ToolTipComponent;
+import com.loohp.interactivechatdiscordsrvaddon.objectholders.ToolTipComponent.ToolTipType;
+import com.loohp.interactivechatdiscordsrvaddon.registry.ResourceRegistry;
+import com.loohp.interactivechatdiscordsrvaddon.resources.CacheObject;
+import com.loohp.interactivechatdiscordsrvaddon.resources.CustomItemTextureRegistry;
+import com.loohp.interactivechatdiscordsrvaddon.resources.ICacheManager;
+import com.loohp.interactivechatdiscordsrvaddon.resources.ModelLayer;
+import com.loohp.interactivechatdiscordsrvaddon.resources.ModelRenderer;
+import com.loohp.interactivechatdiscordsrvaddon.resources.ModelRenderer.PlayerModelItem;
+import com.loohp.interactivechatdiscordsrvaddon.resources.ModelRenderer.PlayerModelItemPosition;
+import com.loohp.interactivechatdiscordsrvaddon.resources.ModelRenderer.RawEnchantmentGlintData;
+import com.loohp.interactivechatdiscordsrvaddon.resources.ModelRenderer.RenderResult;
+import com.loohp.interactivechatdiscordsrvaddon.resources.ResourceManager;
+import com.loohp.interactivechatdiscordsrvaddon.resources.definitions.equipment.EquipmentModelDefinition;
+import com.loohp.interactivechatdiscordsrvaddon.resources.fonts.MinecraftFont.FontRenderResult;
+import com.loohp.interactivechatdiscordsrvaddon.resources.languages.SpecificTranslateFunction;
+import com.loohp.interactivechatdiscordsrvaddon.resources.models.ModelDisplay.ModelDisplayPosition;
+import com.loohp.interactivechatdiscordsrvaddon.resources.mods.optifine.cit.EnchantmentProperties.OpenGLBlending;
+import com.loohp.interactivechatdiscordsrvaddon.resources.textures.EnchantmentGlintType;
+import com.loohp.interactivechatdiscordsrvaddon.resources.textures.GeneratedTextureResource;
+import com.loohp.interactivechatdiscordsrvaddon.resources.textures.TextureManager;
+import com.loohp.interactivechatdiscordsrvaddon.resources.textures.TextureMeta;
+import com.loohp.interactivechatdiscordsrvaddon.resources.textures.TextureProperties;
+import com.loohp.interactivechatdiscordsrvaddon.resources.textures.TextureResource;
+import com.loohp.interactivechatdiscordsrvaddon.utils.AnimatedTextureUtils;
+import com.loohp.interactivechatdiscordsrvaddon.utils.ArmorUtils;
+import com.loohp.interactivechatdiscordsrvaddon.utils.BundleUtils;
+import com.loohp.interactivechatdiscordsrvaddon.utils.ComponentStringUtils;
+import com.loohp.interactivechatdiscordsrvaddon.utils.ComponentStringUtils.CharacterLengthProviderData;
+import com.loohp.interactivechatdiscordsrvaddon.utils.ContainerTitlePrintingFunction;
+import com.loohp.interactivechatdiscordsrvaddon.utils.ItemRenderUtils;
+import com.loohp.interactivechatdiscordsrvaddon.utils.ItemRenderUtils.ItemStackProcessResult;
+import com.loohp.interactivechatdiscordsrvaddon.utils.KeyUtils;
+import com.loohp.interactivechatdiscordsrvaddon.utils.ModelUtils;
+import com.loohp.interactivechatdiscordsrvaddon.utils.TranslationKeyUtils;
+import com.loohp.interactivechatdiscordsrvaddon.wrappers.ItemMapWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -110,7 +135,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("deprecation")
 public class ImageGeneration {
 
-    public static final int MAP_ICON_PER_ROLE = VersionManager.version.isLegacy() ? 4 : 16;
+    public static final int MAP_ICON_PER_ROLE = InteractiveChat.version.isLegacy() ? 4 : 16;
     public static final int MAP_SIZE = 1120;
     public static final int SPACING = 36;
     public static final int DEFAULT_ITEM_RENDER_SIZE = 32;
@@ -137,9 +162,9 @@ public class ImageGeneration {
     public static final Color BUNDLE_WEIGHT_COLOR = new Color(85, 85, 255);
     public static final Color BUNDLE_WEIGHT_FULL_COLOR = new Color(255, 85, 85);
 
-    private static Supplier<ResourceManager> resourceManager = () -> MultiChatDiscordSrvAddon.plugin.getResourceManager();
-    private static Supplier<MCVersion> version = () -> VersionManager.version;
-    private static Supplier<String> language = () -> MultiChatDiscordSrvAddon.plugin.language;
+    private static Supplier<ResourceManager> resourceManager = () -> InteractiveChatDiscordSrvAddon.plugin.getResourceManager();
+    private static Supplier<MCVersion> version = () -> InteractiveChat.version;
+    private static Supplier<String> language = () -> InteractiveChatDiscordSrvAddon.plugin.language;
     private static Supplier<SpecificTranslateFunction> translateFunction = () -> resourceManager.get().getLanguageManager().getTranslateFunction().ofLanguage(language.get());
 
     public static BufferedImage getMissingImage(int width, int length) {
@@ -148,6 +173,10 @@ public class ImageGeneration {
 
     public static BufferedImage getRawEnchantedImage(TextureResource tintResource, BufferedImage source, int tick) {
         BufferedImage tintOriginal = tintResource.getTexture();
+        if (version.get().isOlderOrEqualTo(MCVersion.V1_14)) {
+            BufferedImage tinted = ImageUtils.changeColorTo(ImageUtils.copyImage(tintOriginal), ENCHANTMENT_GLINT_LEGACY_COLOR);
+            tintOriginal = ImageUtils.multiply(tintOriginal, tinted);
+        }
         if (tintResource.hasTextureMeta()) {
             TextureMeta meta = tintResource.getTextureMeta();
             if (meta.hasProperties()) {
@@ -193,7 +222,7 @@ public class ImageGeneration {
         return Collections.singletonList(new ValuePairs<>(resourceManager.get().getTextureManager().getTexture(type.getResourceLocation()), OpenGLBlending.GLINT));
     }
 
-    public static BufferedImage getAdvancementIcon(ItemStack item, AdvancementType advancementType, boolean completed, OfflinePlayer player) throws IOException {
+    public static BufferedImage getAdvancementIcon(ItemStack item, AdvancementType advancementType, boolean completed, OfflineICPlayer player) throws IOException {
         BufferedImage frame = ImageUtils.resizeImageAbs(getAdvancementFrame(advancementType, completed), 52, 52);
         BufferedImage itemImage = getSingleRawItemImage(item, player);
         Graphics2D g = frame.createGraphics();
@@ -202,20 +231,20 @@ public class ImageGeneration {
         return frame;
     }
 
-    public static BufferedImage getItemStackImage(ItemStack item, OfflinePlayer player) throws IOException {
+    public static BufferedImage getItemStackImage(ItemStack item, OfflineICPlayer player) throws IOException {
         return getItemStackImage(item, player, false);
     }
 
-    public static BufferedImage getItemStackImage(ItemStack item, OfflinePlayer player, int renderSize) throws IOException {
+    public static BufferedImage getItemStackImage(ItemStack item, OfflineICPlayer player, int renderSize) throws IOException {
         return getItemStackImage(item, player, false, renderSize);
     }
 
-    public static BufferedImage getItemStackImage(ItemStack item, OfflinePlayer player, boolean alternateAir) throws IOException {
+    public static BufferedImage getItemStackImage(ItemStack item, OfflineICPlayer player, boolean alternateAir) throws IOException {
         return getItemStackImage(item, player, alternateAir, DEFAULT_ITEM_RENDER_SIZE);
     }
 
-    public static BufferedImage getItemStackImage(ItemStack item, OfflinePlayer player, boolean alternateAir, int renderSize) throws IOException {
-        MultiChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
+    public static BufferedImage getItemStackImage(ItemStack item, OfflineICPlayer player, boolean alternateAir, int renderSize) throws IOException {
+        InteractiveChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
         Debug.debug("ImageGeneration creating item stack image " + item);
 
         double scale = (double) renderSize / DEFAULT_ITEM_RENDER_SIZE;
@@ -243,17 +272,17 @@ public class ImageGeneration {
         return background;
     }
 
-    public static BufferedImage getInventoryImage(Inventory inventory, OfflinePlayer player) throws Exception {
+    public static BufferedImage getInventoryImage(Inventory inventory, OfflineICPlayer player) throws Exception {
         return getInventoryImage(inventory, null, player);
     }
 
-    public static BufferedImage getInventoryImage(Inventory inventory, Component title, OfflinePlayer player) throws Exception {
-        MultiChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
-        MultiChatDiscordSrvAddon.plugin.inventoryImageCounter.incrementAndGet();
+    public static BufferedImage getInventoryImage(Inventory inventory, Component title, OfflineICPlayer player) throws Exception {
+        InteractiveChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
+        InteractiveChatDiscordSrvAddon.plugin.inventoryImageCounter.incrementAndGet();
         Debug.debug("ImageGeneration creating inventory image of " + player.getName());
 
-        String key = INVENTORY_CACHE_KEY + HashUtils.createSha1(title == null ? "Inventory" : MultiChatGsonComponentSerializer.gson().serialize(title), inventory);
-        if (!inventory.contains(XMaterial.COMPASS.parseMaterial()) && !inventory.contains(XMaterial.CLOCK.parseMaterial()) && Arrays.stream(inventory.getContents()).noneMatch(each -> each != null && !CustomModelData.isEmpty(NMS.getInstance().getCustomModelData(each)))) {
+        String key = INVENTORY_CACHE_KEY + HashUtils.createSha1(title == null ? "Inventory" : InteractiveChatComponentSerializer.gson().serialize(title), inventory);
+        if (!inventory.contains(XMaterial.COMPASS.parseMaterial()) && !inventory.contains(XMaterial.CLOCK.parseMaterial()) && Arrays.stream(inventory.getContents()).noneMatch(each -> each != null && !CustomModelData.isEmpty(NMSAddon.getInstance().getCustomModelData(each)))) {
             CacheObject<?> cache = resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).getCache(key);
             if (cache != null) {
                 return ImageUtils.copyImage((BufferedImage) cache.getObject());
@@ -263,7 +292,7 @@ public class ImageGeneration {
         int rows = inventory.getSize() / 9;
         GenericContainerBackgroundResult result = getGenericContainerBackground(rows, (image, x, y, fontSize, defaultTextColor) -> {
             Component defaultColorTitle = title == null ? Component.translatable(TranslationKeyUtils.getDefaultContainerTitle()).color(defaultTextColor) : title.colorIfAbsent(defaultTextColor);
-            return ImageUtils.printComponentShadowless(resourceManager.get(), image, defaultColorTitle, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), x, y, fontSize).getImage();
+            return ImageUtils.printComponentShadowless(resourceManager.get(), image, defaultColorTitle, InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), x, y, fontSize).getImage();
         });
         BufferedImage background = result.getBackgroundImage();
 
@@ -287,29 +316,28 @@ public class ImageGeneration {
         g.dispose();
 
         resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).putCache(key, target);
+
         return target;
     }
 
-    public static BufferedImage getPlayerInventoryImage(Inventory inventory, OfflinePlayer offlinePlayer) throws Exception {
-        OfflinePlayerData offlinePlayerData = PlayerUtils.getData(offlinePlayer);
-
-        ICPlayerEquipment equipment = offlinePlayerData.getEquipment();
-        ItemStack rightHand = offlinePlayerData.isRightHanded() ? equipment.getItemInMainHand() : equipment.getItemInOffHand();
-        ItemStack leftHand = offlinePlayerData.isRightHanded() ? equipment.getItemInMainHand() : equipment.getItemInOffHand();
-        return getPlayerInventoryImage(inventory, rightHand, leftHand, equipment.getHelmet(), equipment.getChestplate(), equipment.getLeggings(), equipment.getBoots(), offlinePlayer);
+    public static BufferedImage getPlayerInventoryImage(Inventory inventory, OfflineICPlayer player) throws Exception {
+        EntityEquipment equipment = player.getEquipment();
+        ItemStack rightHand = player.isRightHanded() ? player.getMainHandItem() : player.getOffHandItem();
+        ItemStack leftHand = player.isRightHanded() ? player.getOffHandItem() : player.getMainHandItem();
+        return getPlayerInventoryImage(inventory, rightHand, leftHand, equipment.getHelmet(), equipment.getChestplate(), equipment.getLeggings(), equipment.getBoots(), player);
     }
 
-    public static BufferedImage getPlayerInventoryImage(Inventory inventory, ItemStack puppetRightHand, ItemStack puppetLeftHand, ItemStack puppetHelmet, ItemStack puppetChestplate, ItemStack puppetLeggings, ItemStack puppetBoots, OfflinePlayer player) throws Exception {
-        MultiChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
-        MultiChatDiscordSrvAddon.plugin.inventoryImageCounter.incrementAndGet();
+    public static BufferedImage getPlayerInventoryImage(Inventory inventory, ItemStack puppetRightHand, ItemStack puppetLeftHand, ItemStack puppetHelmet, ItemStack puppetChestplate, ItemStack puppetLeggings, ItemStack puppetBoots, OfflineICPlayer player) throws Exception {
+        InteractiveChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
+        InteractiveChatDiscordSrvAddon.plugin.inventoryImageCounter.incrementAndGet();
         Debug.debug("ImageGeneration creating player inventory image of " + player.getName());
 
         BufferedImage background = resourceManager.get().getTextureManager().getTexture(ResourceRegistry.IC_GUI_TEXTURE_LOCATION + "player_inventory").getTexture(356, 336);
 
-        Object playerInventoryData = PlayerUtils.getProperty(player, "player_inventory");
+        Object playerInventoryData = player.getProperty("player_inventory");
         if (playerInventoryData != null && playerInventoryData instanceof BufferedImage) {
             BufferedImage playerBackground = ImageUtils.copyImage((BufferedImage) playerInventoryData);
-            Object mask = PlayerUtils.getProperty(player, "player_inventory_mask");
+            Object mask = player.getProperty("player_inventory_mask");
             if (mask == null) {
                 background = playerBackground;
             } else {
@@ -317,9 +345,8 @@ public class ImageGeneration {
             }
         }
 
-        OfflinePlayerData offlinePlayerData = PlayerUtils.getData(player);
-        String key = PLAYER_INVENTORY_CACHE_KEY + HashUtils.createSha1(PlayerUtils.isRightHanded(player), offlinePlayerData.getSelectedSlot(), 0, player.getUniqueId().toString(), inventory) + ImageUtils.hash(background);
-        if (!inventory.contains(XMaterial.COMPASS.parseMaterial()) && !inventory.contains(XMaterial.CLOCK.parseMaterial()) && Arrays.stream(inventory.getContents()).noneMatch(each -> each != null && !CustomModelData.isEmpty(NMS.getInstance().getCustomModelData(each)))) {
+        String key = PLAYER_INVENTORY_CACHE_KEY + HashUtils.createSha1(player.isRightHanded(), player.getSelectedSlot(), 0, player.getUniqueId().toString(), inventory) + ImageUtils.hash(background);
+        if (!inventory.contains(XMaterial.COMPASS.parseMaterial()) && !inventory.contains(XMaterial.CLOCK.parseMaterial()) && Arrays.stream(inventory.getContents()).noneMatch(each -> each != null && !CustomModelData.isEmpty(NMSAddon.getInstance().getCustomModelData(each)))) {
             CacheObject<?> cache = resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).getCache(key);
             if (cache != null) {
                 return ImageUtils.copyImage((BufferedImage) cache.getObject());
@@ -438,14 +465,14 @@ public class ImageGeneration {
         return target;
     }
 
-    private static BufferedImage getFullBodyImage(OfflinePlayer player, ItemStack rightHand, ItemStack leftHand, ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots) throws IOException {
-        MultiChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
+    private static BufferedImage getFullBodyImage(OfflineICPlayer player, ItemStack rightHand, ItemStack leftHand, ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots) throws IOException {
+        InteractiveChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
         Debug.debug("ImageGeneration creating puppet image of " + player.getName());
 
         World world;
         LivingEntity livingEntity;
-        if (player.isOnline() && PlayerUtils.isLocal(player)) {
-            livingEntity = player.getPlayer();
+        if (player.isOnline() && player.getPlayer().isLocal()) {
+            livingEntity = player.getPlayer().getLocalPlayer();
             world = livingEntity.getWorld();
         } else {
             livingEntity = null;
@@ -457,9 +484,9 @@ public class ImageGeneration {
         BufferedImage cape;
         try {
             JSONObject json;
-            Player icPlayer = player.getPlayer();
-            if (icPlayer != null && PlayerUtils.isLocal(player)) {
-                json = (JSONObject) new JSONParser().parse(SkinUtils.getSkinJsonFromProfile(player.getPlayer()));
+            ICPlayer icPlayer = player.getPlayer();
+            if (icPlayer != null && icPlayer.isLocal()) {
+                json = (JSONObject) new JSONParser().parse(SkinUtils.getSkinJsonFromProfile(((ICPlayer) player).getLocalPlayer()));
             } else {
                 json = (JSONObject) new JSONParser().parse(new String(Base64.getDecoder().decode(((JSONObject) ((JSONArray) HTTPRequestUtils.getJSONResponse(PLAYER_INFO_URL.replace("%s", player.getUniqueId().toString())).get("properties")).get(0)).get("value").toString())));
             }
@@ -552,7 +579,7 @@ public class ImageGeneration {
             }
             if (leggingsImage != null) {
                 ItemMeta meta = leggings.getItemMeta();
-                if (VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20) && meta instanceof ArmorMeta) {
+                if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_20) && meta instanceof ArmorMeta) {
                     ArmorTrim armorTrim = ((ArmorMeta) meta).getTrim();
                     if (armorTrim != null) {
                         String material = armorTrim.getMaterial().getKey().getKey();
@@ -594,7 +621,7 @@ public class ImageGeneration {
             }
             if (bootsImage != null) {
                 ItemMeta meta = boots.getItemMeta();
-                if (VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20) && meta instanceof ArmorMeta) {
+                if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_20) && meta instanceof ArmorMeta) {
                     ArmorTrim armorTrim = ((ArmorMeta) meta).getTrim();
                     if (armorTrim != null) {
                         String material = armorTrim.getMaterial().getKey().getKey();
@@ -668,7 +695,7 @@ public class ImageGeneration {
             }
             if (chestplateImage != null) {
                 ItemMeta meta = chestplate.getItemMeta();
-                if (VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20) && meta instanceof ArmorMeta) {
+                if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_20) && meta instanceof ArmorMeta) {
                     ArmorTrim armorTrim = ((ArmorMeta) meta).getTrim();
                     if (armorTrim != null) {
                         String material = armorTrim.getMaterial().getKey().getKey();
@@ -711,7 +738,7 @@ public class ImageGeneration {
             }
             if (helmetImage != null) {
                 ItemMeta meta = helmet.getItemMeta();
-                if (VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20) && meta instanceof ArmorMeta) {
+                if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_20) && meta instanceof ArmorMeta) {
                     ArmorTrim armorTrim = ((ArmorMeta) meta).getTrim();
                     if (armorTrim != null) {
                         String material = armorTrim.getMaterial().getKey().getKey();
@@ -738,9 +765,9 @@ public class ImageGeneration {
             modelItems.put(PlayerModelItemPosition.HELMET, new PlayerModelItem(PlayerModelItemPosition.HELMET, modelLayers, modelLayers.stream().map(e -> resourceManager.get().getResourceRegistry(CustomItemTextureRegistry.IDENTIFIER, CustomItemTextureRegistry.class).getItemPostResolveFunction(e.getModelKey(), EquipmentSlot.HEAD, helmet, version.get().isOld(), e.getPredicates(), player, world, livingEntity, translateFunction.get()).orElse(null)).collect(Collectors.toList()), enchanted, enchantmentGlintFunction, rawEnchantmentGlintFunction));
         }
 
-        if (MultiChatDiscordSrvAddon.plugin.renderHandHeldItems) {
+        if (InteractiveChatDiscordSrvAddon.plugin.renderHandHeldItems) {
             if (rightHand != null && !rightHand.getType().equals(Material.AIR)) {
-                EquipmentSlot slot = PlayerUtils.isRightHanded(player) ? EquipmentSlot.HAND : EquipmentSlot.valueOf("OFF_HAND");
+                EquipmentSlot slot = player.isRightHanded() ? EquipmentSlot.HAND : EquipmentSlot.valueOf("OFF_HAND");
                 ItemStackProcessResult itemProcessResult = ItemRenderUtils.processItemForRendering(resourceManager.get(), player, rightHand, slot, ModelDisplayPosition.THIRDPERSON_RIGHTHAND, version.get().isOld(), language.get());
                 boolean enchanted = itemProcessResult.requiresEnchantmentGlint();
                 List<ModelLayer> modelLayers = itemProcessResult.getModelLayers();
@@ -750,7 +777,7 @@ public class ImageGeneration {
                 modelItems.put(PlayerModelItemPosition.RIGHT_HAND, new PlayerModelItem(PlayerModelItemPosition.RIGHT_HAND, modelLayers, modelLayers.stream().map(e -> resourceManager.get().getResourceRegistry(CustomItemTextureRegistry.IDENTIFIER, CustomItemTextureRegistry.class).getItemPostResolveFunction(e.getModelKey(), slot, rightHand, version.get().isOld(), e.getPredicates(), player, world, livingEntity, translateFunction.get()).orElse(null)).collect(Collectors.toList()), enchanted, enchantmentGlintFunction, rawEnchantmentGlintFunction));
             }
             if (leftHand != null && !leftHand.getType().equals(Material.AIR)) {
-                EquipmentSlot slot = PlayerUtils.isRightHanded(player) ? EquipmentSlot.valueOf("OFF_HAND") : EquipmentSlot.HAND;
+                EquipmentSlot slot = player.isRightHanded() ? EquipmentSlot.valueOf("OFF_HAND") : EquipmentSlot.HAND;
                 ItemStackProcessResult itemProcessResult = ItemRenderUtils.processItemForRendering(resourceManager.get(), player, leftHand, slot, ModelDisplayPosition.THIRDPERSON_LEFTHAND, version.get().isOld(), language.get());
                 boolean enchanted = itemProcessResult.requiresEnchantmentGlint();
                 List<ModelLayer> modelLayers = itemProcessResult.getModelLayers();
@@ -763,7 +790,7 @@ public class ImageGeneration {
 
         boolean upsideDown = ModelUtils.isRenderedUpsideDown(player.getName(), cape != null);
 
-        RenderResult renderResult = MultiChatDiscordSrvAddon.plugin.modelRenderer.renderPlayer(image.getWidth(), image.getHeight(), ModelRenderer.SINGLE_RENDER, resourceManager.get(), version.get().isOld(), slim, providedTextures, TintColorProvider.EMPTY_INSTANCE, modelItems);
+        RenderResult renderResult = InteractiveChatDiscordSrvAddon.plugin.modelRenderer.renderPlayer(image.getWidth(), image.getHeight(), ModelRenderer.SINGLE_RENDER, resourceManager.get(), version.get().isOld(), slim, providedTextures, TintColorProvider.EMPTY_INSTANCE, modelItems);
         Graphics2D g = image.createGraphics();
         BufferedImage resizedImage = ImageUtils.resizeImageAbs(renderResult.getImage(0), 117, 159);
         if (upsideDown) {
@@ -783,20 +810,20 @@ public class ImageGeneration {
         return image;
     }
 
-    private static BufferedImage getSingleRawItemImage(ItemStack item, OfflinePlayer player) throws IOException {
+    private static BufferedImage getSingleRawItemImage(ItemStack item, OfflineICPlayer player) throws IOException {
         return getSingleRawItemImage(item, player, DEFAULT_ITEM_RENDER_SIZE);
     }
 
-    private static BufferedImage getSingleRawItemImage(ItemStack item, OfflinePlayer player, int size) throws IOException {
+    private static BufferedImage getSingleRawItemImage(ItemStack item, OfflineICPlayer player, int size) throws IOException {
         return getRawItemImage(item, player, size, ModelRenderer.SINGLE_RENDER).get(0);
     }
 
-    private static List<BufferedImage> getRawItemImage(ItemStack item, OfflinePlayer player) throws IOException {
+    private static List<BufferedImage> getRawItemImage(ItemStack item, OfflineICPlayer player) throws IOException {
         return getRawItemImage(item, player, DEFAULT_ITEM_RENDER_SIZE, ModelRenderer.SINGLE_RENDER);
     }
 
-    private static List<BufferedImage> getRawItemImage(ItemStack item, OfflinePlayer player, int size, SteppedIntegerRange animationSpec) throws IOException {
-        MultiChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
+    private static List<BufferedImage> getRawItemImage(ItemStack item, OfflineICPlayer player, int size, SteppedIntegerRange animationSpec) throws IOException {
+        InteractiveChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
         Debug.debug("ImageGeneration creating raw item stack image " + (item == null ? "null" : ItemNBTUtils.getNMSItemStackJson(item)));
 
         double scale = (double) size / DEFAULT_ITEM_RENDER_SIZE;
@@ -811,7 +838,7 @@ public class ImageGeneration {
         Debug.debug("ImageGeneration rendering with model key " + modelLayers);
 
         BufferedImage[] itemImages;
-        RenderResult renderResult = MultiChatDiscordSrvAddon.plugin.modelRenderer.render(size, size, animationSpec, resourceManager.get(), version.get().isOld(), ModelDisplayPosition.GUI, modelLayers, requiresEnchantmentGlint, processResult.getEnchantmentGlintFunction(), processResult.getRawEnchantmentGlintFunction());
+        RenderResult renderResult = InteractiveChatDiscordSrvAddon.plugin.modelRenderer.render(size, size, animationSpec, resourceManager.get(), version.get().isOld(), ModelDisplayPosition.GUI, modelLayers, requiresEnchantmentGlint, processResult.getEnchantmentGlintFunction(), processResult.getRawEnchantmentGlintFunction());
         if (renderResult.isSuccessful()) {
             itemImages = renderResult.getImages();
         } else {
@@ -864,7 +891,7 @@ public class ImageGeneration {
                 if (amount <= 0) {
                     component = component.color(NamedTextColor.RED);
                 }
-                itemImages[i] = itemImage = ImageUtils.printComponentRightAligned(resourceManager.get(), newItemImage, component, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), (int) Math.round(33 * scale), (int) Math.round(17 * scale), (float) (16 * scale), ITEM_AMOUNT_TEXT_DARKEN_FACTOR).getImage();
+                itemImages[i] = itemImage = ImageUtils.printComponentRightAligned(resourceManager.get(), newItemImage, component, InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), (int) Math.round(33 * scale), (int) Math.round(17 * scale), (float) (16 * scale), ITEM_AMOUNT_TEXT_DARKEN_FACTOR).getImage();
             }
         }
 
@@ -882,7 +909,7 @@ public class ImageGeneration {
         } else {
             CompletableFuture<BufferedImage> future = new CompletableFuture<>();
             ItemStack finalItem = item.clone();
-            Bukkit.getScheduler().runTask(MultiChatDiscordSrvAddon.plugin, () -> {
+            Bukkit.getScheduler().runTask(InteractiveChatDiscordSrvAddon.plugin, () -> {
                 ItemMapWrapper data;
                 try {
                     data = new ItemMapWrapper(finalItem, player);
@@ -890,7 +917,7 @@ public class ImageGeneration {
                     future.completeExceptionally(e);
                     return;
                 }
-                Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
+                Bukkit.getScheduler().runTaskAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> {
                     try {
                         future.complete(getMapImage(data.getColors(), data.getMapCursors(), player));
                     } catch (Throwable e) {
@@ -906,7 +933,7 @@ public class ImageGeneration {
         if (colors != null && colors.length != 16384) {
             throw new IllegalArgumentException("Map color array is not null or of length 16384");
         }
-        MultiChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
+        InteractiveChatDiscordSrvAddon.plugin.imageCounter.incrementAndGet();
         Debug.debug("ImageGeneration creating map image with color and cursors");
 
         BufferedImage background = resourceManager.get().getTextureManager().getTexture(ResourceRegistry.MAP_TEXTURE_LOCATION + "map_background").getTexture();
@@ -963,8 +990,8 @@ public class ImageGeneration {
 
                 BufferedImage iconImage;
                 if (resourceManager.get().getNativeServerPackFormat() >= 24) {
-                    String assetName = NMS.getInstance().getMapCursorTypeKey(icon).value();
-                    iconImage = resourceManager.get().getTextureManager().getTexture(ResourceRegistry.DEFAULT_MAP_DECORATION_LOCATION + assetName).getTexture();
+                    String assetName = NMSAddon.getInstance().getMapCursorTypeKey(icon).asString();
+                    iconImage = resourceManager.get().getTextureManager().getTexture(assetName).getTexture();
                 } else {
                     int typeId = icon.getType().ordinal();
                     iconImage = ImageUtils.copyAndGetSubImage(asset, typeId % MAP_ICON_PER_ROLE * iconWidth, typeId / MAP_ICON_PER_ROLE * iconWidth, iconWidth, iconWidth);
@@ -990,7 +1017,7 @@ public class ImageGeneration {
                 g2.drawImage(iconCan, imageX - (iconCan.getWidth() / 2), imageY - (iconCan.getHeight() / 2), 96, 96, null);
 
                 if (component != null) {
-                    ImageUtils.printComponentShadowlessDynamicSize(resourceManager.get(), image, component, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), imageX, imageY + 32, 30, true);
+                    ImageUtils.printComponentShadowlessDynamicSize(resourceManager.get(), image, component, InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), imageX, imageY + 32, 30, true);
                 }
             }
         }
@@ -1015,7 +1042,7 @@ public class ImageGeneration {
         if (prints.isEmpty() || !(prints.get(0).getType().equals(ToolTipType.TEXT))) {
             Debug.debug("ImageGeneration creating tooltip image");
         } else {
-            Debug.debug("ImageGeneration creating tooltip image of " + MultiChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(prints.get(0).getToolTipComponent(ToolTipType.TEXT), translateFunction.get())));
+            Debug.debug("ImageGeneration creating tooltip image of " + InteractiveChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(prints.get(0).getToolTipComponent(ToolTipType.TEXT), translateFunction.get())));
         }
 
         if (allowLineBreaks) {
@@ -1052,7 +1079,7 @@ public class ImageGeneration {
         for (ToolTipComponent<?> print : prints) {
             ToolTipType<?> type = print.getType();
             if (type.equals(ToolTipType.TEXT)) {
-                ImageUtils.ComponentPrintResult printResult = ImageUtils.printComponent(resourceManager.get(), image, print.getToolTipComponent(ToolTipType.TEXT), MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), topX + 8, currentY, 16);
+                ImageUtils.ComponentPrintResult printResult = ImageUtils.printComponent(resourceManager.get(), image, print.getToolTipComponent(ToolTipType.TEXT), InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), topX + 8, currentY, 16);
                 int textWidth = printResult.getTextWidth();
                 if (textWidth > maxX) {
                     maxX = textWidth;
@@ -1148,16 +1175,16 @@ public class ImageGeneration {
         return output;
     }
 
-    public static BufferedImage getTabListImage(List<Component> header, List<Component> footer, List<ValueTrios<OfflinePlayer, Component, Integer>> players, boolean showAvatar, boolean showPing) {
+    public static BufferedImage getTabListImage(List<Component> header, List<Component> footer, List<ValueTrios<OfflineICPlayer, Component, Integer>> players, boolean showAvatar, boolean showPing) {
         return getTabListImage(header, footer, players, showAvatar, showPing, TABLIST_PLAYER_DISPLAY_LIMIT);
     }
 
-    public static BufferedImage getTabListImage(List<Component> header, List<Component> footer, List<ValueTrios<OfflinePlayer, Component, Integer>> players, boolean showAvatar, boolean showPing, int maxPlayerDisplayed) {
+    public static BufferedImage getTabListImage(List<Component> header, List<Component> footer, List<ValueTrios<OfflineICPlayer, Component, Integer>> players, boolean showAvatar, boolean showPing, int maxPlayerDisplayed) {
         players = players.subList(0, Math.min(players.size(), maxPlayerDisplayed));
         List<ValueTrios<BufferedImage, Integer, Color>> playerImages = new ArrayList<>(players.size());
         int masterOffsetX = 0;
-        for (ValueTrios<OfflinePlayer, Component, Integer> trio : players) {
-            OfflinePlayer player = trio.getFirst();
+        for (ValueTrios<OfflineICPlayer, Component, Integer> trio : players) {
+            OfflineICPlayer player = trio.getFirst();
             UUID uuid = player.getUniqueId();
             Component name = trio.getSecond();
             int ping = trio.getThird();
@@ -1212,9 +1239,9 @@ public class ImageGeneration {
                 offsetX += 2;
             }
             g.dispose();
-            ImageUtils.printComponent(resourceManager.get(), image, name, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), offsetX, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
-            int lastX = MultiChatDiscordSrvAddon.plugin.playerlistCommandMinWidth;
-            for (int x = MultiChatDiscordSrvAddon.plugin.playerlistCommandMinWidth; x < image.getWidth(); x++) {
+            ImageUtils.printComponent(resourceManager.get(), image, name, InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), offsetX, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
+            int lastX = InteractiveChatDiscordSrvAddon.plugin.playerlistCommandMinWidth;
+            for (int x = InteractiveChatDiscordSrvAddon.plugin.playerlistCommandMinWidth; x < image.getWidth(); x++) {
                 for (int y = 0; y < image.getHeight(); y++) {
                     if (image.getRGB(x, y) != 0) {
                         lastX = x;
@@ -1226,7 +1253,7 @@ public class ImageGeneration {
                 masterOffsetX = lastX;
             }
             Color color = null;
-            Object hex = PlayerUtils.getProperty(player, "tab_background_color");
+            Object hex = player.getProperties().get("tab_background_color");
             if (hex instanceof String) {
                 try {
                     color = Color.decode((String) hex);
@@ -1266,7 +1293,7 @@ public class ImageGeneration {
         Map<BufferedImage, Integer> headerLines = new LinkedHashMap<>(header.size());
         for (Component line : header) {
             BufferedImage image = new BufferedImage(2048, TABLIST_INTERNAL_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-            ImageUtils.printComponent(resourceManager.get(), image, line, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), 0, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
+            ImageUtils.printComponent(resourceManager.get(), image, line, InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), 0, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
             int lastX = 0;
             for (int x = 0; x < image.getWidth(); x++) {
                 for (int y = 0; y < image.getHeight(); y++) {
@@ -1286,7 +1313,7 @@ public class ImageGeneration {
         Map<BufferedImage, Integer> footerLines = new LinkedHashMap<>(footer.size());
         for (Component line : footer) {
             BufferedImage image = new BufferedImage(2048, TABLIST_INTERNAL_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-            ImageUtils.printComponent(resourceManager.get(), image, line, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), 0, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
+            ImageUtils.printComponent(resourceManager.get(), image, line, InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), 0, (TABLIST_INTERNAL_HEIGHT - 18) / 2 - 1, 16);
             int lastX = 0;
             for (int x = 0; x < image.getWidth(); x++) {
                 for (int y = 0; y < image.getHeight(); y++) {
@@ -1496,7 +1523,7 @@ public class ImageGeneration {
         }
     }
 
-    public static BufferedImage getBundleContainerInterface(OfflinePlayer OfflinePlayer, List<ItemStack> items) throws IOException {
+    public static BufferedImage getBundleContainerInterface(OfflineICPlayer offlineICPlayer, List<ItemStack> items) throws IOException {
         int packFormat = resourceManager.get().getNativeServerPackFormat();
 
         if (packFormat >= 39) {
@@ -1511,7 +1538,7 @@ public class ImageGeneration {
             BufferedImage image = new BufferedImage(192, 48 * h + 42, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g = image.createGraphics();
             for (int i = 0; i < items.size(); i++) {
-                BufferedImage itemImage = getSingleRawItemImage(items.get(i), OfflinePlayer);
+                BufferedImage itemImage = getSingleRawItemImage(items.get(i), offlineICPlayer);
                 int gridPosition = i + padToFour;
                 if (ResourceRegistry.RESOURCE_PACK_VERSION >= 46) {
                     g.drawImage(itemBackground, gridPosition % 4 * 48, gridPosition / 4 * 48 + 4, null);
@@ -1548,7 +1575,7 @@ public class ImageGeneration {
 
             if (bundleFullnessMessage != null) {
                 BufferedImage textImage = new BufferedImage(2048, 512, BufferedImage.TYPE_INT_ARGB);
-                ImageUtils.printComponent(resourceManager.get(), textImage, bundleFullnessMessage, MultiChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), 512, 256, 16);
+                ImageUtils.printComponent(resourceManager.get(), textImage, bundleFullnessMessage, InteractiveChatDiscordSrvAddon.plugin.language, version.get().isLegacyRGB(), 512, 256, 16);
                 int lastX = 512;
                 for (int x = 512; x < textImage.getWidth(); x++) {
                     for (int y = 0; y < textImage.getHeight(); y++) {
@@ -1599,7 +1626,7 @@ public class ImageGeneration {
                         i++;
                         if (i < items.size()) {
                             g.drawImage(slot, x, y, null);
-                            BufferedImage itemImage = getSingleRawItemImage(items.get(i), OfflinePlayer);
+                            BufferedImage itemImage = getSingleRawItemImage(items.get(i), offlineICPlayer);
                             g.drawImage(itemImage, x + 2, y + 2, null);
                         } else {
                             g.drawImage(isFull ? fullSlot : slot, x, y, null);
@@ -1644,7 +1671,7 @@ public class ImageGeneration {
                         if (i < items.size()) {
                             g.drawImage(slot, x, y, null);
                             g.drawImage(between, x, y + 36, null);
-                            BufferedImage itemImage = getSingleRawItemImage(items.get(i), OfflinePlayer);
+                            BufferedImage itemImage = getSingleRawItemImage(items.get(i), offlineICPlayer);
                             g.drawImage(itemImage, x + 2, y + 2, null);
                         } else {
                             g.drawImage(isFull ? fullSlot : slot, x, y, null);
@@ -1671,7 +1698,7 @@ public class ImageGeneration {
     public static Future<List<BufferedImage>> getBookInterface(List<Component> pages) {
         CompletableFuture<List<BufferedImage>> future = new CompletableFuture<>();
         List<Supplier<BufferedImage>> suppliers = getBookInterfaceSuppliers(pages);
-        Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> future.complete(suppliers.stream().map(each -> each.get()).collect(Collectors.toList())));
+        Bukkit.getScheduler().runTaskAsynchronously(InteractiveChatDiscordSrvAddon.plugin, () -> future.complete(suppliers.stream().map(each -> each.get()).collect(Collectors.toList())));
         return future;
     }
 
@@ -1702,12 +1729,12 @@ public class ImageGeneration {
                     g.drawImage(previousPage, 48, 313, null);
                 }
                 Component pageHeader = Component.translatable(TranslationKeyUtils.getBookPageIndicator()).arguments(Component.text(pageNumber), Component.text(totalPages)).color(NamedTextColor.BLACK);
-                ImageUtils.printComponentRightAligned(resourceManager.get(), page, pageHeader, MultiChatDiscordSrvAddon.plugin.language, VersionManager.version.isLegacyRGB(), 255, 30, 16, Double.NEGATIVE_INFINITY);
+                ImageUtils.printComponentRightAligned(resourceManager.get(), page, pageHeader, InteractiveChatDiscordSrvAddon.plugin.language, InteractiveChat.version.isLegacyRGB(), 255, 30, 16, Double.NEGATIVE_INFINITY);
 
                 BufferedImage temp = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
 
                 List<Component> lines = new ArrayList<>();
-                lines.addAll(ComponentStringUtils.applyWordWrap(component, resourceManager.get().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language), BOOK_LINE_LIMIT, new ToIntFunction<CharacterLengthProviderData>() {
+                lines.addAll(ComponentStringUtils.applyWordWrap(component, resourceManager.get().getLanguageManager().getTranslateFunction().ofLanguage(InteractiveChatDiscordSrvAddon.plugin.language), BOOK_LINE_LIMIT, new ToIntFunction<CharacterLengthProviderData>() {
                     int lastItalicExtraWidth = 0;
 
                     @Override
@@ -1722,7 +1749,7 @@ public class ImageGeneration {
                 int y = 58;
                 for (Component each : lines.subList(0, Math.min(lines.size(), BOOK_MAX_LINES))) {
                     each = each.colorIfAbsent(NamedTextColor.BLACK);
-                    ImageUtils.printComponent(resourceManager.get(), page, each, MultiChatDiscordSrvAddon.plugin.language, VersionManager.version.isLegacyRGB(), 34, y, 16, Double.NEGATIVE_INFINITY);
+                    ImageUtils.printComponent(resourceManager.get(), page, each, InteractiveChatDiscordSrvAddon.plugin.language, InteractiveChat.version.isLegacyRGB(), 34, y, 16, Double.NEGATIVE_INFINITY);
                     y += 18;
                 }
 
@@ -1738,10 +1765,13 @@ public class ImageGeneration {
         BufferedImage originalPaintingImage;
         if (resourceManager.get().getNativeServerPackFormat() >= 24) {
             originalPaintingImage = resourceManager.get().getTextureManager().getTexture(paintingVariant.getKey().asString()).getTexture();
-        } else {
+        } else if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_14)) {
             originalPaintingImage = resourceManager.get().getTextureManager().getTexture(ResourceRegistry.LEGACY_PAINTINGS_LOCATION + paintingVariant.getKey().value()).getTexture();
+        } else {
+            BufferedImage base = resourceManager.get().getTextureManager().getTexture(ResourceRegistry.LEGACY_SINGLE_PAINTING_LOCATION).getTexture();
+            int scale = base.getWidth() / 256;
+            originalPaintingImage = base.getSubimage(paintingVariant.getOffsetX() * scale, paintingVariant.getOffsetY() * scale, paintingVariant.getPixelWidth() * scale, paintingVariant.getPixelHeight() * scale);
         }
-
         int width = Math.min(243, paintingVariant.getPixelWidth() * 7);
         return ImageUtils.resizeImageFillWidth(originalPaintingImage, width);
     }
