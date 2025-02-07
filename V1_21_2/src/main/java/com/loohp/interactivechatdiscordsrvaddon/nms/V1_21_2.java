@@ -90,7 +90,6 @@ import net.minecraft.world.level.biome.BiomeBase;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.DecoratedPotPatterns;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
-import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -112,7 +111,6 @@ import org.bukkit.craftbukkit.v1_21_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_21_R2.inventory.trim.CraftTrimMaterial;
 import org.bukkit.craftbukkit.v1_21_R2.inventory.trim.CraftTrimPattern;
-import org.bukkit.craftbukkit.v1_21_R2.map.CraftMapCursor;
 import org.bukkit.craftbukkit.v1_21_R2.potion.CraftPotionEffectType;
 import org.bukkit.craftbukkit.v1_21_R2.potion.CraftPotionUtil;
 import org.bukkit.craftbukkit.v1_21_R2.util.CraftChatMessage;
@@ -182,9 +180,8 @@ public class V1_21_2 extends NMSAddonWrapper {
     @SuppressWarnings("PatternValidation")
     @Override
     public Key getMapCursorTypeKey(MapCursor mapCursor) {
-        MapDecorationType nmsType = CraftMapCursor.CraftType.bukkitToMinecraft(mapCursor.getType());
-        MinecraftKey key = nmsType.b();
-        return Key.key(key.b(), key.a());
+        NamespacedKey key = mapCursor.getType().getKey();
+        return Key.key(key.getNamespace(), key.getKey());
     }
 
     @SuppressWarnings("PatternValidation")
@@ -698,7 +695,7 @@ public class V1_21_2 extends NMSAddonWrapper {
     }
 
     @Override
-    public boolean hasDataComponent(ItemStack itemStack, Key componentName, boolean ignoreDefault) {
+    public boolean hasDataComponent(ItemStack itemStack, String componentName, boolean ignoreDefault) {
         return false;
     }
 

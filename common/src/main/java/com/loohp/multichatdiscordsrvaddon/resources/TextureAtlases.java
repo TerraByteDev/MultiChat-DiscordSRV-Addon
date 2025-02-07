@@ -116,8 +116,7 @@ public class TextureAtlases {
                                 String key = (String) o;
                                 permutations.put(key, (String) permutationsJson.get(key));
                             }
-                            String separator = (String) sourceJson.getOrDefault("separator", "_");
-                            textureAtlasSource = new TextureAtlasPalettedPermutationsSource(textures, paletteKey, permutations, separator);
+                            textureAtlasSource = new TextureAtlasPalettedPermutationsSource(textures, paletteKey, permutations);
                         } else {
                             continue;
                         }
@@ -495,13 +494,11 @@ public class TextureAtlases {
         private final List<String> textures;
         private final String paletteKey;
         private final Map<String, String> permutations;
-        private final String separator;
 
-        public TextureAtlasPalettedPermutationsSource(List<String> textures, String paletteKey, Map<String, String> permutations, String separator) {
+        public TextureAtlasPalettedPermutationsSource(List<String> textures, String paletteKey, Map<String, String> permutations) {
             this.textures = Collections.unmodifiableList(textures);
             this.paletteKey = paletteKey;
             this.permutations = Collections.unmodifiableMap(permutations);
-            this.separator = separator;
         }
 
         public List<String> getTextures() {
@@ -514,10 +511,6 @@ public class TextureAtlases {
 
         public Map<String, String> getPermutations() {
             return permutations;
-        }
-
-        public String getSeparator() {
-            return separator;
         }
 
         @Override

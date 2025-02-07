@@ -92,7 +92,6 @@ import net.minecraft.world.level.biome.BiomeBase;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.DecoratedPotPatterns;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
-import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -114,7 +113,6 @@ import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_21_R3.inventory.trim.CraftTrimMaterial;
 import org.bukkit.craftbukkit.v1_21_R3.inventory.trim.CraftTrimPattern;
-import org.bukkit.craftbukkit.v1_21_R3.map.CraftMapCursor;
 import org.bukkit.craftbukkit.v1_21_R3.potion.CraftPotionEffectType;
 import org.bukkit.craftbukkit.v1_21_R3.potion.CraftPotionUtil;
 import org.bukkit.craftbukkit.v1_21_R3.util.CraftChatMessage;
@@ -174,9 +172,8 @@ public class V1_21_4 extends NMSAddonWrapper {
     @SuppressWarnings("PatternValidation")
     @Override
     public Key getMapCursorTypeKey(MapCursor mapCursor) {
-        MapDecorationType nmsType = CraftMapCursor.CraftType.bukkitToMinecraft(mapCursor.getType());
-        MinecraftKey key = nmsType.b();
-        return Key.key(key.b(), key.a());
+        NamespacedKey key = mapCursor.getType().getKey();
+        return Key.key(key.getNamespace(), key.getKey());
     }
 
     @SuppressWarnings("PatternValidation")
@@ -687,14 +684,10 @@ public class V1_21_4 extends NMSAddonWrapper {
     }
 
     @Override
-    public boolean hasDataComponent(ItemStack itemStack, Key componentName, boolean ignoreDefault) {
+    public boolean hasDataComponent(ItemStack itemStack, String componentName, boolean ignoreDefault) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        Optional<DataComponentType<?>> optType = BuiltInRegistries.ao.b(MinecraftKey.a(componentName.namespace(), componentName.value()));
-        if (!optType.isPresent()) {
-            return false;
-        }
-        DataComponentType<?> dataComponentType = optType.get();
-        return ignoreDefault ? nmsItemStack.c(dataComponentType) : nmsItemStack.b(dataComponentType);
+        Optional<DataComponentType<?>> optType = BuiltInRegistries.ao.b(MinecraftKey.a(componentName));
+        return optType.map(dataComponentType -> ignoreDefault ? nmsItemStack.c(dataComponentType) : nmsItemStack.b(dataComponentType)).orElse(false);
     }
 
     @Override
@@ -831,21 +824,5 @@ public class V1_21_4 extends NMSAddonWrapper {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         return nmsItemStack.h().a(nmsItemStack, nmsPlayer);
     }
-
-//    @Override
-//    public Object getItemStackDataComponentValue(ItemStack itemStack, Key component) {
-//        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-//        DataComponentType<?> componentType = BuiltInRegistries.ao.a(MinecraftKey.a(component.namespace(), component.value()));
-//        return nmsItemStack.a(componentType);
-//    }
-//
-//    @Override
-//    public Object serializeDataComponent(Key component, String data) {
-//        DataComponentType<?> componentType = BuiltInRegistries.ao.a(MinecraftKey.a(component.namespace(), component.value()));
-//        IRegistryCustom registryAccess = ((CraftWorld)Bukkit.getWorlds().get(0)).getHandle().K_();
-//        JsonElement jsonElement = new Gson().fromJson(data, JsonElement.class);
-//        Object nativeJsonElement = NativeJsonConverter.toNative(jsonElement);
-//        return componentType.c().decode(registryAccess.a((DynamicOps<Object>) (DynamicOps<?>) JsonOps.INSTANCE), nativeJsonElement).getOrThrow().getFirst();
-//    }
 
 }
