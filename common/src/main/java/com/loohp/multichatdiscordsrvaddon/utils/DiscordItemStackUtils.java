@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 import com.google.common.collect.Multimap;
 import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
@@ -216,9 +217,9 @@ public class DiscordItemStackUtils {
         ICMaterial icMaterial = ICMaterial.from(item);
         String name = MultiChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(ItemStackUtils.getDisplayName(item), translationFunction));
         if (item.getAmount() == 1 || item == null || item.getType().equals(Material.AIR)) {
-            name = MultiChatDiscordSrvAddon.plugin.itemDisplaySingle.replace("{Item}", ComponentStringUtils.stripColorAndConvertMagic(name)).replace("{Amount}", String.valueOf(item.getAmount()));
+            name = Config.i().getInventoryImage().item().embedDisplay().single().replace("{Item}", ComponentStringUtils.stripColorAndConvertMagic(name)).replace("{Amount}", String.valueOf(item.getAmount()));
         } else {
-            name = MultiChatDiscordSrvAddon.plugin.itemDisplayMultiple.replace("{Item}", ComponentStringUtils.stripColorAndConvertMagic(name)).replace("{Amount}", String.valueOf(item.getAmount()));
+            name = Config.i().getInventoryImage().item().embedDisplay().multiple().replace("{Item}", ComponentStringUtils.stripColorAndConvertMagic(name)).replace("{Amount}", String.valueOf(item.getAmount()));
         }
 
         return name;
@@ -226,7 +227,7 @@ public class DiscordItemStackUtils {
 
     @SuppressWarnings({"UnstableApiUsage", "PatternValidation"})
     public static DiscordToolTip getToolTip(ItemStack item, OfflinePlayer player, boolean showAdvanceDetails) throws Exception {
-        String language = MultiChatDiscordSrvAddon.plugin.language;
+        String language = Config.i().getResources().language();
         SpecificTranslateFunction translationFunction = MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(language);
 
         Player bukkitPlayer = player == null || player.getPlayer() == null || !PlayerUtils.isLocal(player) ? null : player.getPlayer();
@@ -492,7 +493,7 @@ public class DiscordItemStackUtils {
                 List<ToolTipComponent<?>> chargedItemInfo = getToolTip(charge, player, false).getComponents();
                 Component chargeItemName = chargedItemInfo.get(0).getToolTipComponent(ToolTipType.TEXT);
                 prints.add(tooltipText(translatable(getCrossbowProjectile()).color(WHITE).append(text(" [").color(WHITE)).append(chargeItemName).append(text("]").color(WHITE))));
-                if (MultiChatDiscordSrvAddon.plugin.showFireworkRocketDetailsInCrossbow && ICMaterial.from(charge).isMaterial(XMaterial.FIREWORK_ROCKET)) {
+                if (Config.i().getToolTipSettings().showFireworkRocketDetailsInCrossbow() && ICMaterial.from(charge).isMaterial(XMaterial.FIREWORK_ROCKET)) {
                     chargedItemInfo.stream().skip(1).forEachOrdered(each -> {
                         if (each.getType().equals(ToolTipType.TEXT)) {
                             prints.add(tooltipText(text("  ").append(each.getToolTipComponent(ToolTipType.TEXT))));
@@ -504,7 +505,7 @@ public class DiscordItemStackUtils {
             }
         }
 
-        if (MultiChatDiscordSrvAddon.plugin.showMapScale && FilledMapUtils.isFilledMap(item) && !hideAdditionalFlags) {
+        if (Config.i().getToolTipSettings().showMapScale() && FilledMapUtils.isFilledMap(item) && !hideAdditionalFlags) {
             MapMeta map = (MapMeta) item.getItemMeta();
             MapView mapView = FilledMapUtils.getMapView(item);
             int id = FilledMapUtils.getMapId(item);
@@ -641,7 +642,7 @@ public class DiscordItemStackUtils {
             }
         }
 
-        if (MultiChatDiscordSrvAddon.plugin.showArmorColor && hasMeta && item.getItemMeta() instanceof LeatherArmorMeta && item.getItemMeta().getItemFlags().stream().noneMatch(each -> each.name().equals("HIDE_DYE"))) {
+        if (Config.i().getToolTipSettings().showArmorColor() && hasMeta && item.getItemMeta() instanceof LeatherArmorMeta && item.getItemMeta().getItemFlags().stream().noneMatch(each -> each.name().equals("HIDE_DYE"))) {
             OptionalInt colorInt = NMS.getInstance().getLeatherArmorColor(item);
             if (colorInt.isPresent()) {
                 Color color = new Color(colorInt.getAsInt());
@@ -794,7 +795,7 @@ public class DiscordItemStackUtils {
             }
         }
 
-        if (MultiChatDiscordSrvAddon.plugin.showDurability && item.getType().getMaxDurability() > 0) {
+        if (Config.i().getToolTipSettings().showDurability() && item.getType().getMaxDurability() > 0) {
             int durability = item.getType().getMaxDurability() - (VersionManager.version.isLegacy() ? item.getDurability() : ((Damageable) item.getItemMeta()).getDamage());
             int maxDur = item.getType().getMaxDurability();
             if (durability < maxDur) {

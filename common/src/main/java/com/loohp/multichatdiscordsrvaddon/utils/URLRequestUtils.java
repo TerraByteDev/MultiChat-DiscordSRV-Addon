@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -61,10 +62,10 @@ public class URLRequestUtils {
     }
 
     public static boolean isAllowed(String url) {
-        if (!MultiChatDiscordSrvAddon.plugin.imageWhitelistEnabled) {
+        if (!Config.i().getDiscordAttachments().restrictImageUrl().enabled()) {
             return true;
         }
-        for (String possiblyAllowedUrl : MultiChatDiscordSrvAddon.plugin.whitelistedImageUrls) {
+        for (String possiblyAllowedUrl : Config.i().getDiscordAttachments().restrictImageUrl().whitelist()) {
             if (url.startsWith(possiblyAllowedUrl)) {
                 return true;
             }

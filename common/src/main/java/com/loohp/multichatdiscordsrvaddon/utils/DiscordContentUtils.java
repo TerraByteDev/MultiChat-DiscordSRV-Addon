@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -107,27 +108,27 @@ public class DiscordContentUtils {
                         color = OFFSET_WHITE;
                     }
                     try {
-                        BufferedImage image = ImageGeneration.getItemStackImage(item, data.getPlayer(), MultiChatDiscordSrvAddon.plugin.itemAltAir, 48);
+                        BufferedImage image = ImageGeneration.getItemStackImage(item, data.getPlayer(), Config.i().getInventoryImage().item().alternateAirTexture(), 48);
                         byte[] imageData = ImageUtils.toArray(image);
 
                         DiscordMessageContent content = new DiscordMessageContent(title, null, color);
-                        content.setTitle(DiscordItemStackUtils.getItemNameForDiscord(item, player, MultiChatDiscordSrvAddon.plugin.language));
+                        content.setTitle(DiscordItemStackUtils.getItemNameForDiscord(item, player, Config.i().getResources().language()));
                         content.setThumbnail("attachment://Item_" + i + ".png");
 
                         content.addAttachment("Item_" + i + ".png", imageData);
                         contents.add(content);
 
-                        DiscordToolTip discordToolTip = DiscordItemStackUtils.getToolTip(item, player, MultiChatDiscordSrvAddon.plugin.showAdvanceDetails);
+                        DiscordToolTip discordToolTip = DiscordItemStackUtils.getToolTip(item, player, Config.i().getToolTipSettings().showAdvanceDetails());
                         List<ToolTipComponent<?>> toolTipComponents = discordToolTip.isHideTooltip() ? new ArrayList<>() : discordToolTip.getComponents();
 
                         boolean forceShow = false;
-                        if (type.equals(ImageDisplayType.ITEM_CONTAINER) && MultiChatDiscordSrvAddon.plugin.showContainers) {
+                        if (type.equals(ImageDisplayType.ITEM_CONTAINER) && Config.i().getDiscordItemDetailsAndInteractions().showContainers()) {
                             TitledInventoryWrapper inv = iData.getInventory().get();
                             BufferedImage container = ImageGeneration.getInventoryImage(inv.getInventory(), inv.getTitle(), data.getPlayer());
                             toolTipComponents.add(ToolTipComponent.image(container));
                             forceShow = true;
 
-                            if (MultiChatDiscordSrvAddon.plugin.allowSlotSelection) {
+                            if (Config.i().getDiscordItemDetailsAndInteractions().allowInventorySelection()) {
                                 UUID interactionUuid = UUID.randomUUID();
                                 List<SelectOption> options = new ArrayList<>();
                                 for (int u = 0; u < inv.getInventory().getSize(); u++) {
@@ -136,7 +137,7 @@ public class DiscordContentUtils {
                                         continue;
                                     }
                                     Component name = ItemStackUtils.getDisplayName(itemStack);
-                                    String label = (u + 1) + " - " + PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(name, MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language)));
+                                    String label = (u + 1) + " - " + PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(name, MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(Config.i().getResources().language())));
                                     if (label.length() > 100) {
                                         ItemStack stripNameItem = itemStack.clone();
                                         if (stripNameItem.getItemMeta() != null) {
@@ -145,7 +146,7 @@ public class DiscordContentUtils {
                                             stripNameItem.setItemMeta(meta);
                                         }
                                         name = ItemStackUtils.getDisplayName(stripNameItem);
-                                        label = (u + 1) + " - " + PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(name, MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language)));
+                                        label = (u + 1) + " - " + PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(name, MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(Config.i().getResources().language())));
                                     }
                                     options.add(SelectOption.of(label, String.valueOf(u)));
                                 }
@@ -157,14 +158,14 @@ public class DiscordContentUtils {
                                 }
                                 interactionConsumer = interactionConsumer.andThen(getInventoryHandler(interactionUuid, inv.getInventory(), data.getPlayer()));
                             }
-                        } else if (iData.isFilledMap() && MultiChatDiscordSrvAddon.plugin.showMaps) {
+                        } else if (iData.isFilledMap() && Config.i().getDiscordItemDetailsAndInteractions().showMaps()) {
                             forceShow = true;
                         }
 
-                        if ((forceShow || !discordToolTip.isHideTooltip()) && (forceShow || !discordToolTip.isBaseItem() || MultiChatDiscordSrvAddon.plugin.itemUseTooltipImageOnBaseItem)) {
+                        if ((forceShow || !discordToolTip.isHideTooltip()) && (forceShow || !discordToolTip.isBaseItem() || Config.i().getInventoryImage().item().useTooltipImageOnBaseItem())) {
                             BufferedImage tooltip = ImageGeneration.getToolTipImage(toolTipComponents, NMS.getInstance().getCustomTooltipResourceLocation(item));
 
-                            if (iData.isFilledMap() && MultiChatDiscordSrvAddon.plugin.showMaps) {
+                            if (iData.isFilledMap() && Config.i().getDiscordItemDetailsAndInteractions().showMaps()) {
                                 MapView mapView = FilledMapUtils.getMapView(item);
                                 boolean isContextual = mapView == null || FilledMapUtils.isContextual(mapView);
                                 Player icPlayer = iData.getPlayer().getPlayer();
@@ -181,7 +182,7 @@ public class DiscordContentUtils {
                             content.addImageUrl("attachment://ToolTip_" + i + ".png");
                         }
 
-                        if (iData.isBook() && MultiChatDiscordSrvAddon.plugin.showBooks) {
+                        if (iData.isBook() && Config.i().getDiscordItemDetailsAndInteractions().showBooks()) {
                             List<Component> pages = BookUtils.getPages((BookMeta) item.getItemMeta());
                             if (pages.isEmpty()) {
                                 pages = Collections.singletonList(Component.empty());
@@ -208,7 +209,7 @@ public class DiscordContentUtils {
                     try {
                         BufferedImage image;
                         if (iData.isPlayerInventory()) {
-                            if (MultiChatDiscordSrvAddon.plugin.usePlayerInvView) {
+                            if (Config.i().getInventoryImage().inventory().usePlayerInventoryView()) {
                                 image = ImageGeneration.getPlayerInventoryImage(inv.getInventory(), iData.getPlayer());
                             } else {
                                 image = ImageGeneration.getInventoryImage(inv.getInventory(), inv.getTitle(), data.getPlayer());
@@ -219,10 +220,10 @@ public class DiscordContentUtils {
                         Color color;
                         switch (type) {
                             case ENDERCHEST:
-                                color = MultiChatDiscordSrvAddon.plugin.enderColor;
+                                color = ColorUtils.hex2Rgb(Config.i().getInventoryImage().enderChest().embedColor());
                                 break;
                             case INVENTORY:
-                                color = MultiChatDiscordSrvAddon.plugin.invColor;
+                                color = ColorUtils.hex2Rgb(Config.i().getInventoryImage().inventory().embedColor());
                                 break;
                             default:
                                 color = Color.black;
@@ -231,18 +232,18 @@ public class DiscordContentUtils {
                         byte[] imageData = ImageUtils.toArray(image);
                         DiscordMessageContent content = new DiscordMessageContent(title, null, null, "attachment://Inventory_" + i + ".png", color);
                         content.addAttachment("Inventory_" + i + ".png", imageData);
-                        if (type.equals(ImageDisplayType.INVENTORY) && MultiChatDiscordSrvAddon.plugin.invShowLevel) {
+                        if (type.equals(ImageDisplayType.INVENTORY) && Config.i().getInventoryImage().inventory().showExperienceLevel()) {
                             OfflinePlayerData offlinePlayerData = PlayerUtils.getData(iData.getPlayer());
 
                             int level = offlinePlayerData.getXpLevel();
-                            byte[] bottleData = ImageUtils.toArray(MultiChatDiscordSrvAddon.plugin.modelRenderer.render(32, 32, ModelRenderer.SINGLE_RENDER, MultiChatDiscordSrvAddon.plugin.getResourceManager(), MultiChatDiscordSrvAddon.plugin.getResourceManager().getResourceRegistry(CustomItemTextureRegistry.IDENTIFIER, CustomItemTextureRegistry.class).getItemPostResolveFunction("minecraft:item/experience_bottle", null, XMaterial.EXPERIENCE_BOTTLE.parseItem(), VersionManager.version.isOld(), null, null, null, null, MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language)).orElse(null), VersionManager.version.isOld(), "minecraft:item/experience_bottle", ModelDisplayPosition.GUI, false, null, null).getImage(0));
+                            byte[] bottleData = ImageUtils.toArray(MultiChatDiscordSrvAddon.plugin.modelRenderer.render(32, 32, ModelRenderer.SINGLE_RENDER, MultiChatDiscordSrvAddon.plugin.getResourceManager(), MultiChatDiscordSrvAddon.plugin.getResourceManager().getResourceRegistry(CustomItemTextureRegistry.IDENTIFIER, CustomItemTextureRegistry.class).getItemPostResolveFunction("minecraft:item/experience_bottle", null, XMaterial.EXPERIENCE_BOTTLE.parseItem(), VersionManager.version.isOld(), null, null, null, null, MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(Config.i().getResources().language())).orElse(null), VersionManager.version.isOld(), "minecraft:item/experience_bottle", ModelDisplayPosition.GUI, false, null, null).getImage(0));
                             content.addAttachment("Level_" + i + ".png", bottleData);
-                            content.setFooter(ComponentStringUtils.convertFormattedString(LanguageUtils.getTranslation(TranslationKeyUtils.getLevelTranslation(level), MultiChatDiscordSrvAddon.plugin.language).getResult(), level));
+                            content.setFooter(ComponentStringUtils.convertFormattedString(LanguageUtils.getTranslation(TranslationKeyUtils.getLevelTranslation(level), Config.i().getResources().language()).getResult(), level));
                             content.setFooterImageUrl("attachment://Level_" + i + ".png");
                         }
                         contents.add(content);
 
-                        if (MultiChatDiscordSrvAddon.plugin.allowSlotSelection) {
+                        if (Config.i().getDiscordItemDetailsAndInteractions().allowInventorySelection()) {
                             UUID interactionUuid = UUID.randomUUID();
                             List<SelectOption> options = new ArrayList<>();
                             for (int u = 0; u < inv.getInventory().getSize(); u++) {
@@ -251,7 +252,7 @@ public class DiscordContentUtils {
                                     continue;
                                 }
                                 Component name = ItemStackUtils.getDisplayName(itemStack);
-                                String label = (u + 1) + " - " + PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(name, MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language)));
+                                String label = (u + 1) + " - " + PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(name, MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(Config.i().getResources().language())));
                                 if (label.length() > 100) {
                                     ItemStack stripNameItem = itemStack.clone();
                                     if (stripNameItem.getItemMeta() != null) {
@@ -260,7 +261,7 @@ public class DiscordContentUtils {
                                         stripNameItem.setItemMeta(meta);
                                     }
                                     name = ItemStackUtils.getDisplayName(stripNameItem);
-                                    label = (u + 1) + " - " + PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(name, MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language)));
+                                    label = (u + 1) + " - " + PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(name, MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(Config.i().getResources().language())));
                                 }
                                 options.add(SelectOption.of(label, String.valueOf(u)));
                             }
@@ -286,7 +287,7 @@ public class DiscordContentUtils {
                     String body = "";
                     String preview = null;
                     if (hData.hasHover()) {
-                        if (MultiChatDiscordSrvAddon.plugin.hoverUseTooltipImage) {
+                        if (Config.i().getHoverEventDisplay().useTooltipImage()) {
                             Component print = hData.getHoverText();
                             BufferedImage tooltip = ImageGeneration.getToolTipImage(print, true, null);
                             byte[] tooltipData = ImageUtils.toArray(tooltip);
@@ -294,7 +295,7 @@ public class DiscordContentUtils {
                             content.addImageUrl("attachment://ToolTip_" + i + ".png");
                             content.addDescription(null);
                         } else {
-                            body += ComponentStringUtils.stripColorAndConvertMagic(MultiChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(hData.getHoverText(), MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(MultiChatDiscordSrvAddon.plugin.language))));
+                            body += ComponentStringUtils.stripColorAndConvertMagic(MultiChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(hData.getHoverText(), MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(Config.i().getResources().language()))));
                         }
                     }
                     if (hData.hasClick()) {
@@ -303,14 +304,14 @@ public class DiscordContentUtils {
                                 if (body.length() > 0) {
                                     body += "\n\n";
                                 }
-                                body += LanguageUtils.getTranslation(TranslationKeyUtils.getCopyToClipboard(), MultiChatDiscordSrvAddon.plugin.language).getResult() + ": __" + hData.getClickValue() + "__";
+                                body += LanguageUtils.getTranslation(TranslationKeyUtils.getCopyToClipboard(), Config.i().getResources().language()).getResult() + ": __" + hData.getClickValue() + "__";
                                 break;
                             case OPEN_URL:
                                 if (body.length() > 0) {
                                     body += "\n\n";
                                 }
                                 String url = hData.getClickValue();
-                                body += LanguageUtils.getTranslation(TranslationKeyUtils.getOpenUrl(), MultiChatDiscordSrvAddon.plugin.language).getResult() + ": __" + url + "__";
+                                body += LanguageUtils.getTranslation(TranslationKeyUtils.getOpenUrl(), Config.i().getResources().language()).getResult() + ": __" + url + "__";
                                 if (URLRequestUtils.IMAGE_URL_PATTERN.matcher(url).matches() && URLRequestUtils.isAllowed(url)) {
                                     preview = url;
                                 }
@@ -322,7 +323,7 @@ public class DiscordContentUtils {
                     if (!body.isEmpty()) {
                         content.addDescription(body);
                     }
-                    if (MultiChatDiscordSrvAddon.plugin.hoverImage) {
+                    if (Config.i().getHoverEventDisplay().showCursorImage()) {
                         BufferedImage image = MultiChatDiscordSrvAddon.plugin.getResourceManager().getTextureManager().getTexture(ResourceRegistry.IC_MISC_TEXTURE_LOCATION + "hover_cursor").getTexture();
                         byte[] imageData = ImageUtils.toArray(image);
                         content.setAuthorIconUrl("attachment://Hover_" + i + ".png");
@@ -337,7 +338,7 @@ public class DiscordContentUtils {
                 }
             }
         }
-        return new ValuePairs<>(contents, new InteractionHandler(interactionsToRegister, interactions, MultiChatDiscordSrvAddon.plugin.itemDisplayTimeout, interactionConsumer));
+        return new ValuePairs<>(contents, new InteractionHandler(interactionsToRegister, interactions, (Config.i().getSettings().timeout() * 60 * 1000), interactionConsumer));
     }
 
     private static BiConsumer<GenericComponentInteractionCreateEvent, List<DiscordMessageContent>> getInventoryHandler(UUID interactionUuid, Inventory inventory, OfflinePlayer player) {
@@ -368,7 +369,7 @@ public class DiscordContentUtils {
                                 item = new ItemStack(Material.AIR);
                             }
 
-                            String title = PlaceholderParser.parse(offlineICPlayer, ComponentStringUtils.stripColorAndConvertMagic(MultiChatDiscordSrvAddon.plugin.itemTitle));
+                            String title = PlaceholderParser.parse(offlineICPlayer, ComponentStringUtils.stripColorAndConvertMagic(Config.i().getInventoryImage().item().itemTitle()));
                             ImageDisplayData data;
                             Inventory inv = getBlockInventory(item);
                             if (inv != null) {
@@ -423,7 +424,7 @@ public class DiscordContentUtils {
         Map<String, AtomicInteger> currentPages = new ConcurrentHashMap<>();
         List<SelectOption> selectOptions = IntStream.range(1, cachedImages.length + 1).mapToObj(i -> {
             String asText = String.valueOf(i);
-            return SelectOption.of(ComponentStringUtils.convertFormattedString(LanguageUtils.getTranslation(TranslationKeyUtils.getBookPageIndicator(), MultiChatDiscordSrvAddon.plugin.language).getResult(), i, cachedImages.length), asText);
+            return SelectOption.of(ComponentStringUtils.convertFormattedString(LanguageUtils.getTranslation(TranslationKeyUtils.getBookPageIndicator(), Config.i().getResources().language()).getResult(), i, cachedImages.length), asText);
         }).collect(Collectors.toList());
         return (event, discordMessageContents) -> {
             User self = DiscordSRV.getPlugin().getJda().getSelfUser();

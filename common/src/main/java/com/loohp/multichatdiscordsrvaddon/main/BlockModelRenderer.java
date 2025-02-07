@@ -570,7 +570,7 @@ public class BlockModelRenderer extends JFrame {
 
             List<String> resourceOrder;
             int valuePerPack;
-            Config.saveConfig(Paths.get("MultiChatDiscordSrvAddon/config.yml").toFile());
+            Config.saveConfig(Paths.get("MultiChatDiscordSrvAddon").toFile());
             resourceOrder = Config.i().getResources().order();
             Collections.reverse(resourceOrder);
             valuePerPack = (int) ((1.0 / (double) (resourceOrder.size() + 1)) * 10000);

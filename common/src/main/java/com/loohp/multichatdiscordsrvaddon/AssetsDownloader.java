@@ -23,17 +23,14 @@ package com.loohp.multichatdiscordsrvaddon;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.libs.LibraryDownloadManager;
 import com.loohp.multichatdiscordsrvaddon.libs.LibraryLoader;
-import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
+import com.loohp.multichatdiscordsrvaddon.utils.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import com.loohp.multichatdiscordsrvaddon.utils.FileUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.HTTPRequestUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.HashUtils;
 import com.loohp.multichatdiscordsrvaddon.hooks.ItemsAdderHook;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceDownloadManager;
-import com.loohp.multichatdiscordsrvaddon.utils.ResourcePackUtils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -118,17 +115,17 @@ public class AssetsDownloader {
                 downloadManager.downloadResources((type, fileName, percentage) -> {
                     switch (type) {
                         case CLIENT_DOWNLOAD:
-                            if (!MultiChatDiscordSrvAddon.plugin.reducedAssetsDownloadInfo && percentage == 0.0) {
+                            if (!Config.i().getSettings().reducedAssetsDownloadInfo() && percentage == 0.0) {
                                 ChatUtils.sendMessage("<grey>Downloading client jar", finalSenders);
                             }
                             break;
                         case EXTRACT:
-                            if (!MultiChatDiscordSrvAddon.plugin.reducedAssetsDownloadInfo) {
+                            if (!Config.i().getSettings().reducedAssetsDownloadInfo()) {
                                 ChatUtils.sendMessage("<grey>Extracting " + fileName + " (" + FORMAT.format(percentage) + "%)", finalSenders);
                             }
                             break;
                         case DOWNLOAD:
-                            if (!MultiChatDiscordSrvAddon.plugin.reducedAssetsDownloadInfo) {
+                            if (!Config.i().getSettings().reducedAssetsDownloadInfo()) {
                                 ChatUtils.sendMessage("<grey>Downloading " + fileName + " (" + FORMAT.format(percentage) + "%)", finalSenders);
                             }
                             break;
@@ -174,9 +171,9 @@ public class AssetsDownloader {
     }
 
     public static ServerResourcePackDownloadResult downloadServerResourcePack(File packFolder) {
-        String url = MultiChatDiscordSrvAddon.plugin.alternateResourcePackURL;
-        String hash = MultiChatDiscordSrvAddon.plugin.alternateResourcePackHash;
-        if (MultiChatDiscordSrvAddon.itemsAdderHook && MultiChatDiscordSrvAddon.plugin.itemsAdderPackAsServerResourcePack) {
+        String url = Config.i().getResources().alternateServerResourcePack().URL();
+        String hash = Config.i().getResources().alternateServerResourcePack().Hash();
+        if (MultiChatDiscordSrvAddon.plugin.itemsAdderHook && Config.i().getResources().itemsAdderAsServerResourcePack()) {
             String iaUrl = ItemsAdderHook.getItemsAdderResourcePackURL();
             if (iaUrl != null) {
                 url = iaUrl;

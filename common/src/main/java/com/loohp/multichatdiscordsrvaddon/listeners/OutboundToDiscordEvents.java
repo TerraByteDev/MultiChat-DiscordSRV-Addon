@@ -122,6 +122,8 @@ import java.util.function.IntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.loohp.multichatdiscordsrvaddon.utils.ChatUtils.toAllow;
+
 public class OutboundToDiscordEvents implements Listener {
 
     public static final Comparator<DiscordDisplayData> DISPLAY_DATA_COMPARATOR = Comparator.comparing(DiscordDisplayData::getPosition);
@@ -130,7 +132,6 @@ public class OutboundToDiscordEvents implements Listener {
     public static final Int2ObjectMap<AttachmentData> RESEND_WITH_ATTACHMENT = Int2ObjectMaps.synchronize(new Int2ObjectLinkedOpenHashMap<>());
     private static final IDProvider DATA_ID_PROVIDER = new IDProvider();
     private static final Map<UUID, Component> DEATH_MESSAGE = new ConcurrentHashMap<>();
-    public static final List<String> toAllow = new ArrayList<>();
 
     @Subscribe(priority = ListenerPriority.LOWEST)
     public void onGameToDiscordLowest(GameChatMessagePreProcessEvent event) {

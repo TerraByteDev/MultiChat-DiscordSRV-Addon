@@ -25,6 +25,7 @@ import com.ibm.icu.util.Calendar;
 import com.ibm.icu.util.ULocale;
 import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import net.kyori.adventure.key.Key;
 import net.querz.nbt.tag.CompoundTag;
 import net.querz.nbt.tag.StringTag;
@@ -249,7 +250,7 @@ public class ItemRenderUtils {
                 ItemStack compass = item;
 
                 if (CompassUtils.isLodestoneCompass(compass)) {
-                    if (MultiChatDiscordSrvAddon.plugin.hideLodestoneCompassPos) {
+                    if (Config.i().getSettings().hideLodestoneCompassPos()) {
                         compass = CompassUtils.hideLodestoneCompassPosition(compass);
                     }
                 }
@@ -798,7 +799,7 @@ public class ItemRenderUtils {
                 Player icPlayer = player.getPlayer();
                 ItemStack compass = itemStack;
                 if (CompassUtils.isLodestoneCompass(compass)) {
-                    if (MultiChatDiscordSrvAddon.plugin.hideLodestoneCompassPos) {
+                    if (Config.i().getSettings().hideLodestoneCompassPos()) {
                         compass = CompassUtils.hideLodestoneCompassPosition(compass);
                     }
                 }

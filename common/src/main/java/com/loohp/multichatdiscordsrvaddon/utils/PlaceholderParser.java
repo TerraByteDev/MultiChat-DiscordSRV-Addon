@@ -22,6 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
@@ -44,10 +45,10 @@ public class PlaceholderParser {
 
     static {
         Bukkit.getScheduler().runTaskTimerAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
-            if (MultiChatDiscordSrvAddon.plugin.useBungeecord) {
-                if (MultiChatDiscordSrvAddon.plugin.useTooltipOnTab) {
+            if (Config.i().getSettings().bungeecord()) {
+                if (Config.i().getTabCompletion().playerNameTooltip().enabled()) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        parse(Bukkit.getOfflinePlayer(player.getUniqueId()), MultiChatDiscordSrvAddon.plugin.tabTooltip);
+                        parse(Bukkit.getOfflinePlayer(player.getUniqueId()), Config.i().getTabCompletion().playerNameTooltip().toolTip());
                     }
                 }
             }
@@ -55,7 +56,7 @@ public class PlaceholderParser {
     }
 
     public static String parse(OfflinePlayer offlineICPlayer, String str) {
-        if (MultiChatDiscordSrvAddon.plugin.parsePAPIOnMainThread && !Bukkit.isPrimaryThread()) {
+        if (Config.i().getSettings().parsePAPIOnMainThread() && !Bukkit.isPrimaryThread()) {
             try {
                 CompletableFuture<String> future = new CompletableFuture<>();
                 Bukkit.getScheduler().runTask(MultiChatDiscordSrvAddon.plugin, () -> future.complete(parse0(offlineICPlayer, str)));
@@ -81,7 +82,7 @@ public class PlaceholderParser {
             return PlaceholderAPI.setPlaceholders(offlineICPlayer, str);
         } else {
             if (PlayerUtils.isLocal(player)) {
-                if (MultiChatDiscordSrvAddon.plugin.useBungeecord) {
+                if (Config.i().getSettings().bungeecord()) {
                     List<ValuePairs<String, String>> pairs = new ArrayList<>();
                     for (Entry<String, String> entry : getAllPlaceholdersContained(player, str).entrySet()) {
                         pairs.add(new ValuePairs<>(entry.getKey(), entry.getValue()));

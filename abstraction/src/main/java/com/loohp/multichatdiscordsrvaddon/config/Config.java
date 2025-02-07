@@ -4,6 +4,8 @@ import de.exlll.configlib.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -24,6 +26,7 @@ public class Config {
             .build();
 
     private static Config instance;
+    @Setter
     private static File cachedDataFolder;
 
     public record EmbedDisplay(
@@ -416,6 +419,7 @@ public class Config {
                     """) String selected,
             @Comment("\nWhether to only use channels system if supported in the chat plugin.") boolean useChannels,
             @Comment("\nIf your chat plugin supports \"channels\", you can blacklist certain channels here.") List<String> ignoredChannels,
+            @Comment("\nPriority to use for events: LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR") String priority,
             @Comment("\n") DynmapHook dynmap
     ) {}
 
@@ -740,6 +744,7 @@ public class Config {
                     "Staff",
                     "SomeChannelName"
             ),
+            "HIGH",
             new DynmapHook(
                     true,
                     "Dynmap"
@@ -749,16 +754,23 @@ public class Config {
     @Comment("\nDebug configurations (useful for bug diagnosis)")
     Debug debug = new Debug(false, false);
 
+    static {
+        cachedDataFolder = Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("MultiChatDiscordSrvAddon")).getDataFolder();
+    }
+
     public static Config i() {
         return Objects.requireNonNullElseGet(instance, () -> YamlConfigurations.update(new File(cachedDataFolder, "config.yml").toPath(), Config.class, properties));
     }
 
-    public static void saveConfig(File dataFolder) {
-        cachedDataFolder = dataFolder;
-        YamlConfigurations.save(new File(dataFolder, "config.yml").toPath(), Config.class, this);
+    public void saveConfig() {
+        YamlConfigurations.save(new File(cachedDataFolder, "config.yml").toPath(), Config.class, this);
     }
 
-    public static void reload(File dataFolder) {
+    public static void saveConfig(File dataFolder) {
+        YamlConfigurations.save(new File(dataFolder, "config.yml").toPath(), Config.class, new Config());
+    }
+
+    public void reload(File dataFolder) {
         instance = YamlConfigurations.load(new File(dataFolder, "config.yml").toPath(), Config.class, properties);
     }
 }

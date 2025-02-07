@@ -159,8 +159,6 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
 
     public IntegrationManager integrationManager;
 
-    public static final UUID ZERO_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
-
     protected Map<String, byte[]> extras = new ConcurrentHashMap<>();
 
     public static Map<Plugin, ValuePairs<Integer, BiFunction<ItemStack, UUID, ItemStack>>> itemStackTransformFunctions = new ConcurrentHashMap<>();

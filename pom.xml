@@ -142,7 +142,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.20.6-R0.1-SNAPSHOT</version>
+            <version>1.20-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -172,16 +172,12 @@
             <artifactId>configlib-paper</artifactId>
             <version>4.5.0</version>
         </dependency>
-
         <dependency>
-            <groupId>com.loohp</groupId>
-            <artifactId>MultiChatDiscordSrvAddon-Abstraction</artifactId>
-            <version>${project.version}</version>
+            <groupId>me.lucko</groupId>
+            <artifactId>helper</artifactId>
+            <version>5.6.14</version>
             <scope>provided</scope>
         </dependency>
-
-
-
     </dependencies>
 
     <modules>

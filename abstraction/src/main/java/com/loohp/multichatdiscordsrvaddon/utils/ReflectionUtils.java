@@ -20,8 +20,13 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 public class ReflectionUtils {
 
@@ -58,6 +63,10 @@ public class ReflectionUtils {
         } else {
             throw exception;
         }
+    }
+
+    public static Plugin getPlugin() {
+        return Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("MultiChatDisordSrvAddon"));
     }
 
 }

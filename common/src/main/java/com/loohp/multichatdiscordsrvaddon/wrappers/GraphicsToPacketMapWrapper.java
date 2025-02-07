@@ -22,6 +22,8 @@ package com.loohp.multichatdiscordsrvaddon.wrappers;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.utils.ColorUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageFrame;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
@@ -115,9 +117,9 @@ public class GraphicsToPacketMapWrapper {
             BufferedImage processedFrame = ImageUtils.resizeImageQuality(ImageUtils.squarify(frames.get(currentFrame).getImage()), 128, 128);
             if (playbackBar) {
                 Graphics2D g = processedFrame.createGraphics();
-                g.setColor(MultiChatDiscordSrvAddon.plugin.playbackBarEmptyColor);
+                g.setColor(ColorUtils.hex2Rgb(Config.i().getDiscordAttachments().playbackBar().emptyColor()));
                 g.fillRect(0, 126, 128, 2);
-                g.setColor(MultiChatDiscordSrvAddon.plugin.playbackBarFilledColor);
+                g.setColor(ColorUtils.hex2Rgb(Config.i().getDiscordAttachments().playbackBar().filledColor()));
                 g.fillRect(0, 126, (int) (((double) currentTime / (double) totalTime) * 128), 2);
                 g.dispose();
             }

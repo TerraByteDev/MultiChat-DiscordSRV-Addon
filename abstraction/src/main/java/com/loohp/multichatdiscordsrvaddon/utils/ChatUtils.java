@@ -8,11 +8,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 public class ChatUtils {
 
     public static BukkitAudiences audience;
     public static final String PREFIX = "<gray>[<reset><b><gradient:#0836FB:#00B6FF>MultiChatDiscordSRVAddon</gradient></b><gray>]<reset>";
     public static final String DEBUG_PREFIX = "<gray>[<reset><b><gradient:#0836FB:#00B6FF>MultiChatDiscordSRVAddon|DEBUG</gradient></b><gray>]<reset>";
+    public static final List<String> toAllow = new ArrayList<>();
+
+    public static final UUID ZERO_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
     public static void init(JavaPlugin plugin) {
         audience = BukkitAudiences.create(plugin);
