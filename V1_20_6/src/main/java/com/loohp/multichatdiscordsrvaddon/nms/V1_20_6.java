@@ -183,8 +183,9 @@ public class V1_20_6 extends NMSWrapper {
     @SuppressWarnings("PatternValidation")
     @Override
     public Key getMapCursorTypeKey(MapCursor mapCursor) {
-        NamespacedKey key = mapCursor.getType().getKey();
-        return Key.key(key.getNamespace(), key.getKey());
+        MapDecorationType nmsType = CraftMapCursor.CraftType.bukkitToMinecraft(mapCursor.getType());
+        MinecraftKey key = nmsType.b();
+        return Key.key(key.b(), key.a());
     }
 
     @SuppressWarnings("PatternValidation")
@@ -682,7 +683,7 @@ public class V1_20_6 extends NMSWrapper {
     }
 
     @Override
-    public boolean hasDataComponent(ItemStack itemStack, String componentName, boolean ignoreDefault) {
+    public boolean hasDataComponent(ItemStack itemStack, Key componentName, boolean ignoreDefault) {
         return false;
     }
 

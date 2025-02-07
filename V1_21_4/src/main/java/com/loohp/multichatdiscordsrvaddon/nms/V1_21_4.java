@@ -181,8 +181,9 @@ public class V1_21_4 extends NMSWrapper {
     @SuppressWarnings("PatternValidation")
     @Override
     public Key getMapCursorTypeKey(MapCursor mapCursor) {
-        NamespacedKey key = mapCursor.getType().getKey();
-        return Key.key(key.getNamespace(), key.getKey());
+        MapDecorationType nmsType = CraftMapCursor.CraftType.bukkitToMinecraft(mapCursor.getType());
+        MinecraftKey key = nmsType.b();
+        return Key.key(key.b(), key.a());
     }
 
     @SuppressWarnings("PatternValidation")
@@ -693,10 +694,14 @@ public class V1_21_4 extends NMSWrapper {
     }
 
     @Override
-    public boolean hasDataComponent(ItemStack itemStack, String componentName, boolean ignoreDefault) {
+    public boolean hasDataComponent(ItemStack itemStack, Key componentName, boolean ignoreDefault) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        Optional<DataComponentType<?>> optType = BuiltInRegistries.ao.b(MinecraftKey.a(componentName));
-        return optType.map(dataComponentType -> ignoreDefault ? nmsItemStack.c(dataComponentType) : nmsItemStack.b(dataComponentType)).orElse(false);
+        Optional<DataComponentType<?>> optType = BuiltInRegistries.ao.b(MinecraftKey.a(componentName.namespace(), componentName.value()));
+        if (optType.isEmpty()) {
+            return false;
+        }
+        DataComponentType<?> dataComponentType = optType.get();
+        return ignoreDefault ? nmsItemStack.c(dataComponentType) : nmsItemStack.b(dataComponentType);
     }
 
     @Override
