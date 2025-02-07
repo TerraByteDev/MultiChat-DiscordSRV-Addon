@@ -466,6 +466,12 @@
         </dependency>
         <dependency>
             <groupId>com.loohp</groupId>
+            <artifactId>MultiChatDiscordSrvAddon-Abstraction</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.loohp</groupId>
             <artifactId>MultiChatDiscordSrvAddon-V1_20</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>

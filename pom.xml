@@ -177,7 +177,7 @@
             <groupId>com.loohp</groupId>
             <artifactId>MultiChatDiscordSrvAddon-Abstraction</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
 
