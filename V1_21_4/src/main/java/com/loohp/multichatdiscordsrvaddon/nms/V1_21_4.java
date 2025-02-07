@@ -18,29 +18,46 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.loohp.interactivechatdiscordsrvaddon.nms;
+package com.loohp.multichatdiscordsrvaddon.nms;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
-import com.loohp.interactivechat.libs.net.kyori.adventure.key.Key;
-import com.loohp.interactivechat.libs.net.kyori.adventure.text.Component;
-import com.loohp.interactivechat.libs.net.kyori.adventure.text.format.NamedTextColor;
-import com.loohp.interactivechat.libs.net.kyori.adventure.text.format.TextColor;
-import com.loohp.interactivechat.libs.org.apache.commons.lang3.math.Fraction;
-import com.loohp.interactivechat.nms.NMS;
-import com.loohp.interactivechat.objectholders.ICMaterial;
-import com.loohp.interactivechat.utils.InteractiveChatComponentSerializer;
-import com.loohp.interactivechat.utils.ReflectionUtils;
-import com.loohp.interactivechatdiscordsrvaddon.objectholders.AdvancementData;
-import com.loohp.interactivechatdiscordsrvaddon.objectholders.AdvancementType;
-import com.loohp.interactivechatdiscordsrvaddon.objectholders.BiomePrecipitation;
-import com.loohp.interactivechatdiscordsrvaddon.objectholders.CustomModelData;
-import com.loohp.interactivechatdiscordsrvaddon.objectholders.DimensionManager;
-import com.loohp.interactivechatdiscordsrvaddon.objectholders.EquipmentSlotGroup;
-import com.loohp.interactivechatdiscordsrvaddon.objectholders.ItemDamageInfo;
-import com.loohp.interactivechatdiscordsrvaddon.objectholders.PaintingVariant;
-import com.loohp.interactivechatdiscordsrvaddon.objectholders.ProfileProperty;
-import com.loohp.interactivechatdiscordsrvaddon.objectholders.TintColorProvider;
+import com.google.gson.JsonElement;
+import com.loohp.multichatdiscordsrvaddon.objectholders.*;
+import com.loohp.multichatdiscordsrvaddon.objectholders.CustomModelData;
+import com.loohp.multichatdiscordsrvaddon.utils.NativeJsonConverter;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.JsonOps;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.DataComponentValue;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.gson.GsonDataComponentValue;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.minecraft.core.*;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.nbt.MojangsonParser;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTCompressedStreamTools;
+import net.minecraft.network.protocol.game.*;
+import net.minecraft.server.network.PlayerConnection;
+import net.minecraft.world.entity.EnumItemSlot;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.*;
+import net.minecraft.world.level.saveddata.maps.MapDecorationType;
+import net.minecraft.world.level.saveddata.maps.MapIcon;
+import net.minecraft.world.level.saveddata.maps.MapId;
+import net.minecraft.world.level.saveddata.maps.WorldMap;
+import net.querz.nbt.io.NBTDeserializer;
+import net.querz.nbt.io.NamedTag;
+import org.apache.commons.lang3.math.Fraction;
+import com.loohp.multichatdiscordsrvaddon.utils.MultiChatGsonComponentSerializer;
+import com.loohp.multichatdiscordsrvaddon.utils.ReflectionUtils;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.md_5.bungee.api.ChatColor;
@@ -49,11 +66,6 @@ import net.minecraft.MinecraftVersion;
 import net.minecraft.advancements.AdvancementDisplay;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.critereon.CriterionConditionBlock;
-import net.minecraft.core.BlockPosition;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.IRegistry;
-import net.minecraft.core.IRegistryCustom;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -72,18 +84,7 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.animal.EntityTropicalFish;
 import net.minecraft.world.entity.animal.EntityTropicalFish.d;
 import net.minecraft.world.entity.projectile.EntityFishingHook;
-import net.minecraft.world.item.AdventureModePredicate;
-import net.minecraft.world.item.Instrument;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemCrossbow;
-import net.minecraft.world.item.JukeboxPlayable;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.component.BlockItemStateProperties;
-import net.minecraft.world.item.component.BundleContents;
-import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.component.DyedItemColor;
-import net.minecraft.world.item.component.Fireworks;
-import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.enchantment.EnchantmentManager;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
@@ -113,6 +114,9 @@ import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_21_R3.inventory.trim.CraftTrimMaterial;
 import org.bukkit.craftbukkit.v1_21_R3.inventory.trim.CraftTrimPattern;
+import org.bukkit.craftbukkit.v1_21_R3.map.CraftMapCursor;
+import org.bukkit.craftbukkit.v1_21_R3.map.CraftMapView;
+import org.bukkit.craftbukkit.v1_21_R3.map.RenderData;
 import org.bukkit.craftbukkit.v1_21_R3.potion.CraftPotionEffectType;
 import org.bukkit.craftbukkit.v1_21_R3.potion.CraftPotionUtil;
 import org.bukkit.craftbukkit.v1_21_R3.util.CraftChatMessage;
@@ -126,40 +130,45 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.map.MapCursor;
+import org.bukkit.map.MapView;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.OptionalLong;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public class V1_21_4 extends NMSAddonWrapper {
+public class V1_21_4 extends NMSWrapper {
 
+    private final Method craftMapViewIsContextualMethod;
     private final Field adventureModePredicatePredicatesField;
     private final Method bundleContentsGetWeightMethod;
+    private final Field craftSkullMetaProfileField;
 
     public V1_21_4() {
         try {
+            craftMapViewIsContextualMethod = CraftMapView.class.getDeclaredMethod("isContextual");
+
             adventureModePredicatePredicatesField = ReflectionUtils.findDeclaredField(AdventureModePredicate.class, List.class, "predicates", "h");
             bundleContentsGetWeightMethod = ReflectionUtils.findDeclaredMethod(BundleContents.class, new Class[] {net.minecraft.world.item.ItemStack.class}, "getWeight", "b");
-        } catch (NoSuchFieldException | NoSuchMethodException e) {
+            craftSkullMetaProfileField = Class.forName("org.bukkit.craftbukkit.v1_21_R3.inventory.CraftMetaSkull").getDeclaredField("profile");
+        } catch (NoSuchFieldException | NoSuchMethodException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
@@ -415,7 +424,7 @@ public class V1_21_4 extends NMSAddonWrapper {
             return null;
         }
         IChatBaseComponent description = holder.a().d();
-        return InteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
+        return MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
     }
 
     @SuppressWarnings("PatternValidation")
@@ -437,8 +446,8 @@ public class V1_21_4 extends NMSAddonWrapper {
         if (paintingVariant == null) {
             return null;
         }
-        Optional<Component> title = paintingVariant.e().map(c -> InteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(c)));
-        Optional<Component> author = paintingVariant.f().map(c -> InteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(c)));
+        Optional<Component> title = paintingVariant.e().map(c -> MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(c)));
+        Optional<Component> author = paintingVariant.f().map(c -> MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(c)));
         return new PaintingVariant(Key.key(key.b(), key.a()), paintingVariant.b(), paintingVariant.c(), title, author);
     }
 
@@ -461,7 +470,7 @@ public class V1_21_4 extends NMSAddonWrapper {
             return NamedTextColor.GRAY;
         }
         TrimMaterial nmsTrimMaterial = ((CraftTrimMaterial) trimMaterial).getHandle();
-        TextColor textColor = InteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(nmsTrimMaterial.d())).color();
+        TextColor textColor = MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(nmsTrimMaterial.d())).color();
         return textColor == null ? NamedTextColor.GRAY : textColor;
     }
 
@@ -473,8 +482,8 @@ public class V1_21_4 extends NMSAddonWrapper {
             return null;
         }
         AdvancementDisplay display = optAdvancementDisplay.get();
-        Component title = InteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(display.a()));
-        Component description = InteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(display.b()));
+        Component title = MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(display.a()));
+        Component description = MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(display.b()));
         ItemStack item = CraftItemStack.asBukkitCopy(display.c());
         AdvancementType advancementType = AdvancementType.fromName(display.e().c());
         boolean isMinecraft = holder.a().b().equals(Key.MINECRAFT_NAMESPACE);
@@ -530,7 +539,7 @@ public class V1_21_4 extends NMSAddonWrapper {
     public Component getDeathMessage(Player player) {
         EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         CombatTracker combatTracker = entityPlayer.eQ();
-        return InteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(combatTracker.a()));
+        return MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(combatTracker.a()));
     }
 
     @SuppressWarnings("PatternValidation")
@@ -567,13 +576,13 @@ public class V1_21_4 extends NMSAddonWrapper {
             return null;
         }
         IRegistryCustom registryAccess = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().K_();
-        return jukeboxPlayable.a().a(registryAccess).map(h -> InteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(h.a().c()))).orElse(null);
+        return jukeboxPlayable.a().a(registryAccess).map(h -> MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(h.a().c()))).orElse(null);
     }
 
     @Override
     public Component getEnchantmentDescription(Enchantment enchantment) {
         IChatBaseComponent description = CraftEnchantment.bukkitToMinecraft(enchantment).f();
-        return InteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
+        return MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
     }
 
     @Override
@@ -751,7 +760,7 @@ public class V1_21_4 extends NMSAddonWrapper {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         MinecraftKey itemModel = nmsItemStack.a(DataComponents.i);
         if (itemModel == null) {
-            return NMS.getInstance().getNMSItemStackNamespacedKey(itemStack);
+            return getNMSItemStackNamespacedKey(itemStack);
         }
         return Key.key(itemModel.b(), itemModel.a());
     }
@@ -792,7 +801,7 @@ public class V1_21_4 extends NMSAddonWrapper {
     public Component getTrimMaterialDescription(Object trimMaterial) {
         TrimMaterial material = CraftTrimMaterial.bukkitToMinecraft((org.bukkit.inventory.meta.trim.TrimMaterial) trimMaterial);
         IChatBaseComponent description = material.d();
-        return InteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
+        return MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
     }
 
     @Override
@@ -805,7 +814,7 @@ public class V1_21_4 extends NMSAddonWrapper {
             TrimMaterial material = CraftTrimMaterial.bukkitToMinecraft((org.bukkit.inventory.meta.trim.TrimMaterial) trimMaterial);
             description = pattern.a(Holder.a(material));
         }
-        return InteractiveChatComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
+        return MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(description));
     }
 
     @Override
@@ -823,6 +832,353 @@ public class V1_21_4 extends NMSAddonWrapper {
         EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         return nmsItemStack.h().a(nmsItemStack, nmsPlayer);
+    }
+
+    @Override
+    public String getSkinValue(Player player) {
+        Collection<Property> textures = ((CraftPlayer) player).getProfile().getProperties().get("textures");
+        if (textures == null || textures.isEmpty()) {
+            return null;
+        }
+        return textures.iterator().next().value();
+    }
+
+    @Override
+    public String getSkinValue(ItemMeta skull) {
+        try {
+            if (skull instanceof SkullMeta && ((SkullMeta) skull).hasOwner()) {
+                craftSkullMetaProfileField.setAccessible(true);
+                GameProfile profile = (GameProfile) craftSkullMetaProfileField.get(skull);
+                Collection<Property> textures = profile.getProperties().get("textures");
+                if (textures == null || textures.isEmpty()) {
+                    return null;
+                }
+                return textures.iterator().next().value();
+            }
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public MapView getMapView(ItemStack itemStack) {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta instanceof MapMeta) {
+            return Bukkit.getMap(((MapMeta) meta).getMapId());
+        }
+        return null;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public int getMapId(ItemStack itemStack) {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta instanceof MapMeta) {
+            return ((MapMeta) meta).getMapId();
+        }
+        return -1;
+    }
+
+    @Override
+    public boolean isContextual(MapView mapView) {
+        try {
+            CraftMapView craftMapView = (CraftMapView) mapView;
+            craftMapViewIsContextualMethod.setAccessible(true);
+            return (boolean) craftMapViewIsContextualMethod.invoke(craftMapView);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public byte[] getColors(MapView mapView, Player player) {
+        CraftMapView craftMapView = (CraftMapView) mapView;
+        RenderData renderData = craftMapView.render((CraftPlayer) player);
+        return renderData.buffer;
+    }
+
+    @Override
+    public List<MapCursor> getCursors(MapView mapView, Player player) {
+        CraftMapView craftMapView = (CraftMapView) mapView;
+        RenderData renderData = craftMapView.render((CraftPlayer) player);
+        return renderData.cursors;
+    }
+
+    @Override
+    public List<MapIcon> toNMSMapIconList(List<MapCursor> mapCursors) {
+        return mapCursors.stream().map(c -> {
+            Holder<MapDecorationType> decorationTypeHolder = CraftMapCursor.CraftType.bukkitToMinecraftHolder(c.getType());
+            IChatBaseComponent iChat = CraftChatMessage.fromStringOrNull(c.getCaption());
+            return new MapIcon(decorationTypeHolder, c.getX(), c.getY(), c.getDirection(), Optional.ofNullable(iChat));
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public net.minecraft.world.item.ItemStack toNMSCopy(ItemStack itemstack) {
+        return CraftItemStack.asNMSCopy(itemstack);
+    }
+
+    @Override
+    public ItemStack toBukkitCopy(Object handle) {
+        return CraftItemStack.asBukkitCopy((net.minecraft.world.item.ItemStack) handle);
+    }
+
+    @Override
+    public ItemStack getItemFromNBTJson(String json) {
+        try {
+            IRegistryCustom registryAccess = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().K_();
+            NBTTagCompound nbtTagCompound = MojangsonParser.a(json);
+            net.minecraft.world.item.ItemStack itemStack = net.minecraft.world.item.ItemStack.a(registryAccess, nbtTagCompound);
+            return toBukkitCopy(itemStack);
+        } catch (CommandSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String getNMSItemStackJson(ItemStack itemStack) {
+        if (itemStack.getType().isAir()) {
+            return "{id: \"minecraft:air\", count: 1}";
+        }
+        IRegistryCustom registryAccess = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().K_();
+        NBTTagCompound nbtTagCompound = new NBTTagCompound();
+        net.minecraft.world.item.ItemStack nmsItemStack = toNMSCopy(itemStack);
+        NBTBase nbt = nmsItemStack.b(registryAccess, nbtTagCompound);
+        return nbt.toString();
+    }
+
+    @SuppressWarnings({"PatternValidation", "unchecked", "rawtypes"})
+    @Override
+    public Map<Key, DataComponentValue> getNMSItemStackDataComponents(ItemStack itemStack) {
+        if (itemStack.getType().isAir()) {
+            return Collections.emptyMap();
+        }
+        IRegistryCustom registryAccess = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().K_();
+        net.minecraft.world.item.ItemStack nmsItemStack = toNMSCopy(itemStack);
+        DataComponentPatch dataComponentPatch = nmsItemStack.d();
+        Map<Key, DataComponentValue> convertedComponents = new HashMap<>();
+        for (Map.Entry<DataComponentType<?>, Optional<?>> entry : dataComponentPatch.b()) {
+            DataComponentType<?> type = entry.getKey();
+            Optional<?> optValue = entry.getValue();
+            MinecraftKey minecraftKey = BuiltInRegistries.ao.b(type);
+            Key key = Key.key(minecraftKey.b(), minecraftKey.a());
+            if (optValue.isPresent()) {
+                Codec codec = type.b();
+                if (codec != null) {
+                    Object nativeJsonElement = codec.encodeStart(registryAccess.a(JsonOps.INSTANCE), optValue.get()).getOrThrow();
+                    JsonElement jsonElement = NativeJsonConverter.fromNative(nativeJsonElement);
+                    DataComponentValue value = GsonDataComponentValue.gsonDataComponentValue(jsonElement);
+                    convertedComponents.put(key, value);
+                }
+            } else {
+                convertedComponents.put(key, DataComponentValue.removed());
+            }
+        }
+        return convertedComponents;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
+    public ItemStack getItemStackFromDataComponents(ItemStack itemStack, Map<Key, DataComponentValue> dataComponents) {
+        if (dataComponents.isEmpty()) {
+            return itemStack;
+        }
+        try {
+            IRegistryCustom registryAccess = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().K_();
+            net.minecraft.world.item.ItemStack nmsItemStack = toNMSCopy(itemStack);
+            DataComponentPatch.a builder = DataComponentPatch.a();
+            for (Map.Entry<Key, DataComponentValue> entry : dataComponents.entrySet()) {
+                Key key = entry.getKey();
+                DataComponentValue value = entry.getValue();
+                MinecraftKey minecraftKey = MinecraftKey.a(key.namespace(), key.value());
+                Optional<DataComponentType<?>> optType = BuiltInRegistries.ao.b(minecraftKey);
+                if (optType.isPresent()) {
+                    DataComponentType<?> type = optType.get();
+                    if (value instanceof DataComponentValue.Removed) {
+                        builder.a(type);
+                    } else if (value instanceof GsonDataComponentValue) {
+                        JsonElement jsonElement = ((GsonDataComponentValue) value).element();
+                        Object nativeJsonElement = NativeJsonConverter.toNative(jsonElement);
+                        Object result = type.b().decode(registryAccess.a((DynamicOps<Object>) (DynamicOps<?>) JsonOps.INSTANCE), nativeJsonElement).getOrThrow().getFirst();
+                        builder.a((DataComponentType) type, result);
+                    }
+                }
+            }
+            nmsItemStack.a(builder.a());
+            return toBukkitCopy(nmsItemStack);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @SuppressWarnings("PatternValidation")
+    @Override
+    public Key getNMSItemStackNamespacedKey(ItemStack itemStack) {
+        if (itemStack.getType().isAir()) {
+            return Key.key("minecraft", "air");
+        }
+        NamespacedKey key = itemStack.getType().getKey();
+        return Key.key(key.getNamespace(), key.getKey());
+    }
+
+    @Override
+    public String getNMSItemStackTag(ItemStack itemStack) {
+        if (itemStack.getType().isAir()) {
+            return null;
+        }
+        IRegistryCustom registryAccess = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().K_();
+        NBTTagCompound nbtTagCompound = new NBTTagCompound();
+        net.minecraft.world.item.ItemStack nmsItemStack = toNMSCopy(itemStack);
+        NBTBase nbt = nmsItemStack.b(registryAccess, nbtTagCompound);
+        if (nbt instanceof NBTTagCompound) {
+            NBTBase tag = ((NBTTagCompound) nbt).p("tag");
+            return tag == null ? null : tag.toString();
+        }
+        return null;
+    }
+
+    @Override
+    public void sendTitle(Player player, Component title, Component subtitle, Component actionbar, int fadeIn, int stay, int fadeOut) {
+        PlayerConnection connection = ((CraftPlayer) player).getHandle().f;
+
+        ClientboundClearTitlesPacket packet1 = new ClientboundClearTitlesPacket(true);
+        connection.sendPacket(packet1);
+
+        if (!PlainTextComponentSerializer.plainText().serialize(title).isEmpty()) {
+            ClientboundSetTitleTextPacket packet2 = new ClientboundSetTitleTextPacket(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(title)));
+            connection.sendPacket(packet2);
+        }
+
+        if (!PlainTextComponentSerializer.plainText().serialize(subtitle).isEmpty()) {
+            ClientboundSetSubtitleTextPacket packet3 = new ClientboundSetSubtitleTextPacket(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(subtitle)));
+            connection.sendPacket(packet3);
+        }
+
+        if (!PlainTextComponentSerializer.plainText().serialize(actionbar).isEmpty()) {
+            ClientboundSetActionBarTextPacket packet4 = new ClientboundSetActionBarTextPacket(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(actionbar)));
+            connection.sendPacket(packet4);
+        }
+
+        ClientboundSetTitlesAnimationPacket packet5 = new ClientboundSetTitlesAnimationPacket(fadeIn, stay, fadeOut);
+        connection.sendPacket(packet5);
+    }
+
+    @Override
+    public NamedTag fromSNBT(String snbt) throws IOException {
+        try {
+            NBTTagCompound nbt = MojangsonParser.a(snbt);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            NBTCompressedStreamTools.c(nbt, new DataOutputStream(out));
+            return new NBTDeserializer(false).fromBytes(out.toByteArray());
+        } catch (CommandSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Component getItemStackDisplayName(ItemStack itemStack) {
+        net.minecraft.world.item.ItemStack nmsItemStack = toNMSCopy(itemStack);
+        return GsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(nmsItemStack.y()));
+    }
+
+    @Override
+    public void setItemStackDisplayName(ItemStack itemStack, Component component) {
+        IChatBaseComponent nmsComponent = CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(component));
+        net.minecraft.world.item.ItemStack nmsItemStack = toNMSCopy(itemStack);
+        DataComponentPatch dataComponentPatch = DataComponentPatch.a().a(DataComponents.g, nmsComponent).a();
+        nmsItemStack.a(dataComponentPatch);
+        ItemStack modifiedStack = toBukkitCopy(nmsItemStack);
+        ItemMeta meta = modifiedStack.getItemMeta();
+        if (meta != null) {
+            itemStack.setItemMeta(meta);
+        }
+    }
+
+    @Override
+    public List<Component> getItemStackLore(ItemStack itemStack) {
+        net.minecraft.world.item.ItemStack nmsItemStack = toNMSCopy(itemStack);
+        ItemLore lore = nmsItemStack.a(DataComponents.j);
+        if (lore == null) {
+            return Collections.emptyList();
+        }
+        return lore.b().stream().map(e -> GsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(e))).collect(Collectors.toList());
+    }
+
+    @Override
+    public String getItemStackTranslationKey(ItemStack itemStack) {
+        return itemStack.getTranslationKey();
+    }
+
+    @Override
+    public ChatColor getRarityColor(ItemStack itemStack) {
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        String str = nmsItemStack.D().a().toString();
+        return ChatColor.getByChar(str.charAt(str.length() - 1));
+    }
+
+    @Override
+    public void sendFakePlayerInventory(Player player, Inventory inventory, boolean armor, boolean offhand) {
+        ItemStack[] items = new ItemStack[46];
+        Arrays.fill(items, ITEM_STACK_AIR);
+        int u = 36;
+        for (int i = 0; i < 9; i++) {
+            ItemStack item = inventory.getItem(i);
+            items[u] = item == null ? ITEM_STACK_AIR : item.clone();
+            u++;
+        }
+        for (int i = 9; i < 36; i++) {
+            ItemStack item = inventory.getItem(i);
+            items[i] = item == null ? ITEM_STACK_AIR : item.clone();
+        }
+        if (armor) {
+            u = 8;
+            for (int i = 36; i < 40; i++) {
+                ItemStack item = inventory.getItem(i);
+                items[u] = item == null ? ITEM_STACK_AIR : item.clone();
+                u--;
+            }
+        }
+        if (offhand) {
+            ItemStack item = inventory.getItem(40);
+            items[45] = item == null ? ITEM_STACK_AIR : item.clone();
+        }
+
+        NonNullList<net.minecraft.world.item.ItemStack> itemList = NonNullList.a();
+        for (ItemStack itemStack : items) {
+            itemList.add(toNMSCopy(itemStack));
+        }
+
+        PacketPlayOutWindowItems packet1 = new PacketPlayOutWindowItems(0, 0, itemList, toNMSCopy(ITEM_STACK_AIR));
+        PacketPlayOutSetSlot packet2 = new PacketPlayOutSetSlot(-1, -1, 0, toNMSCopy(ITEM_STACK_AIR));
+
+        PlayerConnection connection = ((CraftPlayer) player).getHandle().f;
+        connection.sendPacket(packet1);
+        connection.sendPacket(packet2);
+    }
+
+    @Override
+    public void sendFakeMainHandSlot(Player player, ItemStack item) {
+        List<Pair<EnumItemSlot, net.minecraft.world.item.ItemStack>> nmsEquipments = Collections.singletonList(new Pair<>(EnumItemSlot.a, toNMSCopy(item)));
+        PacketPlayOutEntityEquipment packet = new PacketPlayOutEntityEquipment(player.getEntityId(), nmsEquipments);
+        ((CraftPlayer) player).getHandle().f.sendPacket(packet);
+    }
+
+    @Override
+    public void sendFakeMapUpdate(Player player, int mapId, List<MapCursor> mapCursors, byte[] colors) {
+        List<MapIcon> mapIcons = toNMSMapIconList(mapCursors);
+        WorldMap.c c = new WorldMap.c(0, 0, 128, 128, colors);
+        PacketPlayOutMap packet = new PacketPlayOutMap(new MapId(mapId), (byte) 0, false, Optional.of(mapIcons), Optional.of(c));
+        ((CraftPlayer) player).getHandle().f.sendPacket(packet);
+    }
+
+    @Override
+    public Component getSkullOwner(ItemStack itemStack) {
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        ItemSkullPlayer skull = (ItemSkullPlayer) nmsItemStack.h();
+        IChatBaseComponent owner = skull.a(nmsItemStack);
+        return GsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(owner));
     }
 
 }
