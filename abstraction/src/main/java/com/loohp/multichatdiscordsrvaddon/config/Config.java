@@ -418,8 +418,8 @@ public class Config {
                     CASE SENSITIVE! Must be shown as above.
                     """) String selected,
             @Comment("\nWhether to only use channels system if supported in the chat plugin.") boolean useChannels,
-            @Comment("\nIf your chat plugin supports \"channels\", you can blacklist certain channels here.") List<String> ignoredChannels,
-            @Comment("\nPriority to use for events: LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR") String priority,
+            @Comment("\nIf your chat plugin supports \"channels\", you can blacklist certain channels here (CASE SENSITIVE).\nNOTE: ZelChat has two types of channels (as of this time): \"STAFF\" and \"EVERYONE\"") List<String> ignoredChannels,
+            @Comment("\nPriority to use for events: LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR\nNOTE: ZelChat does not support the MONITOR priority.") String priority,
             @Comment("\n") DynmapHook dynmap
     ) {}
 

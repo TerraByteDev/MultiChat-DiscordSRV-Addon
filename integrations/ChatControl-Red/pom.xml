@@ -10,7 +10,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>MultiChatDiscordSrvAddon-ChatControlIntegration</artifactId>
+    <artifactId>MultiChatDiscordSrvAddon-ChatControlRedIntegration</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -21,10 +21,10 @@
     <dependencies>
         <dependency>
             <groupId>org.minecademy</groupId>
-            <artifactId>chatcontrol</artifactId>
-            <version>11.1.7</version>
+            <artifactId>chatcontrolred</artifactId>
+            <version>10.28.4</version>
             <scope>system</scope>
-            <systemPath>${project.build.directory}/../../../lib/ChatControl.jar</systemPath>
+            <systemPath>${project.build.directory}/../../../lib/ChatControl-Red.jar</systemPath>
         </dependency>
     </dependencies>
 

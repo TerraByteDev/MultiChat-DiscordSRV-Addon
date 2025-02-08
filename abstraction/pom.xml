@@ -42,11 +42,6 @@
             <url>https://jitpack.io</url>
         </repository>
         <repository>
-            <id>pinodev-repo-releases</id>
-            <name>Pineta</name>
-            <url>https://repo.pinodev.it/releases</url>
-        </repository>
-        <repository>
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>

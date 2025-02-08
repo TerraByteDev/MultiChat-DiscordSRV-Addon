@@ -183,6 +183,7 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         plugin = this;
+
         ChatUtils.init(this);
         VersionManager.init();
         discordsrv = DiscordSRV.getPlugin();

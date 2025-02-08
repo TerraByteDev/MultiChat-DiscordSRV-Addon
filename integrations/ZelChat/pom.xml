@@ -5,17 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.loohp</groupId>
-        <artifactId>MultiChatDiscordSrvAddon-Parent</artifactId>
+        <artifactId>MultiChatDiscordSrvAddon-Integrations</artifactId>
         <version>4.2.16.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>MultiChatDiscordSrvAddon-Integrations</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>ChatControl</module>
-        <module>ChatControl-Red</module>
-        <module>ZelChat</module>
-    </modules>
+    <artifactId>MultiChatDiscordSrvAddon-ZelChatIntegration</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -23,17 +18,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>pinodev-repo-releases</id>
+            <name>Pineta</name>
+            <url>https://repo.pinodev.it/releases</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.20-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.loohp</groupId>
-            <artifactId>MultiChatDiscordSrvAddon-Abstraction</artifactId>
-            <version>${project.version}</version>
+            <groupId>it.pino.zelchat</groupId>
+            <artifactId>api</artifactId>
+            <version>2.0.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

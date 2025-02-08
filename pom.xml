@@ -55,10 +55,6 @@
             <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
         <repository>
-            <id>MikeRepo</id>
-            <url>https://repo.mikeprimm.com/</url>
-        </repository>
-        <repository>
             <id>Scarsz-Nexus</id>
             <url>https://nexus.scarsz.me/content/groups/public/</url>
         </repository>
@@ -96,9 +92,8 @@
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <repository>
-            <id>pinodev-repo-releases</id>
-            <name>Pineta</name>
-            <url>https://repo.pinodev.it/releases</url>
+            <id>MikeRepo</id>
+            <url>https://repo.mikeprimm.com/</url>
         </repository>
     </repositories>
 
@@ -112,11 +107,13 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.17.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
             <version>13.0.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.Querz</groupId>
@@ -127,6 +124,7 @@
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-gson</artifactId>
             <version>4.18.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
@@ -137,12 +135,6 @@
             <groupId>us.dynmap</groupId>
             <artifactId>dynmap-api</artifactId>
             <version>3.6</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.20-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -161,16 +153,19 @@
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
             <version>4.3.4</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>de.exlll</groupId>
             <artifactId>configlib-yaml</artifactId>
             <version>4.5.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>de.exlll</groupId>
             <artifactId>configlib-paper</artifactId>
             <version>4.5.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>me.lucko</groupId>
@@ -191,6 +186,5 @@
         <module>V1_21_4</module>
         <module>common</module>
         <module>integrations</module>
-        <module>integrations/ChatControl</module>
     </modules>
 </project>

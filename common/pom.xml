@@ -104,63 +104,63 @@
                             <relocations>
                                 <relocation>
                                     <pattern>okhttp3</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.okhttp3</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.okhttp3</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.madgag.gif</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.com.madgag.gif</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.com.madgag.gif</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.loohp.blockmodelrenderer</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.com.loohp.blockmodelrenderer</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.com.loohp.blockmodelrenderer</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>me.lucko.jarrelocator</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.me.lucko.jarrelocator</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.me.lucko.jarrelocator</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.ibm.icu</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.com.ibm.icu</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.com.ibm.icu</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>darwin.</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.darwin.</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.darwin.</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>kotlin.</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.kotlin.</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.kotlin.</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>linux.</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.linux.</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.linux.</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>win32.</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.win32.</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.win32.</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>net.jpountz</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.net.jpountz</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.net.jpountz</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.checkerframework</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.org.checkerframework</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.org.checkerframework</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.eclipse</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.org.eclipse</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.org.eclipse</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.mapdb</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.org.mapdb</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.org.mapdb</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.intellij</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.com.intellij</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.com.intellij</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.objectweb</pattern>
-                                    <shadedPattern>com.loohp.MultiChatDiscordSrvAddon.libs.org.objectweb</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.org.objectweb</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -293,10 +293,6 @@
             <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
         <repository>
-            <id>MikeRepo</id>
-            <url>https://repo.mikeprimm.com/</url>
-        </repository>
-        <repository>
             <id>Scarsz-Nexus</id>
             <url>https://nexus.scarsz.me/content/groups/public/</url>
         </repository>
@@ -332,11 +328,6 @@
         <repository>
             <id>papermc-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
-        </repository>
-        <repository>
-            <id>pinodev-repo-releases</id>
-            <name>Pineta</name>
-            <url>https://repo.pinodev.it/releases</url>
         </repository>
     </repositories>
 
@@ -419,20 +410,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>it.pino.zelchat</groupId>
-            <artifactId>api</artifactId>
-            <version>2.0.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-json</artifactId>
             <version>4.18.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-gson</artifactId>
             <version>4.18.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.loohp</groupId>
@@ -513,6 +500,25 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.loohp</groupId>
+            <artifactId>MultiChatDiscordSrvAddon-ChatControlIntegration</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.loohp</groupId>
+            <artifactId>MultiChatDiscordSrvAddon-ChatControlRedIntegration</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.loohp</groupId>
+            <artifactId>MultiChatDiscordSrvAddon-ZelChatIntegration</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.36</version>
@@ -528,6 +534,7 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>1.27.1</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.mojang</groupId>
@@ -543,21 +550,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.minecademy</groupId>
-            <artifactId>chatcontrol</artifactId>
-            <version>11.1.7</version>
-            <scope>system</scope>
-            <systemPath>${project.build.directory}/../../lib/ChatControl.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>org.minecademy</groupId>
-            <artifactId>chatcontrolred</artifactId>
-            <version>10.28.4</version>
-            <scope>system</scope>
-            <systemPath>${project.build.directory}/../../lib/ChatControl-Red.jar</systemPath>
-        </dependency>
-
-        <dependency>
             <groupId>mineverse.aust1n46</groupId>
             <artifactId>venturechat</artifactId>
             <version>3.5.0</version>
@@ -568,6 +560,28 @@
             <groupId>com.github.Carleslc.Simple-YAML</groupId>
             <artifactId>Simple-Yaml</artifactId>
             <version>1.8.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.20-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>it.unimi.dsi</groupId>
+            <artifactId>fastutil</artifactId>
+            <version>8.5.15</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

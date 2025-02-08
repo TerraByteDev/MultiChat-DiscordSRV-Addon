@@ -16,7 +16,7 @@ public class IntegrationManager {
             MultiChatIntegration integration = (MultiChatIntegration) clazz.getDeclaredConstructor().newInstance();
             if (integration.shouldEnable()) {
                 ChatUtils.sendMessage("<grey>Detected " + integration.getPluginName() + ", enabling integration...");
-                integration.enable();
+                integration.enable(plugin);
             } else {
                 ChatUtils.sendMessage("<red>Integration of name " + selected + " could not be enabled! Do you have the corresponding plugin installed?");
                 Bukkit.getPluginManager().disablePlugin(plugin);
