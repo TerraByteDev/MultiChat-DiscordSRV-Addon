@@ -20,8 +20,8 @@ import java.util.Objects;
 @Configuration
 public class Config {
 
-    private static final YamlConfigurationProperties properties = YamlConfigurationProperties.newBuilder()
-            .setNameFormatter(NameFormatters.IDENTITY)
+    private static final YamlConfigurationProperties properties = ConfigLib.BUKKIT_DEFAULT_PROPERTIES.toBuilder()
+            .setNameFormatter(NameFormatters.LOWER_KEBAB_CASE)
             .charset(StandardCharsets.UTF_8)
             .build();
 
@@ -763,14 +763,16 @@ public class Config {
     }
 
     public void saveConfig() {
-        YamlConfigurations.save(new File(cachedDataFolder, "config.yml").toPath(), Config.class, this);
+        YamlConfigurations.save(new File(cachedDataFolder, "config.yml").toPath(), Config.class, this, properties);
     }
 
     public static void saveConfig(File dataFolder) {
-        YamlConfigurations.save(new File(dataFolder, "config.yml").toPath(), Config.class, new Config());
+        cachedDataFolder = dataFolder;
+        YamlConfigurations.save(new File(dataFolder, "config.yml").toPath(), Config.class, new Config(), properties);
     }
 
     public void reload(File dataFolder) {
+        cachedDataFolder = dataFolder;
         instance = YamlConfigurations.load(new File(dataFolder, "config.yml").toPath(), Config.class, properties);
     }
 }

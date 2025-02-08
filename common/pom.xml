@@ -115,10 +115,6 @@
                                     <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.com.loohp.blockmodelrenderer</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>me.lucko.jarrelocator</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.me.lucko.jarrelocator</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>com.ibm.icu</pattern>
                                     <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.com.ibm.icu</shadedPattern>
                                 </relocation>
@@ -437,7 +433,7 @@
             <groupId>me.lucko</groupId>
             <artifactId>jar-relocator</artifactId>
             <version>1.7</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.incendo</groupId>
@@ -581,6 +577,13 @@
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>
             <version>8.5.15</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-minimessage</artifactId>
+            <version>4.18.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

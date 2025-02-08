@@ -337,6 +337,8 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
             resourceOrder.add(pack);
         }
 
+        additionalRGBFormats = Config.i().getSettings().formattingTags().additionalRGBFormats().stream().map(Pattern::compile).collect(Collectors.toList());
+
         try {
             ItemStack unknown = new ItemStack(Material.valueOf(Config.i().getSettings().unknownItem().replaceItem().toUpperCase()));
             ItemMeta meta = unknown.getItemMeta();
@@ -353,8 +355,6 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
             unknown.setItemMeta(meta);
             this.unknownReplaceItem = unknown;
         }
-
-        additionalRGBFormats = Config.i().getSettings().formattingTags().additionalRGBFormats().stream().map(each -> Pattern.compile(each)).collect(Collectors.toList());
 
         LanguageUtils.loadTranslations(Config.i().getResources().language());
 
