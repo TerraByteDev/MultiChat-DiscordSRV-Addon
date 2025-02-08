@@ -356,8 +356,7 @@ public class Config {
                             Threads used to resolve and render block models.\
                             A positive number sets the absolute number of threads to be used.\
                             A negative number or 0 sets the number of threads to be used as the logical processor count of your system minus N.\
-                            Defaults to 2.
-                            """
+                            Defaults to 2."""
             ) int rendererThreads
     ) {}
 
@@ -368,8 +367,7 @@ public class Config {
                             Define custom RGB formats using Regex.\
                             Matching group 1-6 should be EACH o the characters in the RGB hex code.\
                             For example, the regex for "#123456" would be:\
-                            "#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])"
-                            """
+                            "#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])\""""
             ) List<String> additionalRGBFormats
     ) {}
 
@@ -397,8 +395,7 @@ public class Config {
                             You might want to adjust this option depending on whether you have other plugins listening to DiscordSRV's events,\
                             assuming it is interfering with MultiChatDiscordSRVAddon's ability to modify & read game / discord messagaes.\
                             Valid options are:
-                            LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR
-                            """
+                            LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR"""
             ) ListenerPriorities listenerPriorities,
             RendererSettings rendererSettings,
             FormattingTags formattingTags,
@@ -415,8 +412,7 @@ public class Config {
             @Comment("""
                     Chat plugin to hook into.
                     Supported: "ZelChat", "ChatControl" (v11+), "ChatControlRed" (Legacy), "CarbonChat", "InteractiveChat"
-                    CASE SENSITIVE! Must be shown as above.
-                    """) String selected,
+                    CASE SENSITIVE! Must be shown as above.""") String selected,
             @Comment("\nWhether to only use channels system if supported in the chat plugin.") boolean useChannels,
             @Comment("\nIf your chat plugin supports \"channels\", you can blacklist certain channels here (CASE SENSITIVE).\nNOTE: ZelChat has two types of channels (as of this time): \"STAFF\" and \"EVERYONE\"") List<String> ignoredChannels,
             @Comment("\nPriority to use for events: LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR\nNOTE: ZelChat does not support the MONITOR priority.") String priority,
@@ -764,11 +760,6 @@ public class Config {
 
     public void saveConfig() {
         YamlConfigurations.save(new File(cachedDataFolder, "config.yml").toPath(), Config.class, this, properties);
-    }
-
-    public static void saveConfig(File dataFolder) {
-        cachedDataFolder = dataFolder;
-        YamlConfigurations.save(new File(dataFolder, "config.yml").toPath(), Config.class, new Config(), properties);
     }
 
     public void reload(File dataFolder) {

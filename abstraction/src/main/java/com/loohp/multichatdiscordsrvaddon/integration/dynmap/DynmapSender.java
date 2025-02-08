@@ -1,4 +1,4 @@
-package com.loohp.multichatdiscordsrvaddon.integration;
+package com.loohp.multichatdiscordsrvaddon.integration.dynmap;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;

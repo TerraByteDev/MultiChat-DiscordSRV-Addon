@@ -1,6 +1,7 @@
 package com.loohp.multichatdiscordsrvaddon.integration.impl;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.integration.dynmap.DynmapSender;
 import com.loohp.multichatdiscordsrvaddon.integration.MultiChatIntegration;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -31,6 +32,11 @@ public class ZelChatIntegration extends ExternalModule implements MultiChatInteg
 
         ZelChatAPI.get().getFormatterService().registerExternalModule(plugin, this);
         ChatUtils.sendMessage("<green>Registered external ZelChat module!");
+    }
+
+    @Override
+    public String filter(DynmapSender dynmapSender, String message) {
+        return message; // todo same as todo below
     }
 
     @Override

@@ -23,12 +23,14 @@ package com.loohp.multichatdiscordsrvaddon;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.loohp.multichatdiscordsrvaddon.command.CommandHandler;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.hooks.DynmapHook;
 import com.loohp.multichatdiscordsrvaddon.integration.IntegrationManager;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import com.loohp.multichatdiscordsrvaddon.registry.MultiChatRegistry;
 import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
 import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
+import me.lucko.helper.plugin.ExtendedJavaPlugin;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -100,7 +102,7 @@ import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
+public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements Listener {
 
     public static final int BSTATS_PLUGIN_ID = 8863;
     public static final String CONFIG_ID = "multichatdiscordsrvaddon_config";
@@ -175,13 +177,13 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
     }
 
     @Override
-    public void onLoad() {
+    public void load() {
         DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
         DiscordSRV.api.subscribe(new DiscordCommandEvents());
     }
 
     @Override
-    public void onEnable() {
+    public void enable() {
         plugin = this;
 
         ChatUtils.init(this);
@@ -194,8 +196,7 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
 
         AssetsDownloader.loadLibraries(getDataFolder());
 
-        Config.saveConfig(getDataFolder());
-        processConfigs();
+        Config.setCachedDataFolder(getDataFolder());
 
         long itemDisplayTimeout = Config.i().getSettings().timeout() * 60L * 1000L;
         itemDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
@@ -250,6 +251,11 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("ItemsAdder")) {
             ChatUtils.sendMessage("<green>MultiChat DiscordSRV Addon has hooked into ItemsAdder!", Bukkit.getConsoleSender());
             itemsAdderHook = true;
+        }
+        if (Config.i().getHook().dynmap().filter() && Bukkit.getPluginManager().isPluginEnabled("dynmap")) {
+            ChatUtils.sendMessage("<yellow>Hooking into Dynmap...");
+            new DynmapHook().init();
+            ChatUtils.sendMessage("<green>Hooked into Dynmap!");
         }
 
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("InteractiveChat") && !compatible()) {
@@ -309,7 +315,7 @@ public class MultiChatDiscordSrvAddon extends JavaPlugin implements Listener {
     }
 
     @Override
-    public void onDisable() {
+    public void disable() {
         DiscordInteractionEvents.unregisterAll();
         modelRenderer.close();
         mediaReadingService.shutdown();

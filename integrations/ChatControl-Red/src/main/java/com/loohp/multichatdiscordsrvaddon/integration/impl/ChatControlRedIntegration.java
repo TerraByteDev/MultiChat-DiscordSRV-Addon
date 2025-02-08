@@ -1,10 +1,9 @@
 package com.loohp.multichatdiscordsrvaddon.integration.impl;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
-import com.loohp.multichatdiscordsrvaddon.integration.DynmapSender;
+import com.loohp.multichatdiscordsrvaddon.integration.dynmap.DynmapSender;
 import com.loohp.multichatdiscordsrvaddon.integration.MultiChatIntegration;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.DSRVUtils;
 import github.scarsz.discordsrv.DiscordSRV;
 import lombok.Getter;
 import me.lucko.helper.Events;
@@ -13,7 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.dynmap.DynmapWebChatEvent;
 import org.mineacademy.chatcontrol.api.ChatChannelEvent;
 import org.mineacademy.chatcontrol.api.SimpleChatEvent;
 import org.mineacademy.chatcontrol.model.Checker;
@@ -42,11 +40,16 @@ public class ChatControlRedIntegration implements MultiChatIntegration {
                 .filter(EventFilters.ignoreCancelled())
                 .handler(this::onPlayerMessage);
 
-        if (Config.i().getHook().dynmap().filter()) Events.subscribe(DynmapWebChatEvent.class, eventPriority)
-                .filter(EventFilters.ignoreCancelled())
-                .handler(this::onDynmapWebChatEvent);
-
         ChatUtils.sendMessage("<green>Registered external ChatControl Legacy (<v10) module!");
+    }
+
+    @Override
+    public String filter(DynmapSender dynmapSender, String message) {
+
+        Checker checker = Checker.filterChannel(dynmapSender, message, null);
+        if (checker.isCancelledSilently()) return "";
+
+        return checker.getMessage();
     }
 
     public void onChannelChatEvent(ChatChannelEvent event) {
@@ -61,15 +64,5 @@ public class ChatControlRedIntegration implements MultiChatIntegration {
 
     public void onPlayerMessage(SimpleChatEvent event) {
         System.out.println(event.getMessage());;
-    }
-
-    public void onDynmapWebChatEvent(DynmapWebChatEvent event) {
-        String dynmapUsername = event.getName();
-        DynmapSender dynmapSender = new DynmapSender(dynmapUsername);
-
-        Checker checker = Checker.filterChannel(dynmapSender, event.getMessage(), null);
-        if (checker.isCancelledSilently()) return;
-
-        DSRVUtils.sendDynmapMessage(dynmapUsername, checker.getMessage());
     }
 }

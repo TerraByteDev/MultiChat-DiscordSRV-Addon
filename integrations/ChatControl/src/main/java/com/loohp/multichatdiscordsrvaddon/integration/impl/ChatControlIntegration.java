@@ -3,7 +3,6 @@ package com.loohp.multichatdiscordsrvaddon.integration.impl;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.integration.MultiChatIntegration;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.DSRVUtils;
 import github.scarsz.discordsrv.DiscordSRV;
 import lombok.Getter;
 import me.lucko.helper.Events;
@@ -12,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.dynmap.DynmapWebChatEvent;
 import org.mineacademy.chatcontrol.api.ChannelPreChatEvent;
 import org.mineacademy.chatcontrol.api.ChatControlAPI;
 import org.mineacademy.chatcontrol.api.PlayerMessageEvent;
@@ -45,11 +43,25 @@ public class ChatControlIntegration implements MultiChatIntegration {
                 .filter(EventFilters.ignoreCancelled())
                 .handler(this::onPlayerMessage);
 
-        if (Config.i().getHook().dynmap().filter()) Events.subscribe(DynmapWebChatEvent.class, eventPriority)
-                .filter(EventFilters.ignoreCancelled())
-                .handler(this::onDynmapWebChatEvent);
-
         ChatUtils.sendMessage("<green>Registered external ChatControl v11 module!");
+    }
+
+    @Override
+    public String filter(com.loohp.multichatdiscordsrvaddon.integration.dynmap.DynmapSender dynmapSender, String message) {
+        String dynmapUsername = dynmapSender.getName();
+
+        DynmapSender chatControlDynmapSender = null;
+        if (!dynmapUsername.isEmpty()) {
+            Player player = Bukkit.getPlayerExact(dynmapUsername);
+            if (player != null) chatControlDynmapSender = new DynmapSender(dynmapUsername, player.getUniqueId(), player);
+        } else {
+            chatControlDynmapSender = new DynmapSender(Config.i().getHook().dynmap().fallbackName(), ChatUtils.ZERO_UUID, null);
+        }
+
+        Checker checker = ChatControlAPI.checkMessage(WrappedSender.fromDynmap(chatControlDynmapSender), message);
+        if (checker.isCancelledSilently()) return "";
+
+        return checker.getMessage();
     }
 
     public void onChannelPreChatEvent(ChannelPreChatEvent event) {
@@ -76,22 +88,5 @@ public class ChatControlIntegration implements MultiChatIntegration {
                 DiscordSRV.getPlugin().getOptionalChannel("global"),
                 false
         );
-    }
-
-    public void onDynmapWebChatEvent(DynmapWebChatEvent event) {
-        String dynmapUsername = event.getName();
-
-        DynmapSender dynmapSender = null;
-        if (!dynmapUsername.isEmpty()) {
-            Player player = Bukkit.getPlayerExact(dynmapUsername);
-            if (player != null) dynmapSender = new DynmapSender(dynmapUsername, player.getUniqueId(), player);
-        } else {
-            dynmapSender = new DynmapSender(Config.i().getHook().dynmap().fallbackName(), ChatUtils.ZERO_UUID, null);
-        }
-
-        Checker checker = ChatControlAPI.checkMessage(WrappedSender.fromDynmap(dynmapSender), event.getMessage());
-        if (checker.isCancelledSilently()) return;
-
-        DSRVUtils.sendDynmapMessage(dynmapUsername, checker.getMessage());
     }
 }
