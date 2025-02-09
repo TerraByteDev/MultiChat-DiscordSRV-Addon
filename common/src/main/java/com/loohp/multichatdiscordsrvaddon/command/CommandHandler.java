@@ -13,11 +13,10 @@ import org.incendo.cloud.paper.LegacyPaperCommandManager;
 
 public class CommandHandler {
 
-    private final LegacyPaperCommandManager<CommandSender> manager;
     private final AnnotationParser<CommandSender> parser;
 
     public CommandHandler() {
-        this.manager = LegacyPaperCommandManager.createNative(
+        LegacyPaperCommandManager<CommandSender> manager = LegacyPaperCommandManager.createNative(
                 MultiChatDiscordSrvAddon.plugin,
                 ExecutionCoordinator.asyncCoordinator()
         );
@@ -27,10 +26,10 @@ public class CommandHandler {
         // Natively, brigadier is non-blocking (async) and therefore there is no need to register async completions.
         // This is a simple elif statement to check if the server supports brigadier, and if it does, register it, which will support non-blocking completions.
         // If not, check if the server can support asynchronous completions, and if it does, register it.
-        if (this.manager.hasCapability(CloudBukkitCapabilities.NATIVE_BRIGADIER)) {
-            this.manager.registerBrigadier();
-        } else if (this.manager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
-            this.manager.registerAsynchronousCompletions();
+        if (manager.hasCapability(CloudBukkitCapabilities.NATIVE_BRIGADIER)) {
+            manager.registerBrigadier();
+        } else if (manager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+            manager.registerAsynchronousCompletions();
         }
 
         this.parser = new AnnotationParser<>(

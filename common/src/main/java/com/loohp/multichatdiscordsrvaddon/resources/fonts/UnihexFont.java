@@ -103,7 +103,7 @@ public class UnihexFont extends MinecraftFont {
         }
     }
 
-    protected final Optional<FontResource> missingCharacter;
+    protected final FontResource missingCharacter;
     private Int2ObjectMap<Optional<FontResource>> charImages;
     private Int2IntMap charWidth;
     private final List<SizeOverride> sizeOverrides;
@@ -121,7 +121,7 @@ public class UnihexFont extends MinecraftFont {
                 missingCharacter.setRGB(j, i, flag ? 0xFFFFFFFF : 0);
             }
         }
-        this.missingCharacter = Optional.of(new FontTextureResource(new GeneratedTextureResource(manager, missingCharacter)));
+        this.missingCharacter = new FontTextureResource(new GeneratedTextureResource(manager, missingCharacter));
     }
 
     @Override

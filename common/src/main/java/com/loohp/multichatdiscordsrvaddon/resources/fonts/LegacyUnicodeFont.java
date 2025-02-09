@@ -51,10 +51,10 @@ public class LegacyUnicodeFont extends MinecraftFont {
         return String.format("%04x", i).substring(0, 2);
     }
 
-    protected Optional<FontResource> missingCharacter;
+    protected FontResource missingCharacter;
     private Int2ObjectMap<Optional<FontResource>> charImages;
-    private Int2ObjectMap<GlyphSize> sizes;
-    private String template;
+    private final Int2ObjectMap<GlyphSize> sizes;
+    private final String template;
 
     public LegacyUnicodeFont(ResourceManager manager, FontProvider provider, Int2ObjectMap<GlyphSize> sizes, String template) {
         super(manager, provider);
@@ -68,7 +68,7 @@ public class LegacyUnicodeFont extends MinecraftFont {
                 missingCharacter.setRGB(j, i, flag ? 0xFFFFFFFF : 0);
             }
         }
-        this.missingCharacter = Optional.of(new FontTextureResource(new GeneratedTextureResource(manager, missingCharacter)));
+        this.missingCharacter = new FontTextureResource(new GeneratedTextureResource(manager, missingCharacter));
     }
 
     @Override

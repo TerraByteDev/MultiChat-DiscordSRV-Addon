@@ -33,12 +33,10 @@ import java.util.Map;
 public class ICPlayerEquipment implements EntityEquipment {
 
     private final Map<EquipmentSlot, Float> dropChance;
-    private final OfflinePlayer parent;
     private final OfflinePlayerData data;
 
     public ICPlayerEquipment(OfflinePlayer parent, OfflinePlayerData data) {
         this.dropChance = new EnumMap<>(EquipmentSlot.class);
-        this.parent = parent;
         this.data = data;
         resetChances();
     }

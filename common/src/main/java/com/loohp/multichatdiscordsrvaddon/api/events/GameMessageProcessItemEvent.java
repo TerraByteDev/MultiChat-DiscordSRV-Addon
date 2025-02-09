@@ -20,6 +20,8 @@
 
 package com.loohp.multichatdiscordsrvaddon.api.events;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
@@ -36,15 +38,17 @@ import java.util.Optional;
  *
  * @author LOOHP
  */
+@Getter
+@Setter
 public class GameMessageProcessItemEvent extends GameMessageProcessEvent {
 
     private ItemStack itemstack;
-    private Optional<Inventory> inventory;
+    private Inventory inventory;
 
     public GameMessageProcessItemEvent(OfflinePlayer sender, String title, Component component, boolean cancel, int processId, ItemStack itemstack, Inventory inventory) {
         super(sender, title, component, cancel, processId);
         this.itemstack = itemstack;
-        this.inventory = Optional.ofNullable(inventory);
+        this.inventory = inventory;
     }
 
     public GameMessageProcessItemEvent(OfflinePlayer sender, String title, Component component, boolean cancel, int processId, ItemStack itemstack) {
@@ -60,15 +64,7 @@ public class GameMessageProcessItemEvent extends GameMessageProcessEvent {
     }
 
     public boolean hasInventory() {
-        return inventory.isPresent();
-    }
-
-    public Inventory getInventory() {
-        return inventory.orElse(null);
-    }
-
-    public void setInventory(Inventory inventory) {
-        this.inventory = Optional.ofNullable(inventory);
+        return inventory != null;
     }
 
 }

@@ -74,6 +74,7 @@ public class ArmorUtils {
         }
     }
 
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static class ArmorTextureResult {
 
         public static ArmorTextureResult NONE = new ArmorTextureResult(Collections.emptyList(), OptionalInt.empty());
