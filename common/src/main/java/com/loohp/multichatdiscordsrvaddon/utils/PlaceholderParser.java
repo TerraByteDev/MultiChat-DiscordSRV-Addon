@@ -41,6 +41,7 @@ import java.util.regex.Pattern;
 public class PlaceholderParser {
 
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("[%]([^%]+)[%]");
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private static final Map<UUID, Map<String, String>> remotePlaceholders = new HashMap<>();
 
     static {

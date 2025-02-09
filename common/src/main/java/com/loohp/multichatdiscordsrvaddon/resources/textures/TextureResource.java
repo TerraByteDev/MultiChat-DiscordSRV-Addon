@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.resources.textures;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourcePackFile;
 import com.loohp.multichatdiscordsrvaddon.utils.AnimatedTextureUtils;
+import lombok.Getter;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -38,11 +39,15 @@ public class TextureResource {
     public static final String MCMETA_SUFFIX = ".mcmeta";
     public static final String PNG_MCMETA_SUFFIX = ".png" + MCMETA_SUFFIX;
 
+    @Getter
     private final ITextureManager manager;
+    @Getter
     private final String resourceKey;
+    @Getter
     private final ResourcePackFile file;
     private final  boolean isTexture;
     private Reference<BufferedImage> texture;
+    @Getter
     private final UnaryOperator<BufferedImage> imageTransformFunction;
 
     private Unsafe unsafe;
@@ -69,14 +74,6 @@ public class TextureResource {
 
     public TextureResource(TextureManager manager, String resourceKey, ResourcePackFile file) {
         this(manager, resourceKey, file, false, null);
-    }
-
-    public ITextureManager getManager() {
-        return manager;
-    }
-
-    public String getResourceKey() {
-        return resourceKey;
     }
 
     private synchronized BufferedImage loadImage() {
@@ -161,10 +158,6 @@ public class TextureResource {
         return file != null;
     }
 
-    public ResourcePackFile getFile() {
-        return file;
-    }
-
     public boolean isTextureMeta() {
         return false;
     }
@@ -175,10 +168,6 @@ public class TextureResource {
 
     public boolean hasImageTransformFunction() {
         return imageTransformFunction != null;
-    }
-
-    public UnaryOperator<BufferedImage> getImageTransformFunction() {
-        return imageTransformFunction;
     }
 
     public TextureMeta getTextureMeta() {

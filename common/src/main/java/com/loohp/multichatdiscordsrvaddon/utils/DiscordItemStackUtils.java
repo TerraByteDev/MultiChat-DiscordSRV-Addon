@@ -24,6 +24,7 @@ import com.google.common.collect.Multimap;
 import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
@@ -172,7 +173,7 @@ public class DiscordItemStackUtils {
     private static final DecimalFormat DURATION_FORMAT = new DecimalFormat("##.##");
     private static final int[] POTTERY_SHERD_ORDER = new int[] {3, 1, 2, 0};
 
-    private static boolean chatColorHasGetColor = Arrays.stream(ChatColor.class.getMethods()).anyMatch(each -> each.getName().equalsIgnoreCase("getColor") && each.getReturnType().equals(Color.class));
+    private static final boolean chatColorHasGetColor = Arrays.stream(ChatColor.class.getMethods()).anyMatch(each -> each.getName().equalsIgnoreCase("getColor") && each.getReturnType().equals(Color.class));
 
     private static ToolTipComponent<Component> tooltipEmpty() {
         return ToolTipComponent.empty();
@@ -308,8 +309,8 @@ public class DiscordItemStackUtils {
         if (icMaterial.isMaterial(XMaterial.PAINTING) && !hideAdditionalFlags) {
             PaintingVariant paintingVariant = NMS.getInstance().getPaintingVariant(item);
             if (paintingVariant != null) {
-                paintingVariant.getTitle().ifPresent(title -> prints.add(tooltipText(title)));
-                paintingVariant.getAuthor().ifPresent(author -> prints.add(tooltipText(author)));
+                prints.add(tooltipText(paintingVariant.getTitle()));
+                prints.add(tooltipText(paintingVariant.getAuthor()));
                 prints.add(tooltipText(translatable(getPaintingDimension()).arguments(text(paintingVariant.getBlockWidth()), text(paintingVariant.getBlockHeight())).color(WHITE)));
                 prints.add(tooltipImage(ImageGeneration.getPaintingImage(paintingVariant)));
             }
@@ -842,6 +843,7 @@ public class DiscordItemStackUtils {
 
     public static class DiscordToolTip {
 
+        @Getter
         private final List<ToolTipComponent<?>> components;
         private final boolean isBaseItem;
         private final boolean isHideTooltip;
@@ -850,10 +852,6 @@ public class DiscordItemStackUtils {
             this.components = components;
             this.isBaseItem = isBaseItem;
             this.isHideTooltip = isHideTooltip;
-        }
-
-        public List<ToolTipComponent<?>> getComponents() {
-            return components;
         }
 
         public boolean isBaseItem() {

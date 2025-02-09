@@ -43,7 +43,7 @@ public class SpaceFont extends MinecraftFont {
         return new SpaceFont(manager, provider, Int2IntMaps.singleton(' ', 4));
     }
 
-    private Int2IntMap charAdvances;
+    private final Int2IntMap charAdvances;
 
     public SpaceFont(ResourceManager manager, FontProvider provider, Int2IntMap charAdvances) {
         super(manager, provider);

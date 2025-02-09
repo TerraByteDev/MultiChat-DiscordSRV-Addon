@@ -20,8 +20,11 @@
 
 package com.loohp.multichatdiscordsrvaddon.graphics;
 
+import lombok.Getter;
+
 import java.awt.image.BufferedImage;
 
+@Getter
 public class ImageFrame {
 
     private final int delay;
@@ -40,18 +43,6 @@ public class ImageFrame {
 
     public ImageFrame(BufferedImage image) {
         this(image, 0, "");
-    }
-
-    public BufferedImage getImage() {
-        return image;
-    }
-
-    public int getDelay() {
-        return delay;
-    }
-
-    public String getDisposal() {
-        return disposal;
     }
 
 }

@@ -27,11 +27,11 @@ import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.libs.LibraryDownloadManager;
 import com.loohp.multichatdiscordsrvaddon.libs.LibraryLoader;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
+import lombok.Getter;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import com.loohp.multichatdiscordsrvaddon.hooks.ItemsAdderHook;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceDownloadManager;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -59,7 +59,7 @@ public class AssetsDownloader {
         if (!Arrays.asList(senders).contains(Bukkit.getConsoleSender())) {
             List<CommandSender> senderList = new ArrayList<>(Arrays.asList(senders));
             senderList.add(Bukkit.getConsoleSender());
-            senders = senderList.toArray(new CommandSender[senderList.size()]);
+            senders = senderList.toArray(new CommandSender[0]);
         }
         try {
             if (!LOCK.tryLock(0, TimeUnit.MILLISECONDS)) {
@@ -317,6 +317,7 @@ public class AssetsDownloader {
         return name;
     }
 
+    @Getter
     public static class ServerResourcePackDownloadResult {
 
         private final ServerResourcePackDownloadResultType type;
@@ -353,30 +354,10 @@ public class AssetsDownloader {
             this(type, null, null, null, null);
         }
 
-        public ServerResourcePackDownloadResultType getType() {
-            return type;
-        }
-
-        public File getResourcePackFile() {
-            return resourcePackFile;
-        }
-
-        public String getPackHash() {
-            return packHash;
-        }
-
-        public String getExpectedHash() {
-            return expectedHash;
-        }
-
-        public Throwable getError() {
-            return error;
-        }
-
     }
 
     public enum ServerResourcePackDownloadResultType {
-        NO_PACK, SUCCESS_NO_CHANGES, SUCCESS_NO_HASH, SUCCESS_WITH_HASH, FAILURE_DOWNLOAD, FAILURE_WRONG_HASH;
+        NO_PACK, SUCCESS_NO_CHANGES, SUCCESS_NO_HASH, SUCCESS_WITH_HASH, FAILURE_DOWNLOAD, FAILURE_WRONG_HASH
     }
 
 }

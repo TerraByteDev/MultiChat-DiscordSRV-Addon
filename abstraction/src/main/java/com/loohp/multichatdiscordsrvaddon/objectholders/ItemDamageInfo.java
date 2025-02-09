@@ -20,6 +20,9 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
+
+@Getter
 public class ItemDamageInfo {
 
     private final int damage;
@@ -30,11 +33,4 @@ public class ItemDamageInfo {
         this.maxDamage = maxDamage;
     }
 
-    public int getDamage() {
-        return damage;
-    }
-
-    public int getMaxDamage() {
-        return maxDamage;
-    }
 }

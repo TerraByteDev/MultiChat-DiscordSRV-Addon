@@ -29,10 +29,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.TreeMap;
 
 public class JsonUtils {
@@ -178,10 +178,9 @@ public class JsonUtils {
 
     @SuppressWarnings("unchecked")
     public static String toString(JSONObject json) {
-        JSONObject toSave = json;
 
         TreeMap<String, Object> treeMap = new TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER);
-        treeMap.putAll(toSave);
+        treeMap.putAll(json);
 
         Gson g = new GsonBuilder().create();
         return g.toJson(treeMap);
@@ -190,10 +189,9 @@ public class JsonUtils {
     @SuppressWarnings("unchecked")
     public static boolean saveToFilePretty(JSONObject json, File file) {
         try {
-            JSONObject toSave = json;
 
             TreeMap<String, Object> treeMap = new TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER);
-            treeMap.putAll(toSave);
+            treeMap.putAll(json);
 
             Gson g = new GsonBuilder().setPrettyPrinting().create();
             String prettyJsonString = g.toJson(treeMap);
@@ -202,7 +200,7 @@ public class JsonUtils {
             clear.print("");
             clear.close();
 
-            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
+            OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(file.toPath()), StandardCharsets.UTF_8);
             writer.write(prettyJsonString);
             writer.flush();
             writer.close();

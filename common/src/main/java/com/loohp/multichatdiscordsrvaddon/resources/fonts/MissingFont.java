@@ -26,11 +26,11 @@ import java.util.Collections;
 
 public class MissingFont extends UnihexFont {
 
-    private int missingFontWidth;
+    private final int missingFontWidth;
 
     public MissingFont(ResourceManager manager, FontProvider provider) {
         super(manager, provider, Collections.emptyList(), null);
-        this.missingFontWidth = missingCharacter.get().getFontImage().getWidth() * 2;
+        this.missingFontWidth = missingCharacter.getFontImage().getWidth() * 2;
     }
 
     @Override

@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.textures;
 
+import lombok.Getter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourcePackFile;
@@ -28,6 +29,7 @@ import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureAnimation.Te
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class TextureMeta extends TextureResource {
 
     @SuppressWarnings("DuplicateBranchesInSwitch")
@@ -124,18 +126,6 @@ public class TextureMeta extends TextureResource {
         this.animation = animation;
         this.properties = properties;
         this.gui = gui;
-    }
-
-    public TextureAnimation getAnimation() {
-        return animation;
-    }
-
-    public TextureProperties getProperties() {
-        return properties;
-    }
-
-    public TextureGui getGui() {
-        return gui;
     }
 
     public boolean hasAnimation() {

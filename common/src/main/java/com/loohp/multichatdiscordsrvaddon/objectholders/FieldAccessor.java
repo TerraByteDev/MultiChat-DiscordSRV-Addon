@@ -20,9 +20,12 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
+
 import java.lang.reflect.Field;
 import java.util.function.Function;
 
+@Getter
 public class FieldAccessor<T> {
 
     public static <T> FieldAccessor<T> fromField(Field field, Function<Object, T> mapper, T defaultValue) {
@@ -78,18 +81,6 @@ public class FieldAccessor<T> {
         } catch (Throwable e) {
             return defaultValue;
         }
-    }
-
-    public Field getField() {
-        return field;
-    }
-
-    public Function<Object, T> getMapper() {
-        return mapper;
-    }
-
-    public T getDefaultValue() {
-        return defaultValue;
     }
 
 }

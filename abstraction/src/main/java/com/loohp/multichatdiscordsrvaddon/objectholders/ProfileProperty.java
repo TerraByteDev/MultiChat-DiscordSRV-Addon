@@ -20,6 +20,9 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
+
+@Getter
 public class ProfileProperty {
 
     private final String name;
@@ -30,18 +33,6 @@ public class ProfileProperty {
         this.name = name;
         this.value = value;
         this.signature = signature;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public String getSignature() {
-        return signature;
     }
 
     public boolean hasSignature() {

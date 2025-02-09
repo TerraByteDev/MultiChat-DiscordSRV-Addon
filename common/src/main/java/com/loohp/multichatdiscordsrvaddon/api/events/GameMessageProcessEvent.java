@@ -20,6 +20,8 @@
 
 package com.loohp.multichatdiscordsrvaddon.api.events;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 
@@ -28,26 +30,16 @@ import org.bukkit.OfflinePlayer;
  *
  * @author LOOHP
  */
+@Getter
 public class GameMessageProcessEvent extends GameMessageEvent {
 
     private final int processId;
+    @Setter
     private String title;
 
     public GameMessageProcessEvent(OfflinePlayer sender, String title, Component component, boolean cancel, int processId) {
         super(sender, component, cancel);
         this.processId = processId;
-        this.title = title;
-    }
-
-    public int getProcessId() {
-        return processId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
         this.title = title;
     }
 

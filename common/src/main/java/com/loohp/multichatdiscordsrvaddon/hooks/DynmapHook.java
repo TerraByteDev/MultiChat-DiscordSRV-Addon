@@ -2,13 +2,11 @@ package com.loohp.multichatdiscordsrvaddon.hooks;
 
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
-import com.loohp.multichatdiscordsrvaddon.integration.IntegrationManager;
 import com.loohp.multichatdiscordsrvaddon.integration.MultiChatIntegration;
 import com.loohp.multichatdiscordsrvaddon.integration.dynmap.DynmapSender;
 import com.loohp.multichatdiscordsrvaddon.utils.DSRVUtils;
 import me.lucko.helper.Events;
 import me.lucko.helper.event.filter.EventFilters;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventPriority;
 import org.dynmap.DynmapWebChatEvent;
 

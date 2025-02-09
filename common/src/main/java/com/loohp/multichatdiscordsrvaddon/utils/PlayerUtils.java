@@ -4,7 +4,6 @@ import com.loohp.multichatdiscordsrvaddon.listeners.ICPlayerEvents;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICInventoryHolder;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlayerEquipment;
 import com.loohp.multichatdiscordsrvaddon.objectholders.OfflinePlayerData;
-import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
 import net.querz.nbt.io.NBTUtil;
 import net.querz.nbt.io.NamedTag;
 import net.querz.nbt.io.SNBTUtil;

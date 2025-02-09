@@ -3,6 +3,7 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -19,6 +20,7 @@ public class GithubBuildInfo {
     private final String id;
     private final String name;
     private final Instant buildTime;
+    @Getter
     private final boolean stable;
 
     public GithubBuildInfo(String id, String name, Instant buildTime, boolean stable) {
@@ -38,10 +40,6 @@ public class GithubBuildInfo {
 
     public @NotNull Instant getBuildTime() {
         return buildTime;
-    }
-
-    public boolean isStable() {
-        return stable;
     }
 
     @Override

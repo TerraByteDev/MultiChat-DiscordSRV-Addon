@@ -20,9 +20,12 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.textures;
 
+import lombok.Getter;
+
 import java.util.Collections;
 import java.util.List;
 
+@Getter
 public class TextureAnimation {
 
     private final boolean interpolate;
@@ -39,18 +42,6 @@ public class TextureAnimation {
         this.frames = Collections.unmodifiableList(frames);
     }
 
-    public boolean isInterpolate() {
-        return interpolate;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
     public boolean hasWidth() {
         return width >= 0;
     }
@@ -59,18 +50,11 @@ public class TextureAnimation {
         return height >= 0;
     }
 
-    public int getMasterFrametime() {
-        return masterFrametime;
-    }
-
     public boolean hasFrames() {
         return !frames.isEmpty();
     }
 
-    public List<TextureAnimationFrames> getFrames() {
-        return frames;
-    }
-
+    @Getter
     public static class TextureAnimationFrames {
 
         private final int index;
@@ -79,14 +63,6 @@ public class TextureAnimation {
         public TextureAnimationFrames(int index, int times) {
             this.index = index;
             this.times = times;
-        }
-
-        public int getIndex() {
-            return index;
-        }
-
-        public int getTimes() {
-            return times;
         }
 
         public boolean hasTimes() {

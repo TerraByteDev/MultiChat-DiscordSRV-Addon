@@ -20,25 +20,19 @@
 
 package com.loohp.multichatdiscordsrvaddon.wrappers;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.Inventory;
 
+@Getter
 public class TitledInventoryWrapper {
 
-    private Component title;
-    private Inventory inventory;
+    private final Component title;
+    private final Inventory inventory;
 
     public TitledInventoryWrapper(Component title, Inventory inventory) {
         this.title = title;
         this.inventory = inventory;
-    }
-
-    public Component getTitle() {
-        return title;
-    }
-
-    public Inventory getInventory() {
-        return inventory;
     }
 
 }

@@ -16,6 +16,7 @@ import org.mineacademy.chatcontrol.api.ChatChannelEvent;
 import org.mineacademy.chatcontrol.api.SimpleChatEvent;
 import org.mineacademy.chatcontrol.model.Checker;
 
+@SuppressWarnings("deprecation")
 @Getter
 public class ChatControlRedIntegration implements MultiChatIntegration {
 
@@ -26,6 +27,7 @@ public class ChatControlRedIntegration implements MultiChatIntegration {
         return Bukkit.getPluginManager().isPluginEnabled(getPluginName());
     }
 
+    @SuppressWarnings("ConstantValue")
     @Override
     public void enable(JavaPlugin plugin) {
         EventPriority eventPriority = EventPriority.valueOf(Config.i().getHook().priority());
@@ -63,6 +65,6 @@ public class ChatControlRedIntegration implements MultiChatIntegration {
     }
 
     public void onPlayerMessage(SimpleChatEvent event) {
-        System.out.println(event.getMessage());;
+        System.out.println(event.getMessage());
     }
 }

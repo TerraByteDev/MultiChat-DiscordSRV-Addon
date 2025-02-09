@@ -31,7 +31,7 @@ public class IDProvider {
     }
 
     public int getNext() {
-        return counter.getAndUpdate(i -> i >= Integer.MAX_VALUE ? 0 : i + 1);
+        return counter.getAndUpdate(i -> i == Integer.MAX_VALUE ? 0 : i + 1);
     }
 
 }

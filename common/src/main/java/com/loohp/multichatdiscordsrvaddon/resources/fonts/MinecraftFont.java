@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.fonts;
 
+import lombok.Getter;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Getter
 public abstract class MinecraftFont {
 
     public static final double ITALIC_SHEAR_X = -4.0 / 14.0;
@@ -148,14 +150,6 @@ public abstract class MinecraftFont {
         this.provider = provider;
     }
 
-    public ResourceManager getManager() {
-        return manager;
-    }
-
-    public FontProvider getProvider() {
-        return provider;
-    }
-
     protected void setProvider(FontProvider provider) {
         this.provider = provider;
     }
@@ -172,6 +166,7 @@ public abstract class MinecraftFont {
 
     public abstract IntSet getDisplayableCharacters();
 
+    @Getter
     public static class FontRenderResult {
 
         private final BufferedImage image;
@@ -186,26 +181,6 @@ public abstract class MinecraftFont {
             this.height = height;
             this.spaceWidth = spaceWidth;
             this.italicExtraWidth = italicExtraWidth;
-        }
-
-        public BufferedImage getImage() {
-            return image;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public int getSpaceWidth() {
-            return spaceWidth;
-        }
-
-        public int getItalicExtraWidth() {
-            return italicExtraWidth;
         }
 
     }

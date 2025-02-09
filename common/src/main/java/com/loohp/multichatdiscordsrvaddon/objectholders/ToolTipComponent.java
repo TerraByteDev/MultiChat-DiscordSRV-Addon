@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
 import java.awt.image.BufferedImage;
@@ -27,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 public class ToolTipComponent<T> {
 
     public static final ToolTipComponent<Component> EMPTY = text(Component.empty());
@@ -51,16 +53,8 @@ public class ToolTipComponent<T> {
         this.type = type;
     }
 
-    public T getToolTipComponent() {
-        return toolTipComponent;
-    }
-
     public <E> E getToolTipComponent(ToolTipType<E> type) {
         return (E) toolTipComponent;
-    }
-
-    public ToolTipType<T> getType() {
-        return type;
     }
 
     public static final class ToolTipType<V> {
@@ -82,15 +76,12 @@ public class ToolTipComponent<T> {
         }
 
         private final String name;
+        @Getter
         private final Class<V> typeClass;
 
         private ToolTipType(String name, Class<V> typeClass) {
             this.name = name;
             this.typeClass = typeClass;
-        }
-
-        public Class<V> getTypeClass() {
-            return typeClass;
         }
 
         public String name() {

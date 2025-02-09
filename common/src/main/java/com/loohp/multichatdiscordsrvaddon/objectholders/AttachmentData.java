@@ -20,6 +20,9 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
+
+@Getter
 public class AttachmentData {
 
     private final String name;
@@ -28,14 +31,6 @@ public class AttachmentData {
     public AttachmentData(String name, byte[] data) {
         this.name = name;
         this.data = data;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public byte[] getData() {
-        return data;
     }
 
 }

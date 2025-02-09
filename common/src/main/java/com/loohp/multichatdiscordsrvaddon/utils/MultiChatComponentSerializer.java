@@ -132,7 +132,7 @@ public class MultiChatComponentSerializer {
         }
 
         @Override
-        public String serialize(Component component) {
+        public @NotNull String serialize(@NotNull Component component) {
             return net.md_5.bungee.api.chat.BaseComponent.toLegacyText(net.md_5.bungee.chat.ComponentSerializer.parse(MultiChatGsonComponentSerializer.gson().serialize(component)));
         }
 
@@ -156,7 +156,7 @@ public class MultiChatComponentSerializer {
         }
 
         @Override
-        public Component deserialize(String input) {
+        public @NotNull Component deserialize(@NotNull String input) {
             return LegacyComponentSerializer.legacySection().deserialize(input);
         }
 

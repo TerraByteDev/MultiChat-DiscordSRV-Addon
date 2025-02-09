@@ -22,6 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import lombok.Getter;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.TropicalFish;
 import org.bukkit.entity.TropicalFish.Pattern;
@@ -99,6 +100,7 @@ public class FishUtils {
         return TropicalFishPattern.getPatternName(base, index);
     }
 
+    @Getter
     public enum TropicalFishPattern {
 
         KOB(0, 0),
@@ -135,14 +137,6 @@ public class FishUtils {
         TropicalFishPattern(int base, int index) {
             this.base = base;
             this.index = index;
-        }
-
-        public int getBase() {
-            return this.base;
-        }
-
-        public int getIndex() {
-            return this.index;
         }
 
         public String getName() {

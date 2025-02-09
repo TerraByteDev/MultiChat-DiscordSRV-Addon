@@ -22,6 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.resources.languages;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lombok.Getter;
 import org.apache.commons.io.input.BOMInputStream;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -65,9 +66,10 @@ public class LanguageManager extends AbstractManager implements ILanguageManager
         return () -> manager.translations.keySet();
     }
 
-    private Map<String, LanguageMeta> languageMeta;
-    private Map<String, Map<String, String>> translations;
-    private List<Consumer<LanguageReloadEvent>> reloadListeners;
+    private final Map<String, LanguageMeta> languageMeta;
+    private final Map<String, Map<String, String>> translations;
+    private final List<Consumer<LanguageReloadEvent>> reloadListeners;
+    @Getter
     private TranslateFunction translateFunction;
     private Supplier<Collection<String>> availableLanguagesSupplier;
 
@@ -105,7 +107,7 @@ public class LanguageManager extends AbstractManager implements ILanguageManager
                             try {
                                 String key = (String) obj;
                                 mapping.put(key, (String) json.get(key));
-                            } catch (Exception e) {
+                            } catch (Exception ignored) {
                             }
                         }
                         translations.put(file.getName().substring(0, file.getName().lastIndexOf(".")), mapping);
@@ -171,10 +173,6 @@ public class LanguageManager extends AbstractManager implements ILanguageManager
         reload();
     }
 
-    public TranslateFunction getTranslateFunction() {
-        return translateFunction;
-    }
-
     public void setTranslateFunction(TranslateFunction translateFunction) {
         this.translateFunction = translateFunction;
         reload();
@@ -219,22 +217,15 @@ public class LanguageManager extends AbstractManager implements ILanguageManager
         reloadListeners.forEach(each -> each.accept(event));
     }
 
+    @Getter
     public static class LanguageReloadEvent {
 
-        private LanguageManager languageManager;
-        private Map<String, Map<String, String>> translations;
+        private final LanguageManager languageManager;
+        private final Map<String, Map<String, String>> translations;
 
         public LanguageReloadEvent(LanguageManager languageManager, Map<String, Map<String, String>> translations) {
             this.languageManager = languageManager;
             this.translations = translations;
-        }
-
-        public LanguageManager getLanguageManager() {
-            return languageManager;
-        }
-
-        public Map<String, Map<String, String>> getTranslations() {
-            return translations;
         }
 
     }

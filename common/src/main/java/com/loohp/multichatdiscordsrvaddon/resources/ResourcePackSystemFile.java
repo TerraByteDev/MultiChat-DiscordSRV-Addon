@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources;
 
+import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 public class ResourcePackSystemFile implements ResourcePackFile {
 
     private final ResourcePackSystemFile root;
+    @Getter
     private final File file;
     private final Set<InputStream> streams;
 
@@ -49,10 +51,6 @@ public class ResourcePackSystemFile implements ResourcePackFile {
         this.root = root;
         this.file = file;
         this.streams = null;
-    }
-
-    public File getFile() {
-        return file;
     }
 
     public ResourcePackSystemFile getResourceSystemRoot() {

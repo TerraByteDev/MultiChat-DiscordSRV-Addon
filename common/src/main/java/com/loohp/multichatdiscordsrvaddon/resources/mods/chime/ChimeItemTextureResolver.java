@@ -27,6 +27,7 @@ import com.loohp.multichatdiscordsrvaddon.resources.models.BlockModel;
 import com.loohp.multichatdiscordsrvaddon.resources.models.ModelOverride.ModelOverrideType;
 import com.loohp.multichatdiscordsrvaddon.resources.mods.optifine.cit.EnchantmentProperties.OpenGLBlending;
 import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureResource;
+import lombok.Getter;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
@@ -38,16 +39,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Getter
 public class ChimeItemTextureResolver implements CustomItemTextureResolver {
 
     private final ChimeManager chimeManager;
 
     public ChimeItemTextureResolver(ChimeManager chimeManager) {
         this.chimeManager = chimeManager;
-    }
-
-    public ChimeManager getChimeManager() {
-        return chimeManager;
     }
 
 

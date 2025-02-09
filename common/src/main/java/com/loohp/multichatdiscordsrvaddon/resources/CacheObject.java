@@ -22,6 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.resources;
 
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.resources.ModelRenderer.RenderResult;
+import lombok.Getter;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -35,6 +36,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
+@Getter
 public class CacheObject<T> {
 
     protected static CacheObject<?> deserialize(byte[] data) throws Exception {
@@ -95,14 +97,6 @@ public class CacheObject<T> {
     protected CacheObject(long timeCreated, T object) {
         this.timeCreated = timeCreated;
         this.object = object;
-    }
-
-    public long getTimeCreated() {
-        return timeCreated;
-    }
-
-    public T getObject() {
-        return object;
     }
 
     protected byte[] serialize() throws IOException {

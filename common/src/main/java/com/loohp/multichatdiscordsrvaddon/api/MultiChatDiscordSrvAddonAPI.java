@@ -28,6 +28,7 @@ import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
 import com.loohp.multichatdiscordsrvaddon.wrappers.GraphicsToPacketMapWrapper;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -61,7 +62,7 @@ public class MultiChatDiscordSrvAddonAPI {
      * Add a map to the shared map list
      *
      * @param hash key
-     * @param item
+     * @param item item to add to the map
      * @return The hashed key which can be used to retrieve the inventory
      */
     public static String addMapToMapSharedList(String hash, ItemStack item) {
@@ -112,6 +113,7 @@ public class MultiChatDiscordSrvAddonAPI {
                 .orElse(itemStack);
     }
 
+    @Getter
     public enum SharedType {
 
         ITEM(0),
@@ -138,22 +140,17 @@ public class MultiChatDiscordSrvAddonAPI {
             this.value = value;
         }
 
-        public int getValue() {
-            return value;
-        }
-
     }
 
     /**
      * Add an inventory to the shared inventory list
      *
-     * @param type
+     * @param type {@link SharedType} type
      * @param hash key
-     * @param inventory
+     * @param inventory relevant inventory
      * @return The hashed key which can be used to retrieve the inventory
-     * @throws Exception
      */
-    public static String addInventoryToItemShareList(SharedType type, String hash, Inventory inventory) throws Exception {
+    public static String addInventoryToItemShareList(SharedType type, String hash, Inventory inventory) {
         switch (type) {
             case ITEM:
                 MultiChatDiscordSrvAddon.plugin.itemDisplay.put(hash, inventory);

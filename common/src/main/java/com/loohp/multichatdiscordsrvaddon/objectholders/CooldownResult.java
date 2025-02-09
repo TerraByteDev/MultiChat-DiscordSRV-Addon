@@ -20,11 +20,16 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
+
 public class CooldownResult {
 
+    @Getter
     private final CooldownOutcome outcome;
     private final long now;
+    @Getter
     private final long cooldownExpireTime;
+    @Getter
     private final ICPlaceholder placeholder;
 
     public CooldownResult(CooldownOutcome outcome, long now, long cooldownExpireTime, ICPlaceholder placeholder) {
@@ -34,22 +39,11 @@ public class CooldownResult {
         this.placeholder = placeholder;
     }
 
-    public CooldownOutcome getOutcome() {
-        return outcome;
-    }
-
     public long getTimeNow() {
         return now;
     }
 
-    public long getCooldownExpireTime() {
-        return cooldownExpireTime;
-    }
-
-    public ICPlaceholder getPlaceholder() {
-        return placeholder;
-    }
-
+    @Getter
     public enum CooldownOutcome {
 
         ALLOW(true),
@@ -61,10 +55,6 @@ public class CooldownResult {
 
         CooldownOutcome(boolean allowed) {
             this.allowed = allowed;
-        }
-
-        public boolean isAllowed() {
-            return allowed;
         }
 
     }

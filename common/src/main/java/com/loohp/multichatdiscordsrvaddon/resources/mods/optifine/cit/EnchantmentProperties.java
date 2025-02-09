@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.resources.mods.optifine.cit;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import com.loohp.multichatdiscordsrvaddon.objectholders.IntegerRange;
 import com.loohp.multichatdiscordsrvaddon.objectholders.PercentageOrIntegerRange;
+import lombok.Getter;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
 
@@ -33,6 +34,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+@Getter
 public class EnchantmentProperties extends CITProperties {
 
     private final int layer;
@@ -53,30 +55,6 @@ public class EnchantmentProperties extends CITProperties {
         this.texture = texture;
     }
 
-    public int getLayer() {
-        return layer;
-    }
-
-    public double getSpeed() {
-        return speed;
-    }
-
-    public double getRotation() {
-        return rotation;
-    }
-
-    public double getDuration() {
-        return duration;
-    }
-
-    public OpenGLBlending getBlend() {
-        return blend;
-    }
-
-    public String getTexture() {
-        return texture;
-    }
-
     @Override
     public String getOverrideAsset(String path, String extension) {
         if (extension.equalsIgnoreCase("png")) {
@@ -86,6 +64,7 @@ public class EnchantmentProperties extends CITProperties {
         }
     }
 
+    @Getter
     public static class OpenGLBlending {
 
         public static final OpenGLBlending REPLACE = of(null, null, null, null);
@@ -149,22 +128,6 @@ public class EnchantmentProperties extends CITProperties {
             this.desAlpha = desAlpha;
         }
 
-        public OpenGLBlendMode getSrcColor() {
-            return srcColor;
-        }
-
-        public OpenGLBlendMode getDesColor() {
-            return desColor;
-        }
-
-        public OpenGLBlendMode getSrcAlpha() {
-            return srcAlpha;
-        }
-
-        public OpenGLBlendMode getDesAlpha() {
-            return desAlpha;
-        }
-
         @Override
         public boolean equals(Object o) {
             if (this == o) {
@@ -184,6 +147,7 @@ public class EnchantmentProperties extends CITProperties {
 
     }
 
+    @Getter
     public enum OpenGLBlendMode {
 
         GL_ZERO(0),
@@ -203,10 +167,6 @@ public class EnchantmentProperties extends CITProperties {
 
         OpenGLBlendMode(int openGLValue) {
             this.openGLValue = openGLValue;
-        }
-
-        public int getOpenGLValue() {
-            return openGLValue;
         }
 
         public String getOpenGLName() {

@@ -32,7 +32,9 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonCl
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.GenericComponentInteractionCreateEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.SelectionMenuEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -86,12 +88,12 @@ public class DiscordInteractionEvents extends ListenerAdapter {
     }
 
     @Override
-    public void onButtonClick(ButtonClickEvent event) {
+    public void onButtonClick(@NotNull ButtonClickEvent event) {
         handleInteraction(event);
     }
 
     @Override
-    public void onSelectionMenu(SelectionMenuEvent event) {
+    public void onSelectionMenu(@NotNull SelectionMenuEvent event) {
         handleInteraction(event);
     }
 
@@ -108,12 +110,13 @@ public class DiscordInteractionEvents extends ListenerAdapter {
         event.reply(ChatColorUtils.stripColor(Config.i().getMessages().interactionExpired())).setEphemeral(true).queue();
     }
 
+    @Getter
     public static class InteractionData {
 
-        private InteractionHandler interactionHandler;
-        private List<DiscordMessageContent> contents;
-        private List<String> interactionIds;
-        private List<String> messageIds;
+        private final InteractionHandler interactionHandler;
+        private final List<DiscordMessageContent> contents;
+        private final List<String> interactionIds;
+        private final List<String> messageIds;
 
         public InteractionData(InteractionHandler interactionHandler, List<DiscordMessageContent> contents, List<String> interactionIds, List<String> messageIds) {
             this.interactionHandler = interactionHandler;
@@ -129,22 +132,6 @@ public class DiscordInteractionEvents extends ListenerAdapter {
             List<String> messageIds = new ArrayList<>();
             messageIds.add(messageId);
             this.messageIds = messageIds;
-        }
-
-        public InteractionHandler getInteractionHandler() {
-            return interactionHandler;
-        }
-
-        public List<DiscordMessageContent> getContents() {
-            return contents;
-        }
-
-        public List<String> getInteractionIds() {
-            return interactionIds;
-        }
-
-        public List<String> getMessageIds() {
-            return messageIds;
         }
 
     }

@@ -20,6 +20,9 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
+
+@Getter
 public enum ChargeType {
     NONE("none"),
     ARROW("arrow"),
@@ -31,10 +34,6 @@ public enum ChargeType {
 
     ChargeType(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public static ChargeType fromName(String name) {

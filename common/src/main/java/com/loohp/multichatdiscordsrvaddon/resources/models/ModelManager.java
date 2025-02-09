@@ -20,6 +20,8 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.models;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.json.simple.JSONObject;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.AbstractManager;
@@ -45,7 +47,9 @@ public class ModelManager extends AbstractManager implements IModelManager {
     public static final String ITEM_BASE = "minecraft:builtin/generated";
     public static final String ITEM_BASE_LAYER = "layer";
 
-    private Map<String, BlockModel> models;
+    private final Map<String, BlockModel> models;
+    @Setter
+    @Getter
     private ModelParsingFunction<?> modelParsingFunction;
 
     public ModelManager(ResourceManager manager) {
@@ -99,14 +103,6 @@ public class ModelManager extends AbstractManager implements IModelManager {
     @Override
     protected void reload() {
 
-    }
-
-    public ModelParsingFunction<?> getModelParsingFunction() {
-        return modelParsingFunction;
-    }
-
-    public void setModelParsingFunction(ModelParsingFunction<?> modelParsingFunction) {
-        this.modelParsingFunction = modelParsingFunction;
     }
 
     @Override

@@ -20,6 +20,8 @@
 
 package com.loohp.multichatdiscordsrvaddon.api.events;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
@@ -33,6 +35,8 @@ import org.bukkit.inventory.Inventory;
  *
  * @author LOOHP
  */
+@Setter
+@Getter
 public class GameMessageProcessInventoryEvent extends GameMessageProcessEvent {
 
     private Inventory inventory;
@@ -40,14 +44,6 @@ public class GameMessageProcessInventoryEvent extends GameMessageProcessEvent {
     public GameMessageProcessInventoryEvent(OfflinePlayer sender, String title, Component component, boolean cancel, int processId,
                                             Inventory inventory) {
         super(sender, title, component, cancel, processId);
-        this.inventory = inventory;
-    }
-
-    public Inventory getInventory() {
-        return inventory;
-    }
-
-    public void setInventory(Inventory inventory) {
         this.inventory = inventory;
     }
 

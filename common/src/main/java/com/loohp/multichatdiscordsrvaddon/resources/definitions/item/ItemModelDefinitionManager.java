@@ -41,7 +41,7 @@ public class ItemModelDefinitionManager extends AbstractManager implements IItem
 
     private static final ItemModelDefinition LEGACY_DEFINITION = new ItemModelDefinition.ItemModelDefinitionInteractiveChatDiscordSrvAddonLegacy(true);
 
-    private Map<String, ItemModelDefinition> itemDefinitions;
+    private final Map<String, ItemModelDefinition> itemDefinitions;
 
     public ItemModelDefinitionManager(ResourceManager manager) {
         super(manager);

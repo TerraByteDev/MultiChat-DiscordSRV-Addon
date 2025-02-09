@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import com.loohp.multichatdiscordsrvaddon.resources.languages.LanguageMeta;
 
@@ -32,19 +33,29 @@ public class ResourcePackInfo {
 
     public static final String UNKNOWN_PACK_ICON_LOCATION = "minecraft:misc/unknown_pack";
 
+    @Getter
     private final ResourceManager manager;
     private final ResourcePackFile file;
+    @Getter
     private final ResourcePackType type;
     private final boolean status;
     private final boolean exist;
+    @Getter
     private final String rejectedReason;
+    @Getter
     private final Component name;
+    @Getter
     private final PackFormat packFormat;
+    @Getter
     private final Component description;
+    @Getter
     private final Map<String, LanguageMeta> languageMeta;
+    @Getter
     private final List<PackOverlay> overlays;
     private final BufferedImage icon;
+    @Getter
     private final List<ResourceFilterBlock> resourceFilterBlocks;
+    @Getter
     private final Map<String, TextureAtlases> textureAtlases;
 
     private ResourcePackInfo(ResourceManager manager, ResourcePackFile file, ResourcePackType type, Component name, boolean status, boolean exist, String rejectedReason, PackFormat packFormat, Component description, Map<String, LanguageMeta> languageMeta, List<PackOverlay> overlays, BufferedImage icon, List<ResourceFilterBlock> resourceFilterBlocks, Map<String, TextureAtlases> textureAtlases) {
@@ -72,16 +83,8 @@ public class ResourcePackInfo {
         this(manager, file, type, name, false, false, rejectedReason, null, null, Collections.emptyMap(), Collections.emptyList(), null, Collections.emptyList(), Collections.emptyMap());
     }
 
-    public ResourceManager getManager() {
-        return manager;
-    }
-
     public ResourcePackFile getResourcePackFile() {
         return file;
-    }
-
-    public ResourcePackType getType() {
-        return type;
     }
 
     public int getPackOrder() {
@@ -96,20 +99,8 @@ public class ResourcePackInfo {
         return status;
     }
 
-    public String getRejectedReason() {
-        return rejectedReason;
-    }
-
     public boolean exists() {
         return exist;
-    }
-
-    public Component getName() {
-        return name;
-    }
-
-    public PackFormat getPackFormat() {
-        return packFormat;
     }
 
     public int compareServerPackFormat(int localFormat) {
@@ -122,32 +113,12 @@ public class ResourcePackInfo {
         return Integer.compare(packFormat.getMajor(), localFormat);
     }
 
-    public Component getDescription() {
-        return description;
-    }
-
-    public Map<String, LanguageMeta> getLanguageMeta() {
-        return languageMeta;
-    }
-
-    public List<PackOverlay> getOverlays() {
-        return overlays;
-    }
-
     public BufferedImage getRawIcon() {
         return icon;
     }
 
     public BufferedImage getIcon() {
         return icon == null ? manager.getTextureManager().getTexture(UNKNOWN_PACK_ICON_LOCATION).getTexture() : icon;
-    }
-
-    public List<ResourceFilterBlock> getResourceFilterBlocks() {
-        return resourceFilterBlocks;
-    }
-
-    public Map<String, TextureAtlases> getTextureAtlases() {
-        return textureAtlases;
     }
 
 }

@@ -63,7 +63,7 @@ public class ComponentStyling {
                 currentChildren.add(child);
             }
         }
-        if (currentChildren.size() > 0) {
+        if (!currentChildren.isEmpty()) {
             filtered.add(ComponentCompacting.optimize(component.children(currentChildren)));
         }
         return filtered;

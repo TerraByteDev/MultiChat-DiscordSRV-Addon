@@ -449,7 +449,7 @@ public class V1_21_4 extends NMSWrapper {
         }
         Optional<Component> title = paintingVariant.e().map(c -> MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(c)));
         Optional<Component> author = paintingVariant.f().map(c -> MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(c)));
-        return new PaintingVariant(Key.key(key.b(), key.a()), paintingVariant.b(), paintingVariant.c(), title, author);
+        return new PaintingVariant(Key.key(key.b(), key.a()), paintingVariant.b(), paintingVariant.c(), title.get(), author.get());
     }
 
     @Override
@@ -479,7 +479,7 @@ public class V1_21_4 extends NMSWrapper {
     public AdvancementData getAdvancementDataFromBukkitAdvancement(Object bukkitAdvancement) {
         AdvancementHolder holder = ((CraftAdvancement) bukkitAdvancement).getHandle();
         Optional<AdvancementDisplay> optAdvancementDisplay = holder.b().c();
-        if (!optAdvancementDisplay.isPresent()) {
+        if (optAdvancementDisplay.isEmpty()) {
             return null;
         }
         AdvancementDisplay display = optAdvancementDisplay.get();

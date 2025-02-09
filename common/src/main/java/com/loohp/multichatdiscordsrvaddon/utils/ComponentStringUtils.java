@@ -22,6 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.objectholders.LegacyIdKey;
+import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
@@ -487,6 +488,7 @@ public class ComponentStringUtils {
         return MultiChatGsonComponentSerializer.gson().deserialize(github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson().serialize(component));
     }
 
+    @Getter
     public static class CharacterLengthProviderData {
 
         private final String character;
@@ -497,18 +499,6 @@ public class ComponentStringUtils {
             this.character = character;
             this.font = font;
             this.decorations = decorations;
-        }
-
-        public String getCharacter() {
-            return character;
-        }
-
-        public Key getFont() {
-            return font;
-        }
-
-        public List<TextDecoration> getDecorations() {
-            return decorations;
         }
 
     }

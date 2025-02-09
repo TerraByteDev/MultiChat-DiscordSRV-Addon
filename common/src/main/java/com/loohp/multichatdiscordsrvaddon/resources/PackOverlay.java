@@ -20,6 +20,9 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources;
 
+import lombok.Getter;
+
+@Getter
 public class PackOverlay {
 
     private final PackFormat formats;
@@ -30,11 +33,4 @@ public class PackOverlay {
         this.directory = directory;
     }
 
-    public PackFormat getFormats() {
-        return formats;
-    }
-
-    public String getDirectory() {
-        return directory;
-    }
 }

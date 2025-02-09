@@ -22,6 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.objectholders;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageSticker;
+import lombok.Getter;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -40,9 +41,13 @@ public class PreviewableImageContainer {
         return new PreviewableImageContainer(attachment.getFileName(), attachment.getUrl(), Collections.singletonList(attachment.getProxyUrl()), attachment.getContentType(), () -> attachment.retrieveInputStream());
     }
 
+    @Getter
     private final String name;
+    @Getter
     private final String url;
+    @Getter
     private final List<String> altUrls;
+    @Getter
     private final String contentType;
     private final Supplier<CompletableFuture<InputStream>> retrieveInputStream;
 
@@ -54,26 +59,10 @@ public class PreviewableImageContainer {
         this.retrieveInputStream = retrieveInputStream;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public List<String> getAltUrls() {
-        return altUrls;
-    }
-
     public List<String> getAllUrls() {
         List<String> urls = new ArrayList<>(altUrls);
         urls.add(0, url);
         return urls;
-    }
-
-    public String getContentType() {
-        return contentType;
     }
 
     public CompletableFuture<InputStream> retrieveInputStream() {

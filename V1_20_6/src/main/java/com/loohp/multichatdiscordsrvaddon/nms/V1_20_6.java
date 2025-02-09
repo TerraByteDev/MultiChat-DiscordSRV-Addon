@@ -441,7 +441,7 @@ public class V1_20_6 extends NMSWrapper {
             return null;
         }
         Optional<Holder<net.minecraft.world.entity.decoration.PaintingVariant>> optional = customData.a(EntityPainting.e).result();
-        if (!optional.isPresent()) {
+        if (optional.isEmpty()) {
             return null;
         }
         net.minecraft.world.entity.decoration.PaintingVariant paintingVariant = optional.get().a();
@@ -480,7 +480,7 @@ public class V1_20_6 extends NMSWrapper {
     public AdvancementData getAdvancementDataFromBukkitAdvancement(Object bukkitAdvancement) {
         AdvancementHolder holder = ((CraftAdvancement) bukkitAdvancement).getHandle();
         Optional<AdvancementDisplay> optAdvancementDisplay = holder.b().c();
-        if (!optAdvancementDisplay.isPresent()) {
+        if (optAdvancementDisplay.isEmpty()) {
             return null;
         }
         AdvancementDisplay display = optAdvancementDisplay.get();

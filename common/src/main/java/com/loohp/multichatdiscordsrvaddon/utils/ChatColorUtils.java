@@ -86,7 +86,7 @@ public class ChatColorUtils {
         }
 
         int i = 1;
-        String color = "";
+        String color;
         while (i < input.length()) {
             color = String.valueOf(input.charAt(i - 1)) + input.charAt(i);
             if (input.charAt(i - 1) == '\u00a7' && input.charAt(i) == 'x' && input.length() > i + 13) {
@@ -153,7 +153,7 @@ public class ChatColorUtils {
             sb.append(before);
             text = text.substring(pos);
             leadingColor = getLastColors(before);
-        } while (text.length() > 0 && !text.equals(leadingColor));
+        } while (!text.isEmpty() && !text.equals(leadingColor));
         return sb.toString();
     }
 
@@ -243,11 +243,11 @@ public class ChatColorUtils {
     }
 
     public static String escapeColorCharacters(char character, String str) {
-        return str.replaceAll("(?i)(?<!\\\\)\\\\u00A7", character + "");
+        return str.replaceAll("(?i)(?<!\\\\)\\\\u00a7", character + "");
     }
 
     public static String unescapeColorCharacters(String str) {
-        return str.replaceAll("(?i)(?<!\\\\)\\\\u00A7", COLOR_CHAR + "");
+        return str.replaceAll("(?i)(?<!\\\\)\\\\u00a7", COLOR_CHAR + "");
     }
 
 }

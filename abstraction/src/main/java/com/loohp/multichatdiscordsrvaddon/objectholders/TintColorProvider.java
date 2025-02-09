@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
 import com.loohp.multichatdiscordsrvaddon.grahpics.BaseImageUtils;
+import lombok.Getter;
 
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
@@ -112,6 +113,7 @@ public interface TintColorProvider {
         }
     }
 
+    @Getter
     class SpawnEggTintData implements TintColorProvider {
 
         private final int base;
@@ -120,14 +122,6 @@ public interface TintColorProvider {
         public SpawnEggTintData(int base, int overlay) {
             this.base = base;
             this.overlay = overlay;
-        }
-
-        public int getBase() {
-            return base;
-        }
-
-        public int getOverlay() {
-            return overlay;
         }
 
         @Override

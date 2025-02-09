@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.graphics;
 
 import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
+import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
@@ -173,22 +174,15 @@ public class BannerGraphics {
         return new BannerAssetResult(MultiChatDiscordSrvAddon.plugin.getResourceManager().getTextureManager().getTexture(ResourceRegistry.ENTITY_TEXTURE_LOCATION + "shield_base_nopattern").getTexture(), new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB));
     }
 
+    @Getter
     public static class BannerAssetResult {
 
-        private BufferedImage base;
-        private BufferedImage patterns;
+        private final BufferedImage base;
+        private final BufferedImage patterns;
 
         public BannerAssetResult(BufferedImage base, BufferedImage patterns) {
             this.base = base;
             this.patterns = patterns;
-        }
-
-        public BufferedImage getBase() {
-            return base;
-        }
-
-        public BufferedImage getPatterns() {
-            return patterns;
         }
 
     }

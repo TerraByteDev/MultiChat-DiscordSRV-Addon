@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 import com.loohp.blockmodelrenderer.utils.ColorUtils;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureAnimation;
+import lombok.Getter;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -127,6 +128,7 @@ public class AnimatedTextureUtils {
         throw new IllegalStateException();
     }
 
+    @Getter
     private static class FrameIndexResult {
 
         private final int currentIndex;
@@ -139,17 +141,6 @@ public class AnimatedTextureUtils {
             this.interpolateFraction = interpolateFraction;
         }
 
-        public int getCurrentIndex() {
-            return currentIndex;
-        }
-
-        public int getNextIndex() {
-            return nextIndex;
-        }
-
-        public float getInterpolateFraction() {
-            return interpolateFraction;
-        }
     }
 
     private static int interpolateColor(int startColor, int endColor, float fraction) {

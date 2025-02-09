@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.models;
 
+import lombok.Getter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
@@ -130,7 +131,7 @@ public class BlockModel {
                         }
                         Object cullfaceObj = faceJson.get("cullface");
                         ModelFaceSide cullface;
-                        if (cullfaceObj != null && cullfaceObj instanceof String) {
+                        if (cullfaceObj instanceof String) {
                             cullface = ModelFaceSide.fromKey((String) cullfaceObj);
                         } else {
                             cullface = side;
@@ -172,15 +173,21 @@ public class BlockModel {
         return new BlockModel(manager, resourceLocation, parent, ambientocclusion, guiLight, display, texture, elements, overrides);
     }
 
+    @Getter
     private final IModelManager manager;
+    @Getter
     private final String resourceLocation;
 
     private final String parent;
+    @Getter
     private final boolean ambientocclusion;
     private final ModelGUILight guiLight;
     private final Map<ModelDisplayPosition, ModelDisplay> display;
+    @Getter
     private final Map<String, String> textures;
+    @Getter
     private final List<ModelElement> elements;
+    @Getter
     private final List<ModelOverride> overrides;
 
     public BlockModel(IModelManager manager, String resourceLocation, String parent, boolean ambientocclusion, ModelGUILight guiLight, Map<ModelDisplayPosition, ModelDisplay> display, Map<String, String> textures, List<ModelElement> elements, List<ModelOverride> overrides) {
@@ -195,14 +202,6 @@ public class BlockModel {
         this.overrides = Collections.unmodifiableList(overrides);
     }
 
-    public IModelManager getManager() {
-        return manager;
-    }
-
-    public String getResourceLocation() {
-        return resourceLocation;
-    }
-
     protected String getRawParent() {
         return parent;
     }
@@ -215,10 +214,6 @@ public class BlockModel {
             return parent;
         }
         return ResourceRegistry.DEFAULT_NAMESPACE + ":" + parent;
-    }
-
-    public boolean isAmbientocclusion() {
-        return ambientocclusion;
     }
 
     public ModelGUILight getRawGUILight() {
@@ -241,18 +236,6 @@ public class BlockModel {
             return display.get(position.getFallback());
         }
         return null;
-    }
-
-    public Map<String, String> getTextures() {
-        return textures;
-    }
-
-    public List<ModelElement> getElements() {
-        return elements;
-    }
-
-    public List<ModelOverride> getOverrides() {
-        return overrides;
     }
 
     public BlockModel resolve(boolean post1_8) {

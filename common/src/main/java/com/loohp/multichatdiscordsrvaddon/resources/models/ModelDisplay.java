@@ -20,11 +20,14 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.models;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@Getter
 public class ModelDisplay {
 
     private final ModelDisplayPosition position;
@@ -37,22 +40,6 @@ public class ModelDisplay {
         this.rotation = rotation;
         this.translation = translation;
         this.scale = scale;
-    }
-
-    public ModelDisplayPosition getPosition() {
-        return position;
-    }
-
-    public Coordinates3D getRotation() {
-        return rotation;
-    }
-
-    public Coordinates3D getTranslation() {
-        return translation;
-    }
-
-    public Coordinates3D getScale() {
-        return scale;
     }
 
     @Override
@@ -72,6 +59,7 @@ public class ModelDisplay {
         return Objects.hash(position, rotation, translation, scale);
     }
 
+    @Getter
     public enum ModelDisplayPosition {
 
         NONE("none"),
@@ -109,16 +97,8 @@ public class ModelDisplay {
             return keys.get(0);
         }
 
-        public List<String> getKeys() {
-            return keys;
-        }
-
         public boolean hasFallback() {
             return fallback != null;
-        }
-
-        public ModelDisplayPosition getFallback() {
-            return fallback;
         }
 
     }

@@ -22,6 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.resources;
 
 import com.google.gson.GsonBuilder;
 import com.loohp.multichatdiscordsrvaddon.utils.MultiChatGsonComponentSerializer;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -64,20 +65,28 @@ import java.util.stream.IntStream;
 
 public class ResourceManager implements AutoCloseable {
 
+    @Getter
     private final int nativeServerPackFormat;
     private final List<ResourcePackInfo> resourcePackInfo;
 
     private final Map<String, IResourceRegistry> resourceRegistries;
 
+    @Getter
     private final ItemModelDefinitionManager itemModelDefinitionManager;
+    @Getter
     private final EquipmentModelDefinitionManager equipmentModelDefinitionManager;
+    @Getter
     private final ModelManager modelManager;
+    @Getter
     private final TextureManager textureManager;
+    @Getter
     private final FontManager fontManager;
+    @Getter
     private final LanguageManager languageManager;
 
     private final Map<String, ModManager> modManagers;
 
+    @Getter
     private final Set<Flag> flags;
 
     private final BiFunction<File, ResourcePackType, DefaultResourcePackInfo> defaultResourcePackInfoFunction;
@@ -468,34 +477,6 @@ public class ResourceManager implements AutoCloseable {
         return Collections.unmodifiableList(resourcePackInfo);
     }
 
-    public int getNativeServerPackFormat() {
-        return nativeServerPackFormat;
-    }
-
-    public ItemModelDefinitionManager getItemModelDefinitionManager() {
-        return itemModelDefinitionManager;
-    }
-
-    public EquipmentModelDefinitionManager getEquipmentModelDefinitionManager() {
-        return equipmentModelDefinitionManager;
-    }
-
-    public ModelManager getModelManager() {
-        return modelManager;
-    }
-
-    public TextureManager getTextureManager() {
-        return textureManager;
-    }
-
-    public FontManager getFontManager() {
-        return fontManager;
-    }
-
-    public LanguageManager getLanguageManager() {
-        return languageManager;
-    }
-
     public ModManager getModManager(String modName) {
         return modManagers.get(modName);
     }
@@ -534,10 +515,6 @@ public class ResourceManager implements AutoCloseable {
 
     public Map<String, IResourceRegistry> getResourceRegistries() {
         return Collections.unmodifiableMap(resourceRegistries);
-    }
-
-    public Set<Flag> getFlags() {
-        return flags;
     }
 
     public boolean hasLegacyFlags() {
@@ -630,6 +607,7 @@ public class ResourceManager implements AutoCloseable {
 
     }
 
+    @Getter
     public static class DefaultResourcePackInfo {
 
         private final Component name;
@@ -640,18 +618,6 @@ public class ResourceManager implements AutoCloseable {
             this.name = name;
             this.version = version;
             this.description = description;
-        }
-
-        public Component getName() {
-            return name;
-        }
-
-        public PackFormat getVersion() {
-            return version;
-        }
-
-        public Component getDescription() {
-            return description;
         }
 
     }

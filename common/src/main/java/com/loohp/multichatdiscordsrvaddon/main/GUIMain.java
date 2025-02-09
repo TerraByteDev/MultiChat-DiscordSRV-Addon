@@ -74,6 +74,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 
+@SuppressWarnings("deprecation")
 public class GUIMain {
 
     private static final DecimalFormat FORMAT = new DecimalFormat("0.0");

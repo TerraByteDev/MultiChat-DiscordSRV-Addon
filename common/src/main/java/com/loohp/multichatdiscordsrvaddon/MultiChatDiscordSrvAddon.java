@@ -78,7 +78,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -297,7 +296,7 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
                 String value = (String) ((JSONObject) ((JSONObject) json.get("textures")).get("SKIN")).get("url");
                 BufferedImage skin = ImageUtils.downloadImage(value);
                 resourceManager.getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).putCache(uuid + value + ImageGeneration.PLAYER_SKIN_CACHE_KEY, skin);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         } else {
             try {
@@ -305,7 +304,7 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
                 String value = SkinUtils.getSkinURLFromUUID(uuid);
                 BufferedImage skin = ImageUtils.downloadImage(value);
                 resourceManager.getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).putCache(uuid + "null" + ImageGeneration.PLAYER_SKIN_CACHE_KEY, skin);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
     }

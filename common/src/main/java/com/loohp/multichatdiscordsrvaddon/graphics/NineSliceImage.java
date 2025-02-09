@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.graphics;
 
 import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureGui;
+import lombok.Getter;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -155,6 +156,7 @@ public class NineSliceImage {
         return result;
     }
 
+    @Getter
     public static class NineSlicePartArea {
 
         private final int x;
@@ -169,21 +171,6 @@ public class NineSliceImage {
             this.height = y2 - y1;
         }
 
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public int getHeight() {
-            return height;
-        }
     }
 
     @FunctionalInterface

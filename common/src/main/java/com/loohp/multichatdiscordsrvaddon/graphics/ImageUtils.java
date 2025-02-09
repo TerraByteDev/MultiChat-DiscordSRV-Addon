@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.graphics;
 import com.loohp.blockmodelrenderer.blending.BlendingModes;
 import com.loohp.blockmodelrenderer.utils.MathUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import com.loohp.multichatdiscordsrvaddon.objectholders.CharacterData;
@@ -573,7 +574,7 @@ public class ImageUtils {
                 if (Character.isHighSurrogate(c)) {
                     continue;
                 } else if (Character.isLowSurrogate(c) && i + 1 < data.size()) {
-                    character = String.valueOf(data.get(++i).firstChar()) + character;
+                    character = data.get(++i).firstChar() + character;
                 }
             } else {
                 character += String.valueOf(c);
@@ -604,7 +605,7 @@ public class ImageUtils {
 
         Graphics2D g3 = image.createGraphics();
         g3.drawImage(background, 0, 0, null);
-        g3.drawImage(textImage, x - centerX, (int) (y - (height / 5) + Math.max(1, 1 * (fontSize / 8))) - image.getHeight(), null);
+        g3.drawImage(textImage, x - centerX, (int) (y - ((float) height / 5) + Math.max(1, 1 * (fontSize / 8))) - image.getHeight(), null);
         g3.dispose();
         return new ComponentPrintResult(image, x - lastSpaceWidth - centerX);
     }
@@ -724,7 +725,7 @@ public class ImageUtils {
                 if (Character.isHighSurrogate(c)) {
                     continue;
                 } else if (Character.isLowSurrogate(c) && i + 1 < data.size()) {
-                    character = String.valueOf(data.get(++i).firstChar()) + character;
+                    character = data.get(++i).firstChar() + character;
                 }
             } else {
                 character += String.valueOf(c);
@@ -755,6 +756,7 @@ public class ImageUtils {
         return new ComponentPrintResult(image, x - lastSpaceWidth - topX);
     }
 
+    @Getter
     public static class ComponentPrintResult {
 
         private final BufferedImage image;
@@ -765,13 +767,6 @@ public class ImageUtils {
             this.textWidth = textWidth;
         }
 
-        public BufferedImage getImage() {
-            return image;
-        }
-
-        public int getTextWidth() {
-            return textWidth;
-        }
     }
 
 }

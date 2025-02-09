@@ -20,15 +20,19 @@
 
 package com.loohp.multichatdiscordsrvaddon.api.events;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.map.MapCursor;
 import org.bukkit.map.MapView;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@Getter
 public class MapDataLookupEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -37,10 +41,12 @@ public class MapDataLookupEvent extends Event {
         return HANDLERS;
     }
 
-    private Player player;
-    private int mapId;
-    private MapView mapView;
+    private final Player player;
+    private final int mapId;
+    private final MapView mapView;
+    @Setter
     private byte[] colors;
+    @Setter
     private List<MapCursor> mapCursors;
 
     public MapDataLookupEvent(Player player, int mapId, MapView mapView, byte[] colors, List<MapCursor> mapCursors) {
@@ -56,40 +62,12 @@ public class MapDataLookupEvent extends Event {
         return player != null;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public int getMapId() {
-        return mapId;
-    }
-
     public boolean hasMapView() {
         return mapView != null;
     }
 
-    public MapView getMapView() {
-        return mapView;
-    }
-
-    public byte[] getColors() {
-        return colors;
-    }
-
-    public void setColors(byte[] colors) {
-        this.colors = colors;
-    }
-
-    public List<MapCursor> getMapCursors() {
-        return mapCursors;
-    }
-
-    public void setMapCursors(List<MapCursor> mapCursors) {
-        this.mapCursors = mapCursors;
-    }
-
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
 

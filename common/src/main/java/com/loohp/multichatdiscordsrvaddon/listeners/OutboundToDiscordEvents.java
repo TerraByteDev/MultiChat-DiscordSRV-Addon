@@ -124,6 +124,7 @@ import java.util.regex.Pattern;
 
 import static com.loohp.multichatdiscordsrvaddon.utils.ChatUtils.toAllow;
 
+@SuppressWarnings("deprecation")
 public class OutboundToDiscordEvents implements Listener {
 
     public static final Comparator<DiscordDisplayData> DISPLAY_DATA_COMPARATOR = Comparator.comparing(DiscordDisplayData::getPosition);
@@ -255,7 +256,7 @@ public class OutboundToDiscordEvents implements Listener {
         }
         MultiChatDiscordSrvAddon.plugin.messagesCounter.incrementAndGet();
 
-        Player icSender = null;
+        Player icSender;
         MineverseChatPlayer mcPlayer = event.getVentureChatEvent().getMineverseChatPlayer();
         if (mcPlayer != null) {
             icSender = Bukkit.getPlayer(mcPlayer.getUUID());

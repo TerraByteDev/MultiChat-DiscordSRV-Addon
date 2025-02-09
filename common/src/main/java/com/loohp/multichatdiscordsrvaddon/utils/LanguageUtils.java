@@ -24,8 +24,8 @@ import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.bukkit.Bukkit;
@@ -37,6 +37,7 @@ import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -45,11 +46,11 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,7 +94,7 @@ public class LanguageUtils {
                     pw.flush();
                     pw.close();
                 }
-                InputStreamReader hashStream = new InputStreamReader(new FileInputStream(hashFile), StandardCharsets.UTF_8);
+                InputStreamReader hashStream = new InputStreamReader(Files.newInputStream(hashFile.toPath()), StandardCharsets.UTF_8);
                 JSONObject data = (JSONObject) new JSONParser().parse(hashStream);
                 hashStream.close();
 
@@ -214,7 +215,7 @@ public class LanguageUtils {
                 for (File file : langFileFolder.listFiles()) {
                     try {
                         if (file.getName().matches("^" + langRegex + ".json$")) {
-                            InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+                            InputStreamReader reader = new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8);
                             JSONObject json = (JSONObject) new JSONParser().parse(reader);
                             reader.close();
                             Map<String, String> mapping = new HashMap<>();
@@ -222,12 +223,12 @@ public class LanguageUtils {
                                 try {
                                     String key = (String) obj;
                                     mapping.put(key, (String) json.get(key));
-                                } catch (Exception e) {
+                                } catch (Exception ignored) {
                                 }
                             }
                             translations.put(file.getName().substring(0, file.getName().lastIndexOf(".")), mapping);
                         } else if (file.getName().matches("^" + langRegex + ".lang$")) {
-                            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+                            BufferedReader br = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8));
                             Map<String, String> mapping = new HashMap<>();
                             br.lines().forEach(line -> {
                                 if (line.contains("=")) {
@@ -320,18 +321,7 @@ public class LanguageUtils {
 
         if (material.equals(Material.SHIELD)) {
             if (NMS.getInstance().hasBlockEntityTag(itemStack)) {
-                DyeColor color = DyeColor.WHITE;
-                if (!(itemStack.getItemMeta() instanceof BannerMeta)) {
-                    if (itemStack.getItemMeta() instanceof BlockStateMeta) {
-                        BlockStateMeta bmeta = (BlockStateMeta) itemStack.getItemMeta();
-                        if (bmeta.hasBlockState()) {
-                            Banner bannerBlockMeta = (Banner) bmeta.getBlockState();
-                            color = bannerBlockMeta.getBaseColor();
-                        }
-                    }
-                } else {
-                    color = ((Banner) itemStack).getBaseColor();
-                }
+                DyeColor color = getDyeColor(itemStack);
 
                 path += "." + color.name().toLowerCase();
             }
@@ -348,6 +338,22 @@ public class LanguageUtils {
         }
 
         return path;
+    }
+
+    private static @NotNull DyeColor getDyeColor(ItemStack itemStack) {
+        DyeColor color = DyeColor.WHITE;
+        if (!(itemStack.getItemMeta() instanceof BannerMeta)) {
+            if (itemStack.getItemMeta() instanceof BlockStateMeta) {
+                BlockStateMeta bmeta = (BlockStateMeta) itemStack.getItemMeta();
+                if (bmeta.hasBlockState()) {
+                    Banner bannerBlockMeta = (Banner) bmeta.getBlockState();
+                    color = bannerBlockMeta.getBaseColor();
+                }
+            }
+        } else {
+            color = ((Banner) itemStack).getBaseColor();
+        }
+        return color;
     }
 
     private static String getLegacyTranslationKey(ItemStack itemStack) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -402,6 +408,7 @@ public class LanguageUtils {
 
     public static class TranslationResult {
 
+        @Getter
         private final String result;
         private final boolean hasTranslation;
 
@@ -412,10 +419,6 @@ public class LanguageUtils {
 
         public String getResultOrFallback(String fallback) {
             return hasTranslation ? result : (fallback == null ? result : fallback);
-        }
-
-        public String getResult() {
-            return result;
         }
 
         public boolean hasTranslation() {

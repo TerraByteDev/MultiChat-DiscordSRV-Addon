@@ -58,7 +58,7 @@ public class GifWriter implements AutoCloseable {
             ImageOutputStream outputStream,
             int imageType,
             int timeBetweenFramesMS,
-            boolean loopContinuously) throws IIOException, IOException {
+            boolean loopContinuously) throws IOException {
         // my method to create a writer
         gifWriter = getWriter();
         imageWriteParam = gifWriter.getDefaultWriteParam();

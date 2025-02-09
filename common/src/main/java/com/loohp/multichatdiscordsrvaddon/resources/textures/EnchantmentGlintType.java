@@ -21,7 +21,9 @@
 package com.loohp.multichatdiscordsrvaddon.resources.textures;
 
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
+import lombok.Getter;
 
+@Getter
 public enum EnchantmentGlintType {
 
     ENTITY(ResourceRegistry.ENCHANTMENT_GLINT_ENTITY_LOCATION),
@@ -31,10 +33,6 @@ public enum EnchantmentGlintType {
 
     EnchantmentGlintType(String resourceLocation) {
         this.resourceLocation = resourceLocation;
-    }
-
-    public String getResourceLocation() {
-        return resourceLocation;
     }
 
 }

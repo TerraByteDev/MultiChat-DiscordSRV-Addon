@@ -20,11 +20,13 @@
 
 package com.loohp.multichatdiscordsrvaddon.api.events;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This event is called whenever the item placeholder is used. Only the itemStack
@@ -33,6 +35,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author LOOHP
  */
+@Getter
 public class ItemPlaceholderEvent extends PlaceholderEvent {
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -48,20 +51,11 @@ public class ItemPlaceholderEvent extends PlaceholderEvent {
         this.itemStack = itemStack;
     }
 
-    public ItemStack getItemStack() {
-        return itemStack;
-    }
-
     public void setItemStack(ItemStack itemStack) {
         if (itemStack == null) {
             itemStack = new ItemStack(Material.AIR);
         }
         this.itemStack = itemStack;
-    }
-
-    @Override
-    public Component getComponent() {
-        return component;
     }
 
     @Override
@@ -76,7 +70,7 @@ public class ItemPlaceholderEvent extends PlaceholderEvent {
         throw new UnsupportedOperationException("Cancelling this event is not allowed");
     }
 
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
 

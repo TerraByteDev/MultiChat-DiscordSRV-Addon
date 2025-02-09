@@ -25,6 +25,7 @@ import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.GithubBuildInfo;
 import com.loohp.multichatdiscordsrvaddon.utils.GithubUtils;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -83,7 +84,9 @@ public class Updater implements Listener {
 
     public static class UpdaterResponse {
 
+        @Getter
         private final String result;
+        @Getter
         private final int spigotPluginId;
         private final boolean devBuildIsLatest;
 
@@ -91,14 +94,6 @@ public class Updater implements Listener {
             this.result = result;
             this.spigotPluginId = spigotPluginId;
             this.devBuildIsLatest = devBuildIsLatest;
-        }
-
-        public String getResult() {
-            return result;
-        }
-
-        public int getSpigotPluginId() {
-            return spigotPluginId;
         }
 
         public boolean isDevBuildLatest() {

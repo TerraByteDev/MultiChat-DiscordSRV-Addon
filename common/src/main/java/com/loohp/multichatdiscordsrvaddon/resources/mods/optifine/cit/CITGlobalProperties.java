@@ -20,8 +20,11 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.mods.optifine.cit;
 
+import lombok.Getter;
+
 import java.util.Properties;
 
+@Getter
 public class CITGlobalProperties {
 
     public static CITGlobalProperties fromProperties(Properties properties) {
@@ -44,25 +47,9 @@ public class CITGlobalProperties {
         this.fade = fade;
     }
 
-    public boolean isUseGlint() {
-        return useGlint;
-    }
-
-    public int getCap() {
-        return cap;
-    }
-
-    public EnchantmentVisibilityMethod getMethod() {
-        return method;
-    }
-
-    public double getFade() {
-        return fade;
-    }
-
     public enum EnchantmentVisibilityMethod {
 
-        AVERAGE, LAYERED, CYCLE;
+        AVERAGE, LAYERED, CYCLE
 
     }
 

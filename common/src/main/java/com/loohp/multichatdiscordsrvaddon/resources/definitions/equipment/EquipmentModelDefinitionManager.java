@@ -39,7 +39,7 @@ public class EquipmentModelDefinitionManager extends AbstractManager implements 
 
     private static final EquipmentModelDefinition LEGACY_DEFINITION = new EquipmentModelDefinition(Collections.singletonMap(EquipmentModelDefinition.EquipmentLayerType.IC_LEGACY, Collections.emptyList()));
 
-    private Map<String, EquipmentModelDefinition> equipmentDefinition;
+    private final Map<String, EquipmentModelDefinition> equipmentDefinition;
 
     public EquipmentModelDefinitionManager(ResourceManager manager) {
         super(manager);

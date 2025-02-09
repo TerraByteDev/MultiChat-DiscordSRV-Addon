@@ -92,6 +92,7 @@ public class ItemDisplay {
         return createItemDisplay(player, item, Config.i().getInventoryImage().item().itemTitle(), true, null, false);
     }
 
+    @SuppressWarnings("deprecation")
     public static Component createItemDisplay(OfflinePlayer player, ItemStack item, String rawTitle, boolean showHover, Component alternativeHover, boolean preview) throws Exception {
         if (item == null) {
             item = new ItemStack(Material.AIR);
@@ -134,7 +135,7 @@ public class ItemDisplay {
             trimmed = true;
         }
 
-        String amountString = "";
+        String amountString;
         Component itemDisplayNameComponent = ItemStackUtils.getDisplayName(item);
 
         amountString = String.valueOf(itemAmount);

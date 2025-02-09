@@ -28,30 +28,42 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.MessageAction;
 import github.scarsz.discordsrv.objects.MessageFormat;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 public class DiscordMessageContent {
 
+    @Getter
+    @Setter
     private String authorName;
+    @Getter
+    @Setter
     private String authorIconUrl;
+    @Setter
+    @Getter
     private String title;
     private List<String> description;
     private List<String> imageUrl;
+    @Getter
+    @Setter
     private String thumbnail;
-    private List<Field> fields;
+    @Getter
+    private final List<Field> fields;
+    @Setter
+    @Getter
     private int color;
+    @Setter
+    @Getter
     private String footer;
+    @Setter
+    @Getter
     private String footerImageUrl;
+    @Setter
+    @Getter
     private Map<String, byte[]> attachments;
 
     public DiscordMessageContent(String authorName, String authorIconUrl, List<String> description, List<String> imageUrl, int color, Map<String, byte[]> attachments) {
@@ -67,11 +79,11 @@ public class DiscordMessageContent {
     }
 
     public DiscordMessageContent(String authorName, String authorIconUrl, String description, String imageUrl, Color color) {
-        this(authorName, authorIconUrl, new ArrayList<>(Arrays.asList(description)), new ArrayList<>(Arrays.asList(imageUrl)), color.getRGB(), new HashMap<>());
+        this(authorName, authorIconUrl, new ArrayList<>(Collections.singletonList(description)), new ArrayList<>(Collections.singletonList(imageUrl)), color.getRGB(), new HashMap<>());
     }
 
     public DiscordMessageContent(String authorName, String authorIconUrl, String description, String imageUrl, int color) {
-        this(authorName, authorIconUrl, new ArrayList<>(Arrays.asList(description)), new ArrayList<>(Arrays.asList(imageUrl)), color, new HashMap<>());
+        this(authorName, authorIconUrl, new ArrayList<>(Collections.singletonList(description)), new ArrayList<>(Collections.singletonList(imageUrl)), color, new HashMap<>());
     }
 
     public DiscordMessageContent(String authorName, String authorIconUrl, Color color) {
@@ -126,38 +138,6 @@ public class DiscordMessageContent {
         this.attachments = new HashMap<>();
     }
 
-    public String getAuthorName() {
-        return authorName;
-    }
-
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
-    }
-
-    public String getAuthorIconUrl() {
-        return authorIconUrl;
-    }
-
-    public void setAuthorIconUrl(String authorIconUrl) {
-        this.authorIconUrl = authorIconUrl;
-    }
-
-    public String getThumbnail() {
-        return thumbnail;
-    }
-
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public List<String> getDescriptions() {
         return description;
     }
@@ -198,44 +178,8 @@ public class DiscordMessageContent {
         imageUrl.clear();
     }
 
-    public List<Field> getFields() {
-        return fields;
-    }
-
     public void addFields(Field... field) {
         fields.addAll(Arrays.asList(field));
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
-    }
-
-    public String getFooter() {
-        return footer;
-    }
-
-    public void setFooter(String footer) {
-        this.footer = footer;
-    }
-
-    public String getFooterImageUrl() {
-        return footerImageUrl;
-    }
-
-    public void setFooterImageUrl(String footerImageUrl) {
-        this.footerImageUrl = footerImageUrl;
-    }
-
-    public Map<String, byte[]> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(Map<String, byte[]> attachments) {
-        this.attachments = attachments;
     }
 
     public void addAttachment(String name, byte[] data) {
@@ -255,10 +199,10 @@ public class DiscordMessageContent {
         for (Field field : fields) {
             embed.addField(field);
         }
-        if (description.size() > 0) {
+        if (!description.isEmpty()) {
             embed.setDescription(description.get(0));
         }
-        if (imageUrl.size() > 0) {
+        if (!imageUrl.isEmpty()) {
             String url = imageUrl.get(0);
             embed.setImage(url);
             rootAttachments.add(url);
@@ -331,10 +275,10 @@ public class DiscordMessageContent {
         for (Field field : fields) {
             embed.addField(field);
         }
-        if (description.size() > 0) {
+        if (!description.isEmpty()) {
             embed.setDescription(description.get(0));
         }
-        if (imageUrl.size() > 0) {
+        if (!imageUrl.isEmpty()) {
             String url = imageUrl.get(0);
             embed.setImage(url);
             if (url.startsWith("attachment://")) {

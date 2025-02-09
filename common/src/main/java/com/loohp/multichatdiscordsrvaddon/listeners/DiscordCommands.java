@@ -434,8 +434,9 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
         return players;
     }
 
-    private DiscordSRV discordsrv;
-    private Map<String, Component> components;
+    private final DiscordSRV discordsrv;
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private final Map<String, Component> components;
 
     public DiscordCommands(DiscordSRV discordsrv) {
         this.discordsrv = discordsrv;
@@ -628,7 +629,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
 
                 String discordUserId = event.getUser().getId();
                 List<OptionMapping> options = event.getOptionsByType(OptionType.USER);
-                if (options.size() > 0) {
+                if (!options.isEmpty()) {
                     discordUserId = options.get(0).getAsUser().getId();
                 }
                 UUID uuid = discordsrv.getAccountLinkManager().getUuid(discordUserId);
@@ -665,7 +666,6 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                 } catch (Throwable e) {
                     e.printStackTrace();
                     event.getHook().editOriginal(ChatColorUtils.stripColor(Config.i().getMessages().unableToRetrieveData()) + " (" + errorCode + ")").queue();
-                    return;
                 }
             }
         } else if (Config.i().getDiscordCommands().playerList().enabled() && label.equalsIgnoreCase(PLAYERLIST_LABEL)) {
@@ -695,7 +695,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                         for (ValueTrios<UUID, String, Integer> playerinfo : bungeePlayers) {
                             UUID uuid = playerinfo.getFirst();
                             Player icPlayer = Bukkit.getPlayer(uuid);
-                            if (icPlayer == null || !PlayerUtils.isVanished(icPlayer)) {
+                            if (!PlayerUtils.isVanished(icPlayer)) {
                                 players.put(Bukkit.getOfflinePlayer(uuid), playerinfo.getThird());
                             }
                         }
@@ -706,7 +706,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                     }
                 } else {
                     players = Bukkit.getOnlinePlayers().stream().filter(each -> {
-                        return each == null || !PlayerUtils.isVanished(each);
+                        return !PlayerUtils.isVanished(each);
                     }).collect(Collectors.toMap(each -> each, each -> each.getPing(), (a, b) -> a));
                 }
                 if (players.isEmpty()) {
@@ -764,7 +764,6 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                                 message.delete().queueAfter(Config.i().getDiscordCommands().playerList().deleteAfter(), TimeUnit.SECONDS);
                             }
                         });
-                        return;
                     }
                 }
             }
@@ -778,7 +777,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             }
             String discordUserId = event.getUser().getId();
             List<OptionMapping> options = event.getOptionsByType(OptionType.USER);
-            if (options.size() > 0) {
+            if (!options.isEmpty()) {
                 discordUserId = options.get(0).getAsUser().getId();
             }
             UUID uuid = discordsrv.getAccountLinkManager().getUuid(discordUserId);
@@ -905,7 +904,6 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                         message.delete().queueAfter(Config.i().getSettings().embedDeleteAfter(), TimeUnit.SECONDS);
                     }
                 });
-                return;
             }
         } else if (Config.i().getDiscordCommands().shareInventory().enabled() && (label.equalsIgnoreCase(INVENTORY_LABEL) || label.equalsIgnoreCase(INVENTORY_OTHER_LABEL))) {
             String minecraftChannel = discordsrv.getChannels().entrySet().stream().filter(entry -> channel.getId().equals(entry.getValue())).map(Map.Entry::getKey).findFirst().orElse(null);
@@ -917,7 +915,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             }
             String discordUserId = event.getUser().getId();
             List<OptionMapping> options = event.getOptionsByType(OptionType.USER);
-            if (options.size() > 0) {
+            if (!options.isEmpty()) {
                 discordUserId = options.get(0).getAsUser().getId();
             }
             UUID uuid = discordsrv.getAccountLinkManager().getUuid(discordUserId);
@@ -1009,7 +1007,6 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                         message.delete().queueAfter(Config.i().getSettings().embedDeleteAfter(), TimeUnit.SECONDS);
                     }
                 });
-                return;
             }
         } else if (Config.i().getDiscordCommands().shareEnderChest().enabled() && (label.equals(ENDERCHEST_LABEL) || label.equals(ENDERCHEST_OTHER_LABEL))) {
             String minecraftChannel = discordsrv.getChannels().entrySet().stream().filter(entry -> channel.getId().equals(entry.getValue())).map(Map.Entry::getKey).findFirst().orElse(null);
@@ -1021,7 +1018,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             }
             String discordUserId = event.getUser().getId();
             List<OptionMapping> options = event.getOptionsByType(OptionType.USER);
-            if (options.size() > 0) {
+            if (!options.isEmpty()) {
                 discordUserId = options.get(0).getAsUser().getId();
             }
             UUID uuid = discordsrv.getAccountLinkManager().getUuid(discordUserId);
@@ -1111,7 +1108,6 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                         message.delete().queueAfter(Config.i().getSettings().embedDeleteAfter(), TimeUnit.SECONDS);
                     }
                 });
-                return;
             }
         }
     }

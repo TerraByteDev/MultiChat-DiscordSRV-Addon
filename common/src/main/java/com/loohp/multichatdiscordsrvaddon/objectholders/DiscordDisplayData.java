@@ -20,8 +20,10 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
 import org.bukkit.OfflinePlayer;
 
+@Getter
 public abstract class DiscordDisplayData {
 
     protected final OfflinePlayer player;
@@ -30,14 +32,6 @@ public abstract class DiscordDisplayData {
     public DiscordDisplayData(OfflinePlayer player, int position) {
         this.player = player;
         this.position = position;
-    }
-
-    public OfflinePlayer getPlayer() {
-        return player;
-    }
-
-    public int getPosition() {
-        return position;
     }
 
 }

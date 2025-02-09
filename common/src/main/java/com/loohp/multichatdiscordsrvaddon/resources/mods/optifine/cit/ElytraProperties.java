@@ -23,12 +23,14 @@ package com.loohp.multichatdiscordsrvaddon.resources.mods.optifine.cit;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICMaterial;
 import com.loohp.multichatdiscordsrvaddon.objectholders.IntegerRange;
 import com.loohp.multichatdiscordsrvaddon.objectholders.PercentageOrIntegerRange;
+import lombok.Getter;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.Map;
 import java.util.Set;
 
+@Getter
 public class ElytraProperties extends CITProperties {
 
     private final String texture;
@@ -36,10 +38,6 @@ public class ElytraProperties extends CITProperties {
     public ElytraProperties(int weight, Set<ICMaterial> items, IntegerRange stackSize, PercentageOrIntegerRange damage, int damageMask, EquipmentSlot hand, Map<Enchantment, IntegerRange> enchantments, Map<String, CITValueMatcher> nbtMatch, String texture) {
         super(weight, items, stackSize, damage, damageMask, hand, enchantments, nbtMatch);
         this.texture = texture;
-    }
-
-    public String getTexture() {
-        return texture;
     }
 
     @Override

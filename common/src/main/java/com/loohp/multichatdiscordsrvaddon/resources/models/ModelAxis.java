@@ -22,6 +22,6 @@ package com.loohp.multichatdiscordsrvaddon.resources.models;
 
 public enum ModelAxis {
 
-    X, Y, Z;
+    X, Y, Z
 
 }

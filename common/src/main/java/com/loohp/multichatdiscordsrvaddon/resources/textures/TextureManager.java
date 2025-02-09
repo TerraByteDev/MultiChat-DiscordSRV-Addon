@@ -101,8 +101,8 @@ public class TextureManager extends AbstractManager implements ITextureManager {
         return image;
     }
 
-    private Map<String, TextureResource> textures;
-    private Map<String, TextureAtlases> textureAtlases;
+    private final Map<String, TextureResource> textures;
+    private final Map<String, TextureAtlases> textureAtlases;
 
     public TextureManager(ResourceManager manager) {
         super(manager);

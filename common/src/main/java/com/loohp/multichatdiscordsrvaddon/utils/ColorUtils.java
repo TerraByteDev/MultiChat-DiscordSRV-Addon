@@ -35,7 +35,7 @@ public class ColorUtils {
 
     private static final BiMap<ChatColor, Color> colors = HashBiMap.create();
 
-    private static boolean chatColorHasGetColor = false;
+    private static boolean chatColorHasGetColor;
 
     static {
         colors.put(ChatColor.BLACK, new Color(0x000000));
@@ -58,7 +58,7 @@ public class ColorUtils {
         chatColorHasGetColor = Arrays.stream(ChatColor.class.getMethods()).anyMatch(each -> each.getName().equalsIgnoreCase("getColor") && each.getReturnType().equals(Color.class));
     }
 
-    private static final Pattern COLOR_STRIP_PATTERN = Pattern.compile("((&|§)[0-9a-fk-or])|(§x(§[0-9a-fA-F]){6})|((?<!\\\\)(\\{|&|)#((?:[0-9a-fA-F]{3}){2})(\\}|))");
+    private static final Pattern COLOR_STRIP_PATTERN = Pattern.compile("((&|\u00a7)[0-9a-fk-or])|(\u00a7x(\u00a7[0-9a-fA-F]){6})|((?<!\\\\)(\\{|&|)#((?:[0-9a-fA-F]{3}){2})(\\}|))");
 
     public static ChatColor toChatColor(String str) {
         try {

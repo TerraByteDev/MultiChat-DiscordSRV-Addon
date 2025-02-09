@@ -22,6 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.resources.textures;
 
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.graphics.NineSliceImage;
+import lombok.Getter;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -29,6 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 public class TextureGui {
 
     private final Scaling<?> scaling;
@@ -37,10 +39,7 @@ public class TextureGui {
         this.scaling = scaling;
     }
 
-    public Scaling<?> getScaling() {
-        return scaling;
-    }
-
+    @Getter
     public static class Scaling<T extends ScalingProperty> {
 
         public static final Scaling<StretchScalingProperty> DEFAULT_SCALING = new Scaling<>(ScalingType.STRETCH, new StretchScalingProperty());
@@ -57,24 +56,17 @@ public class TextureGui {
             this((ScalingType<T>) ScalingType.fromClass(scalingProperty.getClass()), scalingProperty);
         }
 
-        public ScalingType<T> getScalingType() {
-            return scalingType;
-        }
-
-        public T getScalingProperty() {
+        public T getScalingProperty(ScalingType<T> type) {
             return scalingProperty;
         }
 
-        public T getScalingProperty(ScalingType<T> type) {
-            return (T) scalingProperty;
-        }
-
         public T getScalingProperty(Class<T> type) {
-            return (T) scalingProperty;
+            return scalingProperty;
         }
 
     }
 
+    @Getter
     public static class ScalingType<T extends ScalingProperty> {
 
         public static final ScalingType<StretchScalingProperty> STRETCH = new ScalingType<>("stretch", StretchScalingProperty.class);
@@ -107,13 +99,6 @@ public class TextureGui {
             this.typeClass = typeClass;
         }
 
-        public String getName() {
-            return name;
-        }
-
-        public Class<T> getTypeClass() {
-            return typeClass;
-        }
     }
 
     public static abstract class ScalingProperty {
@@ -133,6 +118,7 @@ public class TextureGui {
         }
     }
 
+    @Getter
     public static class TileScalingProperty extends ScalingProperty {
 
         private final int width;
@@ -141,14 +127,6 @@ public class TextureGui {
         public TileScalingProperty(int width, int height) {
             this.width = width;
             this.height = height;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public int getHeight() {
-            return height;
         }
 
         @Override
@@ -168,6 +146,7 @@ public class TextureGui {
         }
     }
 
+    @Getter
     public static class NineSliceScalingProperty extends ScalingProperty {
 
         private final int width;
@@ -186,34 +165,6 @@ public class TextureGui {
             this.borderRight = borderRight;
             this.borderBottom = borderBottom;
             this.stretchInner = stretchInner;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public int getBorderLeft() {
-            return borderLeft;
-        }
-
-        public int getBorderTop() {
-            return borderTop;
-        }
-
-        public int getBorderRight() {
-            return borderRight;
-        }
-
-        public int getBorderBottom() {
-            return borderBottom;
-        }
-
-        public boolean isStretchInner() {
-            return stretchInner;
         }
 
         @Override

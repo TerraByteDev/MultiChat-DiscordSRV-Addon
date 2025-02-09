@@ -27,7 +27,6 @@ import lombok.Getter;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Optional;
 
 @Getter
 public class ImageDisplayData extends DiscordDisplayData {

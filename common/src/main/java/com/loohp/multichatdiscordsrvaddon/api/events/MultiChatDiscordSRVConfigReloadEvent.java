@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.api.events;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Fired when /multichat reloadconfig is used
@@ -41,7 +42,7 @@ public class MultiChatDiscordSRVConfigReloadEvent extends Event {
         super(!Bukkit.isPrimaryThread());
     }
 
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
 

@@ -32,7 +32,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.GuildChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 
 public class DiscordReadyEvents {

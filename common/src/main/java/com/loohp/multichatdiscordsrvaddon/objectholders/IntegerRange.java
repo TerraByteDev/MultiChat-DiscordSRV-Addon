@@ -21,9 +21,11 @@
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceLoadingException;
+import lombok.Getter;
 
 import java.util.Objects;
 
+@Getter
 @SuppressWarnings("DuplicateExpressions")
 public class IntegerRange {
 
@@ -89,14 +91,6 @@ public class IntegerRange {
             default:
                 throw new ResourceLoadingException("Could not parse range");
         }
-    }
-
-    public int getMin() {
-        return min;
-    }
-
-    public int getMax() {
-        return max;
     }
 
     public boolean test(int value) {

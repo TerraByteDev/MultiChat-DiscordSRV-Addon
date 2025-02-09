@@ -42,19 +42,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Getter
 public abstract class ItemModelDefinition {
 
     private final ItemModelDefinitionType<?> type;
 
     public ItemModelDefinition(ItemModelDefinitionType<?> type, boolean handAnimationOnSwap) {
         this.type = type;
-    }
-
-    public ItemModelDefinitionType<?> getType() {
-        return type;
     }
 
     public static ItemModelDefinition fromJson(JSONObject rootJson) throws ParseException {
@@ -154,7 +150,7 @@ public abstract class ItemModelDefinition {
                 String pattern = (String) rootJson.getOrDefault("pattern", "");
                 String locale = (String) rootJson.getOrDefault("locale", "");
                 TimeZone timeZone = TimeZone.getTimeZone((String) rootJson.getOrDefault("time_zone", ""));
-                Optional<TimeZone> optTimeZone = timeZone == TimeZone.UNKNOWN_ZONE ? Optional.empty() : Optional.of(timeZone);
+                TimeZone optTimeZone = timeZone == TimeZone.UNKNOWN_ZONE ? null : timeZone;
                 return new LocalTimeSelectProperty(handAnimationOnSwapString, propertyType, parse(cases, c -> c), fallback, pattern, locale, optTimeZone);
             } else if (propertyType.equals(SelectPropertyType.CONTEXT_DIMENSION)) {
                 return new ContextDimensionSelectProperty(handAnimationOnSwapString, propertyType, parse(cases, c -> KeyUtils.toKey(c)), fallback);
@@ -276,6 +272,7 @@ public abstract class ItemModelDefinition {
         return key;
     }
 
+    @Getter
     @SuppressWarnings("rawtypes")
     public static class ItemModelDefinitionType<T extends ItemModelDefinition> {
 
@@ -311,14 +308,6 @@ public abstract class ItemModelDefinition {
             this.typeClass = typeClass;
         }
 
-        public String getNamespacedKey() {
-            return namespacedKey;
-        }
-
-        public Class<T> getTypeClass() {
-            return typeClass;
-        }
-
         @Override
         public String toString() {
             return getNamespacedKey();
@@ -332,6 +321,7 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public static class TintSourceType<T extends TintSource> {
 
         public static final TintSourceType<ConstantTintSource> CONSTANT = new TintSourceType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":constant", ConstantTintSource.class);
@@ -364,14 +354,6 @@ public abstract class ItemModelDefinition {
             this.typeClass = typeClass;
         }
 
-        public String getNamespacedKey() {
-            return namespacedKey;
-        }
-
-        public Class<T> getTypeClass() {
-            return typeClass;
-        }
-
         @Override
         public String toString() {
             return getNamespacedKey();
@@ -386,6 +368,7 @@ public abstract class ItemModelDefinition {
     }
 
     // MODEL Definition
+    @Getter
     public static class ItemModelDefinitionModel extends ItemModelDefinition {
 
         private final String model;
@@ -397,16 +380,10 @@ public abstract class ItemModelDefinition {
             this.tints = tints;
         }
 
-        public String getModel() {
-            return model;
-        }
-
-        public List<TintSource> getTints() {
-            return tints;
-        }
     }
 
     // COMPOSITE Definition
+    @Getter
     public static class ItemModelDefinitionComposite extends ItemModelDefinition {
 
         private final List<ItemModelDefinition> models;
@@ -416,12 +393,10 @@ public abstract class ItemModelDefinition {
             this.models = models;
         }
 
-        public List<ItemModelDefinition> getModels() {
-            return models;
-        }
     }
 
     // CONDITION Definition
+    @Getter
     public abstract static class ItemModelDefinitionCondition extends ItemModelDefinition {
 
         private final ConditionPropertyType<?> propertyType;
@@ -435,18 +410,6 @@ public abstract class ItemModelDefinition {
             this.onFalse = onFalse;
         }
 
-        public ConditionPropertyType<?> getPropertyType() {
-            return propertyType;
-        }
-
-        public ItemModelDefinition getOnTrue() {
-            return onTrue;
-        }
-
-        public ItemModelDefinition getOnFalse() {
-            return onFalse;
-        }
-
         public ItemModelDefinition getModel(boolean evaluation) {
             return evaluation ? getOnTrue() : getOnFalse();
         }
@@ -456,7 +419,9 @@ public abstract class ItemModelDefinition {
     public abstract static class ItemModelDefinitionSelect<T> extends ItemModelDefinition {
 
         private final SelectPropertyType<?> property;
+        @Getter
         private final List<SelectCase<T>> cases;
+        @Getter
         private final ItemModelDefinition fallback;
 
         private final Object2ObjectMap<T, ItemModelDefinition> caseModels;
@@ -484,16 +449,8 @@ public abstract class ItemModelDefinition {
             return property;
         }
 
-        public List<SelectCase<T>> getCases() {
-            return cases;
-        }
-
         public boolean hasFallback() {
             return fallback != null;
-        }
-
-        public ItemModelDefinition getFallback() {
-            return fallback;
         }
 
         public ItemModelDefinition getEntryCase(Object value) {
@@ -504,9 +461,13 @@ public abstract class ItemModelDefinition {
     // RANGE_DISPATCH Definition
     public abstract static class ItemModelDefinitionRangeDispatch extends ItemModelDefinition {
 
+        @Getter
         private final RangeDispatchPropertyType<?> propertyType;
+        @Getter
         private final float scale;
+        @Getter
         private final List<RangeEntry> entries;
+        @Getter
         private final ItemModelDefinition fallback;
 
         private final float[] thresholds;
@@ -529,24 +490,8 @@ public abstract class ItemModelDefinition {
             return thresholds;
         }
 
-        public RangeDispatchPropertyType<?> getPropertyType() {
-            return propertyType;
-        }
-
-        public float getScale() {
-            return scale;
-        }
-
-        public List<RangeEntry> getEntries() {
-            return entries;
-        }
-
         public boolean hasFallback() {
             return fallback != null;
-        }
-
-        public ItemModelDefinition getFallback() {
-            return fallback;
         }
 
         public int getEntryIndex(float value) {
@@ -584,6 +529,7 @@ public abstract class ItemModelDefinition {
     }
 
     // SPECIAL Definition
+    @Getter
     public static class ItemModelDefinitionSpecial extends ItemModelDefinition {
 
         private final String base;
@@ -595,13 +541,6 @@ public abstract class ItemModelDefinition {
             this.model = model;
         }
 
-        public String getBase() {
-            return base;
-        }
-
-        public SpecialModel getModel() {
-            return model;
-        }
     }
 
     // IC LEGACY Definition
@@ -637,6 +576,7 @@ public abstract class ItemModelDefinition {
         return list.stream().map(c -> c.parse(parser)).collect(Collectors.toList());
     }
 
+    @Getter
     public static class SelectCase<T> {
 
         private final List<T> when;
@@ -647,26 +587,15 @@ public abstract class ItemModelDefinition {
             this.model = model;
         }
 
-        public List<T> getWhen() {
-            return when;
-        }
-
-        public ItemModelDefinition getModel() {
-            return model;
-        }
-
     }
 
     // TintSource Definition
+    @Getter
     public static abstract class TintSource {
         private final TintSourceType<?> type;
 
         public TintSource(TintSourceType<?> type) {
             this.type = type;
-        }
-
-        public TintSourceType<?> getType() {
-            return type;
         }
 
         public static TintSource fromJson(JSONObject tintJson) {
@@ -747,6 +676,7 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public static class ConstantTintSource extends TintSource {
         private final int value;
 
@@ -759,11 +689,9 @@ public abstract class ItemModelDefinition {
             this(ColorUtils.getIntFromColor(rgb[0], rgb[1], rgb[2], 0));
         }
 
-        public int getValue() {
-            return value;
-        }
     }
 
+    @Getter
     public static class DyeTintSource extends TintSource {
         private final int defaultColor;
 
@@ -776,11 +704,9 @@ public abstract class ItemModelDefinition {
             this(ColorUtils.getIntFromColor(rgb[0], rgb[1], rgb[2], 0));
         }
 
-        public int getDefaultColor() {
-            return defaultColor;
-        }
     }
 
+    @Getter
     public static class GrassTintSource extends TintSource {
         private final float temperature;
         private final float downfall;
@@ -791,15 +717,9 @@ public abstract class ItemModelDefinition {
             this.downfall = downfall;
         }
 
-        public float getTemperature() {
-            return temperature;
-        }
-
-        public float getDownfall() {
-            return downfall;
-        }
     }
 
+    @Getter
     public static class FireworkTintSource extends TintSource {
         private final int defaultColor;
 
@@ -812,11 +732,9 @@ public abstract class ItemModelDefinition {
             this(ColorUtils.getIntFromColor(rgb[0], rgb[1], rgb[2], 0));
         }
 
-        public int getDefaultColor() {
-            return defaultColor;
-        }
     }
 
+    @Getter
     public static class PotionTintSource extends TintSource {
         private final int defaultColor;
 
@@ -829,11 +747,9 @@ public abstract class ItemModelDefinition {
             this(ColorUtils.getIntFromColor(rgb[0], rgb[1], rgb[2], 0));
         }
 
-        public int getDefaultColor() {
-            return defaultColor;
-        }
     }
 
+    @Getter
     public static class MapColorTintSource extends TintSource {
         private final int defaultColor;
 
@@ -846,11 +762,9 @@ public abstract class ItemModelDefinition {
             this(ColorUtils.getIntFromColor(rgb[0], rgb[1], rgb[2], 0));
         }
 
-        public int getDefaultColor() {
-            return defaultColor;
-        }
     }
 
+    @Getter
     public static class TeamTintSource extends TintSource {
         private final int defaultColor;
 
@@ -863,11 +777,9 @@ public abstract class ItemModelDefinition {
             this(ColorUtils.getIntFromColor(rgb[0], rgb[1], rgb[2], 0));
         }
 
-        public int getDefaultColor() {
-            return defaultColor;
-        }
     }
 
+    @Getter
     public static class CustomModelDataTintSource extends TintSource {
         private final int index;
         private final int defaultColor;
@@ -882,15 +794,9 @@ public abstract class ItemModelDefinition {
             this(index, ColorUtils.getIntFromColor(rgb[0], rgb[1], rgb[2], 0));
         }
 
-        public int getIndex() {
-            return index;
-        }
-
-        public int getDefaultColor() {
-            return defaultColor;
-        }
     }
 
+    @Getter
     public static class ConditionPropertyType<T extends ItemModelDefinitionCondition> {
 
         public static final ConditionPropertyType<UsingItemConditionProperty> USING_ITEM = new ConditionPropertyType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":using_item", UsingItemConditionProperty.class);
@@ -931,14 +837,6 @@ public abstract class ItemModelDefinition {
             this.typeClass = typeClass;
         }
 
-        public String getNamespacedKey() {
-            return namespacedKey;
-        }
-
-        public Class<T> getTypeClass() {
-            return typeClass;
-        }
-
         public static ConditionPropertyType<?> getConditionPropertyType(String propertyKey) {
             if (TYPES_MAP.containsKey(propertyKey)) {
                 return TYPES_MAP.get(propertyKey);
@@ -959,6 +857,7 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public static class HasComponentConditionProperty extends ItemModelDefinitionCondition {
         private final Key component;
         private final boolean ignoreDefault;
@@ -969,13 +868,6 @@ public abstract class ItemModelDefinition {
             this.ignoreDefault = ignoreDefault;
         }
 
-        public Key getComponent() {
-            return component;
-        }
-
-        public boolean isIgnoreDefault() {
-            return ignoreDefault;
-        }
     }
 
     public static class DamagedConditionProperty extends ItemModelDefinitionCondition {
@@ -1014,6 +906,7 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public static class KeybindDownConditionProperty extends ItemModelDefinitionCondition {
         private final int keybind;
 
@@ -1022,9 +915,6 @@ public abstract class ItemModelDefinition {
             this.keybind = keybind;
         }
 
-        public int getKeybind() {
-            return keybind;
-        }
     }
 
     public static class ViewEntityConditionProperty extends ItemModelDefinitionCondition {
@@ -1033,6 +923,7 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public static class CustomModelDataConditionProperty extends ItemModelDefinitionCondition {
         private final int index;
 
@@ -1041,11 +932,9 @@ public abstract class ItemModelDefinition {
             this.index = index;
         }
 
-        public int getIndex() {
-            return index;
-        }
     }
 
+    @Getter
     public static class SelectPropertyType<T extends ItemModelDefinitionSelect<?>> {
 
         public static final SelectPropertyType<MainHandSelectProperty> MAIN_HAND = new SelectPropertyType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":main_hand", MainHandSelectProperty.class);
@@ -1080,14 +969,6 @@ public abstract class ItemModelDefinition {
             this.typeClass = typeClass;
         }
 
-        public String getNamespacedKey() {
-            return namespacedKey;
-        }
-
-        public Class<T> getTypeClass() {
-            return typeClass;
-        }
-
         public static SelectPropertyType<?> getSelectPropertyType(String propertyKey) {
             if (TYPES_MAP.containsKey(propertyKey)) {
                 return TYPES_MAP.get(propertyKey);
@@ -1114,6 +995,7 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public static class BlockStateSelectProperty extends ItemModelDefinitionSelect<String> {
         private final String blockStateProperty;
 
@@ -1122,9 +1004,6 @@ public abstract class ItemModelDefinition {
             this.blockStateProperty = blockStateProperty;
         }
 
-        public String getBlockStateProperty() {
-            return blockStateProperty;
-        }
     }
 
     public static class DisplayContextSelectProperty extends ItemModelDefinitionSelect<ModelDisplay.ModelDisplayPosition> {
@@ -1159,6 +1038,7 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public static class CustomModelDataSelectProperty extends ItemModelDefinitionSelect<String> {
         private final int index;
 
@@ -1167,11 +1047,9 @@ public abstract class ItemModelDefinition {
             this.index = index;
         }
 
-        public int getIndex() {
-            return index;
-        }
     }
 
+    @Getter
     public static class RangeDispatchPropertyType<T extends ItemModelDefinitionRangeDispatch> {
 
         public static final RangeDispatchPropertyType<BundleFullnessRangeDispatchProperty> BUNDLE_FULLNESS = new RangeDispatchPropertyType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":bundle/fullness", BundleFullnessRangeDispatchProperty.class);
@@ -1208,14 +1086,6 @@ public abstract class ItemModelDefinition {
             this.typeClass = typeClass;
         }
 
-        public String getNamespacedKey() {
-            return namespacedKey;
-        }
-
-        public Class<T> getTypeClass() {
-            return typeClass;
-        }
-
         public static RangeDispatchPropertyType<?> getRangeDispatchPropertyType(String propertyKey) {
             if (TYPES_MAP.containsKey(propertyKey)) {
                 return TYPES_MAP.get(propertyKey);
@@ -1224,6 +1094,7 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public static class RangeEntry {
         private final float threshold;
         private final ItemModelDefinition model;
@@ -1233,13 +1104,6 @@ public abstract class ItemModelDefinition {
             this.model = model;
         }
 
-        public float getThreshold() {
-            return threshold;
-        }
-
-        public ItemModelDefinition getModel() {
-            return model;
-        }
     }
 
     public static class BundleFullnessRangeDispatchProperty extends ItemModelDefinitionRangeDispatch {
@@ -1248,6 +1112,7 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public static class DamageRangeDispatchProperty extends ItemModelDefinitionRangeDispatch {
         private final boolean normalize;
 
@@ -1256,11 +1121,9 @@ public abstract class ItemModelDefinition {
             this.normalize = normalize;
         }
 
-        public boolean isNormalize() {
-            return normalize;
-        }
     }
 
+    @Getter
     public static class CountRangeDispatchProperty extends ItemModelDefinitionRangeDispatch {
         private final boolean normalize;
 
@@ -1269,9 +1132,6 @@ public abstract class ItemModelDefinition {
             this.normalize = normalize;
         }
 
-        public boolean isNormalize() {
-            return normalize;
-        }
     }
 
     public static class CooldownRangeDispatchProperty extends ItemModelDefinitionRangeDispatch {
@@ -1280,6 +1140,7 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public static class TimeRangeDispatchProperty extends ItemModelDefinitionRangeDispatch {
         private final TimeSource source;
         private final boolean wobble;
@@ -1290,19 +1151,12 @@ public abstract class ItemModelDefinition {
             this.wobble = wobble;
         }
 
-        public TimeSource getSource() {
-            return source;
-        }
-
-        public boolean isWobble() {
-            return wobble;
-        }
-
         public enum TimeSource {
-            DAYTIME, MOON_PHASE, RANDOM;
+            DAYTIME, MOON_PHASE, RANDOM
         }
     }
 
+    @Getter
     public static class CompassRangeDispatchProperty extends ItemModelDefinitionRangeDispatch {
         private final CompassTarget target;
         private final boolean wobble;
@@ -1313,16 +1167,8 @@ public abstract class ItemModelDefinition {
             this.wobble = wobble;
         }
 
-        public CompassTarget getTarget() {
-            return target;
-        }
-
-        public boolean isWobble() {
-            return wobble;
-        }
-
         public enum CompassTarget {
-            SPAWN, LODESTONE, RECOVERY, NONE;
+            SPAWN, LODESTONE, RECOVERY, NONE
         }
     }
 
@@ -1332,6 +1178,7 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public static class UseDurationRangeDispatchProperty extends ItemModelDefinitionRangeDispatch {
         private final boolean remaining;
 
@@ -1340,11 +1187,9 @@ public abstract class ItemModelDefinition {
             this.remaining = remaining;
         }
 
-        public boolean isRemaining() {
-            return remaining;
-        }
     }
 
+    @Getter
     public static class UseCycleRangeDispatchProperty extends ItemModelDefinitionRangeDispatch {
         private final float period;
 
@@ -1353,11 +1198,9 @@ public abstract class ItemModelDefinition {
             this.period = period;
         }
 
-        public float getPeriod() {
-            return period;
-        }
     }
 
+    @Getter
     public static class CustomModelDataRangeDispatchProperty extends ItemModelDefinitionRangeDispatch {
         private final int index;
 
@@ -1366,11 +1209,9 @@ public abstract class ItemModelDefinition {
             this.index = index;
         }
 
-        public int getIndex() {
-            return index;
-        }
     }
 
+    @Getter
     public static class SpecialModelType<T extends SpecialModel> {
 
         public static final SpecialModelType<BedSpecialModel> BED = new SpecialModelType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":bed", BedSpecialModel.class);
@@ -1409,14 +1250,6 @@ public abstract class ItemModelDefinition {
             this.typeClass = typeClass;
         }
 
-        public String getNamespacedKey() {
-            return namespacedKey;
-        }
-
-        public Class<T> getTypeClass() {
-            return typeClass;
-        }
-
         public static SpecialModelType<?> getSpecialModelType(String modelKey) {
             if (TYPES_MAP.containsKey(modelKey)) {
                 return TYPES_MAP.get(modelKey);
@@ -1425,6 +1258,7 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public abstract static class SpecialModel {
         private final SpecialModelType<?> modelType;
 
@@ -1432,11 +1266,9 @@ public abstract class ItemModelDefinition {
             this.modelType = modelType;
         }
 
-        public SpecialModelType<?> getModelType() {
-            return modelType;
-        }
     }
 
+    @Getter
     public static class BedSpecialModel extends SpecialModel {
         private final String texture;
 
@@ -1445,11 +1277,9 @@ public abstract class ItemModelDefinition {
             this.texture = texture;
         }
 
-        public String getTexture() {
-            return texture;
-        }
     }
 
+    @Getter
     public static class BannerSpecialModel extends SpecialModel {
         private final String color;
 
@@ -1458,9 +1288,6 @@ public abstract class ItemModelDefinition {
             this.color = color;
         }
 
-        public String getColor() {
-            return color;
-        }
     }
 
     public static class ConduitSpecialModel extends SpecialModel {
@@ -1469,6 +1296,7 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public static class ChestSpecialModel extends SpecialModel {
         private final String texture;
         private final float openness;
@@ -1479,13 +1307,6 @@ public abstract class ItemModelDefinition {
             this.openness = openness;
         }
 
-        public String getTexture() {
-            return texture;
-        }
-
-        public float getOpenness() {
-            return openness;
-        }
     }
 
     public static class DecoratedPotSpecialModel extends SpecialModel {
@@ -1494,6 +1315,7 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public static class HeadSpecialModel extends SpecialModel {
         private final String kind;
         private final String texture;
@@ -1506,19 +1328,9 @@ public abstract class ItemModelDefinition {
             this.animation = animation;
         }
 
-        public String getKind() {
-            return kind;
-        }
-
-        public String getTexture() {
-            return texture;
-        }
-
-        public float getAnimation() {
-            return animation;
-        }
     }
 
+    @Getter
     public static class ShulkerBoxSpecialModel extends SpecialModel {
         private final String name;
         private final float openness;
@@ -1531,17 +1343,6 @@ public abstract class ItemModelDefinition {
             this.orientation = orientation;
         }
 
-        public String getName() {
-            return name;
-        }
-
-        public float getOpenness() {
-            return openness;
-        }
-
-        public String getOrientation() {
-            return orientation;
-        }
     }
 
     public static class ShieldSpecialModel extends SpecialModel {
@@ -1550,6 +1351,7 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public static class StandingSignSpecialModel extends SpecialModel {
         private final String woodType;
         private final String texture;
@@ -1560,15 +1362,9 @@ public abstract class ItemModelDefinition {
             this.texture = texture;
         }
 
-        public String getWoodType() {
-            return woodType;
-        }
-
-        public String getTexture() {
-            return texture;
-        }
     }
 
+    @Getter
     public static class HangingSignSpecialModel extends SpecialModel {
         private final String woodType;
         private final String texture;
@@ -1579,13 +1375,6 @@ public abstract class ItemModelDefinition {
             this.texture = texture;
         }
 
-        public String getWoodType() {
-            return woodType;
-        }
-
-        public String getTexture() {
-            return texture;
-        }
     }
 
     public static class TridentSpecialModel extends SpecialModel {

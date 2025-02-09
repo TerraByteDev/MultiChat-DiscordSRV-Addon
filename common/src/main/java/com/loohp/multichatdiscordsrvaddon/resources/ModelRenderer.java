@@ -56,6 +56,7 @@ import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureResource;
 import com.loohp.multichatdiscordsrvaddon.utils.AnimatedTextureUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.CustomArrayUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.ModelUtils;
+import lombok.Getter;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -389,7 +390,7 @@ public class ModelRenderer implements AutoCloseable {
                     }
                     g.dispose();
                     if (enchanted) {
-                        image = enchantmentGlintProvider.apply(new RawEnchantmentGlintParameters(image, EnchantmentGlintType.ITEM, tick));
+                        enchantmentGlintProvider.apply(new RawEnchantmentGlintParameters(image, EnchantmentGlintType.ITEM, tick));
                     }
                     index++;
                 }
@@ -688,18 +689,16 @@ public class ModelRenderer implements AutoCloseable {
             if (task == null) {
                 try {
                     TimeUnit.MILLISECONDS.sleep(1);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                 }
             } else {
                 try {
                     hexahedrons.add(task.get());
                 } catch (Throwable e) {
                     new RuntimeException("Unable to generate model: " + blockModel.getResourceLocation(), e).printStackTrace();
-                    hexahedrons = null;
                     for (Future<Hexahedron> t : tasks) {
                         t.cancel(true);
                     }
-                    tasks = null;
                     if (e instanceof OutOfMemoryError) {
                         System.gc();
                     }
@@ -805,10 +804,14 @@ public class ModelRenderer implements AutoCloseable {
         RIGHT_HAND(new Coordinates3D(7.3, -2.5, 4.05), 0.9, false, true, ModelDisplayPosition.THIRDPERSON_RIGHTHAND),
         LEFT_HAND(new Coordinates3D(-5.6, -2.5, 4.05), 0.9, true, true, ModelDisplayPosition.THIRDPERSON_LEFTHAND);
 
+        @Getter
         private final Coordinates3D defaultTranslate;
+        @Getter
         private final double scale;
+        @Getter
         private final boolean literalFlipped;
         private final boolean yIsZAxis;
+        @Getter
         private final ModelDisplayPosition modelDisplayPosition;
 
         PlayerModelItemPosition(Coordinates3D defaultTranslate, double scale, boolean literalFlipped, boolean yIsZAxis, ModelDisplayPosition modelDisplayPosition) {
@@ -819,28 +822,13 @@ public class ModelRenderer implements AutoCloseable {
             this.modelDisplayPosition = modelDisplayPosition;
         }
 
-        public ModelDisplayPosition getModelDisplayPosition() {
-            return modelDisplayPosition;
-        }
-
-        public Coordinates3D getDefaultTranslate() {
-            return defaultTranslate;
-        }
-
-        public double getScale() {
-            return scale;
-        }
-
-        public boolean isLiteralFlipped() {
-            return literalFlipped;
-        }
-
         public boolean yIsZAxis() {
             return yIsZAxis;
         }
 
     }
 
+    @Getter
     public static class PlayerModelItem {
 
         private final PlayerModelItemPosition position;
@@ -863,32 +851,9 @@ public class ModelRenderer implements AutoCloseable {
             this.rawEnchantmentGlintProvider = rawEnchantmentGlintProvider;
         }
 
-        public PlayerModelItemPosition getPosition() {
-            return position;
-        }
-
-        public List<ModelLayer> getModelLayers() {
-            return modelLayers;
-        }
-
-        public List<Function<BlockModel, ValuePairs<BlockModel, Map<String, TextureResource>>>> getPostResolveFunction() {
-            return postResolveFunction;
-        }
-
-        public boolean isEnchanted() {
-            return enchanted;
-        }
-
-        public Function<RawEnchantmentGlintParameters, BufferedImage> getEnchantmentGlintProvider() {
-            return enchantmentGlintProvider;
-        }
-
-        public Function<RawEnchantmentGlintParameters, RawEnchantmentGlintData> getRawEnchantmentGlintProvider() {
-            return rawEnchantmentGlintProvider;
-        }
-
     }
 
+    @Getter
     public static class RawEnchantmentGlintParameters {
 
         private final BufferedImage image;
@@ -901,19 +866,9 @@ public class ModelRenderer implements AutoCloseable {
             this.tick = tick;
         }
 
-        public BufferedImage getImage() {
-            return image;
-        }
-
-        public EnchantmentGlintType getGlintType() {
-            return glintType;
-        }
-
-        public int getTick() {
-            return tick;
-        }
     }
 
+    @Getter
     public static class RawEnchantmentGlintData {
 
         private final List<BufferedImage> overlay;
@@ -924,19 +879,12 @@ public class ModelRenderer implements AutoCloseable {
             this.blending = blending;
         }
 
-        public List<BufferedImage> getOverlay() {
-            return overlay;
-        }
-
-        public List<OpenGLBlending> getBlending() {
-            return blending;
-        }
-
     }
 
     public static class RenderResult {
 
         private final BufferedImage[] images;
+        @Getter
         private final String rejectedReason;
 
         public RenderResult(BufferedImage[] images) {
@@ -973,10 +921,6 @@ public class ModelRenderer implements AutoCloseable {
         @Deprecated
         public BufferedImage[] getImagesUnsafe() {
             return images;
-        }
-
-        public String getRejectedReason() {
-            return rejectedReason;
         }
 
     }

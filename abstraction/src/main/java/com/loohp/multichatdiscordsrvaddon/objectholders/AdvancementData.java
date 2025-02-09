@@ -20,14 +20,19 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 
 public class AdvancementData {
 
+    @Getter
     private final Component title;
+    @Getter
     private final Component description;
+    @Getter
     private final ItemStack item;
+    @Getter
     private final AdvancementType advancementType;
     private final boolean isMinecraft;
 
@@ -37,22 +42,6 @@ public class AdvancementData {
         this.item = item;
         this.advancementType = advancementType;
         this.isMinecraft = isMinecraft;
-    }
-
-    public Component getTitle() {
-        return title;
-    }
-
-    public Component getDescription() {
-        return description;
-    }
-
-    public ItemStack getItem() {
-        return item;
-    }
-
-    public AdvancementType getAdvancementType() {
-        return advancementType;
     }
 
     public boolean isMinecraft() {

@@ -1,6 +1,5 @@
 package com.loohp.multichatdiscordsrvaddon.command.subcommand;
 
-import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourcePackInfo;

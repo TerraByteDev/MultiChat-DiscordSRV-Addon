@@ -24,6 +24,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -56,7 +57,7 @@ import java.util.zip.GZIPOutputStream;
 /**
  * bStats collects some data for plugin authors.
  * <p>
- * Check out https://bStats.org/ to learn more about bStats!
+ * Check out <a href="https://bStats.org/">...</a> to learn more about bStats!
  */
 public class Metrics {
 
@@ -71,6 +72,7 @@ public class Metrics {
     // Should the response text be logged?
     private static boolean logResponseStatusText;
     // The uuid of the server
+    @Getter
     private static String serverUUID;
 
     static {
@@ -162,7 +164,7 @@ public class Metrics {
     // A list with all custom charts
     private final List<CustomChart> charts = new ArrayList<>();
     // Is bStats enabled on this server?
-    private boolean enabled;
+    private final boolean enabled;
 
     /**
      * Class constructor.
@@ -238,15 +240,12 @@ public class Metrics {
         }
     }
 
-    public static String getServerUUID() {
-        return serverUUID;
-    }
-
     /**
      * Checks if bStats is enabled.
      *
      * @return Whether bStats is enabled or not.
      */
+    @SuppressWarnings({"LombokGetterMayBeUsed", "RedundantSuppression"})
     public boolean isEnabled() {
         return enabled;
     }

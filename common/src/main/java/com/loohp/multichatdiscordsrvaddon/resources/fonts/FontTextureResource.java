@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.resources.fonts;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.resources.ICacheManager;
 import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureResource;
+import lombok.Getter;
 
 import java.awt.image.BufferedImage;
 import java.lang.ref.Reference;
@@ -39,6 +40,7 @@ public class FontTextureResource extends FontResource {
         CACHE_TIME = cacheTime;
     }
 
+    @Getter
     private final TextureResource resource;
     private final char resourceWidth;
     private final char resourceHeight;
@@ -88,10 +90,6 @@ public class FontTextureResource extends FontResource {
             return image;
         }
         return image.getSubimage(x, y, width, height);
-    }
-
-    public TextureResource getResource() {
-        return resource;
     }
 
     public int getX() {

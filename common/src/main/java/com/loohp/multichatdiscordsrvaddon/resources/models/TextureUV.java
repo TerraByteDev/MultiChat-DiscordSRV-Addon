@@ -20,6 +20,9 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.models;
 
+import lombok.Getter;
+
+@Getter
 public class TextureUV {
 
     private final double x1;
@@ -32,22 +35,6 @@ public class TextureUV {
         this.y1 = y1;
         this.x2 = x2;
         this.y2 = y2;
-    }
-
-    public double getX1() {
-        return x1;
-    }
-
-    public double getY1() {
-        return y1;
-    }
-
-    public double getX2() {
-        return x2;
-    }
-
-    public double getY2() {
-        return y2;
     }
 
     public TextureUV getScaled(double scale) {

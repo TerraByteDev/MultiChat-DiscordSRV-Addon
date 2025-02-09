@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources;
 
+import lombok.Getter;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -244,7 +245,7 @@ public class ResourceDownloadManager {
                     String value = extras.get(key).toString();
                     try {
                         dataHandler.accept(value, HTTPRequestUtils.download(key));
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
                 }
             }
@@ -266,6 +267,7 @@ public class ResourceDownloadManager {
         return name;
     }
 
+    @Getter
     public enum TaskType {
 
         CLIENT_DOWNLOAD,
@@ -283,9 +285,6 @@ public class ResourceDownloadManager {
             this(false);
         }
 
-        public boolean isHasPercentage() {
-            return hasPercentage;
-        }
     }
 
 }

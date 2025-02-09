@@ -12,8 +12,6 @@ import org.incendo.cloud.annotations.CommandDescription;
 
 import java.util.UUID;
 
-import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
-
 @Command("multichat")
 public class ImageMapCommand {
 

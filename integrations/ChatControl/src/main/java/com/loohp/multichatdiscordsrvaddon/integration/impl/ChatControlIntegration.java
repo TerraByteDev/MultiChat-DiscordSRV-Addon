@@ -18,6 +18,7 @@ import org.mineacademy.chatcontrol.lib.model.DynmapSender;
 import org.mineacademy.chatcontrol.model.Checker;
 import org.mineacademy.chatcontrol.model.WrappedSender;
 
+@SuppressWarnings("deprecation")
 @Getter
 public class ChatControlIntegration implements MultiChatIntegration {
 
@@ -29,6 +30,7 @@ public class ChatControlIntegration implements MultiChatIntegration {
     }
 
 
+    @SuppressWarnings("ConstantValue")
     @Override
     public void enable(JavaPlugin plugin) {
         EventPriority eventPriority = EventPriority.valueOf(Config.i().getHook().priority());
@@ -46,6 +48,7 @@ public class ChatControlIntegration implements MultiChatIntegration {
         ChatUtils.sendMessage("<green>Registered external ChatControl v11 module!");
     }
 
+    @SuppressWarnings("DataFlowIssue")
     @Override
     public String filter(com.loohp.multichatdiscordsrvaddon.integration.dynmap.DynmapSender dynmapSender, String message) {
         String dynmapUsername = dynmapSender.getName();

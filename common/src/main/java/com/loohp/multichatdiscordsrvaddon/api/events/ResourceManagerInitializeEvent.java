@@ -21,12 +21,15 @@
 package com.loohp.multichatdiscordsrvaddon.api.events;
 
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager.ModManagerSupplier;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@Getter
 public class ResourceManagerInitializeEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -35,19 +38,15 @@ public class ResourceManagerInitializeEvent extends Event {
         return HANDLERS;
     }
 
-    private List<ModManagerSupplier<?>> modManagerSuppliers;
+    private final List<ModManagerSupplier<?>> modManagerSuppliers;
 
     public ResourceManagerInitializeEvent(List<ModManagerSupplier<?>> modManagerSuppliers) {
         super(!Bukkit.isPrimaryThread());
         this.modManagerSuppliers = modManagerSuppliers;
     }
 
-    public List<ModManagerSupplier<?>> getModManagerSuppliers() {
-        return modManagerSuppliers;
-    }
-
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
 

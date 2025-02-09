@@ -20,9 +20,12 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
+
 import java.util.Collections;
 import java.util.List;
 
+@Getter
 public class CustomModelData {
 
     public static boolean isEmpty(CustomModelData data) {
@@ -63,22 +66,6 @@ public class CustomModelData {
 
     public Integer getColor(int index) {
         return getValue(colors, index);
-    }
-
-    public List<Float> getFloats() {
-        return floats;
-    }
-
-    public List<Boolean> getFlags() {
-        return flags;
-    }
-
-    public List<String> getStrings() {
-        return strings;
-    }
-
-    public List<Integer> getColors() {
-        return colors;
     }
 
     public boolean hasLegacyIndex() {

@@ -20,6 +20,9 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
+
+@Getter
 public enum BiomePrecipitation {
 
     RAIN("rain"),
@@ -30,10 +33,6 @@ public enum BiomePrecipitation {
 
     BiomePrecipitation(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public static BiomePrecipitation fromName(String name) {

@@ -20,6 +20,8 @@
 
 package com.loohp.multichatdiscordsrvaddon.api.events;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
@@ -27,6 +29,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This is the base class of all GameMessageEvents
@@ -41,7 +44,10 @@ public class GameMessageEvent extends Event implements Cancellable {
         return HANDLERS;
     }
 
-    private OfflinePlayer sender;
+    @Getter
+    private final OfflinePlayer sender;
+    @Setter
+    @Getter
     private Component component;
     private boolean cancel;
 
@@ -62,18 +68,6 @@ public class GameMessageEvent extends Event implements Cancellable {
         this.cancel = cancel;
     }
 
-    public OfflinePlayer getSender() {
-        return sender;
-    }
-
-    public Component getComponent() {
-        return component;
-    }
-
-    public void setComponent(Component component) {
-        this.component = component;
-    }
-
     @Deprecated
     public String getMessage() {
         return PlainTextComponentSerializer.plainText().serialize(component);
@@ -85,7 +79,7 @@ public class GameMessageEvent extends Event implements Cancellable {
     }
 
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
 

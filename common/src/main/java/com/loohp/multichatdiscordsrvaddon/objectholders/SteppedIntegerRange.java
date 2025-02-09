@@ -20,10 +20,13 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+@Getter
 public class SteppedIntegerRange extends IntegerRange implements Iterable<Integer> {
 
     private final int step;
@@ -36,10 +39,6 @@ public class SteppedIntegerRange extends IntegerRange implements Iterable<Intege
     public SteppedIntegerRange(int min, int max, int step) {
         super(min, max);
         this.step = step;
-    }
-
-    public int getStep() {
-        return step;
     }
 
     public int getTotalSteps() {

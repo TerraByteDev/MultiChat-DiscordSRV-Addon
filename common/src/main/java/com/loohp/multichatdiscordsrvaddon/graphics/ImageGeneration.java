@@ -25,9 +25,8 @@ import com.loohp.blockmodelrenderer.utils.ColorUtils;
 import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
-import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
-import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
+import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -137,10 +136,10 @@ public class ImageGeneration {
     public static final Color BUNDLE_WEIGHT_COLOR = new Color(85, 85, 255);
     public static final Color BUNDLE_WEIGHT_FULL_COLOR = new Color(255, 85, 85);
 
-    private static Supplier<ResourceManager> resourceManager = () -> MultiChatDiscordSrvAddon.plugin.getResourceManager();
-    private static Supplier<MCVersion> version = () -> VersionManager.version;
+    private static final Supplier<ResourceManager> resourceManager = () -> MultiChatDiscordSrvAddon.plugin.getResourceManager();
+    private static final Supplier<MCVersion> version = () -> VersionManager.version;
     private static Supplier<String> language = () -> Config.i().getResources().language();
-    private static Supplier<SpecificTranslateFunction> translateFunction = () -> resourceManager.get().getLanguageManager().getTranslateFunction().ofLanguage(language.get());
+    private static final Supplier<SpecificTranslateFunction> translateFunction = () -> resourceManager.get().getLanguageManager().getTranslateFunction().ofLanguage(language.get());
 
     public static BufferedImage getMissingImage(int width, int length) {
         return TextureManager.getMissingImage(width, length);
@@ -311,7 +310,7 @@ public class ImageGeneration {
         BufferedImage background = resourceManager.get().getTextureManager().getTexture(ResourceRegistry.IC_GUI_TEXTURE_LOCATION + "player_inventory").getTexture(356, 336);
 
         Object playerInventoryData = PlayerUtils.getProperty(player, "player_inventory");
-        if (playerInventoryData != null && playerInventoryData instanceof BufferedImage) {
+        if (playerInventoryData instanceof BufferedImage) {
             BufferedImage playerBackground = ImageUtils.copyImage((BufferedImage) playerInventoryData);
             Object mask = PlayerUtils.getProperty(player, "player_inventory_mask");
             if (mask == null) {
@@ -473,20 +472,20 @@ public class ImageGeneration {
                 try {
                     if (((JSONObject) json.get("textures")).containsKey("CAPE")) {
                         String url = (String) ((JSONObject) ((JSONObject) json.get("textures")).get("CAPE")).get("url");
-                        CacheObject<?> cache = resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).getCache(player.getUniqueId().toString() + url + PLAYER_CAPE_CACHE_KEY);
+                        CacheObject<?> cache = resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).getCache(player.getUniqueId() + url + PLAYER_CAPE_CACHE_KEY);
                         if (cache == null) {
                             cape = ImageUtils.downloadImage(url);
-                            resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).putCache(player.getUniqueId().toString() + url + PLAYER_CAPE_CACHE_KEY, cape);
+                            resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).putCache(player.getUniqueId() + url + PLAYER_CAPE_CACHE_KEY, cape);
                         } else {
                             cape = (BufferedImage) cache.getObject();
                         }
                     } else {
                         String url = OPTIFINE_CAPE_URL.replaceAll("%s", CustomStringUtils.escapeReplaceAllMetaCharacters(player.getName()));
-                        CacheObject<?> cache = resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).getCache(player.getUniqueId().toString() + url + PLAYER_CAPE_CACHE_KEY);
+                        CacheObject<?> cache = resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).getCache(player.getUniqueId() + url + PLAYER_CAPE_CACHE_KEY);
                         if (cache == null) {
                             try {
                                 cape = ImageUtils.downloadImage(url);
-                                resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).putCache(player.getUniqueId().toString() + url + PLAYER_CAPE_CACHE_KEY, cape);
+                                resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).putCache(player.getUniqueId() + url + PLAYER_CAPE_CACHE_KEY, cape);
                             } catch (Throwable ignore) {
                                 cape = null;
                             }
@@ -503,15 +502,15 @@ public class ImageGeneration {
                     if (((JSONObject) ((JSONObject) json.get("textures")).get("SKIN")).containsKey("metadata")) {
                         slim = ((JSONObject) ((JSONObject) ((JSONObject) json.get("textures")).get("SKIN")).get("metadata")).get("model").toString().equals("slim");
                     }
-                    CacheObject<?> cache = resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).getCache(player.getUniqueId().toString() + value + PLAYER_SKIN_CACHE_KEY);
+                    CacheObject<?> cache = resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).getCache(player.getUniqueId() + value + PLAYER_SKIN_CACHE_KEY);
                     if (cache == null) {
                         skin = ImageUtils.downloadImage(value);
-                        resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).putCache(player.getUniqueId().toString() + value + PLAYER_SKIN_CACHE_KEY, skin);
+                        resourceManager.get().getResourceRegistry(ICacheManager.IDENTIFIER, ICacheManager.class).putCache(player.getUniqueId() + value + PLAYER_SKIN_CACHE_KEY, skin);
                     } else {
                         skin = (BufferedImage) cache.getObject();
                     }
                     skin = ImageUtils.copyImage(skin);
-                } catch (Throwable e1) {
+                } catch (Throwable ignored) {
                 }
             }
         } catch (Exception e) {
@@ -620,7 +619,7 @@ public class ImageGeneration {
         ArmorUtils.ArmorTextureResult chestplateArmorResult;
         if (chestplate != null && ICMaterial.from(chestplate).isMaterial(XMaterial.ELYTRA)) {
             BufferedImage chestplateImage = new BufferedImage(150, 150, BufferedImage.TYPE_INT_ARGB);
-            BufferedImage wing = null;
+            BufferedImage wing;
             wing = resourceManager.get().getResourceRegistry(CustomItemTextureRegistry.IDENTIFIER, CustomItemTextureRegistry.class).getElytraOverrideTextures(EquipmentSlot.CHEST, chestplate, translateFunction.get()).map(t -> t.getTexture()).orElse(cape == null ? resourceManager.get().getTextureManager().getTexture(ResourceRegistry.ENTITY_TEXTURE_LOCATION + "elytra").getTexture() : cape);
             if (wing.getWidth() % 64 != 0 || wing.getHeight() % 32 != 0) {
                 int w = 0;
@@ -868,7 +867,7 @@ public class ImageGeneration {
                 if (amount <= 0) {
                     component = component.color(NamedTextColor.RED);
                 }
-                itemImages[i] = itemImage = ImageUtils.printComponentRightAligned(resourceManager.get(), newItemImage, component, language.get(), version.get().isLegacyRGB(), (int) Math.round(33 * scale), (int) Math.round(17 * scale), (float) (16 * scale), ITEM_AMOUNT_TEXT_DARKEN_FACTOR).getImage();
+                itemImages[i] = ImageUtils.printComponentRightAligned(resourceManager.get(), newItemImage, component, language.get(), version.get().isLegacyRGB(), (int) Math.round(33 * scale), (int) Math.round(17 * scale), (float) (16 * scale), ITEM_AMOUNT_TEXT_DARKEN_FACTOR).getImage();
             }
         }
 
@@ -1753,7 +1752,9 @@ public class ImageGeneration {
     public static class GenericContainerBackgroundResult {
 
         private final BufferedImage image;
+        @Getter
         private final int expandedX;
+        @Getter
         private final int expandedY;
 
         private GenericContainerBackgroundResult(BufferedImage image, int expandedX, int expandedY) {
@@ -1764,14 +1765,6 @@ public class ImageGeneration {
 
         public BufferedImage getBackgroundImage() {
             return image;
-        }
-
-        public int getExpandedX() {
-            return expandedX;
-        }
-
-        public int getExpandedY() {
-            return expandedY;
         }
 
     }

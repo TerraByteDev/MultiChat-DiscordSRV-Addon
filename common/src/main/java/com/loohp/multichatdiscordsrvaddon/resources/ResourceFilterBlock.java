@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources;
 
+import lombok.Getter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@Getter
 public class ResourceFilterBlock {
 
     public static final String MATCH_ALL = ".*";
@@ -51,14 +53,6 @@ public class ResourceFilterBlock {
     public ResourceFilterBlock(Pattern namespace, Pattern path) {
         this.namespace = namespace;
         this.path = path;
-    }
-
-    public Pattern getNamespace() {
-        return namespace;
-    }
-
-    public Pattern getPath() {
-        return path;
     }
 
 }

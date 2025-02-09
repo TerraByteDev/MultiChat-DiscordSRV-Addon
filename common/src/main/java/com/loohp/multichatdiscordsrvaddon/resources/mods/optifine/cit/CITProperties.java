@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.resources.mods.optifine.cit;
 
 import com.loohp.multichatdiscordsrvaddon.utils.*;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.querz.nbt.tag.ByteTag;
 import net.querz.nbt.tag.CompoundTag;
@@ -46,6 +47,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,6 +61,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+@Getter
 public abstract class CITProperties {
 
     @SuppressWarnings("deprecation")
@@ -135,27 +138,7 @@ public abstract class CITProperties {
             }
         }
 
-        Map<String, CITValueMatcher> nbtMatch = new HashMap<>();
-        for (Entry<Object, Object> entry : properties.entrySet()) {
-            String key = (String) entry.getKey();
-            if (key.startsWith("nbt")) {
-                String path = key.substring(key.length() > 3 ? 4 : 3);
-                String value = (String) entry.getValue();
-                CITValueMatcher matcher;
-                if (value.startsWith("regex:")) {
-                    matcher = new CITValueMatcher.RegexMatcher(value.substring(6));
-                } else if (value.startsWith("iregex:")) {
-                    matcher = new CITValueMatcher.IRegexMatcher(value.substring(7));
-                } else if (value.startsWith("pattern:")) {
-                    matcher = new CITValueMatcher.PatternMatcher(value.substring(8));
-                } else if (value.startsWith("ipattern:")) {
-                    matcher = new CITValueMatcher.IPatternMatcher(value.substring(9));
-                } else {
-                    matcher = new CITValueMatcher.DirectMatcher(value);
-                }
-                nbtMatch.put(path, matcher);
-            }
-        }
+        Map<String, CITValueMatcher> nbtMatch = getStringCITValueMatcherMap(properties);
 
         String type = properties.getProperty("type", "item");
         if (type.equalsIgnoreCase("item")) {
@@ -246,6 +229,31 @@ public abstract class CITProperties {
         throw new IllegalArgumentException("Invalid CIT property type \"" + type + "\"");
     }
 
+    private static @NotNull Map<String, CITValueMatcher> getStringCITValueMatcherMap(Properties properties) {
+        Map<String, CITValueMatcher> nbtMatch = new HashMap<>();
+        for (Entry<Object, Object> entry : properties.entrySet()) {
+            String key = (String) entry.getKey();
+            if (key.startsWith("nbt")) {
+                String path = key.substring(key.length() > 3 ? 4 : 3);
+                String value = (String) entry.getValue();
+                CITValueMatcher matcher;
+                if (value.startsWith("regex:")) {
+                    matcher = new CITValueMatcher.RegexMatcher(value.substring(6));
+                } else if (value.startsWith("iregex:")) {
+                    matcher = new CITValueMatcher.IRegexMatcher(value.substring(7));
+                } else if (value.startsWith("pattern:")) {
+                    matcher = new CITValueMatcher.PatternMatcher(value.substring(8));
+                } else if (value.startsWith("ipattern:")) {
+                    matcher = new CITValueMatcher.IPatternMatcher(value.substring(9));
+                } else {
+                    matcher = new CITValueMatcher.DirectMatcher(value);
+                }
+                nbtMatch.put(path, matcher);
+            }
+        }
+        return nbtMatch;
+    }
+
     protected final int weight;
     protected final Set<ICMaterial> items;
     protected final IntegerRange stackSize;
@@ -264,38 +272,6 @@ public abstract class CITProperties {
         this.hand = hand;
         this.enchantments = enchantments;
         this.nbtMatch = nbtMatch;
-    }
-
-    public int getWeight() {
-        return weight;
-    }
-
-    public Set<ICMaterial> getItems() {
-        return items;
-    }
-
-    public IntegerRange getStackSize() {
-        return stackSize;
-    }
-
-    public PercentageOrIntegerRange getDamage() {
-        return damage;
-    }
-
-    public int getDamageMask() {
-        return damageMask;
-    }
-
-    public EquipmentSlot getHand() {
-        return hand;
-    }
-
-    public Map<Enchantment, IntegerRange> getEnchantments() {
-        return enchantments;
-    }
-
-    public Map<String, CITValueMatcher> getNbtMatch() {
-        return nbtMatch;
     }
 
     @SuppressWarnings("deprecation")

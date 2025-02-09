@@ -24,8 +24,8 @@ import com.ibm.icu.text.SimpleDateFormat;
 import com.ibm.icu.util.Calendar;
 import com.ibm.icu.util.ULocale;
 import com.cryptomorin.xseries.XMaterial;
-import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.querz.nbt.tag.CompoundTag;
 import net.querz.nbt.tag.StringTag;
@@ -322,7 +322,7 @@ public class ItemRenderUtils {
                         if (blockStateTag.containsKey("level")) {
                             try {
                                 level = (float) Integer.parseInt(tagToString(blockStateTag.get("level"))) / 16F;
-                            } catch (NumberFormatException e) {
+                            } catch (NumberFormatException ignored) {
                             }
                         }
                     }
@@ -373,7 +373,7 @@ public class ItemRenderUtils {
                         j += (l & 0xFF00) >> 8;
                         k += (l & 0xFF);
                     }
-                    overlayColor = (i /= is.length) << 16 | (j /= is.length) << 8 | (k /= is.length);
+                    overlayColor = i / is.length << 16 | j / is.length << 8 | k / is.length;
                 }
 
                 tintColorProvider = new TintColorProvider.DyeTintProvider(tintIndex -> tintIndex != 1 ? -1 : overlayColor);
@@ -400,15 +400,14 @@ public class ItemRenderUtils {
                 predicates.put(ModelOverrideType.CAST, 0F);
                 Player icplayer = player.getPlayer();
                 if (icplayer != null && PlayerUtils.isLocal(icplayer)) {
-                    Player bukkitPlayer = icplayer;
-                    if (NMS.getInstance().getFishHook(bukkitPlayer) != null) {
-                        ItemStack mainHandItem = bukkitPlayer.getEquipment().getItemInHand();
+                    if (NMS.getInstance().getFishHook(icplayer) != null) {
+                        ItemStack mainHandItem = icplayer.getEquipment().getItemInHand();
                         if (VersionManager.version.isOld()) {
                             if (mainHandItem != null && mainHandItem.equals(item)) {
                                 predicates.put(ModelOverrideType.CAST, 1F);
                             }
                         } else {
-                            ItemStack offHandItem = bukkitPlayer.getEquipment().getItemInOffHand();
+                            ItemStack offHandItem = icplayer.getEquipment().getItemInOffHand();
                             if ((mainHandItem != null && mainHandItem.equals(item)) || ((offHandItem != null && offHandItem.equals(item)) && (mainHandItem == null || !XMaterial.matchXMaterial(mainHandItem).equals(XMaterial.FISHING_ROD)))) {
                                 predicates.put(ModelOverrideType.CAST, 1F);
                             }
@@ -439,7 +438,7 @@ public class ItemRenderUtils {
                     DecoratedPot pot = (DecoratedPot) state;
                     List<Material> materials = pot.getShards();
                     for (int i = 0; i < materials.size(); i++) {
-                        TextureResource textureResource = null;
+                        TextureResource textureResource;
                         ItemStack sherd = new ItemStack(materials.get(i));
                         Key type = NMS.getInstance().getDecoratedPotSherdPatternName(sherd);
                         if (VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_3)) {
@@ -527,7 +526,7 @@ public class ItemRenderUtils {
                                     j += (l & 0xFF00) >> 8;
                                     k += (l & 0xFF);
                                 }
-                                overlayColor = (i /= is.length) << 16 | (j /= is.length) << 8 | (k /= is.length);
+                                overlayColor = i / is.length << 16 | j / is.length << 8 | k / is.length;
                             }
                         } else {
                             overlayColor = fireworkTintSource.getDefaultColor();
@@ -705,8 +704,10 @@ public class ItemRenderUtils {
                 value = displayPosition;
             } else if (propertyType.equals(ItemModelDefinition.SelectPropertyType.LOCAL_TIME)) {
                 ItemModelDefinition.LocalTimeSelectProperty localTimeSelectProperty = (ItemModelDefinition.LocalTimeSelectProperty) select;
+
                 ULocale uLocale = new ULocale(localTimeSelectProperty.getLocale());
-                Calendar calendar = localTimeSelectProperty.getTimeZone().map(timeZone -> Calendar.getInstance(timeZone, uLocale)).orElseGet(() -> Calendar.getInstance(uLocale));
+                Calendar calendar = Calendar.getInstance(localTimeSelectProperty.getTimeZone(), uLocale);
+                if (calendar == null) calendar = Calendar.getInstance(uLocale);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(localTimeSelectProperty.getPattern(), uLocale);
                 simpleDateFormat.setCalendar(calendar);
                 String dateMatch = null;
@@ -715,6 +716,7 @@ public class ItemRenderUtils {
                 } catch (Exception ignored) {
                 }
                 value = dateMatch;
+
             } else if (propertyType.equals(ItemModelDefinition.SelectPropertyType.CONTEXT_DIMENSION)) {
                 Player icPlayer = player.getPlayer();
                 if (icPlayer != null && PlayerUtils.isLocal(icPlayer)) {
@@ -1039,7 +1041,9 @@ public class ItemRenderUtils {
 
         private final boolean requiresEnchantmentGlint;
         private final List<ModelLayer> modelParts;
+        @Getter
         private final Function<ModelRenderer.RawEnchantmentGlintParameters, BufferedImage> enchantmentGlintFunction;
+        @Getter
         private final Function<ModelRenderer.RawEnchantmentGlintParameters, RawEnchantmentGlintData> rawEnchantmentGlintFunction;
 
         public ItemStackProcessResult(boolean requiresEnchantmentGlint, List<ModelLayer> modelParts, Function<ModelRenderer.RawEnchantmentGlintParameters, BufferedImage> enchantmentGlintFunction, Function<ModelRenderer.RawEnchantmentGlintParameters, RawEnchantmentGlintData> rawEnchantmentGlintFunction) {
@@ -1055,14 +1059,6 @@ public class ItemRenderUtils {
 
         public List<ModelLayer> getModelLayers() {
             return modelParts;
-        }
-
-        public Function<ModelRenderer.RawEnchantmentGlintParameters, BufferedImage> getEnchantmentGlintFunction() {
-            return enchantmentGlintFunction;
-        }
-
-        public Function<ModelRenderer.RawEnchantmentGlintParameters, RawEnchantmentGlintData> getRawEnchantmentGlintFunction() {
-            return rawEnchantmentGlintFunction;
         }
 
     }

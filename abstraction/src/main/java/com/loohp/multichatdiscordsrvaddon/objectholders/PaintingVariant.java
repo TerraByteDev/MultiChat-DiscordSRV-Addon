@@ -25,8 +25,6 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.Optional;
-
 @Getter
 public class PaintingVariant {
 
@@ -67,5 +65,13 @@ public class PaintingVariant {
 
     public PaintingVariant(Key key, int blockWidth, int blockHeight) {
         this(key, blockWidth, blockHeight, getLegacyPaintingTitle(key), getLegacyPaintingAuthor(key));
+    }
+
+    public int getPixelWidth() {
+        return blockWidth * 16;
+    }
+
+    public int getPixelHeight() {
+        return blockHeight * 16;
     }
 }

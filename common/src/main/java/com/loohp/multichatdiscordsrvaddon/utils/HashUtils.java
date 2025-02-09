@@ -28,16 +28,16 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.util.Formatter;
 
 public class HashUtils {
 
     public static byte[] createSha1(File file) throws Exception {
-        return createSha1(new FileInputStream(file));
+        return createSha1(Files.newInputStream(file.toPath()));
     }
 
     public static byte[] createSha1(InputStream fis) throws Exception {
@@ -56,20 +56,20 @@ public class HashUtils {
 
     public static String createSha1String(File file) throws Exception {
         byte[] b = createSha1(file);
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (int i = 0; i < b.length; i++) {
-            result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+            result.append(Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1));
         }
-        return result;
+        return result.toString();
     }
 
     public static String createSha1String(InputStream fis) throws Exception {
         byte[] b = createSha1(fis);
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (int i = 0; i < b.length; i++) {
-            result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+            result.append(Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1));
         }
-        return result;
+        return result.toString();
     }
 
     public static String createSha1(boolean rightHanded, int selectedSlot, int level, String title, Inventory inventory) throws Exception {

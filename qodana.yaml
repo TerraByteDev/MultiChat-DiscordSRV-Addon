@@ -2,7 +2,28 @@ version: "1.0"
 linter: jetbrains/qodana-jvm-community:2024.3
 profile:
   name: qodana.recommended
+exclude:
+  - name: ThrowablePrintStackTrace
+  - name: CallToPrintStackTrace
+  - name: Deprecation
+  - name: DeprecatedIsStillUsed
+  - name: UNCHECKED_WARNING
+  - name: SwitchStatementWithConfusingDeclaration
+  - name: UnstableApiUsage
+  - name: ConstantValue
+  - name: All
+    paths:
+      - "common/src/main/java/com/loohp/multichatdiscordsrvaddon/main"
+  - name: RegExpRedundantEscape
+  - name: RegExpSingleCharAlternation
+  - name: RegExpUnnecessaryNonCapturingGroup
+  - name: RegExpSimplifiable
+  - name: IgnoreResultOfCall
+  - name: VulnerableLibrariesLocal
 include:
   - name: CheckDependencyLicenses
-exclude:
-  - name: CallToPrintStackTrace
+  - name: FieldMayBeFinal
+  - name: LombokGetterMayBeUsed
+  - name: UnnecessarySemicolon
+  - name: UNUSED_IMPORT
+  - name: UnnecessaryCallToStringValueOf

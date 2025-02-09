@@ -2,6 +2,7 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.Getter;
 import org.checkerframework.com.github.javaparser.quality.NotNull;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -82,6 +83,7 @@ public class GithubUtils {
         return code >= 200 && code <= 299;
     }
 
+    @Getter
     public static class GitHubStatusLookup {
         private final GitHubStatus status;
         private final int distance;
@@ -89,14 +91,6 @@ public class GithubUtils {
         private GitHubStatusLookup(@NotNull GitHubStatus status, int distance) {
             this.status = Objects.requireNonNull(status);
             this.distance = distance;
-        }
-
-        public GitHubStatus getStatus() {
-            return status;
-        }
-
-        public int getDistance() {
-            return distance;
         }
 
         public boolean isAhead() {

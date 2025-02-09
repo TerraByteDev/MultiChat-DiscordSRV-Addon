@@ -24,6 +24,7 @@ import com.google.common.collect.Range;
 import com.loohp.multichatdiscordsrvaddon.objectholders.OfflinePlayerData;
 import com.loohp.multichatdiscordsrvaddon.utils.NBTParsingUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.PlayerUtils;
+import lombok.Getter;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.*;
 import org.json.simple.JSONObject;
@@ -49,6 +50,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+@Getter
 public class ChimeModelOverride extends ModelOverride {
 
     private final Map<ChimeModelOverrideType, Object> chimePredicates;
@@ -64,16 +66,8 @@ public class ChimeModelOverride extends ModelOverride {
         this(predicates, chimePredicates, model, null);
     }
 
-    public Map<ChimeModelOverrideType, Object> getChimePredicates() {
-        return chimePredicates;
-    }
-
     public boolean hasArmorTexture() {
         return armorTexture != null;
-    }
-
-    public String getArmorTexture() {
-        return armorTexture;
     }
 
     @Deprecated
@@ -396,9 +390,12 @@ public class ChimeModelOverride extends ModelOverride {
             return ChimeUtils.matchesJsonObject(value, compoundTag);
         });
 
+        @Getter
         private final String key;
         private final String[] sectionedKeys;
+        @Getter
         private final Class<?> valueType;
+        @Getter
         private final ChimeOverridePredicate<Object> predicate;
 
         <T> ChimeModelOverrideType(String key, Class<T> valueType, ChimeOverridePredicate<T> predicate) {
@@ -406,18 +403,6 @@ public class ChimeModelOverride extends ModelOverride {
             this.sectionedKeys = key.split("/");
             this.valueType = valueType;
             this.predicate = (ChimeOverridePredicate<Object>) predicate;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public Class<?> getValueType() {
-            return valueType;
-        }
-
-        public ChimeOverridePredicate<Object> getPredicate() {
-            return predicate;
         }
 
         public boolean test(Object value, OfflinePlayer player, World world, LivingEntity entity, ItemStack itemStack, SpecificTranslateFunction translateFunction) {

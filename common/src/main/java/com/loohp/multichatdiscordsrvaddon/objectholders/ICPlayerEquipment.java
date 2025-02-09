@@ -77,8 +77,9 @@ public class ICPlayerEquipment implements EntityEquipment {
         }
     }
 
+    @SuppressWarnings("DataFlowIssue")
     @Override
-    public ItemStack getItem(EquipmentSlot slot) {
+    public @NotNull ItemStack getItem(EquipmentSlot slot) {
         switch (slot) {
             case HAND:
                 return data.getInventory().getItem(data.getSelectedSlot());
@@ -97,7 +98,7 @@ public class ICPlayerEquipment implements EntityEquipment {
     }
 
     @Override
-    public ItemStack getItemInMainHand() {
+    public @NotNull ItemStack getItemInMainHand() {
         return getItem(EquipmentSlot.HAND);
     }
 
@@ -107,7 +108,7 @@ public class ICPlayerEquipment implements EntityEquipment {
     }
 
     @Override
-    public ItemStack getItemInOffHand() {
+    public @NotNull ItemStack getItemInOffHand() {
         return getItem(EquipmentSlot.OFF_HAND);
     }
 
@@ -118,7 +119,7 @@ public class ICPlayerEquipment implements EntityEquipment {
 
     @Override
     @Deprecated
-    public ItemStack getItemInHand() {
+    public @NotNull ItemStack getItemInHand() {
         return getItem(EquipmentSlot.HAND);
     }
 
@@ -301,7 +302,7 @@ public class ICPlayerEquipment implements EntityEquipment {
     }
 
     @Override
-    public void setItem(EquipmentSlot slot, ItemStack stack, boolean silent) {
+    public void setItem(@NotNull EquipmentSlot slot, ItemStack stack, boolean silent) {
         setItem(slot, stack);
     }
 

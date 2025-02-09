@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
+import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
@@ -92,6 +93,7 @@ public class ArmorUtils {
             return new ArmorTextureResult(layers, dyeableColor);
         }
 
+        @Getter
         private final List<EquipmentModelDefinition.EquipmentLayer> layers;
         private final OptionalInt dyeableColor;
 
@@ -102,10 +104,6 @@ public class ArmorUtils {
 
         public boolean hasArmorTexture() {
             return !layers.isEmpty();
-        }
-
-        public List<EquipmentModelDefinition.EquipmentLayer> getLayers() {
-            return layers;
         }
 
         public int getDyeableColor(int colorWhenUndyed) {

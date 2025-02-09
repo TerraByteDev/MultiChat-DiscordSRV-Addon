@@ -21,9 +21,11 @@
 package com.loohp.multichatdiscordsrvaddon.api.events;
 
 import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents.DiscordAttachmentData;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This event is called when a discord attachment had been processed.
@@ -38,6 +40,7 @@ public class DiscordAttachmentConversionEvent extends Event {
         return HANDLERS;
     }
 
+    @Getter
     private final String url;
     private final DiscordAttachmentData data;
 
@@ -47,15 +50,11 @@ public class DiscordAttachmentConversionEvent extends Event {
         this.data = data;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
     public DiscordAttachmentData getDiscordAttachmentData() {
         return data;
     }
 
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
 

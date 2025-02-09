@@ -20,28 +20,19 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.textures;
 
+import lombok.Getter;
+
+@Getter
 public class TextureProperties {
 
-    private boolean blur;
-    private boolean clamp;
-    private int[] mipmaps;
+    private final boolean blur;
+    private final boolean clamp;
+    private final int[] mipmaps;
 
     public TextureProperties(boolean blur, boolean clamp, int[] mipmaps) {
         this.blur = blur;
         this.clamp = clamp;
         this.mipmaps = mipmaps;
-    }
-
-    public boolean isBlur() {
-        return blur;
-    }
-
-    public boolean isClamp() {
-        return clamp;
-    }
-
-    public int[] getMipmaps() {
-        return mipmaps;
     }
 
 }

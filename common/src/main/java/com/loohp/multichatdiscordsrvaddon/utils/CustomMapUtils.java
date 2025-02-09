@@ -44,7 +44,7 @@ public class CustomMapUtils {
 
     public static <K, V extends Comparable<? super V>> LinkedHashMap<K, V> sortMapByValue(Map<K, V> map) {
         LinkedHashMap<K, V> linkedmap = new LinkedHashMap<>();
-        entriesSortedByValues(map).stream().forEach((entry) -> linkedmap.put(entry.getKey(), entry.getValue()));
+        entriesSortedByValues(map).forEach((entry) -> linkedmap.put(entry.getKey(), entry.getValue()));
         return linkedmap;
     }
 

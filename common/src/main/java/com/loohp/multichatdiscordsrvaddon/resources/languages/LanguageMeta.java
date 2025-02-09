@@ -20,6 +20,9 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.languages;
 
+import lombok.Getter;
+
+@Getter
 public class LanguageMeta {
 
     private final String language;
@@ -32,22 +35,6 @@ public class LanguageMeta {
         this.region = region;
         this.name = name;
         this.bidirectional = bidirectional;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean isBidirectional() {
-        return bidirectional;
     }
 
 }

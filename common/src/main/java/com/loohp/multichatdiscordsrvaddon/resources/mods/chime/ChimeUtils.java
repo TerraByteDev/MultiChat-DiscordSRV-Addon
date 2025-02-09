@@ -206,7 +206,7 @@ public class ChimeUtils {
                 }
             }
             return Range.singleton(parseNumber(clazz, s));
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return null;
     }
@@ -238,7 +238,7 @@ public class ChimeUtils {
             try {
                 String[] tags = subTag.split("/");
                 for (String t : tags) {
-                    if (t.length() == 0) {
+                    if (t.isEmpty()) {
                         continue;
                     }
                     tag = ((CompoundTag) tag).get(t);
@@ -249,7 +249,7 @@ public class ChimeUtils {
                     i += modulo;
                 }
                 return value.contains((float) i);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             return value.contains(-1f);
         }

@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.utils;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 
 import java.util.Arrays;
@@ -84,6 +85,7 @@ public enum MCVersion {
     }
 
     private final String name;
+    @Getter
     private final String packageName;
     private final int shortNum;
 
@@ -100,10 +102,6 @@ public enum MCVersion {
 
     public String getMinecraftVersion() {
         return name;
-    }
-
-    public String getPackageName() {
-        return packageName;
     }
 
     public int getNumber() {

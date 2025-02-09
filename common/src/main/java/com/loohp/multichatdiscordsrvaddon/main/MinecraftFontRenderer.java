@@ -106,13 +106,14 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("deprecation")
 public class MinecraftFontRenderer extends JFrame {
 
     public static final Pattern COLOR_HEX_PATTERN = Pattern.compile("^#[0-9a-fA-F]{6}$");
 
     private static final URLClassLoaderAccess LOADER_ACCESS = URLClassLoaderAccess.create((URLClassLoader) GUIMain.class.getClassLoader());
 
-    private String title;
+    private final String title;
 
     private JTextArea textAreaInput;
     private JTextArea textAreaResources;
@@ -132,15 +133,15 @@ public class MinecraftFontRenderer extends JFrame {
 
     private ResourceManager resourceManager;
 
-    private AtomicReference<BufferedImage> renderedImage;
-    private AtomicReference<List<Component>> renderingComponents;
+    private final AtomicReference<BufferedImage> renderedImage;
+    private final AtomicReference<List<Component>> renderingComponents;
     private Color backgroundColor;
     private File lastSavedLocation;
 
-    private ExecutorService executorService;
-    private ReentrantLock resourceLock;
-    private ReentrantLock updateTextImageLock;
-    private ReentrantLock repaintLock;
+    private final ExecutorService executorService;
+    private final ReentrantLock resourceLock;
+    private final ReentrantLock updateTextImageLock;
+    private final ReentrantLock repaintLock;
 
     public MinecraftFontRenderer(String title, BufferedImage image, Icon icon) {
         this.title = title;
@@ -738,11 +739,11 @@ public class MinecraftFontRenderer extends JFrame {
 
     private static class LanguageData {
 
-        private String language;
-        private String name;
-        private String region;
+        private final String language;
+        private final String name;
+        private final String region;
 
-        private String displayName;
+        private final String displayName;
 
         public LanguageData(String language, String name, String region) {
             this.language = language;

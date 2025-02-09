@@ -20,11 +20,14 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
+
+@Getter
 public class LegacyIdKey {
 
     private String stringId;
     private byte byteId;
-    private short damage;
+    private final short damage;
 
     public LegacyIdKey(byte byteId, short damage) {
         this.byteId = byteId;
@@ -36,24 +39,12 @@ public class LegacyIdKey {
         this.damage = damage;
     }
 
-    public byte getByteId() {
-        return byteId;
-    }
-
     public boolean hasByteId() {
         return stringId == null;
     }
 
-    public String getStringId() {
-        return stringId;
-    }
-
     public boolean hasStringId() {
         return stringId != null;
-    }
-
-    public short getDamage() {
-        return damage;
     }
 
     public boolean isDamageDataValue() {

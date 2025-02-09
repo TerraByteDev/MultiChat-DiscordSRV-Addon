@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.fonts;
 
+import lombok.Getter;
 import net.kyori.adventure.text.format.TextDecoration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceLoadingException;
@@ -49,14 +50,20 @@ public class TrueTypeFont extends MinecraftFont {
 
     private static final BufferedImage INTERNAL_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 
-    private String resourceLocation;
-    private AffineTransform shift;
-    private float size;
-    private float oversample;
-    private String exclude;
+    @Getter
+    private final String resourceLocation;
+    @Getter
+    private final AffineTransform shift;
+    @Getter
+    private final float size;
+    @Getter
+    private final float oversample;
+    @Getter
+    private final String exclude;
 
     private IntSet displayableCharacters;
     private Graphics2D internalGraphics;
+    @Getter
     private Font font;
 
     public TrueTypeFont(ResourceManager manager, FontProvider provider, String resourceLocation, AffineTransform shift, float size, float oversample, String exclude) {
@@ -103,30 +110,6 @@ public class TrueTypeFont extends MinecraftFont {
                 throw new ResourceLoadingException("Unable to load TrueTypeFont provider at " + resourceLocation + " (Defined in " + provider.getNamespacedKey() + ")", e);
             }
         }
-    }
-
-    public String getResourceLocation() {
-        return resourceLocation;
-    }
-
-    public AffineTransform getShift() {
-        return shift;
-    }
-
-    public float getSize() {
-        return size;
-    }
-
-    public float getOversample() {
-        return oversample;
-    }
-
-    public String getExclude() {
-        return exclude;
-    }
-
-    public Font getFont() {
-        return font;
     }
 
     @Override

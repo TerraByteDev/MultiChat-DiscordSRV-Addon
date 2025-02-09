@@ -26,8 +26,8 @@ import java.util.regex.Pattern;
 
 public class MentionTagConverter {
 
-    private String style;
-    private Pattern reverse;
+    private final String style;
+    private final Pattern reverse;
 
     public MentionTagConverter(String style) {
         this.style = style;

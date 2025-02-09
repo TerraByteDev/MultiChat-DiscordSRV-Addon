@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
+import lombok.Getter;
 
 import java.util.UUID;
 
@@ -63,6 +64,7 @@ public class DefaultSkinUtils {
         return SKINS[Math.floorMod(uuid.hashCode(), SKINS.length)];
     }
 
+    @Getter
     private static class Skin {
 
         private final String texture;
@@ -73,13 +75,6 @@ public class DefaultSkinUtils {
             this.slim = slim;
         }
 
-        public String getTexture() {
-            return texture;
-        }
-
-        public boolean isSlim() {
-            return slim;
-        }
     }
 
 }

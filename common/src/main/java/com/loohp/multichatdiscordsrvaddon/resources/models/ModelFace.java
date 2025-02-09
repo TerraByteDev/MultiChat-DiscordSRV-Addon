@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.resources.models;
 
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,11 +31,15 @@ import java.util.Set;
 
 public class ModelFace {
 
+    @Getter
     private final ModelFaceSide side;
     private final TextureUV uv;
     private final String texture;
+    @Getter
     private final ModelFaceSide cullface;
+    @Getter
     private final int rotation;
+    @Getter
     private final int tintindex;
 
     public ModelFace(ModelFaceSide side, TextureUV uv, String texture, ModelFaceSide cullface, int rotation, int tintindex) {
@@ -44,10 +49,6 @@ public class ModelFace {
         this.cullface = cullface;
         this.rotation = rotation;
         this.tintindex = tintindex;
-    }
-
-    public ModelFaceSide getSide() {
-        return side;
     }
 
     public TextureUV getUV() {
@@ -69,18 +70,6 @@ public class ModelFace {
         return new ModelFace(side, uv, texture, cullface, rotation, tintindex);
     }
 
-    public ModelFaceSide getCullface() {
-        return cullface;
-    }
-
-    public int getRotation() {
-        return rotation;
-    }
-
-    public int getTintindex() {
-        return tintindex;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -98,6 +87,7 @@ public class ModelFace {
         return Objects.hash(side, uv, texture, cullface, rotation, tintindex);
     }
 
+    @Getter
     public enum ModelFaceSide {
 
         UP,
@@ -120,10 +110,6 @@ public class ModelFace {
 
         ModelFaceSide(String... aliases) {
             this.aliases = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(aliases)));
-        }
-
-        public Set<String> getAliases() {
-            return aliases;
         }
 
     }

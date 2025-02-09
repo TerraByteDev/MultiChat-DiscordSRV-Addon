@@ -20,6 +20,9 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
+
+@Getter
 public class ValueTrios<F, S, T> {
 
     private final F first;
@@ -30,18 +33,6 @@ public class ValueTrios<F, S, T> {
         this.first = first;
         this.second = second;
         this.third = third;
-    }
-
-    public F getFirst() {
-        return first;
-    }
-
-    public S getSecond() {
-        return second;
-    }
-
-    public T getThird() {
-        return third;
     }
 
     @Override

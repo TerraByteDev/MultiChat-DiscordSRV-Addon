@@ -22,11 +22,13 @@ package com.loohp.multichatdiscordsrvaddon.objectholders;
 
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.GenericComponentInteractionCreateEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
+import lombok.Getter;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+@Getter
 public class InteractionHandler {
 
     private final Collection<? extends ActionRow> interactionToRegister;
@@ -39,22 +41,6 @@ public class InteractionHandler {
         this.interactions = interactions;
         this.expire = expire;
         this.reactionConsumer = reactionConsumer;
-    }
-
-    public Collection<? extends ActionRow> getInteractionToRegister() {
-        return interactionToRegister;
-    }
-
-    public List<String> getInteractions() {
-        return interactions;
-    }
-
-    public long getExpire() {
-        return expire;
-    }
-
-    public BiConsumer<GenericComponentInteractionCreateEvent, List<DiscordMessageContent>> getReactionConsumer() {
-        return reactionConsumer;
     }
 
 }

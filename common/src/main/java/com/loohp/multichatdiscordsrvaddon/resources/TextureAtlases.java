@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources;
 
+import lombok.Getter;
 import org.apache.commons.io.input.BOMInputStream;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -42,6 +43,7 @@ import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Getter
 public class TextureAtlases {
 
     public static final List<TextureAtlasSource> DEFAULT_BLOCK_ATLASES = Collections.unmodifiableList(Arrays.asList(
@@ -136,10 +138,6 @@ public class TextureAtlases {
 
     public TextureAtlases(Map<TextureAtlasType, List<TextureAtlasSource>> textureAtlases) {
         this.textureAtlases = Collections.unmodifiableMap(textureAtlases);
-    }
-
-    public Map<TextureAtlasType, List<TextureAtlasSource>> getTextureAtlases() {
-        return textureAtlases;
     }
 
     public List<TextureAtlasSource> getTextureAtlases(TextureAtlasType type) {
@@ -288,7 +286,9 @@ public class TextureAtlases {
 
     public static class TextureAtlasDirectorySource extends TextureAtlasSource {
 
+        @Getter
         private final String source;
+        @Getter
         private final String prefix;
 
         private final String[] sourceTree;
@@ -298,14 +298,6 @@ public class TextureAtlases {
             this.prefix = prefix;
 
             this.sourceTree = source.split("/");
-        }
-
-        public String getSource() {
-            return source;
-        }
-
-        public String getPrefix() {
-            return prefix;
         }
 
         @Override
@@ -330,6 +322,7 @@ public class TextureAtlases {
         }
     }
 
+    @Getter
     public static class TextureAtlasSingleSource extends TextureAtlasSource {
 
         private final String resource;
@@ -338,14 +331,6 @@ public class TextureAtlases {
         public TextureAtlasSingleSource(String resource, String sprite) {
             this.resource = resource;
             this.sprite = sprite;
-        }
-
-        public String getResource() {
-            return resource;
-        }
-
-        public String getSprite() {
-            return sprite;
         }
 
         @Override
@@ -363,6 +348,7 @@ public class TextureAtlases {
         }
     }
 
+    @Getter
     public static class TextureAtlasFilterSource extends TextureAtlasSource {
 
         private final Pattern namespace;
@@ -371,14 +357,6 @@ public class TextureAtlases {
         public TextureAtlasFilterSource(Pattern namespace, Pattern path) {
             this.namespace = namespace;
             this.path = path;
-        }
-
-        public Pattern getNamespace() {
-            return namespace;
-        }
-
-        public Pattern getPath() {
-            return path;
         }
 
         @Override
@@ -392,6 +370,7 @@ public class TextureAtlases {
         }
     }
 
+    @Getter
     public static class TextureAtlasUnstitchSource extends TextureAtlasSource {
 
         private final String resource;
@@ -404,22 +383,6 @@ public class TextureAtlases {
             this.divisorX = divisorX;
             this.divisorY = divisorY;
             this.regions = Collections.unmodifiableList(regions);
-        }
-
-        public String getResource() {
-            return resource;
-        }
-
-        public double getDivisorX() {
-            return divisorX;
-        }
-
-        public double getDivisorY() {
-            return divisorY;
-        }
-
-        public List<Region> getRegions() {
-            return regions;
         }
 
         @Override
@@ -436,6 +399,7 @@ public class TextureAtlases {
             return relativePath.equals(file);
         }
 
+        @Getter
         public class Region {
 
             private final String spriteName;
@@ -464,32 +428,10 @@ public class TextureAtlases {
                 };
             }
 
-            public UnaryOperator<BufferedImage> getImageTransformFunction() {
-                return imageTransformFunction;
-            }
-
-            public String getSpriteName() {
-                return spriteName;
-            }
-
-            public double getX() {
-                return x;
-            }
-
-            public double getY() {
-                return y;
-            }
-
-            public double getWidth() {
-                return width;
-            }
-
-            public double getHeight() {
-                return height;
-            }
         }
     }
 
+    @Getter
     public static class TextureAtlasPalettedPermutationsSource extends TextureAtlasSource {
 
         private final List<String> textures;
@@ -502,22 +444,6 @@ public class TextureAtlases {
             this.paletteKey = paletteKey;
             this.permutations = Collections.unmodifiableMap(permutations);
             this.separator = separator;
-        }
-
-        public List<String> getTextures() {
-            return textures;
-        }
-
-        public String getPaletteKey() {
-            return paletteKey;
-        }
-
-        public Map<String, String> getPermutations() {
-            return permutations;
-        }
-
-        public String getSeparator() {
-            return separator;
         }
 
         @Override

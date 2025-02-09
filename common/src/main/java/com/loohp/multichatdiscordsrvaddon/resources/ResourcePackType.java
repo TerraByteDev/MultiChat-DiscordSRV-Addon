@@ -25,6 +25,6 @@ public enum ResourcePackType {
     BUILT_IN,
     WORLD,
     LOCAL,
-    SERVER;
+    SERVER
 
 }

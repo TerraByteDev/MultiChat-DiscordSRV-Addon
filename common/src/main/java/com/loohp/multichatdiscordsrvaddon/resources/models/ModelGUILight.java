@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.resources.models;
 
 import com.loohp.blockmodelrenderer.render.Vector;
+import lombok.Getter;
 
 public enum ModelGUILight {
 
@@ -37,7 +38,9 @@ public enum ModelGUILight {
     }
 
     private final Vector lightVector;
+    @Getter
     private final double ambientLevel;
+    @Getter
     private final double maxLevel;
 
     ModelGUILight(Vector lightVector, double ambientLevel, double maxLevel) {
@@ -48,14 +51,6 @@ public enum ModelGUILight {
 
     public Vector getLightVector() {
         return lightVector.clone();
-    }
-
-    public double getAmbientLevel() {
-        return ambientLevel;
-    }
-
-    public double getMaxLevel() {
-        return maxLevel;
     }
 
 }

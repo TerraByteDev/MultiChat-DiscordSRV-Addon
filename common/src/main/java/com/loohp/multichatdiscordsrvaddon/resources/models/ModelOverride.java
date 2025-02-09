@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.resources.models;
 
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
+import lombok.Getter;
 
 import java.util.Collections;
 import java.util.Map;
@@ -33,16 +34,13 @@ public class ModelOverride {
         return value == null ? fallback : value;
     }
 
+    @Getter
     private final Map<ModelOverrideType, Float> predicates;
     private final String model;
 
     public ModelOverride(Map<ModelOverrideType, Float> predicates, String model) {
         this.predicates = Collections.unmodifiableMap(predicates);
         this.model = model;
-    }
-
-    public Map<ModelOverrideType, Float> getPredicates() {
-        return predicates;
     }
 
     public String getRawModel() {

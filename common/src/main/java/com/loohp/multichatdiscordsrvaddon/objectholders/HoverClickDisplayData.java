@@ -21,12 +21,13 @@
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
 import com.loohp.multichatdiscordsrvaddon.objectholders.CustomPlaceholder.ClickEventAction;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.awt.Color;
 
+@Getter
 public class HoverClickDisplayData extends DiscordDisplayData {
 
     private final String displayText;
@@ -44,34 +45,15 @@ public class HoverClickDisplayData extends DiscordDisplayData {
         this.clickValue = clickValue;
     }
 
-    public String getDisplayText() {
-        return displayText;
-    }
-
-    public Component getHoverText() {
-        return hoverText;
-    }
-
     public boolean hasHover() {
         return hoverText != null;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public ClickEventAction getClickAction() {
-        return clickAction;
-    }
-
-    public String getClickValue() {
-        return clickValue;
     }
 
     public boolean hasClick() {
         return clickAction != null && clickValue != null;
     }
 
+    @Getter
     public static class Builder {
 
         private OfflinePlayer player;
@@ -86,17 +68,9 @@ public class HoverClickDisplayData extends DiscordDisplayData {
 
         }
 
-        public OfflinePlayer getPlayer() {
-            return player;
-        }
-
         public Builder player(OfflinePlayer player) {
             this.player = player;
             return this;
-        }
-
-        public Integer getPostion() {
-            return postion;
         }
 
         public Builder postion(int postion) {
@@ -104,17 +78,9 @@ public class HoverClickDisplayData extends DiscordDisplayData {
             return this;
         }
 
-        public String getDisplayText() {
-            return displayText;
-        }
-
         public Builder displayText(String displayText) {
             this.displayText = displayText;
             return this;
-        }
-
-        public Component getHoverText() {
-            return hoverText;
         }
 
         public Builder hoverText(Component hoverText) {
@@ -122,26 +88,14 @@ public class HoverClickDisplayData extends DiscordDisplayData {
             return this;
         }
 
-        public Color getColor() {
-            return color;
-        }
-
         public Builder color(Color color) {
             this.color = color;
             return this;
         }
 
-        public ClickEventAction getClickAction() {
-            return clickAction;
-        }
-
         public Builder clickAction(ClickEventAction clickAction) {
             this.clickAction = clickAction;
             return this;
-        }
-
-        public String getClickValue() {
-            return clickValue;
         }
 
         public Builder clickValue(String clickValue) {

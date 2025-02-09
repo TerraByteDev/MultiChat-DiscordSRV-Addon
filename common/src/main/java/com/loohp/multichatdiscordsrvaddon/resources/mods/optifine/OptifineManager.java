@@ -84,10 +84,10 @@ public class OptifineManager extends ModManager implements IOptifineManager {
     public static final List<String> ASSET_EXTENSIONS = Collections.unmodifiableList(Arrays.asList("png", "json"));
     private static final BufferedImage BLANK_ENCHANTMENT = new BufferedImage(512, 512, BufferedImage.TYPE_INT_ARGB);
 
-    private Map<String, ValuePairs<ResourcePackFile, ?>> assets;
+    private final Map<String, ValuePairs<ResourcePackFile, ?>> assets;
 
     private CITGlobalProperties citGlobalProperties;
-    private Map<String, ValuePairs<ResourcePackFile, CITProperties>> citOverrides;
+    private final Map<String, ValuePairs<ResourcePackFile, CITProperties>> citOverrides;
 
     public OptifineManager(ResourceManager manager) {
         super(manager, MOD_NAME, ASSETS_FOLDERS);

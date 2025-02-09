@@ -20,10 +20,13 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
+
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
+@Getter
 public class ValuePairs<F, S> {
 
     private final F first;
@@ -32,14 +35,6 @@ public class ValuePairs<F, S> {
     public ValuePairs(F first, S second) {
         this.first = first;
         this.second = second;
-    }
-
-    public F getFirst() {
-        return first;
-    }
-
-    public S getSecond() {
-        return second;
     }
 
     public <T> T product(BiFunction<F, S, T> function) {

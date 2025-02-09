@@ -25,10 +25,12 @@ import com.loohp.multichatdiscordsrvaddon.objectholders.TintColorProvider;
 import com.loohp.multichatdiscordsrvaddon.resources.models.BlockModel;
 import com.loohp.multichatdiscordsrvaddon.resources.models.ModelOverride;
 import com.loohp.multichatdiscordsrvaddon.resources.textures.TextureResource;
+import lombok.Getter;
 
 import java.util.Map;
 import java.util.function.Function;
 
+@Getter
 public class ModelLayer {
 
     private final String modelKey;
@@ -45,23 +47,4 @@ public class ModelLayer {
         this.postResolveFunction = postResolveFunction;
     }
 
-    public String getModelKey() {
-        return modelKey;
-    }
-
-    public Map<ModelOverride.ModelOverrideType, Float> getPredicates() {
-        return predicates;
-    }
-
-    public Map<String, TextureResource> getProvidedTextures() {
-        return providedTextures;
-    }
-
-    public TintColorProvider getTintColorProvider() {
-        return tintColorProvider;
-    }
-
-    public Function<BlockModel, ValuePairs<BlockModel, Map<String, TextureResource>>> getPostResolveFunction() {
-        return postResolveFunction;
-    }
 }

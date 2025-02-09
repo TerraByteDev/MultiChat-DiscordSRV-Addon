@@ -50,7 +50,7 @@ public class PlaceholderCooldownManager {
         Iterator<UUID> itr = placeholderTimestamps.keySet().iterator();
         while (itr.hasNext()) {
             UUID internalId = itr.next();
-            if (!placeholderList.stream().anyMatch(each -> each.getInternalId().equals(internalId))) {
+            if (placeholderList.stream().noneMatch(each -> each.getInternalId().equals(internalId))) {
                 itr.remove();
             }
         }

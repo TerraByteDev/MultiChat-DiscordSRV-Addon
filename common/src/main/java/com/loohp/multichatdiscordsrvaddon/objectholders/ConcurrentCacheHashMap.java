@@ -20,6 +20,9 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -38,9 +41,12 @@ public class ConcurrentCacheHashMap<K, V> implements ConcurrentMap<K, V> {
 
     private final ConcurrentHashMap<K, V> mapping;
     private final ConcurrentHashMap<K, Long> insertionTime;
+    @Setter
+    @Getter
     private long timeout;
+    @Setter
     private BiPredicate<K, V> removeCondition;
-    private List<BiConsumer<K, V>> expireRemovalListeners;
+    private final List<BiConsumer<K, V>> expireRemovalListeners;
 
     public ConcurrentCacheHashMap(long timeout) {
         this.timeout = timeout;
@@ -79,20 +85,8 @@ public class ConcurrentCacheHashMap<K, V> implements ConcurrentMap<K, V> {
         expireRemovalListeners.remove(expireRemovalListener);
     }
 
-    public void setRemoveCondition(BiPredicate<K, V> removeCondition) {
-        this.removeCondition = removeCondition;
-    }
-
     public void clearRemoveCondition() {
         this.removeCondition = (k, v) -> true;
-    }
-
-    public long getTimeout() {
-        return timeout;
-    }
-
-    public void setTimeout(long timeout) {
-        this.timeout = timeout;
     }
 
     public void clearAndSetTimeout(long timeout) {
@@ -169,7 +163,7 @@ public class ConcurrentCacheHashMap<K, V> implements ConcurrentMap<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-        m.entrySet().stream().forEach(each -> put(each.getKey(), each.getValue()));
+        m.entrySet().forEach(each -> put(each.getKey(), each.getValue()));
     }
 
     @Override
@@ -401,10 +395,7 @@ public class ConcurrentCacheHashMap<K, V> implements ConcurrentMap<K, V> {
         @Override
         public boolean remove(Object o) {
             Optional<Entry<K, V>> opt = backingMap.mapping.entrySet().stream().filter(each -> each.getValue().equals(o)).findFirst();
-            if (opt.isPresent()) {
-                return backingMap.remove(opt.get().getKey(), opt.get().getValue());
-            }
-            return false;
+            return opt.filter(kvEntry -> backingMap.remove(kvEntry.getKey(), kvEntry.getValue())).isPresent();
         }
 
         @Override
@@ -420,12 +411,12 @@ public class ConcurrentCacheHashMap<K, V> implements ConcurrentMap<K, V> {
 
         @Override
         public boolean removeAll(Collection<?> c) {
-            return c.stream().map(each -> remove(each)).anyMatch(each -> each);
+            return c.stream().anyMatch(this::remove);
         }
 
         @Override
         public boolean retainAll(Collection<?> c) {
-            return backingMap.mapping.entrySet().stream().filter(each -> !c.contains(each.getValue()) && backingMap.containsKey(each.getKey())).map(each -> backingMap.remove(each.getKey(), each.getValue())).anyMatch(each -> each);
+            return backingMap.mapping.entrySet().stream().filter(each -> !c.contains(each.getValue()) && backingMap.containsKey(each.getKey())).anyMatch(each -> backingMap.remove(each.getKey(), each.getValue()));
         }
 
         @Override
@@ -514,12 +505,12 @@ public class ConcurrentCacheHashMap<K, V> implements ConcurrentMap<K, V> {
         @Override
         public boolean containsAll(Collection<?> c) {
             backingMap.cleanUp();
-            return c.stream().map(each -> {
+            return c.stream().allMatch(each -> {
                 if (each instanceof Entry) {
                     return backingMap.containsKey(((Entry<?, ?>) each).getKey());
                 }
                 return false;
-            }).allMatch(each -> each);
+            });
         }
 
         @Override
@@ -530,12 +521,12 @@ public class ConcurrentCacheHashMap<K, V> implements ConcurrentMap<K, V> {
         @Override
         public boolean retainAll(Collection<?> c) {
             backingMap.cleanUp();
-            return backingMap.mapping.entrySet().stream().filter(each -> !c.contains(each) && backingMap.containsKey(each.getKey())).map(each -> backingMap.remove(each.getKey(), each.getValue())).anyMatch(each -> each);
+            return backingMap.mapping.entrySet().stream().filter(each -> !c.contains(each) && backingMap.containsKey(each.getKey())).anyMatch(each -> backingMap.remove(each.getKey(), each.getValue()));
         }
 
         @Override
         public boolean removeAll(Collection<?> c) {
-            return c.stream().map(each -> remove(each)).anyMatch(each -> each);
+            return c.stream().anyMatch(this::remove);
         }
 
         @Override

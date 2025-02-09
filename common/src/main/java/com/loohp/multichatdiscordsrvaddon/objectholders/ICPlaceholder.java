@@ -20,6 +20,8 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
+
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -49,7 +51,7 @@ public abstract class ICPlaceholder {
             if (!lastChar.equals("\\")) {
                 if (character.equals(inCharSet)) {
                     if (inCharSet.equals("]")) {
-                        sb.append("\u00A7");
+                        sb.append("\u00a7");
                     }
                     inCharSet = null;
                 } else {
@@ -94,9 +96,9 @@ public abstract class ICPlaceholder {
             }
             if (!shouldNotAppend) {
                 if (!lastCharEscaped && lastChar.equals("\\")) {
-                    sb.insert(sb.length() - 1, "(?:\u00A7.)?");
+                    sb.insert(sb.length() - 1, "(?:\u00a7.)?");
                 } else {
-                    sb.append("(?:\u00A7.)?");
+                    sb.append("(?:\u00a7.)?");
                 }
             }
             sb.append(character);
@@ -117,13 +119,18 @@ public abstract class ICPlaceholder {
     }
 
     protected Pattern keyword;
+    @Getter
     protected String name;
+    @Getter
     protected String description;
+    @Getter
     protected String permission;
+    @Getter
     protected long cooldown;
+    @Getter
     protected UUID internalId;
 
-    private Pattern colorIgnoredKeyword;
+    private final Pattern colorIgnoredKeyword;
 
     public ICPlaceholder(Pattern keyword, String name, String description, String permission, long cooldown) {
         this.keyword = keyword;
@@ -137,32 +144,12 @@ public abstract class ICPlaceholder {
 
     public abstract boolean isBuildIn();
 
-    public String getPermission() {
-        return permission;
-    }
-
     public Pattern getRawKeyword() {
         return keyword;
     }
 
     public Pattern getKeyword() {
         return colorIgnoredKeyword;
-    }
-
-    public long getCooldown() {
-        return cooldown;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public UUID getInternalId() {
-        return internalId;
     }
 
     @Override

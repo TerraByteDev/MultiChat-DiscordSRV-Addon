@@ -20,12 +20,15 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.mods.chime;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ChimePredicateEnums {
 
+    @Getter
     public enum ItemInHand {
 
         MAIN("main"),
@@ -37,10 +40,6 @@ public class ChimePredicateEnums {
 
         ItemInHand(String... names) {
             this.names = new HashSet<>(Arrays.asList(names));
-        }
-
-        public Set<String> getNames() {
-            return names;
         }
 
         public static ItemInHand fromName(String name) {

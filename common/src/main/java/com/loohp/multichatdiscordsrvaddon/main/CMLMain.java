@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 
+@SuppressWarnings("deprecation")
 public class CMLMain {
 
     protected static BufferedReader IN = new BufferedReader(new InputStreamReader(System.in));
@@ -63,7 +64,7 @@ public class CMLMain {
 
             YamlFile icPluginYaml = new YamlFile();
             pluginYaml.options().useComments(true);
-            pluginYaml.load( enumeration.nextElement().openStream());
+            pluginYaml.load(enumeration.nextElement().openStream());
 
             String icPluginName = icPluginYaml.getString("name");
             String icVersion = icPluginYaml.getString("version");

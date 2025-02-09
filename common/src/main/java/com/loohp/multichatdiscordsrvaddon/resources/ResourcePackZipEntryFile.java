@@ -20,6 +20,8 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources;
 
+import lombok.Getter;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,9 +40,11 @@ public class ResourcePackZipEntryFile implements ResourcePackFile {
 
     private final String absoluteRootPath;
     private final ResourcePackZipEntryFile zipRootFile;
+    @Getter
     private final ZipFile zipRoot;
     private final String zipPath;
     private final boolean isDirectory;
+    @Getter
     private final ZipEntry zipEntry;
 
     public ResourcePackZipEntryFile(File resourcePackZip) throws IOException {
@@ -61,16 +65,8 @@ public class ResourcePackZipEntryFile implements ResourcePackFile {
         this.zipEntry = zipEntry;
     }
 
-    public ZipFile getZipRoot() {
-        return zipRoot;
-    }
-
     public boolean hasZipEntry() {
         return zipEntry != null;
-    }
-
-    public ZipEntry getZipEntry() {
-        return zipEntry;
     }
 
     @Override
@@ -218,7 +214,7 @@ public class ResourcePackZipEntryFile implements ResourcePackFile {
     public void close() {
         try {
             zipRoot.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
 

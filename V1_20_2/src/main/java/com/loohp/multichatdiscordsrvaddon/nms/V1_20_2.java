@@ -456,7 +456,7 @@ public class V1_20_2 extends NMSWrapper {
     public AdvancementData getAdvancementDataFromBukkitAdvancement(Object bukkitAdvancement) {
         AdvancementHolder holder = ((CraftAdvancement) bukkitAdvancement).getHandle();
         Optional<AdvancementDisplay> optAdvancementDisplay = holder.b().d();
-        if (!optAdvancementDisplay.isPresent()) {
+        if (optAdvancementDisplay.isEmpty()) {
             return null;
         }
         AdvancementDisplay display = optAdvancementDisplay.get();

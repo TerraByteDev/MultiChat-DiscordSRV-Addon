@@ -83,14 +83,14 @@ public class InventoryUtils {
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
             Inventory inventory;
             if (type.equals(InventoryType.CHEST)) {
-                if (title == null || title.equals("")) {
+                if (title == null || title.isEmpty()) {
                     inventory = Bukkit.getServer().createInventory(null, dataInput.readInt());
                 } else {
                     inventory = Bukkit.getServer().createInventory(null, dataInput.readInt(), title);
                 }
             } else {
                 dataInput.readInt();
-                if (title == null || title.equals("")) {
+                if (title == null || title.isEmpty()) {
                     inventory = Bukkit.getServer().createInventory(null, type);
                 } else {
                     inventory = Bukkit.getServer().createInventory(null, type, title);

@@ -27,8 +27,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Optional;
-
 /**
  * This event is called after the plugin translate an item placeholder.<br>
  * hasInventory() is true if this item is a container (like a shulker box)<br>

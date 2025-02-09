@@ -22,6 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.wrappers;
 
 import com.loohp.multichatdiscordsrvaddon.utils.FilledMapUtils;
 import com.loohp.multichatdiscordsrvaddon.api.events.MapDataLookupEvent;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -31,7 +32,6 @@ import org.bukkit.map.MapView;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ItemMapWrapper {
 
@@ -45,7 +45,8 @@ public class ItemMapWrapper {
         ICON_ORDER = first.thenComparing(second).thenComparing(third);
     }
 
-    private ItemStack itemStack;
+    private final ItemStack itemStack;
+    @Getter
     private byte[] colors;
     private List<MapCursor> icons;
 
@@ -73,10 +74,6 @@ public class ItemMapWrapper {
         Bukkit.getPluginManager().callEvent(event);
         this.colors = event.getColors();
         this.icons = event.getMapCursors();
-    }
-
-    public byte[] getColors() {
-        return colors;
     }
 
     public List<MapCursor> getMapCursors() {

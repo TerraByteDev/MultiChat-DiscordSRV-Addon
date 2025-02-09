@@ -81,7 +81,7 @@ public class LegacyDiscordCommandEvents {
                     for (ValueTrios<UUID, String, Integer> playerinfo : bungeePlayers) {
                         UUID uuid = playerinfo.getFirst();
                         Player icPlayer = Bukkit.getPlayer(uuid);
-                        if (icPlayer == null || !PlayerUtils.isVanished(icPlayer)) {
+                        if (!PlayerUtils.isVanished(icPlayer)) {
                             players.put(Bukkit.getOfflinePlayer(uuid), playerinfo.getThird());
                         }
                     }
@@ -93,7 +93,7 @@ public class LegacyDiscordCommandEvents {
             } else {
                 players = Bukkit.getOnlinePlayers().stream().filter(each -> {
                     Player icPlayer = Bukkit.getPlayer(each.getUniqueId());
-                    return icPlayer == null || !PlayerUtils.isVanished(icPlayer);
+                    return !PlayerUtils.isVanished(icPlayer);
                 }).collect(Collectors.toMap(each -> each, each -> each.getPing(), (a, b) -> a));
             }
             if (players.isEmpty()) {

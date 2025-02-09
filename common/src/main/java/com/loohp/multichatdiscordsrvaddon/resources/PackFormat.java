@@ -20,6 +20,8 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources;
 
+import lombok.Getter;
+
 public class PackFormat {
 
     public static PackFormat version(int version) {
@@ -37,6 +39,7 @@ public class PackFormat {
         return new PackFormat(max, min, max);
     }
 
+    @Getter
     private final int major;
     private final int min;
     private final int max;
@@ -45,10 +48,6 @@ public class PackFormat {
         this.major = major;
         this.min = min;
         this.max = max;
-    }
-
-    public int getMajor() {
-        return major;
     }
 
     public boolean isCompatible(int version) {

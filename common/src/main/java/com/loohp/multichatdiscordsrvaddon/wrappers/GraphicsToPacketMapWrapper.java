@@ -29,6 +29,7 @@ import com.loohp.multichatdiscordsrvaddon.graphics.ImageFrame;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
@@ -49,11 +50,13 @@ public class GraphicsToPacketMapWrapper {
 
     private volatile boolean done;
     private List<ImageFrame> frames;
+    @Getter
     private List<byte[]> colors;
     private ItemStack mapItem;
+    @Getter
     private int totalTime;
-    private boolean playbackBar;
-    private Color backgroundColor;
+    private final boolean playbackBar;
+    private final Color backgroundColor;
 
     public GraphicsToPacketMapWrapper(List<ImageFrame> frames, boolean playbackBar, Color backgroundColor) {
         this.done = true;
@@ -140,10 +143,6 @@ public class GraphicsToPacketMapWrapper {
         return frames;
     }
 
-    public int getTotalTime() {
-        return totalTime;
-    }
-
     public int getFrameAt(int ms) {
         int current = 0;
         int i = 0;
@@ -155,10 +154,6 @@ public class GraphicsToPacketMapWrapper {
             i++;
         }
         return -1;
-    }
-
-    public List<byte[]> getColors() {
-        return colors;
     }
 
     public void show(Player player) {

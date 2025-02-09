@@ -110,7 +110,7 @@ public abstract class URLClassLoaderAccess {
     /**
      * Accesses using sun.misc.Unsafe, supported on Java 9+.
      *
-     * @author Vaishnav Anil (https://github.com/slimjar/slimjar)
+     * @author Vaishnav Anil (<a href="https://github.com/slimjar/slimjar">...</a>)
      */
     private static class Unsafe extends URLClassLoaderAccess {
 

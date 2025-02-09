@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 
 public enum AdvancementType {
@@ -40,7 +41,9 @@ public enum AdvancementType {
         return null;
     }
 
+    @Getter
     private final ChatColor color;
+    @Getter
     private final String translationKey;
     private final boolean isLegacy;
 
@@ -52,14 +55,6 @@ public enum AdvancementType {
 
     AdvancementType(ChatColor color, String translationKey) {
         this(color, translationKey, false);
-    }
-
-    public ChatColor getColor() {
-        return this.color;
-    }
-
-    public String getTranslationKey() {
-        return translationKey;
     }
 
     public boolean isLegacy() {

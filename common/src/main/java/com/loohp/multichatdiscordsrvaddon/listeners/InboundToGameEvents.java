@@ -47,6 +47,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import github.scarsz.discordsrv.util.MessageUtil;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -159,9 +160,10 @@ public class InboundToGameEvents implements Listener {
         }
     }
 
+    private final ExecutorService service = Executors.newSingleThreadExecutor();
+
     public void handleReceiveMessageFromDiscordPost(DiscordGuildMessagePostProcessEvent event) {
         try {
-            ExecutorService service = Executors.newSingleThreadExecutor();
             Future<?> future = service.submit(() -> {
                 Debug.debug("Triggering onReceiveMessageFromDiscordPost");
                 Message message = event.getMessage();
@@ -524,8 +526,11 @@ public class InboundToGameEvents implements Listener {
 
     public static class DiscordAttachmentData {
 
+        @Getter
         private final String fileName;
+        @Getter
         private final String url;
+        @Getter
         private final GraphicsToPacketMapWrapper imageMap;
         private final UUID uuid;
         private final boolean isVideo;
@@ -542,24 +547,12 @@ public class InboundToGameEvents implements Listener {
             this(fileName, url, null, false);
         }
 
-        public String getFileName() {
-            return fileName;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
         public boolean isImage() {
             return imageMap != null && !isVideo;
         }
 
         public boolean isVideo() {
             return imageMap != null && isVideo;
-        }
-
-        public GraphicsToPacketMapWrapper getImageMap() {
-            return imageMap;
         }
 
         public UUID getUniqueId() {

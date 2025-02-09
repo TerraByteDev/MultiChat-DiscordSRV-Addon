@@ -123,7 +123,7 @@ public class NativeAdventureConverter {
             } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 e.printStackTrace();
             }
-        } catch (Throwable e) {
+        } catch (Throwable ignored) {
         }
     }
 
@@ -243,6 +243,7 @@ public class NativeAdventureConverter {
         }
     }
 
+    @SuppressWarnings("ThrowableNotThrown")
     public static class NativeLegacyHoverEventSerializerWrapper implements LegacyHoverEventSerializer {
 
         private final Object nativeImplementation;
@@ -273,12 +274,12 @@ public class NativeAdventureConverter {
         }
 
         @Override
-        public @NotNull ShowItem deserializeShowItem(@NotNull Component input) throws IOException {
+        public @NotNull ShowItem deserializeShowItem(@NotNull Component input) {
             try {
                 Object nativeInput = componentToNative(input, false);
                 Object nativeShowItem = nativeDeserializeShowItemMethod.invoke(nativeImplementation, nativeInput);
                 return legacyShowItemFromNative(nativeShowItem);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            } catch (IllegalAccessException | InvocationTargetException e) {
                 error(e);
             }
             return null;

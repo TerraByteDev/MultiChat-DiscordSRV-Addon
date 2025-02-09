@@ -20,18 +20,22 @@
 
 package com.loohp.multichatdiscordsrvaddon.api.events;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This is the base class of all events related to parsing placeholders.
  *
  * @author LOOHP
  */
+@Getter
 public class PlaceholderEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -43,6 +47,7 @@ public class PlaceholderEvent extends Event implements Cancellable {
     protected final Player sender;
     protected final Player receiver;
     protected final long timeSent;
+    @Setter
     protected Component component;
     protected boolean isCancelled;
 
@@ -63,26 +68,6 @@ public class PlaceholderEvent extends Event implements Cancellable {
         return sender != null;
     }
 
-    public Player getSender() {
-        return sender;
-    }
-
-    public Player getReceiver() {
-        return receiver;
-    }
-
-    public Component getComponent() {
-        return component;
-    }
-
-    public void setComponent(Component component) {
-        this.component = component;
-    }
-
-    public long getTimeSent() {
-        return timeSent;
-    }
-
     @Override
     public boolean isCancelled() {
         return isCancelled;
@@ -93,7 +78,7 @@ public class PlaceholderEvent extends Event implements Cancellable {
         this.isCancelled = cancel;
     }
 
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
 

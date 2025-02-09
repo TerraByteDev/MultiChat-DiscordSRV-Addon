@@ -32,7 +32,7 @@ public class LibraryDownloadManager {
 
     public static final String LIBS_DATA_URL = "https://api.loohpjames.com/spigot/plugins/interactivechatdiscordsrvaddon/libs";
 
-    private File libsFolder;
+    private final File libsFolder;
     private JSONObject data;
 
     public LibraryDownloadManager(File libsFolder) {
@@ -56,7 +56,7 @@ public class LibraryDownloadManager {
         try {
             JSONObject libs = (JSONObject) data.get("libs");
             Set<String> jarNames = new HashSet<>();
-            double total = libs.keySet().size();
+            double total = libs.size();
             double current = 0.0;
             for (Object key : libs.keySet()) {
                 String jarName = (String) key;

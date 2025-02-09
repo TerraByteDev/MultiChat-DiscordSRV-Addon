@@ -22,10 +22,12 @@ package com.loohp.multichatdiscordsrvaddon.resources.mods;
 
 import com.loohp.multichatdiscordsrvaddon.resources.AbstractManager;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
+import lombok.Getter;
 
 import java.util.Collections;
 import java.util.List;
 
+@Getter
 public abstract class ModManager extends AbstractManager {
 
     private final String modName;
@@ -35,14 +37,6 @@ public abstract class ModManager extends AbstractManager {
         super(manager);
         this.modName = modName;
         this.modAssetsFolderNames = Collections.unmodifiableList(modAssetsFolderNames);
-    }
-
-    public String getModName() {
-        return modName;
-    }
-
-    public List<String> getModAssetsFolderNames() {
-        return modAssetsFolderNames;
     }
 
 }

@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.resources.fonts;
 
 import com.loohp.blockmodelrenderer.utils.ColorUtils;
+import lombok.Getter;
 import net.kyori.adventure.text.format.TextDecoration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
@@ -53,7 +54,9 @@ public class LegacyUnicodeFont extends MinecraftFont {
 
     protected FontResource missingCharacter;
     private Int2ObjectMap<Optional<FontResource>> charImages;
+    @Getter
     private final Int2ObjectMap<GlyphSize> sizes;
+    @Getter
     private final String template;
 
     public LegacyUnicodeFont(ResourceManager manager, FontProvider provider, Int2ObjectMap<GlyphSize> sizes, String template) {
@@ -107,16 +110,8 @@ public class LegacyUnicodeFont extends MinecraftFont {
         return charImages.keySet();
     }
 
-    public Int2ObjectMap<GlyphSize> getSizes() {
-        return sizes;
-    }
-
     public boolean hasTemplate() {
         return template != null;
-    }
-
-    public String getTemplate() {
-        return template;
     }
 
     @Override
@@ -129,109 +124,103 @@ public class LegacyUnicodeFont extends MinecraftFont {
         decorations = sortDecorations(decorations);
         Color awtColor = new Color(color);
         Optional<FontResource> optCharImage = charImages.get(character.codePointAt(0));
-        if (optCharImage == null) {
-            optCharImage = missingCharacter;
+        if (!optCharImage.isPresent()) {
+            optCharImage = Optional.of(missingCharacter);
         }
-        if (optCharImage.isPresent()) {
-            BufferedImage charImage = optCharImage.get().getFontImage();
-            int originalW = charImage.getWidth();
-            charImage = ImageUtils.resizeImageFillHeight(charImage, (int) Math.floor(fontSize));
-            int w = charImage.getWidth();
-            int h = charImage.getHeight();
-            charImage = ImageUtils.multiply(charImage, ImageUtils.changeColorTo(ImageUtils.copyImage(charImage), awtColor));
-            int beforeTransformW = w;
-            double accuratePixelSize = (double) beforeTransformW / (double) originalW;
-            int pixelSize = (int) Math.round(accuratePixelSize);
-            int strikeSize = (int) (fontSize / 8);
-            int boldSize = (int) (fontSize / 16.0 * 2);
-            int italicExtraWidth = 0;
-            boolean italic = false;
-            boolean underlineStrikethroughExpanded = false;
-            for (TextDecoration decoration : decorations) {
-                switch (decoration) {
-                    case OBFUSCATED:
-                        charImage = new BufferedImage(charImage.getWidth(), charImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-                        Graphics2D g = charImage.createGraphics();
-                        for (int i = 0; i < OBFUSCATE_OVERLAP_COUNT; i++) {
-                            String magicCharacter = ComponentStringUtils.toMagic(provider, character);
-                            BufferedImage magicImage = provider.forCharacter(magicCharacter).getCharacterImage(magicCharacter, fontSize, color).orElse(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB));
-                            g.drawImage(magicImage, 0, 0, charImage.getWidth(), charImage.getHeight(), null);
-                        }
-                        g.dispose();
-                        break;
-                    case BOLD:
-                        BufferedImage boldImage = new BufferedImage(charImage.getWidth() + boldSize, charImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-                        for (int x0 = 0; x0 < charImage.getWidth(); x0++) {
-                            for (int y0 = 0; y0 < charImage.getHeight(); y0++) {
-                                int pixelColor = charImage.getRGB(x0, y0);
-                                int alpha = ColorUtils.getAlpha(pixelColor);
-                                if (alpha != 0) {
-                                    for (int i = 0; i < boldSize; i++) {
-                                        boldImage.setRGB(x0 + i, y0, pixelColor);
-                                    }
+
+        BufferedImage charImage = optCharImage.get().getFontImage();
+        int originalW = charImage.getWidth();
+        charImage = ImageUtils.resizeImageFillHeight(charImage, (int) Math.floor(fontSize));
+        int w = charImage.getWidth();
+        int h = charImage.getHeight();
+        charImage = ImageUtils.multiply(charImage, ImageUtils.changeColorTo(ImageUtils.copyImage(charImage), awtColor));
+        int beforeTransformW = w;
+        double accuratePixelSize = (double) beforeTransformW / (double) originalW;
+        int pixelSize = (int) Math.round(accuratePixelSize);
+        int strikeSize = (int) (fontSize / 8);
+        int boldSize = (int) (fontSize / 16.0 * 2);
+        int italicExtraWidth = 0;
+        boolean italic = false;
+        boolean underlineStrikethroughExpanded = false;
+        for (TextDecoration decoration : decorations) {
+            switch (decoration) {
+                case OBFUSCATED:
+                    charImage = new BufferedImage(charImage.getWidth(), charImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                    Graphics2D g = charImage.createGraphics();
+                    for (int i = 0; i < OBFUSCATE_OVERLAP_COUNT; i++) {
+                        String magicCharacter = ComponentStringUtils.toMagic(provider, character);
+                        BufferedImage magicImage = provider.forCharacter(magicCharacter).getCharacterImage(magicCharacter, fontSize, color).orElse(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB));
+                        g.drawImage(magicImage, 0, 0, charImage.getWidth(), charImage.getHeight(), null);
+                    }
+                    g.dispose();
+                    break;
+                case BOLD:
+                    BufferedImage boldImage = new BufferedImage(charImage.getWidth() + boldSize, charImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                    for (int x0 = 0; x0 < charImage.getWidth(); x0++) {
+                        for (int y0 = 0; y0 < charImage.getHeight(); y0++) {
+                            int pixelColor = charImage.getRGB(x0, y0);
+                            int alpha = ColorUtils.getAlpha(pixelColor);
+                            if (alpha != 0) {
+                                for (int i = 0; i < boldSize; i++) {
+                                    boldImage.setRGB(x0 + i, y0, pixelColor);
                                 }
                             }
                         }
-                        charImage = boldImage;
-                        w += boldSize - 1;
-                        break;
-                    case ITALIC:
-                        int extraWidth = (int) ((double) charImage.getHeight() * (4.0 / 14.0));
-                        BufferedImage italicImage = new BufferedImage(charImage.getWidth() + extraWidth * 2, charImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-                        g = italicImage.createGraphics();
-                        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                        g.transform(AffineTransform.getShearInstance(ITALIC_SHEAR_X, 0));
-                        g.drawImage(charImage, extraWidth, 0, null);
-                        g.dispose();
-                        charImage = italicImage;
-                        italicExtraWidth = (int) Math.round(-ITALIC_SHEAR_X * h);
-                        italic = true;
-                        break;
-                    case STRIKETHROUGH:
-                        charImage = ImageUtils.expandCenterAligned(charImage, 0, 0, 0, underlineStrikethroughExpanded ? 0 : (pixelSize + 1));
-                        underlineStrikethroughExpanded = true;
-                        g = charImage.createGraphics();
-                        g.setColor(awtColor);
-                        g.fillRect(0, Math.round((fontSize / 2) - ((float) strikeSize / 2)), w + pixelSize + 1, strikeSize);
-                        g.dispose();
-                        break;
-                    case UNDERLINED:
-                        charImage = ImageUtils.expandCenterAligned(charImage, 0, strikeSize * 2, 0, underlineStrikethroughExpanded ? 0 : (pixelSize + 1));
-                        underlineStrikethroughExpanded = true;
-                        g = charImage.createGraphics();
-                        g.setColor(awtColor);
-                        g.fillRect(0, Math.round(fontSize), w + pixelSize + 1, strikeSize);
-                        g.dispose();
-                        break;
-                    default:
-                        break;
-                }
+                    }
+                    charImage = boldImage;
+                    w += boldSize - 1;
+                    break;
+                case ITALIC:
+                    int extraWidth = (int) ((double) charImage.getHeight() * (4.0 / 14.0));
+                    BufferedImage italicImage = new BufferedImage(charImage.getWidth() + extraWidth * 2, charImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                    g = italicImage.createGraphics();
+                    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                    g.transform(AffineTransform.getShearInstance(ITALIC_SHEAR_X, 0));
+                    g.drawImage(charImage, extraWidth, 0, null);
+                    g.dispose();
+                    charImage = italicImage;
+                    italicExtraWidth = (int) Math.round(-ITALIC_SHEAR_X * h);
+                    italic = true;
+                    break;
+                case STRIKETHROUGH:
+                    charImage = ImageUtils.expandCenterAligned(charImage, 0, 0, 0, underlineStrikethroughExpanded ? 0 : (pixelSize + 1));
+                    underlineStrikethroughExpanded = true;
+                    g = charImage.createGraphics();
+                    g.setColor(awtColor);
+                    g.fillRect(0, Math.round((fontSize / 2) - ((float) strikeSize / 2)), w + pixelSize + 1, strikeSize);
+                    g.dispose();
+                    break;
+                case UNDERLINED:
+                    charImage = ImageUtils.expandCenterAligned(charImage, 0, strikeSize * 2, 0, underlineStrikethroughExpanded ? 0 : (pixelSize + 1));
+                    underlineStrikethroughExpanded = true;
+                    g = charImage.createGraphics();
+                    g.setColor(awtColor);
+                    g.fillRect(0, Math.round(fontSize), w + pixelSize + 1, strikeSize);
+                    g.dispose();
+                    break;
+                default:
+                    break;
             }
-            Graphics2D g = image.createGraphics();
-            int extraWidth = italic ? 0 : lastItalicExtraWidth;
-            g.drawImage(charImage, x + extraWidth, y, null);
-            g.dispose();
-            return new FontRenderResult(image, w + extraWidth, h, (int) Math.floor(accuratePixelSize + 1), italicExtraWidth);
-        } else {
-            return new FontRenderResult(image, 0, 0, 0, lastItalicExtraWidth);
         }
+        Graphics2D g = image.createGraphics();
+        int extraWidth = italic ? 0 : lastItalicExtraWidth;
+        g.drawImage(charImage, x + extraWidth, y, null);
+        g.dispose();
+        return new FontRenderResult(image, w + extraWidth, h, (int) Math.floor(accuratePixelSize + 1), italicExtraWidth);
     }
 
     @Override
     public Optional<BufferedImage> getCharacterImage(String character, float fontSize, int color) {
         Color awtColor = new Color(color);
         Optional<FontResource> optCharImage = charImages.get(character.codePointAt(0));
-        if (optCharImage == null) {
-            optCharImage = missingCharacter;
+        if (!optCharImage.isPresent()) {
+            optCharImage = Optional.of(missingCharacter);
         }
-        if (optCharImage.isPresent()) {
-            BufferedImage charImage = optCharImage.get().getFontImage();
-            charImage = ImageUtils.resizeImageFillHeight(charImage, Math.round(fontSize));
-            charImage = ImageUtils.multiply(charImage, ImageUtils.changeColorTo(ImageUtils.copyImage(charImage), awtColor));
-            return Optional.of(charImage);
-        } else {
-            return Optional.empty();
-        }
+
+        BufferedImage charImage = optCharImage.get().getFontImage();
+        charImage = ImageUtils.resizeImageFillHeight(charImage, Math.round(fontSize));
+        charImage = ImageUtils.multiply(charImage, ImageUtils.changeColorTo(ImageUtils.copyImage(charImage), awtColor));
+        return Optional.of(charImage);
     }
 
     @Override
@@ -245,22 +234,15 @@ public class LegacyUnicodeFont extends MinecraftFont {
         return IntSets.unmodifiable(charImages.keySet());
     }
 
+    @Getter
     public static class GlyphSize {
 
-        private byte start;
-        private byte end;
+        private final byte start;
+        private final byte end;
 
         public GlyphSize(byte start, byte end) {
             this.start = start;
             this.end = end;
-        }
-
-        public byte getStart() {
-            return start;
-        }
-
-        public byte getEnd() {
-            return end;
         }
 
     }

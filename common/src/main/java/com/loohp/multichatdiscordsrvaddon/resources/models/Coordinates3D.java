@@ -20,6 +20,9 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.models;
 
+import lombok.Getter;
+
+@Getter
 public class Coordinates3D {
 
     private final double x;
@@ -30,18 +33,6 @@ public class Coordinates3D {
         this.x = x;
         this.y = y;
         this.z = z;
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public double getZ() {
-        return z;
     }
 
 }

@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.resources.fonts;
 
 import com.loohp.blockmodelrenderer.utils.ColorUtils;
+import lombok.Getter;
 import net.kyori.adventure.text.format.TextDecoration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceLoadingException;
@@ -49,11 +50,16 @@ public class BitmapFont extends MinecraftFont {
 
     private Int2ObjectMap<FontResource> charImages;
     private Int2IntMap charWidth;
-    private String resourceLocation;
-    private int height;
-    private int ascent;
+    @Getter
+    private final String resourceLocation;
+    @Getter
+    private final int height;
+    @Getter
+    private final int ascent;
+    @Getter
     private int scale;
-    private List<String> chars;
+    @Getter
+    private final List<String> chars;
 
     public BitmapFont(ResourceManager manager, FontProvider provider, String resourceLocation, int height, int ascent, List<String> chars) {
         super(manager, provider);
@@ -115,26 +121,6 @@ public class BitmapFont extends MinecraftFont {
             }
             y += yIncrement;
         }
-    }
-
-    public String getResourceLocation() {
-        return resourceLocation;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getAscent() {
-        return ascent;
-    }
-
-    public int getScale() {
-        return scale;
-    }
-
-    public List<String> getChars() {
-        return chars;
     }
 
     @Override

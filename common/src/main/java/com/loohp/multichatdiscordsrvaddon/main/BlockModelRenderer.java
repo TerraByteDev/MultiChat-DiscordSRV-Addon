@@ -105,8 +105,6 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -129,7 +127,7 @@ public class BlockModelRenderer extends JFrame {
 
     public static final Pattern COLOR_HEX_PATTERN = Pattern.compile("^#[0-9a-fA-F]{6}$");
 
-    private String title;
+    private final String title;
 
     private JTextField textFieldResourceKey;
     private JSpinner spinnerWidth;
@@ -151,16 +149,16 @@ public class BlockModelRenderer extends JFrame {
     private JSpinner spinnerThreads;
     private JSpinner defaultPackVersionSpinner;
 
-    private JCheckBox enchantedCheckBox;
-    private Map<ModelOverrideType, JSpinner> overrideSettings;
+    private final JCheckBox enchantedCheckBox;
+    private final Map<ModelOverrideType, JSpinner> overrideSettings;
 
-    private JDialog providedTexturesDialog;
-    private Map<JComponent, ValueTrios<Supplier<String>, JButton, JFileChooser>> providedTextureSettings;
+    private final JDialog providedTexturesDialog;
+    private final Map<JComponent, ValueTrios<Supplier<String>, JButton, JFileChooser>> providedTextureSettings;
 
     private ResourceManager resourceManager;
-    private ModelRenderer modelRenderer;
+    private final ModelRenderer modelRenderer;
 
-    private LinkedList<String> keyHistory;
+    private final LinkedList<String> keyHistory;
     private int historyIndex;
     private String currentHistoryKey;
     private String tabString;
@@ -173,8 +171,8 @@ public class BlockModelRenderer extends JFrame {
     private String lastRenderedKey;
     private File lastSavedLocation;
 
-    private ExecutorService executorService;
-    private ReentrantLock lock;
+    private final ExecutorService executorService;
+    private final ReentrantLock lock;
 
     public BlockModelRenderer(String title, BufferedImage image, Icon icon) throws IllegalAccessException {
         this.title = title;

@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.fonts;
 
+import lombok.Setter;
 import net.kyori.adventure.key.Key;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -47,9 +48,10 @@ public class FontManager extends AbstractManager implements IFontManager {
     public static final Key DEFAULT_FONT = Key.key("minecraft:default");
     public static final Key UNIFORM_FONT = Key.key("minecraft:uniform");
 
+    @Setter
     private Key defaultKey;
-    private Map<String, FontProvider> fonts;
-    private Map<String, Map<String, ResourcePackFile>> files;
+    private final Map<String, FontProvider> fonts;
+    private final Map<String, Map<String, ResourcePackFile>> files;
 
     public FontManager(ResourceManager manager) {
         super(manager);
@@ -149,10 +151,6 @@ public class FontManager extends AbstractManager implements IFontManager {
     @Override
     public Key getDefaultFontKey() {
         return defaultKey;
-    }
-
-    public void setDefaultKey(Key defaultKey) {
-        this.defaultKey = defaultKey;
     }
 
     @Override

@@ -30,7 +30,7 @@ import java.util.List;
 
 public class TimeUtils {
 
-    private static DecimalFormat formatter = new DecimalFormat("00");
+    private static final DecimalFormat formatter = new DecimalFormat("00");
 
     public static String getReadableTimeBetween(long beginning, long ending, String delimiter, ChronoUnit largestUnit, ChronoUnit smallestUnit, boolean showEvenIfLargestIs0) {
         LocalDateTime start = LocalDateTime.ofInstant(Instant.ofEpochMilli(beginning), ZoneId.systemDefault());

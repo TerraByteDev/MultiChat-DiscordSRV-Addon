@@ -20,17 +20,24 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
+
 import java.util.regex.Pattern;
 
 public class CustomPlaceholder extends ICPlaceholder {
 
     public static final String CUSTOM_PLACEHOLDER_PERMISSION = "multichat.module.custom.";
 
+    @Getter
     private final String key;
+    @Getter
     private final ParsePlayer parsePlayer;
     private final boolean parseKeyword;
+    @Getter
     private final CustomPlaceholderHoverEvent hover;
+    @Getter
     private final CustomPlaceholderClickEvent click;
+    @Getter
     private final CustomPlaceholderReplaceText replace;
 
     public CustomPlaceholder(String key, ParsePlayer parsePlayer, Pattern keyword, boolean parseKeyword, long cooldown, CustomPlaceholderHoverEvent hover, CustomPlaceholderClickEvent click, CustomPlaceholderReplaceText replace, String name, String description) {
@@ -48,28 +55,8 @@ public class CustomPlaceholder extends ICPlaceholder {
         return false;
     }
 
-    public String getKey() {
-        return key;
-    }
-
-    public ParsePlayer getParsePlayer() {
-        return parsePlayer;
-    }
-
     public boolean getParseKeyword() {
         return parseKeyword;
-    }
-
-    public CustomPlaceholderHoverEvent getHover() {
-        return hover;
-    }
-
-    public CustomPlaceholderClickEvent getClick() {
-        return click;
-    }
-
-    public CustomPlaceholderReplaceText getReplace() {
-        return replace;
     }
 
     public enum ParsePlayer {
@@ -122,10 +109,11 @@ public class CustomPlaceholder extends ICPlaceholder {
         RUN_COMMAND,
         SUGGEST_COMMAND,
         CHANGE_PAGE,
-        COPY_TO_CLIPBOARD;
+        COPY_TO_CLIPBOARD
 
     }
 
+    @Getter
     public static class CustomPlaceholderHoverEvent {
 
         private final boolean enabled;
@@ -134,14 +122,6 @@ public class CustomPlaceholder extends ICPlaceholder {
         public CustomPlaceholderHoverEvent(boolean enabled, String text) {
             this.enabled = enabled;
             this.text = text;
-        }
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public String getText() {
-            return text;
         }
 
         @Override
@@ -177,6 +157,7 @@ public class CustomPlaceholder extends ICPlaceholder {
 
     }
 
+    @Getter
     public static class CustomPlaceholderClickEvent {
 
         private final boolean enabled;
@@ -187,18 +168,6 @@ public class CustomPlaceholder extends ICPlaceholder {
             this.enabled = enabled;
             this.action = action;
             this.value = value;
-        }
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public ClickEventAction getAction() {
-            return action;
-        }
-
-        public String getValue() {
-            return value;
         }
 
         @Override
@@ -238,6 +207,7 @@ public class CustomPlaceholder extends ICPlaceholder {
 
     }
 
+    @Getter
     public static class CustomPlaceholderReplaceText {
 
         private final boolean enabled;
@@ -246,14 +216,6 @@ public class CustomPlaceholder extends ICPlaceholder {
         public CustomPlaceholderReplaceText(boolean enabled, String replaceText) {
             this.enabled = enabled;
             this.replaceText = replaceText;
-        }
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public String getReplaceText() {
-            return replaceText;
         }
 
         @Override

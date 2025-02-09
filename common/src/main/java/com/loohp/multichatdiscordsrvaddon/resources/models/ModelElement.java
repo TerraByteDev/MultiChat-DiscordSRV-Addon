@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.resources.models;
 
 import com.loohp.multichatdiscordsrvaddon.resources.models.ModelFace.ModelFaceSide;
+import lombok.Getter;
 
 import java.util.Collections;
 import java.util.Map;
@@ -28,10 +29,15 @@ import java.util.Objects;
 
 public class ModelElement {
 
+    @Getter
     private final String name;
+    @Getter
     private final Coordinates3D from;
+    @Getter
     private final Coordinates3D to;
+    @Getter
     private final ModelElementRotation rotation;
+    @Getter
     private final boolean shade;
     private final Map<ModelFaceSide, ModelFace> face;
 
@@ -42,26 +48,6 @@ public class ModelElement {
         this.rotation = rotation;
         this.shade = shade;
         this.face = Collections.unmodifiableMap(face);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Coordinates3D getFrom() {
-        return from;
-    }
-
-    public Coordinates3D getTo() {
-        return to;
-    }
-
-    public ModelElementRotation getRotation() {
-        return rotation;
-    }
-
-    public boolean isShade() {
-        return shade;
     }
 
     public Map<ModelFaceSide, ModelFace> getFaces() {
@@ -89,34 +75,19 @@ public class ModelElement {
         return Objects.hash(from, to, rotation, shade, face);
     }
 
+    @Getter
     public static class ModelElementRotation {
 
-        private Coordinates3D origin;
-        private ModelAxis axis;
-        private double angle;
-        private boolean rescale;
+        private final Coordinates3D origin;
+        private final ModelAxis axis;
+        private final double angle;
+        private final boolean rescale;
 
         public ModelElementRotation(Coordinates3D origin, ModelAxis axis, double angle, boolean rescale) {
             this.origin = origin;
             this.axis = axis;
             this.angle = angle;
             this.rescale = rescale;
-        }
-
-        public Coordinates3D getOrigin() {
-            return origin;
-        }
-
-        public ModelAxis getAxis() {
-            return axis;
-        }
-
-        public double getAngle() {
-            return angle;
-        }
-
-        public boolean isRescale() {
-            return rescale;
         }
 
     }

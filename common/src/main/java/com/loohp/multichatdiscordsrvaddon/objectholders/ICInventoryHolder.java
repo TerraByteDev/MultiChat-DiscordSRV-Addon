@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.objectholders;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
+@SuppressWarnings("DataFlowIssue")
 public class ICInventoryHolder implements InventoryHolder {
 
     public static final ICInventoryHolder INSTANCE = new ICInventoryHolder();
@@ -31,6 +32,7 @@ public class ICInventoryHolder implements InventoryHolder {
 
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public Inventory getInventory() {
         return null;
