@@ -43,25 +43,19 @@ public class NativeAdventureConverter {
 
     private static boolean hasNativeAdventureImplementation = false;
 
-    private static Class<?> nativeComponentClass;
     private static Class<?> nativeDecoderClass;
     private static Class<?> nativeEncoderClass;
-    private static Class<?> nativeGsonComponentSerializerClass;
     private static Object nativeGsonComponentSerializerObject;
     private static Method nativeGsonComponentSerializeMethod;
     private static Method nativeGsonComponentDeserializeMethod;
-    private static Class<?> nativeShowItemClass;
-    private static Class<?> nativeKeyClass;
     private static Method nativeKeyConstructionMethod;
     private static Method nativeKeyAsStringMethod;
-    private static Class<?> nativeBinaryTagHolderClass;
     private static Method nativeBinaryTagHolderConstructionMethod;
     private static Method nativeBinaryTagHolderStringMethod;
     private static Method nativeShowItemConstructionMethod;
     private static Method nativeShowItemGetItemMethod;
     private static Method nativeShowItemGetCountMethod;
     private static Method nativeShowItemGetNbtMethod;
-    private static Class<?> nativeShowEntityClass;
     private static Method nativeShowEntityClassConstructionMethod;
     private static Method nativeShowEntityGetTypeMethod;
     private static Method nativeShowEntityGetIdMethod;
@@ -74,10 +68,10 @@ public class NativeAdventureConverter {
             Class.forName(NATIVE_PACKAGE + ".text.Component");
 
             try {
-                nativeComponentClass = Class.forName(NATIVE_PACKAGE + ".text.Component");
+                Class<?> nativeComponentClass = Class.forName(NATIVE_PACKAGE + ".text.Component");
                 nativeDecoderClass = Class.forName(NATIVE_PACKAGE + ".util.Codec$Decoder");
                 nativeEncoderClass = Class.forName(NATIVE_PACKAGE + ".util.Codec$Encoder");
-                nativeGsonComponentSerializerClass = Class.forName(NATIVE_PACKAGE + ".text.serializer.gson.GsonComponentSerializer");
+                Class<?> nativeGsonComponentSerializerClass = Class.forName(NATIVE_PACKAGE + ".text.serializer.gson.GsonComponentSerializer");
                 Method nativeGsonComponentSerializerGsonMethod = nativeGsonComponentSerializerClass.getMethod("gson");
                 nativeGsonComponentSerializerGsonMethod.setAccessible(true);
                 nativeGsonComponentSerializerObject = nativeGsonComponentSerializerGsonMethod.invoke(null);
@@ -85,13 +79,13 @@ public class NativeAdventureConverter {
                 nativeGsonComponentSerializeMethod.setAccessible(true);
                 nativeGsonComponentDeserializeMethod = nativeGsonComponentSerializerObject.getClass().getMethod("deserialize", String.class);
                 nativeGsonComponentDeserializeMethod.setAccessible(true);
-                nativeShowItemClass = Class.forName(NATIVE_PACKAGE + ".text.event.HoverEvent$ShowItem");
-                nativeKeyClass = Class.forName(NATIVE_PACKAGE + ".key.Key");
+                Class<?> nativeShowItemClass = Class.forName(NATIVE_PACKAGE + ".text.event.HoverEvent$ShowItem");
+                Class<?> nativeKeyClass = Class.forName(NATIVE_PACKAGE + ".key.Key");
                 nativeKeyConstructionMethod = nativeKeyClass.getMethod("key", String.class);
                 nativeKeyConstructionMethod.setAccessible(true);
                 nativeKeyAsStringMethod = nativeKeyClass.getMethod("asString");
                 nativeKeyAsStringMethod.setAccessible(true);
-                nativeBinaryTagHolderClass = Class.forName(NATIVE_PACKAGE + ".nbt.api.BinaryTagHolder");
+                Class<?> nativeBinaryTagHolderClass = Class.forName(NATIVE_PACKAGE + ".nbt.api.BinaryTagHolder");
                 nativeBinaryTagHolderConstructionMethod = nativeBinaryTagHolderClass.getMethod("of", String.class);
                 nativeBinaryTagHolderConstructionMethod.setAccessible(true);
                 nativeBinaryTagHolderStringMethod = nativeBinaryTagHolderClass.getMethod("string");
@@ -108,7 +102,7 @@ public class NativeAdventureConverter {
                 nativeShowItemGetCountMethod.setAccessible(true);
                 nativeShowItemGetNbtMethod = nativeShowItemClass.getMethod("nbt");
                 nativeShowItemGetNbtMethod.setAccessible(true);
-                nativeShowEntityClass = Class.forName(NATIVE_PACKAGE + ".text.event.HoverEvent$ShowEntity");
+                Class<?> nativeShowEntityClass = Class.forName(NATIVE_PACKAGE + ".text.event.HoverEvent$ShowEntity");
                 try {
                     nativeShowEntityClassConstructionMethod = nativeShowEntityClass.getMethod("showEntity", nativeKeyClass, UUID.class, nativeComponentClass);
                 } catch (Throwable e) {

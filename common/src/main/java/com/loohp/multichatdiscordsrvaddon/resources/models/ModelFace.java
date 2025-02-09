@@ -116,7 +116,7 @@ public class ModelFace {
             return null;
         }
 
-        private Set<String> aliases;
+        private final Set<String> aliases;
 
         ModelFaceSide(String... aliases) {
             this.aliases = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(aliases)));

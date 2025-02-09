@@ -20,20 +20,22 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.Optional;
 
+@Getter
 public class PaintingVariant {
 
-    private static Optional<Component> getLegacyPaintingTitle(Key key) {
-        return Optional.of(Component.translatable("painting." + key.namespace() + "." + key.value() + ".title").color(NamedTextColor.YELLOW));
+    private static Component getLegacyPaintingTitle(Key key) {
+        return Component.translatable("painting." + key.namespace() + "." + key.value() + ".title").color(NamedTextColor.YELLOW);
     }
 
-    private static Optional<Component> getLegacyPaintingAuthor(Key key) {
-        return Optional.of(Component.translatable("painting." + key.namespace() + "." + key.value() + ".author").color(NamedTextColor.GRAY));
+    private static Component getLegacyPaintingAuthor(Key key) {
+        return Component.translatable("painting." + key.namespace() + "." + key.value() + ".author").color(NamedTextColor.GRAY);
     }
 
     private final Key key;
@@ -42,10 +44,10 @@ public class PaintingVariant {
     private final int blockWidth;
     private final int blockHeight;
 
-    private final Optional<Component> title;
-    private final Optional<Component> author;
+    private final Component title;
+    private final Component author;
 
-    public PaintingVariant(Key key, int offsetX, int offsetY, int blockWidth, int blockHeight, Optional<Component> title, Optional<Component> author) {
+    public PaintingVariant(Key key, int offsetX, int offsetY, int blockWidth, int blockHeight, Component title, Component author) {
         this.key = key;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
@@ -55,7 +57,7 @@ public class PaintingVariant {
         this.author = author;
     }
 
-    public PaintingVariant(Key key, int blockWidth, int blockHeight, Optional<Component> title, Optional<Component> author) {
+    public PaintingVariant(Key key, int blockWidth, int blockHeight, Component title, Component author) {
         this(key, 0, 0, blockWidth, blockHeight, title, author);
     }
 
@@ -65,41 +67,5 @@ public class PaintingVariant {
 
     public PaintingVariant(Key key, int blockWidth, int blockHeight) {
         this(key, blockWidth, blockHeight, getLegacyPaintingTitle(key), getLegacyPaintingAuthor(key));
-    }
-
-    public Key getKey() {
-        return key;
-    }
-
-    public int getOffsetX() {
-        return offsetX;
-    }
-
-    public int getOffsetY() {
-        return offsetY;
-    }
-
-    public int getPixelWidth() {
-        return blockWidth * 16;
-    }
-
-    public int getPixelHeight() {
-        return blockHeight * 16;
-    }
-
-    public int getBlockWidth() {
-        return blockWidth;
-    }
-
-    public int getBlockHeight() {
-        return blockHeight;
-    }
-
-    public Optional<Component> getTitle() {
-        return title;
-    }
-
-    public Optional<Component> getAuthor() {
-        return author;
     }
 }

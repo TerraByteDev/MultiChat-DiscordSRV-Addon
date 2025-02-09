@@ -93,8 +93,8 @@ public class ModelDisplay {
             return null;
         }
 
-        private ModelDisplayPosition fallback;
-        private List<String> keys;
+        private final ModelDisplayPosition fallback;
+        private final List<String> keys;
 
         ModelDisplayPosition(ModelDisplayPosition fallback, String... keys) {
             this.keys = Collections.unmodifiableList(Arrays.asList(keys));

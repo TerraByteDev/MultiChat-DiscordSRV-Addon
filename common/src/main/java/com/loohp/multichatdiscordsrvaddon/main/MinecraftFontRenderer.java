@@ -113,8 +113,6 @@ public class MinecraftFontRenderer extends JFrame {
     private static final URLClassLoaderAccess LOADER_ACCESS = URLClassLoaderAccess.create((URLClassLoader) GUIMain.class.getClassLoader());
 
     private String title;
-    private BufferedImage image;
-    private Icon icon;
 
     private JTextArea textAreaInput;
     private JTextArea textAreaResources;
@@ -129,7 +127,6 @@ public class MinecraftFontRenderer extends JFrame {
     private JTextField backgroundColorTextField;
     private JComboBox<LanguageData> comboBoxLanguages;
     private JButton buttonDownloadLanguages;
-    private JScrollPane scrollPaneTextInput;
     private JCheckBox glowingTextBox;
     private JSpinner defaultPackVersionSpinner;
 
@@ -147,8 +144,6 @@ public class MinecraftFontRenderer extends JFrame {
 
     public MinecraftFontRenderer(String title, BufferedImage image, Icon icon) {
         this.title = title;
-        this.image = image;
-        this.icon = icon;
         this.resourceManager = null;
         this.renderedImage = new AtomicReference<>();
         this.renderingComponents = new AtomicReference<>();
@@ -716,7 +711,7 @@ public class MinecraftFontRenderer extends JFrame {
         buttonDownloadLanguages = new JButton();
         buttonDownloadLanguages.setText("Download All Languages");
         panel.add(buttonDownloadLanguages, new GridConstraints(4, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        scrollPaneTextInput = new JScrollPane();
+        JScrollPane scrollPaneTextInput = new JScrollPane();
         panel.add(scrollPaneTextInput, new GridConstraints(1, 0, 3, 14, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         textAreaInput = new JTextArea();
         textAreaInput.setColumns(0);

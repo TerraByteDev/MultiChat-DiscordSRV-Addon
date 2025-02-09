@@ -22,6 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.resources.definitions.item;
 
 import com.ibm.icu.util.TimeZone;
 import com.loohp.blockmodelrenderer.utils.ColorUtils;
+import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -47,11 +48,9 @@ import java.util.stream.Collectors;
 public abstract class ItemModelDefinition {
 
     private final ItemModelDefinitionType<?> type;
-    private final boolean handAnimationOnSwap;
 
     public ItemModelDefinition(ItemModelDefinitionType<?> type, boolean handAnimationOnSwap) {
         this.type = type;
-        this.handAnimationOnSwap = handAnimationOnSwap;
     }
 
     public ItemModelDefinitionType<?> getType() {
@@ -1134,28 +1133,17 @@ public abstract class ItemModelDefinition {
         }
     }
 
+    @Getter
     public static class LocalTimeSelectProperty extends ItemModelDefinitionSelect<String> {
         private final String pattern;
         private final String locale;
-        private final Optional<TimeZone> timeZone;
+        private final TimeZone timeZone;
 
-        public LocalTimeSelectProperty(boolean handAnimationOnSwapString, SelectPropertyType<?> propertyType, List<SelectCase<String>> cases, ItemModelDefinition fallback, String pattern, String locale, Optional<TimeZone> timeZone) {
+        public LocalTimeSelectProperty(boolean handAnimationOnSwapString, SelectPropertyType<?> propertyType, List<SelectCase<String>> cases, ItemModelDefinition fallback, String pattern, String locale, TimeZone timeZone) {
             super(handAnimationOnSwapString, propertyType, cases, fallback);
             this.pattern = pattern;
             this.locale = locale;
             this.timeZone = timeZone;
-        }
-
-        public String getPattern() {
-            return pattern;
-        }
-
-        public String getLocale() {
-            return locale;
-        }
-
-        public Optional<TimeZone> getTimeZone() {
-            return timeZone;
         }
     }
 

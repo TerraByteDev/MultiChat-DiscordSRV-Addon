@@ -130,8 +130,6 @@ public class BlockModelRenderer extends JFrame {
     public static final Pattern COLOR_HEX_PATTERN = Pattern.compile("^#[0-9a-fA-F]{6}$");
 
     private String title;
-    private BufferedImage image;
-    private Icon icon;
 
     private JTextField textFieldResourceKey;
     private JSpinner spinnerWidth;
@@ -180,8 +178,6 @@ public class BlockModelRenderer extends JFrame {
 
     public BlockModelRenderer(String title, BufferedImage image, Icon icon) throws IllegalAccessException {
         this.title = title;
-        this.image = image;
-        this.icon = icon;
         this.resourceManager = null;
         $$$setupUI$$$();
         this.modelRenderer = new ModelRenderer(() -> 8, () -> (int) spinnerThreads.getValue());
@@ -570,7 +566,6 @@ public class BlockModelRenderer extends JFrame {
 
             List<String> resourceOrder;
             int valuePerPack;
-            Config.setCachedDataFolder(Paths.get("MultiChatDiscordSrvAddon").toFile());
             resourceOrder = Config.i().getResources().order();
             Collections.reverse(resourceOrder);
             valuePerPack = (int) ((1.0 / (double) (resourceOrder.size() + 1)) * 10000);

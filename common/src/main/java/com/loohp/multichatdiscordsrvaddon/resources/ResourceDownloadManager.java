@@ -273,7 +273,7 @@ public class ResourceDownloadManager {
         DOWNLOAD(true),
         DONE;
 
-        private boolean hasPercentage;
+        private final boolean hasPercentage;
 
         TaskType(boolean hasPercentage) {
             this.hasPercentage = hasPercentage;

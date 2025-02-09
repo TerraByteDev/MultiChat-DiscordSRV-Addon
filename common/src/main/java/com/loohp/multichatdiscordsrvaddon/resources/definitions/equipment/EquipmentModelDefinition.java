@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.resources.definitions.equipment;
 
+import lombok.Getter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
 
+@Getter
 public class EquipmentModelDefinition {
 
     public static EquipmentModelDefinition fromJson(JSONObject rootJson) throws ParseException {
@@ -65,15 +67,12 @@ public class EquipmentModelDefinition {
         this.layers = layers;
     }
 
-    public Map<EquipmentLayerType, List<EquipmentLayer>> getLayers() {
-        return layers;
-    }
-
     public List<EquipmentLayer> getLayers(EquipmentLayerType equipmentLayerType) {
         List<EquipmentLayer> list = layers.get(equipmentLayerType);
         return list == null ? Collections.emptyList() : list;
     }
 
+    @Getter
     public static class EquipmentLayer {
 
         private final String texture;
@@ -88,19 +87,13 @@ public class EquipmentModelDefinition {
             this(texture, null);
         }
 
-        public String getTexture() {
-            return texture;
-        }
-
         public boolean isDyeable() {
             return dyeable != null;
         }
 
-        public EquipmentLayerDyeable getDyeable() {
-            return dyeable;
-        }
     }
 
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static class EquipmentLayerDyeable {
 
         private final OptionalInt colorWhenUndyed;
@@ -122,6 +115,7 @@ public class EquipmentModelDefinition {
         }
     }
 
+    @Getter
     public enum EquipmentLayerType {
 
         HUMANOID("humanoid"),
@@ -138,10 +132,6 @@ public class EquipmentModelDefinition {
 
         EquipmentLayerType(String name) {
             this.name = name;
-        }
-
-        public String getName() {
-            return this.name;
         }
 
         public static EquipmentLayerType fromName(String name) {

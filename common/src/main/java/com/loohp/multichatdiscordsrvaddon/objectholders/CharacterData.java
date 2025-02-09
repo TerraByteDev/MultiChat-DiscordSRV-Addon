@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
+import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -41,6 +42,8 @@ import java.util.OptionalInt;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+@Getter
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class CharacterData {
 
     public static ValuePairs<String, List<CharObjectPair<CharacterData>>> fromComponent(Component component, UnaryOperator<String> shaper) {
@@ -105,22 +108,6 @@ public class CharacterData {
         this.color = color;
         this.shadowColor = shadowColor;
         this.decorations = decorations;
-    }
-
-    public Key getFont() {
-        return font;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public OptionalInt getShadowColor() {
-        return shadowColor;
-    }
-
-    public List<TextDecoration> getDecorations() {
-        return decorations;
     }
 
 }

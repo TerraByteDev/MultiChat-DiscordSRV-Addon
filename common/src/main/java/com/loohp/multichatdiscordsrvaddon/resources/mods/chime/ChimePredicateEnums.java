@@ -33,7 +33,7 @@ public class ChimePredicateEnums {
         EITHER("either"),
         NEITHER("neither", "none");
 
-        private Set<String> names;
+        private final Set<String> names;
 
         ItemInHand(String... names) {
             this.names = new HashSet<>(Arrays.asList(names));

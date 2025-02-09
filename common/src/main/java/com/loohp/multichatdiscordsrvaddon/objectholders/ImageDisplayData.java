@@ -23,18 +23,20 @@ package com.loohp.multichatdiscordsrvaddon.objectholders;
 import com.loohp.multichatdiscordsrvaddon.utils.BookUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.FilledMapUtils;
 import com.loohp.multichatdiscordsrvaddon.wrappers.TitledInventoryWrapper;
+import lombok.Getter;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
 
+@Getter
 public class ImageDisplayData extends DiscordDisplayData {
 
     private final String title;
     private final ImageDisplayType type;
-    private final Optional<TitledInventoryWrapper> inventory;
+    private final TitledInventoryWrapper inventory;
     private final boolean isPlayerInventory;
-    private final Optional<ItemStack> item;
+    private final ItemStack item;
     private final boolean isFilledMap;
     private final boolean isBook;
 
@@ -42,9 +44,9 @@ public class ImageDisplayData extends DiscordDisplayData {
         super(player, position);
         this.type = type;
         this.title = title;
-        this.inventory = Optional.ofNullable(inventory);
+        this.inventory = inventory;
         this.isPlayerInventory = isPlayerInventory;
-        this.item = Optional.ofNullable(item);
+        this.item = item;
         this.isFilledMap = isFilledMap;
         this.isBook = isBook;
     }
@@ -65,20 +67,8 @@ public class ImageDisplayData extends DiscordDisplayData {
         this(player, position, title, type, inventory, false, itemstack, FilledMapUtils.isFilledMap(itemstack), BookUtils.isTextBook(itemstack));
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public Optional<TitledInventoryWrapper> getInventory() {
-        return inventory;
-    }
-
     public boolean isPlayerInventory() {
         return isPlayerInventory;
-    }
-
-    public Optional<ItemStack> getItemStack() {
-        return item;
     }
 
     public boolean isFilledMap() {
@@ -87,10 +77,6 @@ public class ImageDisplayData extends DiscordDisplayData {
 
     public boolean isBook() {
         return isBook;
-    }
-
-    public ImageDisplayType getType() {
-        return type;
     }
 
 }

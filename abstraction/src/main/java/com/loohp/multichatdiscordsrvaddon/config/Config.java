@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import me.lucko.helper.internal.LoaderUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -26,8 +27,6 @@ public class Config {
             .build();
 
     private static Config instance;
-    @Setter
-    private static File cachedDataFolder;
 
     public record EmbedDisplay(
             String single,
@@ -750,20 +749,16 @@ public class Config {
     @Comment("\nDebug configurations (useful for bug diagnosis)")
     Debug debug = new Debug(false, false);
 
-    static {
-        cachedDataFolder = Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("MultiChatDiscordSrvAddon")).getDataFolder();
-    }
-
     public static Config i() {
-        return Objects.requireNonNullElseGet(instance, () -> YamlConfigurations.update(new File(cachedDataFolder, "config.yml").toPath(), Config.class, properties));
+        if (instance != null) return instance;
+        return instance = YamlConfigurations.update(new File(LoaderUtils.getPlugin().getDataFolder(), "config.yml").toPath(), Config.class, properties);
     }
 
     public void saveConfig() {
-        YamlConfigurations.save(new File(cachedDataFolder, "config.yml").toPath(), Config.class, this, properties);
+        YamlConfigurations.save(new File(LoaderUtils.getPlugin().getDataFolder(), "config.yml").toPath(), Config.class, this, properties);
     }
 
-    public void reload(File dataFolder) {
-        cachedDataFolder = dataFolder;
-        instance = YamlConfigurations.load(new File(dataFolder, "config.yml").toPath(), Config.class, properties);
+    public void reload() {
+        instance = YamlConfigurations.load(new File(LoaderUtils.getPlugin().getDataFolder(), "config.yml").toPath(), Config.class, properties);
     }
 }

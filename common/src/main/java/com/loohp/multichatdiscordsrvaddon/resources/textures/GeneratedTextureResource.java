@@ -29,11 +29,8 @@ import java.util.regex.Pattern;
 
 public class GeneratedTextureResource extends TextureResource {
 
-    private BufferedImage image;
-
     public GeneratedTextureResource(ResourceManager manager, String resourceKey, BufferedImage image) {
         super(new GeneratedTextureManager(manager), resourceKey, null, image, null);
-        this.image = image;
     }
 
     public GeneratedTextureResource(ResourceManager manager, BufferedImage image) {

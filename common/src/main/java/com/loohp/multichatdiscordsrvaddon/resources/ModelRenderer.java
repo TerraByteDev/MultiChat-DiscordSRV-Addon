@@ -118,8 +118,6 @@ public class ModelRenderer implements AutoCloseable {
         Arrays.fill(OVERLAY_ADDITION_FACTORS, ResourceRegistry.ENCHANTMENT_GLINT_FACTOR);
     }
 
-    private final Function<String, ThreadFactory> threadFactoryBuilder;
-    private final LongSupplier cacheTimeoutSupplier;
     private final IntSupplier renderThreads;
     private final ThreadPoolExecutor renderingService;
     private final ScheduledExecutorService controlService;
@@ -127,8 +125,6 @@ public class ModelRenderer implements AutoCloseable {
 
     public ModelRenderer(Function<String, ThreadFactory> threadFactoryBuilder, LongSupplier cacheTimeoutSupplier, IntSupplier renderThreadsSupplier) {
         this.isValid = new AtomicBoolean(true);
-        this.threadFactoryBuilder = threadFactoryBuilder;
-        this.cacheTimeoutSupplier = cacheTimeoutSupplier;
         this.renderThreads = () -> Math.max(1, renderThreadsSupplier.getAsInt());
 
         int renderThreadSize = this.renderThreads.getAsInt();
