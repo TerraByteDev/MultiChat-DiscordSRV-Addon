@@ -27,8 +27,6 @@ import com.loohp.multichatdiscordsrvaddon.hooks.DynmapHook;
 import com.loohp.multichatdiscordsrvaddon.integration.IntegrationManager;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import com.loohp.multichatdiscordsrvaddon.registry.MultiChatRegistry;
-import com.loohp.multichatdiscordsrvaddon.utils.MCVersion;
-import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
 import me.lucko.helper.plugin.ExtendedJavaPlugin;
 import net.kyori.adventure.text.Component;
@@ -196,8 +194,6 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
 
         AssetsDownloader.loadLibraries(getDataFolder());
 
-        Config.setCachedDataFolder(getDataFolder());
-
         long itemDisplayTimeout = Config.i().getSettings().timeout() * 60L * 1000L;
         itemDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
         inventoryDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
@@ -317,11 +313,11 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
     @Override
     public void disable() {
         DiscordInteractionEvents.unregisterAll();
-        modelRenderer.close();
-        mediaReadingService.shutdown();
-        if (resourceManager != null) {
-            resourceManager.close();
-        }
+
+        if (modelRenderer != null) modelRenderer.close();
+        if (mediaReadingService != null) mediaReadingService.shutdown();
+        if (resourceManager != null) resourceManager.close();
+
         ChatUtils.sendMessage("<red>MultiChat DiscordSRV Addon has been disabled.", Bukkit.getConsoleSender());
     }
 

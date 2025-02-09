@@ -251,7 +251,7 @@ public class MultiChatComponentSerializer {
                     String nbtAsString = "";
                     if (nbt != null) {
                         nbtAsString = nbt.string();
-                        builder.put("tag", StringBinaryTag.of("{Tag}"));
+                        builder.put("tag", StringBinaryTag.stringBinaryTag("{Tag}"));
                     }
 
                     return Component.text(TagStringIO.get().asString(builder.build()).replace("\"{Tag}\"", nbtAsString));
