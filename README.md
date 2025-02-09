@@ -1,8 +1,8 @@
 # MultiChat DiscordSRV Addon
 <div align="center">
     <img src="https://wakatime.com/badge/github/TerraByteDev/MultiChat-DiscordSRV-Addon.svg" alt = "Project Hours">
-    <a href="https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/actions">
-        <img alt="Build Status" src="https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/actions/workflows/build.yml/badge.svg">
+    <a href="https://ci.terrabytedev.com/job/MultiChat-DiscordSRV-Addon/lastSuccessfulBuild/">
+        <img alt="Build Status" src="https://ci.terrabytedev.com/buildStatus/icon?job=MultiChat-DiscordSRV-Addon">
     </a>
 </div>
 
@@ -66,7 +66,7 @@ Plugins built against Spigot usually also work with [Paper](https://papermc.io/)
 
 ## Development Builds
 
-Get the latest official stable release from the [Releases Tab](https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/releases), or download the latest successful development build from the [Actions Tab](https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/actions/workflows/build.yml?query=is%3Asuccess).
+Get the latest official stable release from the [Releases Page](https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/releases), or download the latest successful development build from our [CI Server](https://ci.terrabytedev.com/job/MultiChat-DiscordSRV-Addon/lastSuccessfulBuild/).
 
 ## Dependencies 
 
@@ -88,6 +88,11 @@ Get the latest official stable release from the [Releases Tab](https://github.co
 You must compile CraftBukkit versions 1.20 to 1.21.4 via [BuildTools](https://www.spigotmc.org/wiki/buildtools/).\
 Ensure the compiled versions are saved to your .m2 repository - Go to Options > Generate Remapped Jars (tick it).\
 Ensure that, under Compilation Options, CraftBukkit is set to true. (Options)
+
+Since this plugin hooks into ChatControl, you will have to:
+1. Compile v11 from ChatControl's GitHub page, and rename to `ChatControl.jar`.
+2. Either delete the ChatControl-Red module, or purchase and download v10 - then rename to `ChatControl-Red.jar`.
+3. Add both files to a folder named `lib`.
 
 ### Compiling
 Run `mvn clean package` in a terminal in the same folder as the addon.\
