@@ -6,12 +6,10 @@ import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.annotations.AnnotationParser;
-import org.incendo.cloud.bukkit.BukkitCommandManager;
 import org.incendo.cloud.bukkit.CloudBukkitCapabilities;
 import org.incendo.cloud.execution.ExecutionCoordinator;
 import org.incendo.cloud.meta.SimpleCommandMeta;
 import org.incendo.cloud.minecraft.extras.MinecraftHelp;
-import org.incendo.cloud.minecraft.extras.caption.ComponentCaptionFormatter;
 import org.incendo.cloud.paper.LegacyPaperCommandManager;
 
 import static com.loohp.multichatdiscordsrvaddon.utils.ChatUtils.audience;

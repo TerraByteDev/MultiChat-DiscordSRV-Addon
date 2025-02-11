@@ -25,7 +25,9 @@ import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.GithubBuildInfo;
 import com.loohp.multichatdiscordsrvaddon.utils.GithubUtils;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -38,10 +40,12 @@ import java.util.Locale;
 
 public class Updater implements Listener {
 
-    public static boolean checkUpdate(CommandSender... senders) {
+    public static UpdateStatus checkUpdate(CommandSender... senders) {
         GithubBuildInfo currentBuild = GithubBuildInfo.CURRENT;
         GithubBuildInfo latestBuild;
         GithubUtils.GitHubStatusLookup lookupStatus;
+
+        UpdateStatus updateStatus = new UpdateStatus(false, false);
 
         try {
             if (currentBuild.isStable()) {
@@ -53,7 +57,8 @@ public class Updater implements Listener {
             }
         } catch (IOException error) {
             ChatUtils.sendMessage("<red>Failed to fetch latest version: " + error, senders);
-            return true;
+            updateStatus.setFailed(true);
+            return updateStatus;
         }
 
         if (lookupStatus.isBehind()) {
@@ -63,11 +68,18 @@ public class Updater implements Listener {
             } else {
                 ChatUtils.sendMessage("<yellow>You are running a development build of MultiChat-DiscordSRV-Addon!\nThe latest available development build is " + String.format(Locale.ROOT, "%,d", lookupStatus.getDistance()) + " commits ahead.", senders);
             }
-
-            return false;
         }
 
-        return true;
+        updateStatus.setUpToDate(lookupStatus.isBehind());
+        return updateStatus;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static final class UpdateStatus {
+        private boolean isUpToDate;
+        private boolean failed;
     }
 
     @EventHandler
@@ -75,31 +87,11 @@ public class Updater implements Listener {
         Bukkit.getScheduler().runTaskLaterAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
             if (Config.i().getSettings().updater()) {
                 Player player = event.getPlayer();
-                if (player.hasPermission("multichatdiscordsrv.update")) {
+                if (player.hasPermission("multichatdiscordsrv.checkupdate")) {
                     Updater.checkUpdate(player);
                 }
             }
         }, 100);
-    }
-
-    public static class UpdaterResponse {
-
-        @Getter
-        private final String result;
-        @Getter
-        private final int spigotPluginId;
-        private final boolean devBuildIsLatest;
-
-        public UpdaterResponse(String result, int spigotPluginId, boolean devBuildIsLatest) {
-            this.result = result;
-            this.spigotPluginId = spigotPluginId;
-            this.devBuildIsLatest = devBuildIsLatest;
-        }
-
-        public boolean isDevBuildLatest() {
-            return devBuildIsLatest;
-        }
-
     }
 
 }

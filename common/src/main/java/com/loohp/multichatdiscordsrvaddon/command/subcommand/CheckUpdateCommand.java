@@ -19,7 +19,9 @@ public class CheckUpdateCommand {
             CommandSender sender
     ) {
         ChatUtils.sendMessage("<grey>Checking for updates, please wait...", sender);
-        if (Updater.checkUpdate(sender)) {
+
+        Updater.UpdateStatus updateStatus = Updater.checkUpdate(sender);
+        if (updateStatus.isUpToDate() && !updateStatus.isFailed()) {
             ChatUtils.sendMessage("<green>You are running the latest version of MultiChat-DiscordSRV-Addon! <grey>[" + plugin.getDescription().getVersion() + "]", sender);
         }
     }

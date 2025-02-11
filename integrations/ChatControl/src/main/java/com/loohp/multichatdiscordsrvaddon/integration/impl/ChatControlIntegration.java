@@ -18,6 +18,8 @@ import org.mineacademy.chatcontrol.lib.model.DynmapSender;
 import org.mineacademy.chatcontrol.model.Checker;
 import org.mineacademy.chatcontrol.model.WrappedSender;
 
+import java.util.Objects;
+
 @SuppressWarnings("deprecation")
 @Getter
 public class ChatControlIntegration implements MultiChatIntegration {
@@ -67,17 +69,19 @@ public class ChatControlIntegration implements MultiChatIntegration {
         Checker checker = ChatControlAPI.checkMessage(WrappedSender.fromDynmap(chatControlDynmapSender), message);
         if (checker.isCancelledSilently()) return "";
 
-        return checker.getMessage();
+        return formatForDiscord(checker.getMessage());
     }
 
     public void onChannelPreChatEvent(ChannelPreChatEvent event) {
         Checker checker = ChatControlAPI.checkMessage(WrappedSender.fromSender(event.getSender()), event.getMessage());
         if (checker.isCancelledSilently()) return;
 
-        ChatUtils.toAllow.add(checker.getMessage());
+        String formatted = formatForDiscord(checker.getMessage());
+
+        ChatUtils.toAllow.add(formatted);
         DiscordSRV.getPlugin().processChatMessage(
                 (Player) event.getSender(),
-                checker.getMessage(),
+                formatted,
                 DiscordSRV.getPlugin().getOptionalChannel("global"),
                 false
         );
@@ -87,10 +91,12 @@ public class ChatControlIntegration implements MultiChatIntegration {
         System.out.println(event.getType());
         if (event.getPlayer() == null) return;
 
-        ChatUtils.toAllow.add(event.getCheck().getMessage());
+        String formatted = formatForDiscord(Objects.requireNonNull(event.getCheck().getMessage()));
+
+        ChatUtils.toAllow.add(formatted);
         DiscordSRV.getPlugin().processChatMessage(
                 event.getPlayer(),
-                event.getCheck().getMessage(),
+                formatted,
                 DiscordSRV.getPlugin().getOptionalChannel("global"),
                 false
         );

@@ -59,10 +59,12 @@ public class ZelChatIntegration extends ExternalModule implements MultiChatInteg
 
         // todo wait for pino to expose filtering thru api
 
-        ChatUtils.toAllow.add(chatMessage.getRawMessage());
+        String formatted = formatForDiscord(chatMessage.getRawMessage());
+
+        ChatUtils.toAllow.add(formatted);
         DiscordSRV.getPlugin().processChatMessage(
                 chatMessage.getBukkitPlayer(),
-                chatMessage.getRawMessage(),
+                formatted,
                 DiscordSRV.getPlugin().getOptionalChannel("global"),
                 false
         );

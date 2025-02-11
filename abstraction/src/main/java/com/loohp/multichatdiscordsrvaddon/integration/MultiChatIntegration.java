@@ -15,4 +15,8 @@ public interface MultiChatIntegration {
 
     String filter(DynmapSender dynmapSender, String message);
 
+    default String formatForDiscord(String string) {
+        return string.replace("*", "\\*");
+    }
+
 }

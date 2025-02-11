@@ -54,14 +54,16 @@ public class ChatControlRedIntegration implements MultiChatIntegration {
         Checker checker = Checker.filterChannel(dynmapSender, message, null);
         if (checker.isCancelledSilently()) return "";
 
-        return checker.getMessage();
+        return formatForDiscord(checker.getMessage());
     }
 
     public void onChannelChatEvent(ChatChannelEvent event) {
-        ChatUtils.toAllow.add(event.getMessage());
+        String formatted = formatForDiscord(event.getMessage());
+
+        ChatUtils.toAllow.add(formatted);
         DiscordSRV.getPlugin().processChatMessage(
                 (Player) event.getSender(),
-                event.getMessage(),
+                formatted,
                 DiscordSRV.getPlugin().getOptionalChannel("global"),
                 false
         );
