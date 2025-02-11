@@ -9,14 +9,20 @@ import org.incendo.cloud.annotations.AnnotationParser;
 import org.incendo.cloud.bukkit.CloudBukkitCapabilities;
 import org.incendo.cloud.execution.ExecutionCoordinator;
 import org.incendo.cloud.meta.SimpleCommandMeta;
+import org.incendo.cloud.minecraft.extras.MinecraftHelp;
+import org.incendo.cloud.minecraft.extras.caption.ComponentCaptionFormatter;
 import org.incendo.cloud.paper.LegacyPaperCommandManager;
+
+import static com.loohp.multichatdiscordsrvaddon.utils.ChatUtils.audience;
 
 public class CommandHandler {
 
-    private final AnnotationParser<CommandSender> parser;
+    private static AnnotationParser<CommandSender> parser;
+    public static LegacyPaperCommandManager<CommandSender> manager;
+    public static MinecraftHelp<CommandSender> minecraftHelp;
 
     public CommandHandler() {
-        LegacyPaperCommandManager<CommandSender> manager = LegacyPaperCommandManager.createNative(
+        manager = LegacyPaperCommandManager.createNative(
                 MultiChatDiscordSrvAddon.plugin,
                 ExecutionCoordinator.asyncCoordinator()
         );
@@ -32,7 +38,17 @@ public class CommandHandler {
             manager.registerAsynchronousCompletions();
         }
 
-        this.parser = new AnnotationParser<>(
+        minecraftHelp = MinecraftHelp.<CommandSender>builder()
+                .commandManager(manager)
+                .audienceProvider(audience::sender)
+                .commandPrefix("/multichat help")
+                .messageProvider(MinecraftHelp.captionMessageProvider(
+                        manager.captionRegistry(),
+                        ComponentCaptionFormatter.miniMessage()
+                ))
+                .build();
+
+        parser = new AnnotationParser<>(
                 manager,
                 CommandSender.class,
                 params -> SimpleCommandMeta.empty()
@@ -50,5 +66,6 @@ public class CommandHandler {
         parser.parse(new ReloadTexturesCommand());
         parser.parse(new CheckUpdateCommand());
         parser.parse(new ImageMapCommand());
+        parser.parse(new HelpCommand());
     }
 }
