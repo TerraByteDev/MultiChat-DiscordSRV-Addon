@@ -191,6 +191,8 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
             getDataFolder().mkdirs();
         }
 
+        processConfigs();
+
         AssetsDownloader.loadLibraries(getDataFolder());
 
         long itemDisplayTimeout = Config.i().getSettings().timeout() * 60L * 1000L;

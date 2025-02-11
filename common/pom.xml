@@ -437,7 +437,7 @@
             <groupId>me.lucko</groupId>
             <artifactId>jar-relocator</artifactId>
             <version>1.7</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.incendo</groupId>

@@ -43,4 +43,3 @@ libraries:
   - com.googlecode.json-simple:json-simple:1.1.1
   - de.exlll:configlib-paper:4.5.0
   - it.unimi.dsi:fastutil:8.5.15
-  - me.lucko:jar-relocator:1.7
