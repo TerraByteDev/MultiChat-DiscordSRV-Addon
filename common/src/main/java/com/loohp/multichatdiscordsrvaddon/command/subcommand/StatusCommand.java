@@ -14,7 +14,7 @@ import org.incendo.cloud.annotations.CommandDescription;
 import org.incendo.cloud.annotations.Permission;
 import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
 
-@Command("multichat")
+@Command("multichat|mc")
 public class StatusCommand {
 
     @Command("status")

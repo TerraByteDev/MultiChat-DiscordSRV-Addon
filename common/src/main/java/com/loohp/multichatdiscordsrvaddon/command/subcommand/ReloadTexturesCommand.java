@@ -15,7 +15,7 @@ import java.util.List;
 
 import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
 
-@Command("multichat")
+@Command("multichat|mc")
 public class ReloadTexturesCommand {
 
     @Suggestions("args")

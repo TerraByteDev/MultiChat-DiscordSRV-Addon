@@ -9,7 +9,7 @@ import org.incendo.cloud.annotations.Permission;
 
 import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
 
-@Command("multichat")
+@Command("multichat|mc")
 public class CheckUpdateCommand {
 
     @Command("checkupdate")

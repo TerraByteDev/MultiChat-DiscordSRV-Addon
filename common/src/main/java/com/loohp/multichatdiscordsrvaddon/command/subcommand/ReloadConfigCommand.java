@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
 
-@Command("multichat")
+@Command("multichat|mc")
 public class ReloadConfigCommand {
 
     @Command("reloadconfig")
