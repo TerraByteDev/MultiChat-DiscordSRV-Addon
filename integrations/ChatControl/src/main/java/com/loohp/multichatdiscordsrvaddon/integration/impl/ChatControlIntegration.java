@@ -10,15 +10,13 @@ import me.lucko.helper.event.filter.EventFilters;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mineacademy.chatcontrol.api.ChannelPreChatEvent;
 import org.mineacademy.chatcontrol.api.ChatControlAPI;
-import org.mineacademy.chatcontrol.api.PlayerMessageEvent;
 import org.mineacademy.chatcontrol.lib.model.DynmapSender;
 import org.mineacademy.chatcontrol.model.Checker;
 import org.mineacademy.chatcontrol.model.WrappedSender;
-
-import java.util.Objects;
 
 @SuppressWarnings("deprecation")
 @Getter
@@ -43,7 +41,7 @@ public class ChatControlIntegration implements MultiChatIntegration {
                 .filter(e -> !Config.i().getHook().ignoredChannels().contains(e.getChannel().getName()))
                 .filter(e -> e.getSender() instanceof Player)
                 .handler(this::onChannelPreChatEvent);
-        else Events.subscribe(PlayerMessageEvent.class, eventPriority)
+        else Events.subscribe(AsyncPlayerChatEvent.class, eventPriority)
                 .filter(EventFilters.ignoreCancelled())
                 .handler(this::onPlayerMessage);
 
@@ -87,11 +85,8 @@ public class ChatControlIntegration implements MultiChatIntegration {
         );
     }
 
-    public void onPlayerMessage(PlayerMessageEvent event) {
-        System.out.println(event.getType());
-        if (event.getPlayer() == null) return;
-
-        String formatted = formatForDiscord(Objects.requireNonNull(event.getCheck().getMessage()));
+    public void onPlayerMessage(AsyncPlayerChatEvent event) {
+        String formatted = formatForDiscord(event.getMessage());
 
         ChatUtils.toAllow.add(formatted);
         DiscordSRV.getPlugin().processChatMessage(
