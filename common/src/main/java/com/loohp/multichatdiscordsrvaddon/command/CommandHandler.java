@@ -6,6 +6,7 @@ import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.annotations.AnnotationParser;
+import org.incendo.cloud.bukkit.BukkitCommandManager;
 import org.incendo.cloud.bukkit.CloudBukkitCapabilities;
 import org.incendo.cloud.execution.ExecutionCoordinator;
 import org.incendo.cloud.meta.SimpleCommandMeta;
@@ -42,10 +43,6 @@ public class CommandHandler {
                 .commandManager(manager)
                 .audienceProvider(audience::sender)
                 .commandPrefix("/multichat help")
-                .messageProvider(MinecraftHelp.captionMessageProvider(
-                        manager.captionRegistry(),
-                        ComponentCaptionFormatter.miniMessage()
-                ))
                 .build();
 
         parser = new AnnotationParser<>(
