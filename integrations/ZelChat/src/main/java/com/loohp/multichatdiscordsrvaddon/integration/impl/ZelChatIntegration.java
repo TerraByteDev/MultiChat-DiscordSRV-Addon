@@ -31,7 +31,15 @@ public class ZelChatIntegration extends ExternalModule implements MultiChatInteg
         if (modulePriority == null) throw new IllegalArgumentException("Unknown Hook event priority: " + Config.i().getHook().priority() + ".\nNote: ZelChat does not support the MONITOR event priority.");
 
         ZelChatAPI.get().getFormatterService().registerExternalModule(plugin, this);
+        this.load();
+
         ChatUtils.sendMessage("<green>Registered external ZelChat module!");
+    }
+
+    @Override
+    public void disable(JavaPlugin plugin) {
+        this.unload();
+        ZelChatAPI.get().getFormatterService().unregisterExternalModule(plugin, this);
     }
 
     @Override

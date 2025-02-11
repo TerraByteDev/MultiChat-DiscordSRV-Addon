@@ -11,6 +11,8 @@ public interface MultiChatIntegration {
 
     void enable(JavaPlugin plugin);
 
+    void disable(JavaPlugin plugin);
+
     String filter(DynmapSender dynmapSender, String message);
 
 }

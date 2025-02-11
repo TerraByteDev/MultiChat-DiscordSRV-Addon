@@ -46,6 +46,9 @@ public class ChatControlRedIntegration implements MultiChatIntegration {
     }
 
     @Override
+    public void disable(JavaPlugin plugin) {}
+
+    @Override
     public String filter(DynmapSender dynmapSender, String message) {
 
         Checker checker = Checker.filterChannel(dynmapSender, message, null);

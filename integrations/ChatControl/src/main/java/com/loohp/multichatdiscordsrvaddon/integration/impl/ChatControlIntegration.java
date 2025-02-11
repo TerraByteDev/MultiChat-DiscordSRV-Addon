@@ -48,6 +48,9 @@ public class ChatControlIntegration implements MultiChatIntegration {
         ChatUtils.sendMessage("<green>Registered external ChatControl v11 module!");
     }
 
+    @Override
+    public void disable(JavaPlugin plugin) {}
+
     @SuppressWarnings("DataFlowIssue")
     @Override
     public String filter(com.loohp.multichatdiscordsrvaddon.integration.dynmap.DynmapSender dynmapSender, String message) {

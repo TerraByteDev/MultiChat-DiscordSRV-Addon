@@ -357,7 +357,7 @@ public class Config {
     ) {}
 
     public record FormattingTags(
-            @Comment("Allow the use of \"[COLOR=#123456]\" rgb TAGS (1.16+)") boolean allowRGBTags,
+            @Comment("Allow the use of \"[COLOR=#123456]\" RGB Tags (1.16+)") boolean allowRGBTags,
             @Comment(
                     """
                             Define custom RGB formats using Regex.\
