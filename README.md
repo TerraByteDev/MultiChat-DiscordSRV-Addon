@@ -26,7 +26,11 @@ Additionally, this plugin will display the filtered messages from your chat plug
 ### TL;DR
 - Remove dependency on InteractiveChat plugin itself (still supported)
 - Remove dependency on ProtocolLib
-- Support ChatControl(Red), ZelChat, and Carbon Chat (filters and item/inv/enderchest showcase)
+- Support ChatControl, ZelChat, and Carbon (filters and item/inv/enderchest showcase)
+    - ZelChat is functional, however ensure your chat rules cancel the message and do not replace.
+    - ChatControl (v11+) is functional.
+    - ChatControl-Red (Legacy, <=v10) is mostly functional.
+    - CarbonChat is not implemented
 - Clean up some code (configs, commands)
 - Remove some support for some minor MC versions (read above)
 - Independent discord system, separate from DiscordSRV (optional) [WIP]
@@ -34,7 +38,7 @@ Additionally, this plugin will display the filtered messages from your chat plug
 
 > [!WARNING]
 > If you encounter bugs while using this fork, **do not report this to the original author!**\
-> You should create an issue for [this fork](https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/issues).
+> You should create an issue for [this fork](https://github.com/TerraByteDev/MultiChat-DIscordSRV-Addon/issues).
 
 ## Why fork this?
 Yes, InteractiveChat can be, and is designed to, work alongside other chat plugins (e.g. ChatControl).\
@@ -80,7 +84,7 @@ Get the latest official stable release from the [Releases Page](https://github.c
 
 ## Compiling Yourself
 > [!NOTE]
-> You can get a pre-compiled dev build from the actions workflow here: https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon/actions
+> You can get a pre-compiled dev build from the actions workflow here: https://github.com/TerraByteDev/MultiChat-DIscordSRV-Addon/actions
 
 ### Prerequisites
 - [Maven](https://maven.apache.org/) - This must be installed in order to compile the plugin.
