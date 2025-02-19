@@ -30,7 +30,6 @@ import com.loohp.multichatdiscordsrvaddon.utils.*;
 import lombok.Getter;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import com.loohp.multichatdiscordsrvaddon.hooks.ItemsAdderHook;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceDownloadManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -173,13 +172,15 @@ public class AssetsDownloader {
     public static ServerResourcePackDownloadResult downloadServerResourcePack(File packFolder) {
         String url = Config.i().getResources().alternateServerResourcePack().URL();
         String hash = Config.i().getResources().alternateServerResourcePack().Hash();
-        if (MultiChatDiscordSrvAddon.plugin.itemsAdderHook && Config.i().getResources().itemsAdderAsServerResourcePack()) {
-            String iaUrl = ItemsAdderHook.getItemsAdderResourcePackURL();
-            if (iaUrl != null) {
-                url = iaUrl;
+
+        if (!Config.i().getResources().serverResourcePackProvider().equalsIgnoreCase("none")) {
+            String fetchedPackURL = PackProviderUtils.getResourcePackURL();
+            if (fetchedPackURL != null) {
+                fetchedPackURL = null;
                 hash = null;
             }
         }
+
         if (url == null || url.isEmpty()) {
             url = ResourcePackUtils.getServerResourcePack();
             hash = ResourcePackUtils.getServerResourcePackHash();

@@ -120,7 +120,6 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
     public String defaultResourceHash = "N/A";
     public List<String> resourceOrder = new ArrayList<>();
     public ItemStack unknownReplaceItem;
-    public boolean itemsAdderHook = false;
     public List<Pattern> additionalRGBFormats;
 
     public final ReentrantLock resourceReloadLock = new ReentrantLock(true);
@@ -204,7 +203,7 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
         mapDisplay = new ConcurrentCacheHashMap<>(itemDisplayTimeout, 60000);
 
         integrationManager = new IntegrationManager();
-        integrationManager.load(Config.i().getHook().selected());
+        if (Config.i().getHook().shouldHook()) integrationManager.load(Config.i().getHook().selected());
 
         metrics = new Metrics(this, BSTATS_PLUGIN_ID);
         Charts.setup(metrics);
@@ -245,10 +244,6 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
             serverResourcePack.mkdirs();
         }
 
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("ItemsAdder")) {
-            ChatUtils.sendMessage("<green>MultiChat DiscordSRV Addon has hooked into ItemsAdder!", Bukkit.getConsoleSender());
-            itemsAdderHook = true;
-        }
         if (Config.i().getHook().dynmap().filter() && Bukkit.getPluginManager().isPluginEnabled("dynmap")) {
             ChatUtils.sendMessage("<yellow>Hooking into Dynmap...");
             new DynmapHook().init();

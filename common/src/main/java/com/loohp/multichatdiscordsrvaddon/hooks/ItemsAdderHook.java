@@ -21,10 +21,13 @@
 package com.loohp.multichatdiscordsrvaddon.hooks;
 
 import dev.lone.itemsadder.api.ItemsAdder;
+import org.bukkit.Bukkit;
 
 public class ItemsAdderHook {
 
-    public static String getItemsAdderResourcePackURL() {
+    public static String getResourcePackURL() {
+        if (!Bukkit.getPluginManager().isPluginEnabled("ItemsAdder")) throw new IllegalStateException("Attempted to fetch ItemsAdder resource pack URL when ItemsAdder is not enabled on the server!");
+
         String url = ItemsAdder.getPackUrl(false);
         return url == null || url.trim().isEmpty() ? null : url;
     }

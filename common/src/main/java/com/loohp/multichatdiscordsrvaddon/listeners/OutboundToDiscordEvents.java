@@ -178,14 +178,17 @@ public class OutboundToDiscordEvents implements Listener {
 
     public void handleGameToDiscord(GameChatMessagePreProcessEvent event) {
         Debug.debug("Triggering onGameToDiscord");
+
+        boolean pluginHookEnabled = Config.i().getHook().shouldHook();
+
         if (event.isCancelled()) {
             Debug.debug("onGameToDiscord already cancelled");
             return;
-        } else if (!toAllow.contains(event.getMessage())) {
+        } else if (pluginHookEnabled && !toAllow.contains(event.getMessage())) {
             event.setCancelled(true);
             return;
         }
-        toAllow.remove(event.getMessage());
+        if (pluginHookEnabled) toAllow.remove(event.getMessage());
         MultiChatDiscordSrvAddon.plugin.messagesCounter.incrementAndGet();
 
         Player sender = event.getPlayer();

@@ -293,7 +293,12 @@ public class Config {
             @Comment("Which language should be used in places like the item tooltip?\nVisit this page for all the languages that Minecraft offers:\nhttps://minecraft.fandom.com/wiki/Language") String language,
             @Comment("Apply the force unicode setting to languages and fonts") boolean forceUnicodeFont,
             @Comment("Put the server resource pack from server.properties\nat the top of the resource pack ordering list (if available).") boolean includeServerResourcePack,
-            @Comment("If ItemsAdder is present and has a resource pack hosted, use its resource pack as the server resource pack.\nIncludeServerResourcePack must be true for this setting to work.") boolean itemsAdderAsServerResourcePack,
+            @Comment("""
+                    If you are using a custom content plugin such as ItemsAdder, you can configure it to set the server resource pack as that plugin's generated pack.\
+                    You can select which content-plugin's resource pack should be selected.\
+                    Possible Options: ItemsAdder, Nexo, Oraxen, None"""
+            )
+            String serverResourcePackProvider,
             @Comment("Set this option if you want a separate URL as the server resource pack.\nIf the URL is empty, the URL and hash from server.properties will be used.\nIf the hash is empty but URL is not, the resource pack hash will not be checked") ResourcesAlternateServerResourcePack alternateServerResourcePack,
             @Comment("Set which resource pack should be installed and in what order.\nVisit this page for more info:\nhttps://github.com/LOOHP/InteractiveChat-DiscordSRV-Addon/wiki/Resource-Pack") List<String> order,
             @Comment("Enable (Partial) Optifine Custom Texture CIT support") boolean optifineCustomTextures,
@@ -405,11 +410,12 @@ public class Config {
     ) {}
 
     public record Hook(
+            @Comment("Whether to hook into any chat plugin, or just use PlayerChatEvent.") boolean shouldHook,
             @Comment("""
                     Chat plugin to hook into.
                     Supported: "ZelChat", "ChatControl" (v11+), "ChatControlRed" (Legacy), "CarbonChat", "InteractiveChat"
                     CASE SENSITIVE! Must be shown as above.""") String selected,
-            @Comment("\nWhether to only use channels system if supported in the chat plugin.") boolean useChannels,
+            @Comment("\nWhether to only use channels system if supported in the chat plugin.\nWARNING: If you do NOT use channels, and are using ChatControl or ChatControlRed, remove \"-MODERN\" from the Chat_Listener_Priority property in settings.yml!") boolean useChannels,
             @Comment("\nIf your chat plugin supports \"channels\", you can blacklist certain channels here (CASE SENSITIVE).\nNOTE: ZelChat has two types of channels (as of this time): \"STAFF\" and \"EVERYONE\"") List<String> ignoredChannels,
             @Comment("\nPriority to use for events: LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR\nNOTE: ZelChat does not support the MONITOR priority.") String priority,
             @Comment("\n") DynmapHook dynmap
@@ -657,7 +663,7 @@ public class Config {
             "en_us",
             false,
             true,
-            true,
+            "None",
             new ResourcesAlternateServerResourcePack("", ""),
             List.of(),
             true,
@@ -730,6 +736,7 @@ public class Config {
 
     @Comment("\nPlugin hook configs")
     Hook hook = new Hook(
+            true,
             "ZelChat",
             true,
             List.of(

@@ -28,7 +28,7 @@
     <version>4.2.16.0</version>
 
     <description>Have ZelChat, ChatControl, CarbonChat and InteractiveChat Placeholders translated on DiscordSRV discord messages.</description>
-    <url>https://github.com/TerraByteDev/MultiChat-DIscordSRV-Addon</url>
+    <url>https://github.com/TerraByteDev/MultiChat-DiscordSRV-Addon</url>
     <packaging>jar</packaging>
 
     <properties>
@@ -215,8 +215,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>9</source>
-                    <target>9</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -328,6 +328,16 @@
         <repository>
             <id>papermc-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>oraxen</id>
+            <name>Oraxen Repository</name>
+            <url>https://repo.oraxen.com/snapshots</url>
+        </repository>
+        <repository>
+            <id>nexomc-releases</id>
+            <name>Reposilite Repository</name>
+            <url>https://repo.nexomc.com/releases</url>
         </repository>
     </repositories>
 
@@ -517,6 +527,12 @@
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.loohp</groupId>
+            <artifactId>MultiChatDiscordSrvAddon-CarbonChatIntegration</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -609,6 +625,71 @@
             <groupId>org.incendo</groupId>
             <artifactId>cloud-minecraft-extras</artifactId>
             <version>2.0.0-beta.10</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.th0rgal</groupId>
+            <artifactId>oraxen</artifactId>
+            <version>1.184.1-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>me.gabytm.util</groupId>
+                    <artifactId>actions-spigot</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jetbrains</groupId>
+                    <artifactId>annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.ticxo</groupId>
+                    <artifactId>PlayerAnimator</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.stefvanschie.inventoryframework</groupId>
+                    <artifactId>IF</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.th0rgal</groupId>
+                    <artifactId>protectionlib</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>dev.triumphteam</groupId>
+                    <artifactId>triumph-gui</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.bstats</groupId>
+                    <artifactId>bstats-bukkit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.jeff-media</groupId>
+                    <artifactId>custom-block-data</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.jeff-media</groupId>
+                    <artifactId>persistent-data-serializer</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.jeff_media</groupId>
+                    <artifactId>MorePersistentDataTypes</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>gs.mclo</groupId>
+                    <artifactId>java</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.nexomc</groupId>
+            <artifactId>nexo</artifactId>
+            <version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.byteflux</groupId>
+                    <artifactId>libby-bukkit</artifactId>
+                </exclusion>
+            </exclusions>
             <scope>provided</scope>
         </dependency>
     </dependencies>

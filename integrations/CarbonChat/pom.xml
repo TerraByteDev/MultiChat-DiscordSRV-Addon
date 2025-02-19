@@ -5,18 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.loohp</groupId>
-        <artifactId>MultiChatDiscordSrvAddon-Parent</artifactId>
+        <artifactId>MultiChatDiscordSrvAddon-Integrations</artifactId>
         <version>4.2.16.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>MultiChatDiscordSrvAddon-Integrations</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>ChatControl</module>
-        <module>ChatControl-Red</module>
-        <module>ZelChat</module>
-        <module>CarbonChat</module>
-    </modules>
+    <artifactId>MultiChatDiscordSrvAddon-CarbonChatIntegration</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -26,15 +20,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.20-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
+            <groupId>de.hexaoxi</groupId>
+            <artifactId>carbonchat</artifactId>
+            <version>3.0.0-beta.28</version>
+            <scope>system</scope>
+            <systemPath>${project.build.directory}/../../../lib/CarbonChat.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>com.loohp</groupId>
-            <artifactId>MultiChatDiscordSrvAddon-Abstraction</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>7.0.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
