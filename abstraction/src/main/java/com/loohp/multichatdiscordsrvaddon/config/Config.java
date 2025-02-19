@@ -415,7 +415,7 @@ public class Config {
                     Chat plugin to hook into.
                     Supported: "ZelChat", "ChatControl" (v11+), "ChatControlRed" (Legacy), "CarbonChat", "InteractiveChat"
                     CASE SENSITIVE! Must be shown as above.""") String selected,
-            @Comment("\nWhether to only use channels system if supported in the chat plugin.\nWARNING: If you do NOT use channels, and are using ChatControl or ChatControlRed, remove \"-MODERN\" from the Chat_Listener_Priority property in settings.yml!") boolean useChannels,
+            @Comment("\nWhether to only use channels system if supported in the chat plugin.\nWARNING: If you do NOT use channels, and are using ChatControl or ChatControlRed, remove \"-MODERN\" from the Chat_Listener_Priority property in settings.yml (or for ChatControl-Red, disable Modern_Chat_Listener in settings.yml)!") boolean useChannels,
             @Comment("\nIf your chat plugin supports \"channels\", you can blacklist certain channels here (CASE SENSITIVE).\nNOTE: ZelChat has two types of channels (as of this time): \"STAFF\" and \"EVERYONE\"") List<String> ignoredChannels,
             @Comment("\nPriority to use for events: LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR\nNOTE: ZelChat does not support the MONITOR priority.") String priority,
             @Comment("\n") DynmapHook dynmap

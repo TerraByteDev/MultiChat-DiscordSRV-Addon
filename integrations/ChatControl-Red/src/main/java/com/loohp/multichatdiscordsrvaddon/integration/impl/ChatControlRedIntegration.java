@@ -70,6 +70,14 @@ public class ChatControlRedIntegration implements MultiChatIntegration {
     }
 
     public void onPlayerMessage(SimpleChatEvent event) {
-        System.out.println(event.getMessage());
+        String formatted = formatForDiscord(event.getMessage());
+
+        ChatUtils.toAllow.add(formatted);
+        DiscordSRV.getPlugin().processChatMessage(
+                event.getPlayer(),
+                formatted,
+                DiscordSRV.getPlugin().getOptionalChannel("global"),
+                false
+        );
     }
 }
