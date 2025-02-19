@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageListener;
 import com.loohp.multichatdiscordsrvaddon.command.CommandHandler;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.hooks.DynmapHook;
@@ -139,6 +140,8 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
     public static ICPlaceholder enderChestPlaceholder = null;
     public static Map<UUID, ICPlaceholder> placeholderList = new LinkedHashMap<>();
 
+    public static BungeeMessageListener bungeeMessageListener;
+
     public ConcurrentCacheHashMap<String, Inventory> itemDisplay;
     public ConcurrentCacheHashMap<String, Inventory> inventoryDisplay;
     public ConcurrentCacheHashMap<String, Inventory> inventoryDisplay1Upper;
@@ -207,6 +210,9 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
 
         metrics = new Metrics(this, BSTATS_PLUGIN_ID);
         Charts.setup(metrics);
+
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "interchat:main");
+        getServer().getMessenger().registerIncomingPluginChannel(this, "interchat:main", bungeeMessageListener = new BungeeMessageListener());
 
         DiscordSRV.api.subscribe(new DiscordReadyEvents());
         DiscordSRV.api.subscribe(new LegacyDiscordCommandEvents());

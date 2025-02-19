@@ -68,14 +68,6 @@ public class BungeeMessageSender {
         }, 1200, 1200);
     }
 
-    public static int getItemStackScheme() {
-        return itemStackScheme;
-    }
-
-    public static int getInventoryScheme() {
-        return inventoryScheme;
-    }
-
     public static boolean forwardData(long time, int packetId, byte[] data) throws Exception {
         long index = (time << 16) + packetId;
         String hash = HashUtils.createSha1String(new ByteArrayInputStream(data));
@@ -128,24 +120,6 @@ public class BungeeMessageSender {
             e.printStackTrace();
         }
         return true;
-    }
-
-    public static boolean forwardCustomData(long time, String channel, byte[] data) throws Exception {
-        if (!VALID_CUSTOM_CHANNEL.matcher(channel).matches()) {
-            throw new IllegalArgumentException("Channel name must satisfy this pattern " + VALID_CUSTOM_CHANNEL.pattern());
-        }
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        DataTypeIO.writeString(out, channel, StandardCharsets.UTF_8);
-        out.writeInt(data.length);
-        out.write(data);
-        return forwardData(time, 0xFF, out.toByteArray());
-    }
-
-    public static boolean forwardMentionPair(long time, UUID sender, UUID receiver) throws Exception {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        DataTypeIO.writeUUID(out, sender);
-        DataTypeIO.writeUUID(out, receiver);
-        return forwardData(time, 0x02, out.toByteArray());
     }
 
     public static boolean forwardEquipment(long time, UUID player, boolean rightHanded, int selectedSlot, int level, ItemStack... equipment) throws Exception {
@@ -218,71 +192,6 @@ public class BungeeMessageSender {
         return forwardData(time, 0x07, out.toByteArray());
     }
 
-    public static boolean respondProcessedMessage(long time, String component, UUID messageId) throws Exception {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        DataTypeIO.writeUUID(out, messageId);
-        DataTypeIO.writeString(out, component, StandardCharsets.UTF_8);
-        return forwardData(time, 0x08, out.toByteArray());
-    }
-
-    public static boolean reloadBungeeConfig(long time) throws Exception {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        return forwardData(time, 0x09, out.toByteArray());
-    }
-
-    public static boolean permissionCheckResponse(long time, int id, boolean value) throws Exception {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeInt(id);
-        out.writeBoolean(value);
-        return forwardData(time, 0x0B, out.toByteArray());
-    }
-
-    public static boolean resetAndForwardPlaceholderList(long time, Collection<ICPlaceholder> placeholderList) throws Exception {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeInt(placeholderList.size());
-        for (ICPlaceholder placeholder : placeholderList) {
-            boolean isBuiltIn = placeholder.isBuildIn();
-            out.writeBoolean(isBuiltIn);
-            if (isBuiltIn) {
-                DataTypeIO.writeString(out, placeholder.getKeyword().pattern(), StandardCharsets.UTF_8);
-                DataTypeIO.writeString(out, placeholder.getName(), StandardCharsets.UTF_8);
-                DataTypeIO.writeString(out, placeholder.getDescription(), StandardCharsets.UTF_8);
-                DataTypeIO.writeString(out, placeholder.getPermission(), StandardCharsets.UTF_8);
-                out.writeLong(placeholder.getCooldown());
-            } else {
-                CustomPlaceholder customPlaceholder = (CustomPlaceholder) placeholder;
-                DataTypeIO.writeString(out, customPlaceholder.getKey(), StandardCharsets.UTF_8);
-                out.writeByte(customPlaceholder.getParsePlayer().getOrder());
-                DataTypeIO.writeString(out, customPlaceholder.getKeyword().pattern(), StandardCharsets.UTF_8);
-                out.writeBoolean(customPlaceholder.getParseKeyword());
-                out.writeLong(customPlaceholder.getCooldown());
-
-                CustomPlaceholder.CustomPlaceholderHoverEvent hover = customPlaceholder.getHover();
-                out.writeBoolean(hover.isEnabled());
-                DataTypeIO.writeString(out, hover.getText(), StandardCharsets.UTF_8);
-
-                CustomPlaceholder.CustomPlaceholderClickEvent click = customPlaceholder.getClick();
-                out.writeBoolean(click.isEnabled());
-                DataTypeIO.writeString(out, click.getAction() == null ? "" : click.getAction().name(), StandardCharsets.UTF_8);
-                DataTypeIO.writeString(out, click.getValue(), StandardCharsets.UTF_8);
-
-                CustomPlaceholder.CustomPlaceholderReplaceText replace = customPlaceholder.getReplace();
-                out.writeBoolean(replace.isEnabled());
-                DataTypeIO.writeString(out, replace.getReplaceText(), StandardCharsets.UTF_8);
-
-                DataTypeIO.writeString(out, placeholder.getName(), StandardCharsets.UTF_8);
-                DataTypeIO.writeString(out, placeholder.getDescription(), StandardCharsets.UTF_8);
-            }
-        }
-        return forwardData(time, 0x0C, out.toByteArray());
-    }
-
-    public static boolean signalPlayerDataReload(long time, UUID uuid) throws Exception {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        DataTypeIO.writeUUID(out, uuid);
-        return forwardData(time, 0x0D, out.toByteArray());
-    }
-
     public static boolean addInventory(long time, MultiChatDiscordSrvAddonAPI.SharedType type, String sha1, String title, Inventory inventory) throws Exception {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeByte(type.getValue());
@@ -291,37 +200,13 @@ public class BungeeMessageSender {
         return forwardData(time, 0x0E, out.toByteArray());
     }
 
-    public static boolean requestPlayerInventory(long time, UUID uuid) throws Exception {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeByte(0);
-        DataTypeIO.writeUUID(out, uuid);
-        return forwardData(time, 0x0F, out.toByteArray());
-    }
-
-    public static boolean requestPlayerEnderChest(long time, UUID uuid) throws Exception {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeByte(1);
-        DataTypeIO.writeUUID(out, uuid);
-        return forwardData(time, 0x0F, out.toByteArray());
-    }
-
     public static boolean requestBungeePlayerlist(long time, CompletableFuture<List<ValueTrios<UUID, String, Integer>>> future) throws Exception {
         UUID uuid = UUID.randomUUID();
-        // TODO: InteractiveChat.bungeeMessageListener.addToComplete(uuid, future);
+        MultiChatDiscordSrvAddon.plugin.bungeeMessageListener.addToComplete(uuid, future);
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         DataTypeIO.writeUUID(out, uuid);
         out.writeByte(0);
         return forwardData(time, 0x10, out.toByteArray());
-    }
-
-    public static boolean forwardNicknames(long time, UUID player, Set<String> nicknames) throws Exception {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        DataTypeIO.writeUUID(out, player);
-        out.writeInt(nicknames.size());
-        for (String names : nicknames) {
-            DataTypeIO.writeString(out, names, StandardCharsets.UTF_8);
-        }
-        return forwardData(time, 0x11, out.toByteArray());
     }
 
     public static boolean requestParsedPlaceholders(long time, UUID player, String placeholders) throws Exception {

@@ -23,6 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.objectholders.RemoteMCPlayer;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
@@ -41,8 +42,6 @@ import java.util.regex.Pattern;
 public class PlaceholderParser {
 
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("[%]([^%]+)[%]");
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private static final Map<UUID, Map<String, String>> remotePlaceholders = new HashMap<>();
 
     static {
         Bukkit.getScheduler().runTaskTimerAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
@@ -96,12 +95,12 @@ public class PlaceholderParser {
                 }
                 return PlaceholderAPI.setPlaceholders(player, str);
             } else {
-                Map<String, String> remotePlaceholderMappings = remotePlaceholders.get(player.getUniqueId());
+                RemoteMCPlayer mcPlayer = PlayerUtils.getMCPlayer(player.getUniqueId());
+
+                Map<String, String> remotePlaceholderMappings = mcPlayer.getRemotePlaceholders();
                 if (remotePlaceholderMappings != null) {
                     for (Entry<String, String> entry : remotePlaceholderMappings.entrySet()) {
                         str = str.replace(entry.getKey(), entry.getValue());
-
-                        // todo - https://github.com/LOOHP/InteractiveChat/blob/7b13007fa153094f1757606bc19486e1441bc00e/common/src/main/java/com/loohp/interactivechat/bungeemessaging/BungeeMessageListener.java#L244
                     }
                 }
                 return str;
