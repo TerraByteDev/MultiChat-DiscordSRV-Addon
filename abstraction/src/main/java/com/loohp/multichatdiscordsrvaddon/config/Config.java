@@ -182,23 +182,20 @@ public class Config {
     ) {}
 
     public record DiscordCommandsPlayerOrder(
-        @Comment(
-                """
-                        How should players be ordered in the playerlist?\n
-                        
-                        This list is applied from top to bottom.\n
-                        If two players are tied in an ordering type,\n
-                        the next one will be applied until the bottom.\n
-                        If two players are still tied when all ordering types are exhausted,\n
-                        the player's full tablist text component and (then) UUID string will be used to ensure consistent ordering.\n
-                        
-                        Available Ordering Types:\n
-                        GROUP:<group,group...> (Permission group ordered by the provided ordering)\n
-                        PLAYERNAME (Player names ordering from 0 to 9 then A to Z)\n
-                        PLAYERNAME_REVERSE (Player names ordering from Z to A then 9 to 0)\n
-                        PLACEHOLDER:<placeholder> (Placeholder ordering from small to large numbers then A to Z)\n
-                        PLACEHOLDER_REVERSE:<placeholder> (Placeholder ordering from Z to A then large to small numbers)"""
-        ) List<String> orderBy
+            @Comment(
+                    "How should players be ordered in the playerlist?" +
+                            "This list is applied from top to bottom.\n" +
+                            "If two players are tied in an ordering type," +
+                            "the next one will be applied until the bottom." +
+                            "If two players are still tied when all ordering types are exhausted," +
+                            "the player's full tablist text component and (then) UUID string will be used to ensure consistent ordering.\n" +
+                            "Available Ordering Types:" +
+                            "GROUP:<group,group...> (Permission group ordered by the provided ordering)" +
+                            "PLAYERNAME (Player names ordering from 0 to 9 then A to Z)" +
+                            "PLAYERNAME_REVERSE (Player names ordering from Z to A then 9 to 0)" +
+                            "PLACEHOLDER:<placeholder> (Placeholder ordering from small to large numbers then A to Z)" +
+                            "PLACEHOLDER_REVERSE:<placeholder> (Placeholder ordering from Z to A then large to small numbers)"
+            ) List<String> orderBy
     ) {}
 
     public record DiscordCommandsPlayerListOptions(
@@ -354,22 +351,20 @@ public class Config {
 
     public record RendererSettings(
             @Comment(
-                    """
-                            Threads used to resolve and render block models.\
-                            A positive number sets the absolute number of threads to be used.\
-                            A negative number or 0 sets the number of threads to be used as the logical processor count of your system minus N.\
-                            Defaults to 2."""
+                            "Threads used to resolve and render block models." +
+                            "A positive number sets the absolute number of threads to be used." +
+                            "A negative number or 0 sets the number of threads to be used as the logical processor count of your system minus N." +
+                            "Defaults to 2."
             ) int rendererThreads
     ) {}
 
     public record FormattingTags(
             @Comment("Allow the use of \"[COLOR=#123456]\" RGB Tags (1.16+)") boolean allowRGBTags,
             @Comment(
-                    """
-                            Define custom RGB formats using Regex.\
-                            Matching group 1-6 should be EACH o the characters in the RGB hex code.\
-                            For example, the regex for "#123456" would be:\
-                            "#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])\""""
+                            "Define custom RGB formats using Regex." +
+                            "Matching group 1-6 should be EACH o the characters in the RGB hex code." +
+                            "For example, the regex for \"#123456\" would be:" +
+                            "\"#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])\""
             ) List<String> additionalRGBFormats
     ) {}
 
@@ -393,11 +388,10 @@ public class Config {
             boolean reducedAssetsDownloadInfo,
             @Comment("Delete the embed messages sent by MultiChatDiscordSRVAddon after X seconds.\nSet this to 0 (default) to not delete it at all.\nThis does not include ones that have their own config option (e.g. /playerlist)") int embedDeleteAfter,
             @Comment(
-                    """
-                            You might want to adjust this option depending on whether you have other plugins listening to DiscordSRV's events,\
-                            assuming it is interfering with MultiChatDiscordSRVAddon's ability to modify & read game / discord messagaes.\
-                            Valid options are:
-                            LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR"""
+                            "You might want to adjust this option depending on whether you have other plugins listening to DiscordSRV's events," +
+                            "assuming it is interfering with MultiChatDiscordSRVAddon's ability to modify & read game / discord messagaes." +
+                            "Valid options are:" +
+                            "LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR"
             ) ListenerPriorities listenerPriorities,
             RendererSettings rendererSettings,
             FormattingTags formattingTags,
@@ -412,10 +406,11 @@ public class Config {
 
     public record Hook(
             @Comment("Whether to hook into any chat plugin, or just use PlayerChatEvent.") boolean shouldHook,
-            @Comment("""
-                    Chat plugin to hook into.
-                    Supported: "ZelChat", "ChatControl" (v11+), "ChatControlRed" (Legacy), "CarbonChat", "InteractiveChat"
-                    CASE SENSITIVE! Must be shown as above.""") String selected,
+            @Comment(
+                    "Chat plugin to hook into." +
+                    "Supported: \"ZelChat\", \"ChatControl\" (v11+), \"ChatControlRed\" (Legacy), \"CarbonChat\", \"InteractiveChat\"" +
+                    "CASE SENSITIVE! Must be shown as above."
+            ) String selected,
             @Comment("\nWhether to only use channels system if supported in the chat plugin.\nWARNING: If you do NOT use channels, and are using ChatControl or ChatControlRed, remove \"-MODERN\" from the Chat_Listener_Priority property in settings.yml (or for ChatControl-Red, disable Modern_Chat_Listener in settings.yml)!") boolean useChannels,
             @Comment("\nIf your chat plugin supports \"channels\", you can blacklist certain channels here (CASE SENSITIVE).\nNOTE: ZelChat has two types of channels (as of this time): \"STAFF\" and \"EVERYONE\"") List<String> ignoredChannels,
             @Comment("\nPriority to use for events: LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR\nNOTE: ZelChat does not support the MONITOR priority.") String priority,
