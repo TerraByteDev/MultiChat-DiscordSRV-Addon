@@ -32,6 +32,8 @@ public class PackProviderUtils {
             case NONE:
                 return null;
         }
-    };
+
+        return null;
+    }
 
 }
