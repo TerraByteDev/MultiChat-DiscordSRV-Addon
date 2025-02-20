@@ -5,6 +5,7 @@ import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.hooks.ItemsAdderHook;
 import com.loohp.multichatdiscordsrvaddon.hooks.NexoHook;
 import com.loohp.multichatdiscordsrvaddon.hooks.OraxenHook;
+import dev.lone.itemsadder.api.ItemsAdder;
 
 import java.util.Locale;
 
@@ -18,18 +19,9 @@ public class PackProviderUtils {
         Debug.debug("Parsed provider type: " + providerType);
 
         return switch (providerType) {
-            case ORAXEN -> {
-                Debug.debug("Oraxen provider type.");
-                yield OraxenHook.getResourcePackURL();
-            }
-            case NEXO -> {
-                Debug.debug("Nexo provider type");
-                yield NexoHook.getResourcePackURL();
-            }
-            case ITEMSADDER -> {
-                Debug.debug("ItemsAdder provider type.");
-                yield ItemsAdderHook.getResourcePackURL();
-            }
+            case ORAXEN -> OraxenHook.getResourcePackURL();
+            case NEXO -> NexoHook.getResourcePackURL();
+            case ITEMSADDER -> ItemsAdderHook.getResourcePackURL();
             case NONE -> null;
         };
 

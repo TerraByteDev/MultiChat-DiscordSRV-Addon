@@ -176,9 +176,8 @@ public class AssetsDownloader {
 
         if (!Config.i().getResources().serverResourcePackProvider().equalsIgnoreCase("none")) {
             String fetchedPackURL = PackProviderUtils.getResourcePackURL();
-            Debug.debug("Fetched resourcepack URL: " + fetchedPackURL);
             if (fetchedPackURL != null) {
-                fetchedPackURL = null;
+                url = fetchedPackURL;
                 hash = null;
             }
         }
