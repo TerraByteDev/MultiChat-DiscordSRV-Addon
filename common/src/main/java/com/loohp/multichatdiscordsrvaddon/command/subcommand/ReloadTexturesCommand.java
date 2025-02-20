@@ -11,7 +11,11 @@ import org.incendo.cloud.annotations.suggestion.Suggestions;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.context.CommandInput;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
 
@@ -31,7 +35,10 @@ public class ReloadTexturesCommand {
         @Argument(value = "arg1", suggestions = "args") String arg1,
         @Argument(value = "arg2", suggestions = "args") String arg2
     ) {
-        List<String> argList = List.of(arg1, arg2);
+        List<String> argList = Stream.of(arg1, arg2)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
         boolean clean = argList.contains("--reset");
         boolean redownload = argList.contains("--redownload") || clean;
 
