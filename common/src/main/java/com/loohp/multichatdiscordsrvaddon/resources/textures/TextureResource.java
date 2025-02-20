@@ -45,7 +45,7 @@ public class TextureResource {
     private final String resourceKey;
     @Getter
     private final ResourcePackFile file;
-    private final  boolean isTexture;
+    private final boolean isTexture;
     private Reference<BufferedImage> texture;
     @Getter
     private final UnaryOperator<BufferedImage> imageTransformFunction;
