@@ -12,7 +12,7 @@ public class PackProviderUtils {
     public static String getResourcePackURL() {
         String selectedProviderType = Config.i().getResources().serverResourcePackProvider().toUpperCase(Locale.ROOT);
 
-        ProviderType providerType = ProviderType.valueOf(Config.i().getResources().serverResourcePackProvider().toUpperCase(Locale.ROOT));
+        ProviderType providerType = ProviderType.valueOf(selectedProviderType);
         if (providerType == null) throw new IllegalArgumentException("Unknown provider type: " + selectedProviderType + "! Please check your selected-resource-pack-provider config in the resources section.");
 
         return switch (providerType) {
