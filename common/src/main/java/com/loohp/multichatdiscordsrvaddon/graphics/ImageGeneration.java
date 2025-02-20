@@ -31,6 +31,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.math.Fraction;
 import org.bukkit.OfflinePlayer;
@@ -1018,7 +1019,7 @@ public class ImageGeneration {
         if (prints.isEmpty() || !(prints.get(0).getType().equals(ToolTipType.TEXT))) {
             Debug.debug("ImageGeneration creating tooltip image");
         } else {
-            Debug.debug("ImageGeneration creating tooltip image of " + MultiChatComponentSerializer.legacySection().serialize(ComponentStringUtils.resolve(prints.get(0).getToolTipComponent(ToolTipType.TEXT), translateFunction.get())));
+            Debug.debug("ImageGeneration creating tooltip image of " + MiniMessage.miniMessage().serialize(ComponentStringUtils.resolve(prints.get(0).getToolTipComponent(ToolTipType.TEXT), translateFunction.get())));
         }
 
         if (allowLineBreaks) {
