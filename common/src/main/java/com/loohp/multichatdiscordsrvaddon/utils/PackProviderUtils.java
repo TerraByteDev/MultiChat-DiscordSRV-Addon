@@ -17,23 +17,22 @@ public class PackProviderUtils {
         ProviderType providerType = ProviderType.valueOf(selectedProviderType);
         Debug.debug("Parsed provider type: " + providerType);
 
-        switch (providerType) {
-            case ORAXEN:
+        return switch (providerType) {
+            case ORAXEN -> {
                 Debug.debug("Oraxen provider type.");
-                return OraxenHook.getResourcePackURL();
-
-            case NEXO:
+                yield OraxenHook.getResourcePackURL();
+            }
+            case NEXO -> {
                 Debug.debug("Nexo provider type");
-                return NexoHook.getResourcePackURL();
-
-            case ITEMSADDER:
+                yield NexoHook.getResourcePackURL();
+            }
+            case ITEMSADDER -> {
                 Debug.debug("ItemsAdder provider type.");
-                return ItemsAdderHook.getResourcePackURL();
-            case NONE:
-                return null;
-        }
+                yield ItemsAdderHook.getResourcePackURL();
+            }
+            case NONE -> null;
+        };
 
-        return null;
     }
 
 }

@@ -24,7 +24,7 @@
             <artifactId>carbonchat</artifactId>
             <version>3.0.0-beta.28</version>
             <scope>system</scope>
-            <systemPath>${project.build.directory}/../../../lib/CarbonChat.jar</systemPath>
+            <systemPath>${project.build.sourceDirectory}/../../../../../lib/CarbonChat.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>

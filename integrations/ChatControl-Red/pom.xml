@@ -24,7 +24,7 @@
             <artifactId>chatcontrolred</artifactId>
             <version>10.28.4</version>
             <scope>system</scope>
-            <systemPath>${project.build.directory}/../../../lib/ChatControl-Red.jar</systemPath>
+            <systemPath>${project.build.sourceDirectory}/../../../../../lib/ChatControl-Red.jar</systemPath>
         </dependency>
     </dependencies>
 
