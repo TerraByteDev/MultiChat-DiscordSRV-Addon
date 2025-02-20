@@ -15,13 +15,13 @@ public class PackProviderUtils {
         Debug.debug("Selected provider type: " + selectedProviderType);
 
         ProviderType providerType = ProviderType.valueOf(selectedProviderType);
-        if (providerType == null) throw new IllegalArgumentException("Unknown provider type: " + selectedProviderType + "! Please check your selected-resource-pack-provider config in the resources section.");
+        Debug.debug("Parsed provider type: " + providerType);
 
         return switch (providerType) {
             case ORAXEN -> OraxenHook.getResourcePackURL();
             case NEXO -> NexoHook.getResourcePackURL();
             case ITEMSADDER -> ItemsAdderHook.getResourcePackURL();
-            default -> null;
+            case NONE -> null;
         };
     }
 
