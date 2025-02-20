@@ -687,7 +687,7 @@ public class Config {
             "<red>This link has expired! To view this link, please head over to the linked Discord channel!",
             "<yellow>Preview is being loaded! Please wait...",
             "A Minecraft account must be linked to this Discord account in order to use this command!",
-            "<red>Unable to retrieve data.",
+            "Unable to retrieve data.",
             "<You cannot do that in this channel.",
             "This interaction has expired.",
             "<green>True",
