@@ -456,7 +456,7 @@ public class Config {
             new EnderChest(
                     true,
                     0,
-                    "##FF55FF",
+                    "#FF55FF",
                     "&f[&d%player_name%'s Ender Chest&f]",
                     "%player_name%'s Ender Chest",
                     "&dShow your Ender Chest in the chat!"
