@@ -170,8 +170,8 @@ public class AssetsDownloader {
     }
 
     public static ServerResourcePackDownloadResult downloadServerResourcePack(File packFolder) {
-        String url = Config.i().getResources().alternateServerResourcePack().URL();
-        String hash = Config.i().getResources().alternateServerResourcePack().Hash();
+        String url = Config.i().getResources().alternateServerResourcePack().url();
+        String hash = Config.i().getResources().alternateServerResourcePack().hash();
 
         if (!Config.i().getResources().serverResourcePackProvider().equalsIgnoreCase("none")) {
             String fetchedPackURL = PackProviderUtils.getResourcePackURL();

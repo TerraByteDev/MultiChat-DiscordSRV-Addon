@@ -184,19 +184,19 @@ public class Config {
     public record DiscordCommandsPlayerOrder(
         @Comment(
                 """
-                        How should players be ordered in the playerlist?\
+                        How should players be ordered in the playerlist?\n
                         
-                        This list is applied from top to bottom.\
-                        If two players are tied in an ordering type,\
-                        the next one will be applied until the bottom.\
-                        If two players are still tied when all ordering types are exhausted,\
-                        the player's full tablist text component and (then) UUID string will be used to ensure consistent ordering.\
+                        This list is applied from top to bottom.\n
+                        If two players are tied in an ordering type,\n
+                        the next one will be applied until the bottom.\n
+                        If two players are still tied when all ordering types are exhausted,\n
+                        the player's full tablist text component and (then) UUID string will be used to ensure consistent ordering.\n
                         
-                        Available Ordering Types:\
-                        GROUP:<group,group...> (Permission group ordered by the provided ordering)\
-                        PLAYERNAME (Player names ordering from 0 to 9 then A to Z)\
-                        PLAYERNAME_REVERSE (Player names ordering from Z to A then 9 to 0)\
-                        PLACEHOLDER:<placeholder> (Placeholder ordering from small to large numbers then A to Z)\
+                        Available Ordering Types:\n
+                        GROUP:<group,group...> (Permission group ordered by the provided ordering)\n
+                        PLAYERNAME (Player names ordering from 0 to 9 then A to Z)\n
+                        PLAYERNAME_REVERSE (Player names ordering from Z to A then 9 to 0)\n
+                        PLACEHOLDER:<placeholder> (Placeholder ordering from small to large numbers then A to Z)\n
                         PLACEHOLDER_REVERSE:<placeholder> (Placeholder ordering from Z to A then large to small numbers)"""
         ) List<String> orderBy
     ) {}
@@ -285,18 +285,19 @@ public class Config {
     ) {}
 
     public record ResourcesAlternateServerResourcePack(
-            String URL,
-            String Hash
+            String url,
+            String hash
     ) {}
 
     public record Resources(
             @Comment("Which language should be used in places like the item tooltip?\nVisit this page for all the languages that Minecraft offers:\nhttps://minecraft.fandom.com/wiki/Language") String language,
             @Comment("Apply the force unicode setting to languages and fonts") boolean forceUnicodeFont,
             @Comment("Put the server resource pack from server.properties\nat the top of the resource pack ordering list (if available).") boolean includeServerResourcePack,
-            @Comment("""
-                    If you are using a custom content plugin such as ItemsAdder, you can configure it to set the server resource pack as that plugin's generated pack.\
-                    You can select which content-plugin's resource pack should be selected.\
-                    Possible Options: ItemsAdder, Nexo, Oraxen, None"""
+            @Comment(
+                    "If you are using a custom content plugin such as ItemsAdder, you can configure it to set the server resource pack as that plugin's generated pack." +
+                            "You can select which content-plugin's resource pack should be selected." +
+                            "Possible Options: ItemsAdder, Nexo, Oraxen, None." +
+                            "Requires a server restart."
             )
             String serverResourcePackProvider,
             @Comment("Set this option if you want a separate URL as the server resource pack.\nIf the URL is empty, the URL and hash from server.properties will be used.\nIf the hash is empty but URL is not, the resource pack hash will not be checked") ResourcesAlternateServerResourcePack alternateServerResourcePack,

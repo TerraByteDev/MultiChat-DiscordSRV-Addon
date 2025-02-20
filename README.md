@@ -61,7 +61,7 @@ Regardless, if is always best to stay on modern versions that are not riddled wi
 
 ## Missing Features
 Right now, this fork does not support the following features (that the original plugin *does* support):
-- [ ] Proxy support
+- [x] Proxy support - VERY EXPERIMENTAL SUPPORT WITH INTERACTIVECHAT PROXY 
 - [ ] Image file previews from discord
 
 ## Built against Spigot

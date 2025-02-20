@@ -56,6 +56,8 @@ public class CarbonChatIntegration implements MultiChatIntegration {
                 DiscordSRV.getPlugin().getOptionalChannel("global"),
                 false
         );
+
+        ChatUtils.sendMessage("<green>Registered Carbon Chat module!");
     }
 
     @Override
