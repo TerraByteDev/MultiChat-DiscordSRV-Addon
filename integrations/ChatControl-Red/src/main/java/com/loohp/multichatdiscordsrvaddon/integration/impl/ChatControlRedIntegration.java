@@ -11,6 +11,7 @@ import me.lucko.helper.event.filter.EventFilters;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mineacademy.chatcontrol.api.ChatChannelEvent;
 import org.mineacademy.chatcontrol.api.SimpleChatEvent;
@@ -33,12 +34,15 @@ public class ChatControlRedIntegration implements MultiChatIntegration {
         EventPriority eventPriority = EventPriority.valueOf(Config.i().getHook().priority());
         if (eventPriority == null) throw new IllegalArgumentException("Unknown Hook event priority: " + Config.i().getHook().priority());
 
-        if (Config.i().getHook().useChannels()) Events.subscribe(ChatChannelEvent.class, eventPriority)
+        Events.subscribe(ChatChannelEvent.class, eventPriority)
                 .filter(EventFilters.ignoreCancelled())
+                .filter(e -> Config.i().getHook().useChannels())
                 .filter(e -> !Config.i().getHook().ignoredChannels().contains(e.getChannel().getName()))
                 .filter(e -> e.getSender() instanceof Player)
                 .handler(this::onChannelChatEvent);
-        else Events.subscribe(SimpleChatEvent.class)
+
+        Events.subscribe(AsyncPlayerChatEvent.class, eventPriority)
+                .filter(e -> !Config.i().getHook().useChannels())
                 .filter(EventFilters.ignoreCancelled())
                 .handler(this::onPlayerMessage);
 
@@ -50,7 +54,6 @@ public class ChatControlRedIntegration implements MultiChatIntegration {
 
     @Override
     public String filter(DynmapSender dynmapSender, String message) {
-
         Checker checker = Checker.filterChannel(dynmapSender, message, null);
         if (checker.isCancelledSilently()) return "";
 
@@ -69,7 +72,7 @@ public class ChatControlRedIntegration implements MultiChatIntegration {
         );
     }
 
-    public void onPlayerMessage(SimpleChatEvent event) {
+    public void onPlayerMessage(AsyncPlayerChatEvent event) {
         String formatted = formatForDiscord(event.getMessage());
 
         ChatUtils.toAllow.add(formatted);

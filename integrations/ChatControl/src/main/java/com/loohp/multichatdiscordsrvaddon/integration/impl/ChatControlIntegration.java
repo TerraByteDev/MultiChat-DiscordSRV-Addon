@@ -36,13 +36,16 @@ public class ChatControlIntegration implements MultiChatIntegration {
         EventPriority eventPriority = EventPriority.valueOf(Config.i().getHook().priority());
         if (eventPriority == null) throw new IllegalArgumentException("Unknown Hook event priority: " + Config.i().getHook().priority());
 
-        if (Config.i().getHook().useChannels()) Events.subscribe(ChannelPreChatEvent.class, eventPriority)
+        Events.subscribe(ChannelPreChatEvent.class, eventPriority)
                 .filter(EventFilters.ignoreCancelled())
+                .filter(e -> Config.i().getHook().useChannels())
                 .filter(e -> !Config.i().getHook().ignoredChannels().contains(e.getChannel().getName()))
                 .filter(e -> e.getSender() instanceof Player)
                 .handler(this::onChannelPreChatEvent);
-        else Events.subscribe(AsyncPlayerChatEvent.class, eventPriority)
+
+        Events.subscribe(AsyncPlayerChatEvent.class, eventPriority)
                 .filter(EventFilters.ignoreCancelled())
+                .filter(e -> !Config.i().getHook().useChannels())
                 .handler(this::onPlayerMessage);
 
         ChatUtils.sendMessage("<green>Registered external ChatControl v11 module!");
