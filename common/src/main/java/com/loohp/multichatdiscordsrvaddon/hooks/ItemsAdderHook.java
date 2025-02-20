@@ -20,12 +20,14 @@
 
 package com.loohp.multichatdiscordsrvaddon.hooks;
 
+import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
 
 public class ItemsAdderHook {
 
     public static String getResourcePackURL() {
+        Debug.debug("Fetching ItemsAdder resourcepack URL...");
         if (!Bukkit.getPluginManager().isPluginEnabled("ItemsAdder")) throw new IllegalStateException("Attempted to fetch ItemsAdder resource pack URL when ItemsAdder is not enabled on the server!");
 
         String url = ItemsAdder.getPackUrl(false);

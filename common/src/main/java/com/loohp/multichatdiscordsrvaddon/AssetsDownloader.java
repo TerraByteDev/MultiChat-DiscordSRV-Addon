@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.libs.LibraryDownloadManager;
 import com.loohp.multichatdiscordsrvaddon.libs.LibraryLoader;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
@@ -175,6 +176,7 @@ public class AssetsDownloader {
 
         if (!Config.i().getResources().serverResourcePackProvider().equalsIgnoreCase("none")) {
             String fetchedPackURL = PackProviderUtils.getResourcePackURL();
+            Debug.debug("Fetched resourcepack URL: " + fetchedPackURL);
             if (fetchedPackURL != null) {
                 fetchedPackURL = null;
                 hash = null;
