@@ -46,6 +46,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageSticker;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
 import github.scarsz.discordsrv.util.MessageUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -76,13 +77,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -163,54 +158,39 @@ public class InboundToGameEvents implements Listener {
     private final ExecutorService service = Executors.newSingleThreadExecutor();
 
     public void handleReceiveMessageFromDiscordPost(DiscordGuildMessagePostProcessEvent event) {
-        try {
-            Future<?> future = service.submit(() -> {
-                Debug.debug("Triggering onReceiveMessageFromDiscordPost");
-                Message message = event.getMessage();
+            try {
+                CompletableFuture.runAsync(() -> {
+                    Debug.debug("Triggering onReceiveMessageFromDiscordPost");
+                    Message message = event.getMessage();
 
-                github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component component = event.getMinecraftMessage();
+                    github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component component = event.getMinecraftMessage();
 
-                DiscordSRV srv = MultiChatDiscordSrvAddon.discordsrv;
-                User author = message.getAuthor();
+                    DiscordSRV srv = MultiChatDiscordSrvAddon.discordsrv;
+                    User author = message.getAuthor();
 
-                if (Config.i().getDiscordMention().translateMentions()) {
-                    Debug.debug("onReceiveMessageFromDiscordPost translating mentions");
+                    if (Config.i().getDiscordMention().translateMentions()) {
+                        Debug.debug("onReceiveMessageFromDiscordPost translating mentions");
 
-                    Set<UUID> mentionTitleSent = new HashSet<>();
-                    Map<Member, UUID> channelMembers = new HashMap<>();
+                        Set<UUID> mentionTitleSent = new HashSet<>();
+                        Map<Member, UUID> channelMembers = new HashMap<>();
 
-                    TextChannel channel = event.getChannel();
-                    Guild guild = channel.getGuild();
-                    Member authorAsMember = guild.getMember(author);
-                    String senderDiscordName = authorAsMember == null ? author.getName() : authorAsMember.getEffectiveName();
-                    UUID senderUUID = srv.getAccountLinkManager().getUuid(author.getId());
+                        TextChannel channel = event.getChannel();
+                        Guild guild = channel.getGuild();
+                        Member authorAsMember = guild.getMember(author);
+                        String senderDiscordName = authorAsMember == null ? author.getName() : authorAsMember.getEffectiveName();
+                        UUID senderUUID = srv.getAccountLinkManager().getUuid(author.getId());
 
-                    for (Entry<UUID, String> entry : srv.getAccountLinkManager().getManyDiscordIds(Bukkit.getOnlinePlayers().stream().map(each -> each.getUniqueId()).collect(Collectors.toSet())).entrySet()) {
-                        Member member = guild.getMemberById(entry.getValue());
-                        if (member != null && member.hasAccess(channel)) {
-                            channelMembers.put(member, entry.getKey());
-                        }
-                    }
-
-                    if (message.mentionsEveryone()) {
-                        //github.scarsz.discordsrv.dependencies.kyori.adventure.text.event.HoverEvent<Component> hover = Component.text(InteractiveChatDiscordSrvAddon.plugin.mentionHover.replace("{DiscordUser}", senderDiscordName).replace("{TextChannel}", "#" + channel.getName()).replace("{Guild}", guild.getName())).asHoverEvent();
-                        component = component.replaceText(github.scarsz.discordsrv.dependencies.kyori.adventure.text.TextReplacementConfig.builder().matchLiteral("@here").replacement(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(Config.i().getDiscordMention().mentionHighlight().replace("{DiscordMention}", "@here"))).build()).replaceText(github.scarsz.discordsrv.dependencies.kyori.adventure.text.TextReplacementConfig.builder().matchLiteral("@everyone").replacement(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(Config.i().getDiscordMention().mentionHighlight().replace("{DiscordMention}", "@everyone"))).build());
-                        for (UUID uuid : channelMembers.values()) {
-                            mentionTitleSent.add(uuid);
-                            Player player = Bukkit.getPlayer(uuid);
-                            if (player != null) {
-                                DiscordToGameMention.playTitleScreen(senderDiscordName, channel.getName(), guild.getName(), player);
+                        for (Entry<UUID, String> entry : srv.getAccountLinkManager().getManyDiscordIds(Bukkit.getOnlinePlayers().stream().map(each -> each.getUniqueId()).collect(Collectors.toSet())).entrySet()) {
+                            Member member = guild.getMemberById(entry.getValue());
+                            if (member != null && member.hasAccess(channel)) {
+                                channelMembers.put(member, entry.getKey());
                             }
                         }
-                    }
 
-                    List<Role> mentionedRoles = message.getMentionedRoles();
-                    for (Role role : mentionedRoles) {
-                        //github.scarsz.discordsrv.dependencies.kyori.adventure.text.event.HoverEvent<Component> hover = Component.text(InteractiveChatDiscordSrvAddon.plugin.mentionHover.replace("{DiscordUser}", senderDiscordName).replace("{TextChannel}", "#" + channel.getName()).replace("{Guild}", guild.getName())).asHoverEvent();
-                        component = component.replaceText(github.scarsz.discordsrv.dependencies.kyori.adventure.text.TextReplacementConfig.builder().matchLiteral("@" + role.getName()).replacement(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(Config.i().getDiscordMention().mentionHighlight().replace("{DiscordMention}", "@" + role.getName()))).build());
-                        for (Entry<Member, UUID> entry : channelMembers.entrySet()) {
-                            UUID uuid = entry.getValue();
-                            if (!mentionTitleSent.contains(uuid) && entry.getKey().getRoles().contains(role)) {
+                        if (message.mentionsEveryone()) {
+                            //github.scarsz.discordsrv.dependencies.kyori.adventure.text.event.HoverEvent<Component> hover = Component.text(MultiChatDiscordSrvAddon.plugin.mentionHover.replace("{DiscordUser}", senderDiscordName).replace("{TextChannel}", "#" + channel.getName()).replace("{Guild}", guild.getName())).asHoverEvent();
+                            component = component.replaceText(github.scarsz.discordsrv.dependencies.kyori.adventure.text.TextReplacementConfig.builder().matchLiteral("@here").replacement(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(Config.i().getDiscordMention().mentionHighlight().replace("{DiscordMention}", "@here"))).build()).replaceText(github.scarsz.discordsrv.dependencies.kyori.adventure.text.TextReplacementConfig.builder().matchLiteral("@everyone").replacement(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(Config.i().getDiscordMention().mentionHighlight().replace("{DiscordMention}", "@everyone"))).build());
+                            for (UUID uuid : channelMembers.values()) {
                                 mentionTitleSent.add(uuid);
                                 Player player = Bukkit.getPlayer(uuid);
                                 if (player != null) {
@@ -218,17 +198,14 @@ public class InboundToGameEvents implements Listener {
                                 }
                             }
                         }
-                    }
 
-                    List<User> mentionedUsers = message.getMentionedUsers();
-                    if (!mentionedUsers.isEmpty()) {
-                        for (User user : mentionedUsers) {
+                        List<Role> mentionedRoles = message.getMentionedRoles();
+                        for (Role role : mentionedRoles) {
                             //github.scarsz.discordsrv.dependencies.kyori.adventure.text.event.HoverEvent<Component> hover = Component.text(InteractiveChatDiscordSrvAddon.plugin.mentionHover.replace("{DiscordUser}", senderDiscordName).replace("{TextChannel}", "#" + channel.getName()).replace("{Guild}", guild.getName())).asHoverEvent();
-                            component = component.replaceText(github.scarsz.discordsrv.dependencies.kyori.adventure.text.TextReplacementConfig.builder().matchLiteral("@" + user.getName()).replacement(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(Config.i().getDiscordMention().mentionHighlight().replace("{DiscordMention}", "@" + user.getName()))).build());
-                            Member member = guild.getMember(user);
-                            if (member != null) {
-                                UUID uuid = channelMembers.get(member);
-                                if (uuid != null && !mentionTitleSent.contains(uuid) && (senderUUID == null || !senderUUID.equals(uuid))) {
+                            component = component.replaceText(github.scarsz.discordsrv.dependencies.kyori.adventure.text.TextReplacementConfig.builder().matchLiteral("@" + role.getName()).replacement(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(Config.i().getDiscordMention().mentionHighlight().replace("{DiscordMention}", "@" + role.getName()))).build());
+                            for (Entry<Member, UUID> entry : channelMembers.entrySet()) {
+                                UUID uuid = entry.getValue();
+                                if (!mentionTitleSent.contains(uuid) && entry.getKey().getRoles().contains(role)) {
                                     mentionTitleSent.add(uuid);
                                     Player player = Bukkit.getPlayer(uuid);
                                     if (player != null) {
@@ -237,144 +214,162 @@ public class InboundToGameEvents implements Listener {
                                 }
                             }
                         }
+
+                        List<User> mentionedUsers = message.getMentionedUsers();
+                        if (!mentionedUsers.isEmpty()) {
+                            for (User user : mentionedUsers) {
+                                //github.scarsz.discordsrv.dependencies.kyori.adventure.text.event.HoverEvent<Component> hover = Component.text(InteractiveChatDiscordSrvAddon.plugin.mentionHover.replace("{DiscordUser}", senderDiscordName).replace("{TextChannel}", "#" + channel.getName()).replace("{Guild}", guild.getName())).asHoverEvent();
+                                component = component.replaceText(github.scarsz.discordsrv.dependencies.kyori.adventure.text.TextReplacementConfig.builder().matchLiteral("@" + user.getName()).replacement(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(Config.i().getDiscordMention().mentionHighlight().replace("{DiscordMention}", "@" + user.getName()))).build());
+                                Member member = guild.getMember(user);
+                                if (member != null) {
+                                    UUID uuid = channelMembers.get(member);
+                                    if (uuid != null && !mentionTitleSent.contains(uuid) && (senderUUID == null || !senderUUID.equals(uuid))) {
+                                        mentionTitleSent.add(uuid);
+                                        Player player = Bukkit.getPlayer(uuid);
+                                        if (player != null) {
+                                            DiscordToGameMention.playTitleScreen(senderDiscordName, channel.getName(), guild.getName(), player);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        event.setMinecraftMessage(component);
                     }
 
-                    event.setMinecraftMessage(component);
-                }
+                    String processedMessage = MessageUtil.toLegacy(component);
 
-                String processedMessage = MessageUtil.toLegacy(component);
+                    if (Config.i().getDiscordAttachments().convert()) {
+                        Debug.debug("onReceiveMessageFromDiscordPost converting discord attachments");
+                        Set<String> processedUrl = new HashSet<>();
+                        List<PreviewableImageContainer> previewableImageContainers = new ArrayList<>(message.getAttachments().size() + message.getStickers().size());
+                        for (Attachment attachment : message.getAttachments()) {
+                            MultiChatDiscordSrvAddon.plugin.attachmentCounter.incrementAndGet();
+                            String url = attachment.getUrl();
+                            if (processedMessage.contains(url)) {
+                                processedUrl.add(url);
+                                if ((attachment.isImage() || attachment.isVideo()) && attachment.getSize() <= Config.i().getDiscordAttachments().fileSizeLimit()) {
+                                    previewableImageContainers.add(PreviewableImageContainer.fromAttachment(attachment));
+                                } else {
+                                    DiscordAttachmentData data = new DiscordAttachmentData(attachment.getFileName(), url);
+                                    DiscordAttachmentConversionEvent dace = new DiscordAttachmentConversionEvent(url, data);
+                                    Bukkit.getPluginManager().callEvent(dace);
+                                    DATA.put(data.getUniqueId(), data);
+                                    Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> DATA.remove(data.getUniqueId()), Config.i().getDiscordAttachments().timeout() * 20L);
+                                }
+                            }
+                        }
+                        for (MessageSticker sticker : message.getStickers()) {
+                            previewableImageContainers.add(PreviewableImageContainer.fromSticker(sticker));
+                        }
+                        for (PreviewableImageContainer imageContainer : previewableImageContainers) {
+                            MultiChatDiscordSrvAddon.plugin.attachmentImageCounter.incrementAndGet();
+                            String url = imageContainer.getUrl();
+                            List<ThrowingSupplier<InputStream>> methods = new ArrayList<>();
+                            for (String url0 : imageContainer.getAllUrls()) {
+                                if (URLRequestUtils.isAllowed(url0)) {
+                                    methods.add(() -> URLRequestUtils.getInputStream0(url0));
+                                }
+                            }
 
-                if (Config.i().getDiscordAttachments().convert()) {
-                    Debug.debug("onReceiveMessageFromDiscordPost converting discord attachments");
-                    Set<String> processedUrl = new HashSet<>();
-                    List<PreviewableImageContainer> previewableImageContainers = new ArrayList<>(message.getAttachments().size() + message.getStickers().size());
-                    for (Attachment attachment : message.getAttachments()) {
-                        MultiChatDiscordSrvAddon.plugin.attachmentCounter.incrementAndGet();
-                        String url = attachment.getUrl();
-                        if (processedMessage.contains(url)) {
-                            processedUrl.add(url);
-                            if ((attachment.isImage() || attachment.isVideo()) && attachment.getSize() <= Config.i().getDiscordAttachments().fileSizeLimit()) {
-                                previewableImageContainers.add(PreviewableImageContainer.fromAttachment(attachment));
-                            } else {
-                                DiscordAttachmentData data = new DiscordAttachmentData(attachment.getFileName(), url);
+                            try (InputStream stream = URLRequestUtils.retrieveUntilSuccessful(methods)) {
+                                String type = imageContainer.getContentType();
+                                GraphicsToPacketMapWrapper map;
+                                boolean isVideo = false;
+                                if (type.endsWith("gif.png") || type.endsWith("apng")) {
+                                    throw new UnsupportedOperationException("Animated PNG not yet supported, this error can be ignored");
+                                } else if (type.endsWith("gif")) {
+                                    map = new GraphicsToPacketMapWrapper(Config.i().getDiscordAttachments().playbackBar().enabled(), !Config.i().getDiscordAttachments().imageMapBackground().transparent() ? ColorUtils.hex2Rgb(Config.i().getDiscordAttachments().imageMapBackground().color()) : null);
+                                    GifReader.readGif(stream, MultiChatDiscordSrvAddon.plugin.mediaReadingService, (frames, e) -> {
+                                        if (e != null) {
+                                            e.printStackTrace();
+                                            map.completeFuture(null);
+                                        } else {
+                                            map.completeFuture(frames);
+                                        }
+                                    });
+                                } else {
+                                    BufferedImage image = ImageIO.read(stream);
+                                    map = new GraphicsToPacketMapWrapper(image, !Config.i().getDiscordAttachments().imageMapBackground().transparent() ? ColorUtils.hex2Rgb(Config.i().getDiscordAttachments().imageMapBackground().color()) : null);
+                                }
+                                DiscordAttachmentData data = new DiscordAttachmentData(imageContainer.getName(), url, map, isVideo);
+                                DiscordAttachmentConversionEvent dace = new DiscordAttachmentConversionEvent(url, data);
+                                Bukkit.getPluginManager().callEvent(dace);
+                                DATA.put(data.getUniqueId(), data);
+                                Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> DATA.remove(data.getUniqueId()), Config.i().getDiscordAttachments().timeout() * 20L);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                DiscordAttachmentData data = new DiscordAttachmentData(imageContainer.getName(), url);
                                 DiscordAttachmentConversionEvent dace = new DiscordAttachmentConversionEvent(url, data);
                                 Bukkit.getPluginManager().callEvent(dace);
                                 DATA.put(data.getUniqueId(), data);
                                 Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> DATA.remove(data.getUniqueId()), Config.i().getDiscordAttachments().timeout() * 20L);
                             }
                         }
-                    }
-                    for (MessageSticker sticker : message.getStickers()) {
-                        previewableImageContainers.add(PreviewableImageContainer.fromSticker(sticker));
-                    }
-                    for (PreviewableImageContainer imageContainer : previewableImageContainers) {
-                        MultiChatDiscordSrvAddon.plugin.attachmentImageCounter.incrementAndGet();
-                        String url = imageContainer.getUrl();
-                        List<ThrowingSupplier<InputStream>> methods = new ArrayList<>();
-                        for (String url0 : imageContainer.getAllUrls()) {
-                            if (URLRequestUtils.isAllowed(url0)) {
-                                methods.add(() -> URLRequestUtils.getInputStream0(url0));
-                            }
-                        }
 
-                        try (InputStream stream = URLRequestUtils.retrieveUntilSuccessful(methods)) {
-                            String type = imageContainer.getContentType();
-                            GraphicsToPacketMapWrapper map;
-                            boolean isVideo = false;
-                            if (type.endsWith("gif.png") || type.endsWith("apng")) {
-                                throw new UnsupportedOperationException("Animated PNG not yet supported, this error can be ignored");
-                            } else if (type.endsWith("gif")) {
-                                map = new GraphicsToPacketMapWrapper(Config.i().getDiscordAttachments().playbackBar().enabled(), !Config.i().getDiscordAttachments().imageMapBackground().transparent() ? ColorUtils.hex2Rgb(Config.i().getDiscordAttachments().imageMapBackground().color()) : null);
-                                GifReader.readGif(stream, MultiChatDiscordSrvAddon.plugin.mediaReadingService, (frames, e) -> {
-                                    if (e != null) {
+                        Matcher matcher = URLRequestUtils.URL_PATTERN.matcher(message.getContentRaw());
+                        while (matcher.find()) {
+                            String url = matcher.group();
+                            String imageUrl = url;
+                            if (!processedUrl.contains(url) && URLRequestUtils.isAllowed(url)) {
+                                if (url.startsWith("https://tenor.com/")) {
+                                    try {
+                                        String html = HTTPRequestUtils.getTextResponse(url);
+                                        Matcher matcher2 = TENOR_HTML_PATTERN.matcher(html);
+                                        if (matcher2.find()) {
+                                            imageUrl = "https://c.tenor.com/" + matcher2.group(1) + "/tenor.gif";
+                                        }
+                                    } catch (Exception e) {
                                         e.printStackTrace();
-                                        map.completeFuture(null);
-                                    } else {
-                                        map.completeFuture(frames);
                                     }
-                                });
-                            } else {
-                                BufferedImage image = ImageIO.read(stream);
-                                map = new GraphicsToPacketMapWrapper(image, !Config.i().getDiscordAttachments().imageMapBackground().transparent() ? ColorUtils.hex2Rgb(Config.i().getDiscordAttachments().imageMapBackground().color()) : null);
-                            }
-                            DiscordAttachmentData data = new DiscordAttachmentData(imageContainer.getName(), url, map, isVideo);
-                            DiscordAttachmentConversionEvent dace = new DiscordAttachmentConversionEvent(url, data);
-                            Bukkit.getPluginManager().callEvent(dace);
-                            DATA.put(data.getUniqueId(), data);
-                            Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> DATA.remove(data.getUniqueId()), Config.i().getDiscordAttachments().timeout() * 20L);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            DiscordAttachmentData data = new DiscordAttachmentData(imageContainer.getName(), url);
-                            DiscordAttachmentConversionEvent dace = new DiscordAttachmentConversionEvent(url, data);
-                            Bukkit.getPluginManager().callEvent(dace);
-                            DATA.put(data.getUniqueId(), data);
-                            Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> DATA.remove(data.getUniqueId()), Config.i().getDiscordAttachments().timeout() * 20L);
-                        }
-                    }
-
-                    Matcher matcher = URLRequestUtils.URL_PATTERN.matcher(message.getContentRaw());
-                    while (matcher.find()) {
-                        String url = matcher.group();
-                        String imageUrl = url;
-                        if (!processedUrl.contains(url) && URLRequestUtils.isAllowed(url)) {
-                            if (url.startsWith("https://tenor.com/")) {
-                                try {
-                                    String html = HTTPRequestUtils.getTextResponse(url);
-                                    Matcher matcher2 = TENOR_HTML_PATTERN.matcher(html);
-                                    if (matcher2.find()) {
-                                        imageUrl = "https://c.tenor.com/" + matcher2.group(1) + "/tenor.gif";
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
-                            }
-                            long size = HTTPRequestUtils.getContentSize(imageUrl);
-                            if (size >= 0 && size <= Config.i().getDiscordAttachments().fileSizeLimit()) {
-                                MultiChatDiscordSrvAddon.plugin.attachmentImageCounter.incrementAndGet();
-                                try (InputStream stream = URLRequestUtils.getInputStream(imageUrl)) {
-                                    String type = HTTPRequestUtils.getContentType(imageUrl);
+                                long size = HTTPRequestUtils.getContentSize(imageUrl);
+                                if (size >= 0 && size <= Config.i().getDiscordAttachments().fileSizeLimit()) {
+                                    MultiChatDiscordSrvAddon.plugin.attachmentImageCounter.incrementAndGet();
+                                    try (InputStream stream = URLRequestUtils.getInputStream(imageUrl)) {
+                                        String type = HTTPRequestUtils.getContentType(imageUrl);
 
-                                    if (type == null || !type.startsWith("image/")) {
-                                        continue;
+                                        if (type == null || !type.startsWith("image/")) {
+                                            continue;
+                                        }
+                                        GraphicsToPacketMapWrapper map;
+                                        boolean isVideo = false;
+                                        if (type.endsWith("gif.png") || type.endsWith("apng")) {
+                                            throw new UnsupportedOperationException("Animated PNG not yet supported, this error can be ignored");
+                                        } else if (type.endsWith("gif")) {
+                                            map = new GraphicsToPacketMapWrapper(Config.i().getDiscordAttachments().playbackBar().enabled(), !Config.i().getDiscordAttachments().imageMapBackground().transparent() ? ColorUtils.hex2Rgb(Config.i().getDiscordAttachments().imageMapBackground().color()) : null);
+                                            GifReader.readGif(stream, MultiChatDiscordSrvAddon.plugin.mediaReadingService, (frames, e) -> {
+                                                if (e != null) {
+                                                    e.printStackTrace();
+                                                    map.completeFuture(null);
+                                                } else {
+                                                    map.completeFuture(frames);
+                                                }
+                                            });
+                                        } else {
+                                            BufferedImage image = ImageIO.read(stream);
+                                            map = new GraphicsToPacketMapWrapper(image, !Config.i().getDiscordAttachments().imageMapBackground().transparent() ? ColorUtils.hex2Rgb(Config.i().getDiscordAttachments().imageMapBackground().color()) : null);
+                                        }
+                                        String name = matcher.group(1);
+                                        DiscordAttachmentData data = new DiscordAttachmentData(name, url, map, isVideo);
+                                        DiscordAttachmentConversionEvent dace = new DiscordAttachmentConversionEvent(url, data);
+                                        Bukkit.getPluginManager().callEvent(dace);
+                                        DATA.put(data.getUniqueId(), data);
+                                        Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> DATA.remove(data.getUniqueId()), Config.i().getDiscordAttachments().timeout() * 20L);
+                                    } catch (FileNotFoundException ignore) {
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                    GraphicsToPacketMapWrapper map;
-                                    boolean isVideo = false;
-                                    if (type.endsWith("gif.png") || type.endsWith("apng")) {
-                                        throw new UnsupportedOperationException("Animated PNG not yet supported, this error can be ignored");
-                                    } else if (type.endsWith("gif")) {
-                                        map = new GraphicsToPacketMapWrapper(Config.i().getDiscordAttachments().playbackBar().enabled(), !Config.i().getDiscordAttachments().imageMapBackground().transparent() ? ColorUtils.hex2Rgb(Config.i().getDiscordAttachments().imageMapBackground().color()) : null);
-                                        GifReader.readGif(stream, MultiChatDiscordSrvAddon.plugin.mediaReadingService, (frames, e) -> {
-                                            if (e != null) {
-                                                e.printStackTrace();
-                                                map.completeFuture(null);
-                                            } else {
-                                                map.completeFuture(frames);
-                                            }
-                                        });
-                                    } else {
-                                        BufferedImage image = ImageIO.read(stream);
-                                        map = new GraphicsToPacketMapWrapper(image, !Config.i().getDiscordAttachments().imageMapBackground().transparent() ? ColorUtils.hex2Rgb(Config.i().getDiscordAttachments().imageMapBackground().color()) : null);
-                                    }
-                                    String name = matcher.group(1);
-                                    DiscordAttachmentData data = new DiscordAttachmentData(name, url, map, isVideo);
-                                    DiscordAttachmentConversionEvent dace = new DiscordAttachmentConversionEvent(url, data);
-                                    Bukkit.getPluginManager().callEvent(dace);
-                                    DATA.put(data.getUniqueId(), data);
-                                    Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> DATA.remove(data.getUniqueId()), Config.i().getDiscordAttachments().timeout() * 20L);
-                                } catch (FileNotFoundException ignore) {
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
                             }
                         }
                     }
-                }
-            });
-            future.get(5000, TimeUnit.MILLISECONDS);
-            service.shutdownNow();
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-        }
+                }, service).exceptionally((ex) -> {
+                    throw new RuntimeException(ex);
+                }).get(5000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                e.printStackTrace();
+            }
     }
 
     // todo - migrate to chat plugin specific events

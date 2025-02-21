@@ -512,6 +512,13 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
                     try {
                         ChatUtils.sendMessage("<yellow>Loading \"" + resourceName + "\" resources...", senders);
                         File resourcePackFile = new File(getDataFolder(), "resourcepacks/" + resourceName);
+                        if (resourceName.startsWith("path:")) {
+                            resourcePackFile = getDataFolder().toPath().resolve(resourceName.replace("path:", ""))
+                                    .normalize()
+                                    .toFile();
+                        }
+
+
                         ResourcePackInfo info = resourceManager.loadResources(resourcePackFile, ResourcePackType.LOCAL);
                         if (info.getStatus()) {
                             if (info.compareServerPackFormat(ResourceRegistry.RESOURCE_PACK_VERSION) > 0) {

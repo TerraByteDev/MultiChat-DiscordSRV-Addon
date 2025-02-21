@@ -139,7 +139,7 @@ public class ItemRenderUtils {
 
         List<ValuePairs<TextureResource, OpenGLBlending>> enchantmentGlintResource = manager.getResourceRegistry(CustomItemTextureRegistry.IDENTIFIER, CustomItemTextureRegistry.class).getEnchantmentGlintOverrideTextures(null, item, () -> ImageGeneration.getDefaultEnchantmentTint(EnchantmentGlintType.ITEM), manager.getLanguageManager().getTranslateFunction().ofLanguage(language));
         Function<ModelRenderer.RawEnchantmentGlintParameters, BufferedImage> enchantmentGlintFunction = parameters -> ImageGeneration.getEnchantedImage(enchantmentGlintResource, parameters.getImage(), parameters.getTick());
-        Function<ModelRenderer.RawEnchantmentGlintParameters, RawEnchantmentGlintData> rawEnchantmentGlintFunction = parameters -> new RawEnchantmentGlintData(enchantmentGlintResource.stream().map(each -> ImageGeneration.getRawEnchantedImage(each.getFirst(), parameters.getImage(), parameters.getTick())).collect(Collectors.toList()), enchantmentGlintResource.stream().map(each -> each.getSecond()).collect(Collectors.toList()));
+        Function<ModelRenderer.RawEnchantmentGlintParameters, RawEnchantmentGlintData> rawEnchantmentGlintFunction = parameters -> new RawEnchantmentGlintData(enchantmentGlintResource.stream().map(each -> ImageGeneration.getRawEnchantedImage(each.getFirst(), parameters.getImage(), parameters.getTick())).collect(Collectors.toList()), enchantmentGlintResource.stream().map(ValuePairs::getSecond).collect(Collectors.toList()));
 
         ItemMeta itemMeta = item.getItemMeta();
         boolean hasItemMeta = itemMeta != null;
@@ -633,7 +633,7 @@ public class ItemRenderUtils {
                 boolean evaluation0 = false;
                 if (icplayer != null && PlayerUtils.isLocal(icplayer)) {
                     if (NMS.getInstance().getFishHook(icplayer) != null) {
-                        ItemStack mainHandItem = icplayer.getEquipment().getItemInHand();
+                        ItemStack mainHandItem = icplayer.getEquipment().getItemInMainHand();
                         ItemStack offHandItem = icplayer.getEquipment().getItemInOffHand();
                         if ((mainHandItem != null && mainHandItem.equals(itemStack)) || ((offHandItem != null && offHandItem.equals(itemStack)) && (mainHandItem == null || !XMaterial.matchXMaterial(mainHandItem).equals(XMaterial.FISHING_ROD)))) {
                             evaluation0 = true;

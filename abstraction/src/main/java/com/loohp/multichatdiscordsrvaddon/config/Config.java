@@ -300,7 +300,7 @@ public class Config {
             )
             String serverResourcePackProvider,
             @Comment("Set this option if you want a separate URL as the server resource pack.\nIf the URL is empty, the URL and hash from server.properties will be used.\nIf the hash is empty but URL is not, the resource pack hash will not be checked") ResourcesAlternateServerResourcePack alternateServerResourcePack,
-            @Comment("Set which resource pack should be installed and in what order.\nVisit this page for more info:\nhttps://github.com/LOOHP/InteractiveChat-DiscordSRV-Addon/wiki/Resource-Pack") List<String> order,
+            @Comment("Set which resource pack should be installed and in what order.\nVisit this page for more info:\nhttps://github.com/LOOHP/InteractiveChat-DiscordSRV-Addon/wiki/Resource-Pack\nIf you have a pack that is in another location, start the entry with \"path:\" and specify a path to the file (starts from this plugin's config folder).") List<String> order,
             @Comment("Enable (Partial) Optifine Custom Texture CIT support") boolean optifineCustomTextures,
             @Comment("Enable (Partial) Chime Custom Model Override support (1.16+)") boolean chimeOverrideModels
     ) {}
@@ -762,7 +762,7 @@ public class Config {
         YamlConfigurations.save(new File(LoaderUtils.getPlugin().getDataFolder(), "config.yml").toPath(), Config.class, this, properties);
     }
 
-    public void reload() {
+    public static void reload() {
         instance = YamlConfigurations.load(new File(LoaderUtils.getPlugin().getDataFolder(), "config.yml").toPath(), Config.class, properties);
     }
 }
