@@ -178,6 +178,7 @@ public class Config {
             @Comment("Enable the /playerinfo command to show player information") boolean enabled,
             @Comment("If you do NOT use a shared channel for multiple servers, this should be set to true.\nIf you do, set this option on ONE of the main servers connected to the discord channel to true.") boolean isMainServer,
             @Comment("The description of this command on Discord") String description,
+            @Comment("Parse PAPI placeholders twice. In some cases, such as using %vault_prefix%, it will return placeholders (e.g. ItemsAdder prefix placeholders) which will not be parsed.") boolean parsePlaceholdersTwice,
             @Comment("The player information to display") DiscordCommandsPlayerInfoFormatting infoFormatting
     ) {}
 
@@ -208,6 +209,7 @@ public class Config {
             @Comment("PlaceholderAPI placeholders in the header are parsed as the first player in the playerlist!\nLeave this variable as a single blank line to disable.") List<String> headerText,
             @Comment("PlaceholderAPI placeholders in the footer are parsed as the first player in the playerlist!\nLeave this variable as a single blank line to disable.") List<String> footerText,
             @Comment("Instead of parsing colour codes for each playername,\nparse MiniMessage tags instead.") boolean parsePlayerNamesWithMiniMessage,
+            @Comment("Parse PAPI placeholders twice. In some cases, such as using %vault_prefix%, it will return placeholders (e.g. ItemsAdder prefix placeholders) which will not be parsed.") boolean parsePlaceholdersTwice,
             DiscordCommandsPlayerOrder playerOrder
     ) {}
 
@@ -566,6 +568,7 @@ public class Config {
                     true,
                     true,
                     "Show player information on Discord!",
+                    true,
                     new DiscordCommandsPlayerInfoFormatting(
                             "%player_name%'s Player Info",
                             "%discordsrv_user_tag%",
@@ -601,6 +604,7 @@ public class Config {
                             List.of("&aOnline Players ({OnlinePlayers}/100}"),
                             List.of(""),
                             false,
+                            true,
                             new DiscordCommandsPlayerOrder(
                                     List.of(
                                             "GROUP:owner,admin,member,default",

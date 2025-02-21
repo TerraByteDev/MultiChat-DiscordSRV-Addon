@@ -647,11 +647,21 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                     if (offlineICPlayer.isOnline() && !PlayerUtils.isVanished(((Player) offlineICPlayer))) {
                         playerInfoComponents = Config.i().getDiscordCommands().playerInfo().infoFormatting().whenOnline().stream().map(each -> {
                             each = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlineICPlayer, each));
+
+                            if (Config.i().getDiscordCommands().playerInfo().parsePlaceholdersTwice()) {
+                                each = ChatColorUtils.translateAlternateColorCodes('&', each);
+                            }
+
                             return ToolTipComponent.text(LegacyComponentSerializer.legacySection().deserialize(each));
                         }).collect(Collectors.toList());
                     } else {
                         playerInfoComponents = Config.i().getDiscordCommands().playerInfo().infoFormatting().whenOffline().stream().map(each -> {
                             each = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlineICPlayer, each));
+
+                            if (Config.i().getDiscordCommands().playerInfo().parsePlaceholdersTwice()) {
+                                each = ChatColorUtils.translateAlternateColorCodes('&', each);
+                            }
+
                             return ToolTipComponent.text(LegacyComponentSerializer.legacySection().deserialize(each));
                         }).collect(Collectors.toList());
                     }
@@ -720,6 +730,11 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                             OfflinePlayer bukkitOfflinePlayer = entry.getKey();
                             playerInfo.put(bukkitOfflinePlayer.getUniqueId(), new ValuePairs<>(getPlayerGroups(bukkitOfflinePlayer), bukkitOfflinePlayer.getName()));
                             String name = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(bukkitOfflinePlayer, Config.i().getDiscordCommands().playerList().tablistOptions().playerFormat()));
+
+                            if (Config.i().getDiscordCommands().playerList().tablistOptions().parsePlaceholdersTwice()) {
+                                name = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(bukkitOfflinePlayer, name));
+                            }
+
                             Component nameComponent;
                             if (Config.i().getDiscordCommands().playerList().tablistOptions().parsePlayerNamesWithMiniMessage()) {
                                 nameComponent = MiniMessage.miniMessage().deserialize(name);
