@@ -159,7 +159,8 @@ public class Config {
 
     public record DiscordCommandsGlobalSettings(
             @Comment("Set this to true ONLY if you have multiple servers with MultiChatDiscordSRVAddon, AND\nyou use a DIFFERENT channel for each server (i.e. not one shared channel for all servers)") boolean respondToCommandsInInvalidChannels,
-            DiscordCommandsGlobalSettingsMessages messages
+            DiscordCommandsGlobalSettingsMessages messages,
+            @Comment("Filter discord messages through a hooked plugin, if applicable.\nRequires should-hook to be set to true in the hook section at the bottom.") boolean shouldFilter
     ) {}
 
     public record DiscordCommandsPlayerInfoFormatting(
@@ -564,7 +565,8 @@ public class Config {
                             "Member to set",
                             "slot",
                             "Slot to choose"
-                    )
+                    ),
+                    true
             ),
             new DiscordCommandsPlayerInfo(
                     true,

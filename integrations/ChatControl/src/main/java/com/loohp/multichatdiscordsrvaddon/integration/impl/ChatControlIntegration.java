@@ -2,6 +2,7 @@ package com.loohp.multichatdiscordsrvaddon.integration.impl;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.integration.MultiChatIntegration;
+import com.loohp.multichatdiscordsrvaddon.integration.sender.MessageSender;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import github.scarsz.discordsrv.DiscordSRV;
 import lombok.Getter;
@@ -56,8 +57,8 @@ public class ChatControlIntegration implements MultiChatIntegration {
 
     @SuppressWarnings("DataFlowIssue")
     @Override
-    public String filter(com.loohp.multichatdiscordsrvaddon.integration.dynmap.DynmapSender dynmapSender, String message) {
-        String dynmapUsername = dynmapSender.getName();
+    public String filter(MessageSender messageSender, String message) {
+        String dynmapUsername = messageSender.getName();
 
         DynmapSender chatControlDynmapSender = null;
         if (!dynmapUsername.isEmpty()) {

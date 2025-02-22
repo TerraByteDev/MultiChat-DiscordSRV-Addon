@@ -159,6 +159,8 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
     public ExecutorService mediaReadingService;
     public static PlaceholderCooldownManager placeholderCooldownManager;
 
+    public InboundToGameEvents inboundToGameEvents;
+
     public IntegrationManager integrationManager;
 
     protected Map<String, byte[]> extras = new ConcurrentHashMap<>();
@@ -220,7 +222,9 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
         DiscordSRV.api.subscribe(new DiscordReadyEvents());
         DiscordSRV.api.subscribe(new LegacyDiscordCommandEvents());
         DiscordSRV.api.subscribe(new OutboundToDiscordEvents());
-        DiscordSRV.api.subscribe(new InboundToGameEvents());
+
+        inboundToGameEvents = new InboundToGameEvents();
+        DiscordSRV.api.subscribe(inboundToGameEvents);
 
         placeholderCooldownManager = new PlaceholderCooldownManager();
 

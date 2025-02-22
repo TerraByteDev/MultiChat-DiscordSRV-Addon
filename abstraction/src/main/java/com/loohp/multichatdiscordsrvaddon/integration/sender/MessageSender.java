@@ -1,4 +1,4 @@
-package com.loohp.multichatdiscordsrvaddon.integration.dynmap;
+package com.loohp.multichatdiscordsrvaddon.integration.sender;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -16,11 +16,11 @@ import java.util.Set;
 import java.util.UUID;
 
 @Getter
-public class DynmapSender implements CommandSender {
+public class MessageSender implements CommandSender {
 
     private Player offlinePlayer;
 
-    public DynmapSender(@NotNull String name) {
+    public MessageSender(@NotNull String name) {
         if (!name.isEmpty()) {
             Player player = Bukkit.getPlayerExact(name);
             if (player != null) this.offlinePlayer = player;

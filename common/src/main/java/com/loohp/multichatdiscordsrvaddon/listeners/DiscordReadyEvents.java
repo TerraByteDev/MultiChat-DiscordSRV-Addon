@@ -72,9 +72,9 @@ public class DiscordReadyEvents {
         DiscordSRV.api.addSlashCommandProvider(discordCommands);
         discordCommands.reload();
 
-        PacketEvents.getAPI().getEventManager().registerListener(
-                discordCommands, PacketListenerPriority.valueOf(Config.i().getDiscordAttachments().priority().toUpperCase(Locale.ROOT))
-        );
+        PacketListenerPriority priority = PacketListenerPriority.valueOf(Config.i().getDiscordAttachments().priority().toUpperCase(Locale.ROOT));
+        PacketEvents.getAPI().getEventManager().registerListener(discordCommands, priority);
+        PacketEvents.getAPI().getEventManager().registerListener(MultiChatDiscordSrvAddon.plugin.inboundToGameEvents, priority);
 
         for (String channelId : discordsrv.getChannels().values()) {
             if (channelId != null) {

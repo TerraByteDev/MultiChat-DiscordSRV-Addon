@@ -1,6 +1,6 @@
 package com.loohp.multichatdiscordsrvaddon.integration;
 
-import com.loohp.multichatdiscordsrvaddon.integration.dynmap.DynmapSender;
+import com.loohp.multichatdiscordsrvaddon.integration.sender.MessageSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public interface MultiChatIntegration {
@@ -13,7 +13,7 @@ public interface MultiChatIntegration {
 
     void disable(JavaPlugin plugin);
 
-    String filter(DynmapSender dynmapSender, String message);
+    String filter(MessageSender messageSender, String message);
 
     default String formatForDiscord(String string) {
         return string.replace("*", "\\*");

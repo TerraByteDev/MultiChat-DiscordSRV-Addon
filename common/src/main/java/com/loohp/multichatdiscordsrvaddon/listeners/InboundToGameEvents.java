@@ -20,18 +20,20 @@
 
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
+import com.github.retrooper.packetevents.event.PacketListener;
+import com.github.retrooper.packetevents.event.PacketSendEvent;
+import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSystemChatMessage;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.integration.sender.MessageSender;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
-import com.loohp.multichatdiscordsrvaddon.utils.ColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.HTTPRequestUtils;
+import com.loohp.multichatdiscordsrvaddon.utils.*;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.api.events.DiscordAttachmentConversionEvent;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.graphics.GifReader;
 import com.loohp.multichatdiscordsrvaddon.modules.DiscordToGameMention;
 import com.loohp.multichatdiscordsrvaddon.objectholders.PreviewableImageContainer;
-import com.loohp.multichatdiscordsrvaddon.utils.ThrowingSupplier;
-import com.loohp.multichatdiscordsrvaddon.utils.URLRequestUtils;
 import com.loohp.multichatdiscordsrvaddon.wrappers.GraphicsToPacketMapWrapper;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.ListenerPriority;
@@ -46,11 +48,14 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageSticker;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
-import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.minimessage.MiniMessage;
 import github.scarsz.discordsrv.util.MessageUtil;
 import lombok.Getter;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -69,20 +74,14 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class InboundToGameEvents implements Listener {
+public class InboundToGameEvents implements Listener, PacketListener {
 
     public static final Pattern TENOR_HTML_PATTERN = Pattern.compile("<link class=\\\"dynamic\\\" rel=\\\"image_src\\\" href=\\\"https://media1\\.tenor\\.com/m/(.*?)/.*?\\\">");
 
@@ -163,22 +162,35 @@ public class InboundToGameEvents implements Listener {
                     Debug.debug("Triggering onReceiveMessageFromDiscordPost");
                     Message message = event.getMessage();
 
-                    github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component component = event.getMinecraftMessage();
-
                     DiscordSRV srv = MultiChatDiscordSrvAddon.discordsrv;
                     User author = message.getAuthor();
+
+                    TextChannel channel = event.getChannel();
+                    Guild guild = channel.getGuild();
+                    Member authorAsMember = guild.getMember(author);
+                    String senderDiscordName = authorAsMember == null ? author.getName() : authorAsMember.getEffectiveName();
+                    UUID senderUUID = srv.getAccountLinkManager().getUuid(author.getId());
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(senderUUID);
+
+                    github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component component = event.getMinecraftMessage();
+
+                    if (Config.i().getHook().shouldHook()) {
+                        String serialized = MiniMessage.miniMessage().serialize(component);
+                        assert MultiChatDiscordSrvAddon.plugin.integrationManager.getIntegration() != null;
+
+                        String filtered = MultiChatDiscordSrvAddon.plugin.integrationManager.getIntegration().filter(
+                                new MessageSender(Objects.requireNonNull(offlinePlayer.getName())),
+                                serialized
+                        );
+
+                        event.setMinecraftMessage(MiniMessage.miniMessage().deserialize(filtered));
+                    }
 
                     if (Config.i().getDiscordMention().translateMentions()) {
                         Debug.debug("onReceiveMessageFromDiscordPost translating mentions");
 
                         Set<UUID> mentionTitleSent = new HashSet<>();
                         Map<Member, UUID> channelMembers = new HashMap<>();
-
-                        TextChannel channel = event.getChannel();
-                        Guild guild = channel.getGuild();
-                        Member authorAsMember = guild.getMember(author);
-                        String senderDiscordName = authorAsMember == null ? author.getName() : authorAsMember.getEffectiveName();
-                        UUID senderUUID = srv.getAccountLinkManager().getUuid(author.getId());
 
                         for (Entry<UUID, String> entry : srv.getAccountLinkManager().getManyDiscordIds(Bukkit.getOnlinePlayers().stream().map(each -> each.getUniqueId()).collect(Collectors.toSet())).entrySet()) {
                             Member member = guild.getMemberById(entry.getValue());
@@ -372,39 +384,50 @@ public class InboundToGameEvents implements Listener {
             }
     }
 
-    // todo - migrate to chat plugin specific events
-    /*@EventHandler
-    public void onChatPacket(PrePacketComponentProcessEvent event) {
-        Debug.debug("Triggering onChatPacket");
-        if (InteractiveChatDiscordSrvAddon.plugin.convertDiscordAttachments) {
-            Debug.debug("onChatPacket converting discord attachments");
-            for (Entry<UUID, DiscordAttachmentData> entry : DATA.entrySet()) {
-                DiscordAttachmentData data = entry.getValue();
-                String url = data.getUrl();
-                Component component = event.getComponent();
+    @Override
+    public void onPacketSend(PacketSendEvent event) {
+        if (event.getPacketType() == PacketType.Play.Server.SYSTEM_CHAT_MESSAGE) {
+            Debug.debug("Triggering onChatPacket");
 
-                String replacement = InteractiveChatDiscordSrvAddon.plugin.discordAttachmentsFormattingText.replace("{FileName}", data.getFileName());
-                Component textComponent = LegacyComponentSerializer.legacySection().deserialize(replacement);
-                if (InteractiveChatDiscordSrvAddon.plugin.discordAttachmentsFormattingHoverEnabled) {
-                    String hover = InteractiveChatDiscordSrvAddon.plugin.discordAttachmentsFormattingHoverText.replace("{FileName}", data.getFileName());
-                    textComponent = textComponent.hoverEvent(HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(hover)));
+            WrapperPlayServerSystemChatMessage messageWrapper = new WrapperPlayServerSystemChatMessage(event);
+            if (Config.i().getDiscordAttachments().convert()) {
+                Debug.debug("onChatPacket converting discord attachments");
+
+                for (Entry<UUID, DiscordAttachmentData> entry : DATA.entrySet()) {
+                    DiscordAttachmentData data = entry.getValue();
+                    String url = data.getUrl();
+                    net.kyori.adventure.text.Component component = messageWrapper.getMessage();
+
+                    net.kyori.adventure.text.Component textComponent = ChatColorUtils.format(Config.i().getDiscordAttachments().formatting().text()
+                            .replace("{FileName}", data.getFileName()));
+                    if (Config.i().getDiscordAttachments().formatting().hover().enabled()) {
+                        textComponent = textComponent.hoverEvent(HoverEvent.showText(ChatColorUtils.format(String.join("\n", Config.i().getDiscordAttachments().formatting().hover().hoverText())
+                                .replace("{FileName}", data.getFileName()))));
+                    }
+
+                    if (Config.i().getDiscordAttachments().showImageUsingMaps() && data.isImage()) {
+                        textComponent = textComponent.clickEvent(ClickEvent.runCommand("/mc imagemap " + data.getUniqueId().toString()));
+                        net.kyori.adventure.text.Component imageAppend = ChatColorUtils.format(Config.i().getDiscordAttachments().formatting().imageOriginal()
+                                .replace("{FileName}", data.getFileName()));
+
+                        imageAppend.hoverEvent(HoverEvent.showText(ChatColorUtils.format(String.join("\n", Config.i().getDiscordAttachments().formatting().hover().imageOriginalHover())
+                                .replace("{FileName}", data.getFileName()))));
+                        imageAppend = imageAppend.clickEvent(ClickEvent.openUrl(url));
+                        textComponent = textComponent.append(imageAppend);
+                    } else {
+                        textComponent = textComponent.clickEvent(ClickEvent.openUrl(url));
+                    }
+
+                    component = ComponentReplacing.replace(component, "\\\\?" + CustomStringUtils.escapeMetaCharacters(url), textComponent);
+
+                    messageWrapper.setMessage(component);
+
+                    event.setLastUsedWrapper(messageWrapper);
+                    event.markForReEncode(true);
                 }
-                if (InteractiveChatDiscordSrvAddon.plugin.discordAttachmentsImagesUseMaps && data.isImage()) {
-                    textComponent = textComponent.clickEvent(ClickEvent.runCommand("/interactivechatdiscordsrv imagemap " + data.getUniqueId().toString()));
-                    Component imageAppend = LegacyComponentSerializer.legacySection().deserialize(InteractiveChatDiscordSrvAddon.plugin.discordAttachmentsFormattingImageAppend.replace("{FileName}", data.getFileName()));
-                    imageAppend = imageAppend.hoverEvent(HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(InteractiveChatDiscordSrvAddon.plugin.discordAttachmentsFormattingImageAppendHover.replace("{FileName}", data.getFileName()))));
-                    imageAppend = imageAppend.clickEvent(ClickEvent.openUrl(url));
-                    textComponent = textComponent.append(imageAppend);
-                } else {
-                    textComponent = textComponent.clickEvent(ClickEvent.openUrl(url));
-                }
-
-                component = ComponentReplacing.replace(component, "\\\\?" + CustomStringUtils.escapeMetaCharacters(url), textComponent);
-
-                event.setComponent(component);
             }
         }
-    }*/
+    }
 
     @SuppressWarnings("deprecation")
     @EventHandler

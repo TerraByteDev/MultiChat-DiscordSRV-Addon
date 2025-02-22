@@ -2,7 +2,7 @@ package com.loohp.multichatdiscordsrvaddon.integration.impl;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.integration.MultiChatIntegration;
-import com.loohp.multichatdiscordsrvaddon.integration.dynmap.DynmapSender;
+import com.loohp.multichatdiscordsrvaddon.integration.sender.MessageSender;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import github.scarsz.discordsrv.DiscordSRV;
 import lombok.Getter;
@@ -65,7 +65,7 @@ public class CarbonChatIntegration implements MultiChatIntegration {
     }
 
     @Override
-    public String filter(DynmapSender dynmapSender, String message) {
+    public String filter(MessageSender messageSender, String message) {
         return configManager.primaryConfig().applyChatFilters(message);
     }
 }

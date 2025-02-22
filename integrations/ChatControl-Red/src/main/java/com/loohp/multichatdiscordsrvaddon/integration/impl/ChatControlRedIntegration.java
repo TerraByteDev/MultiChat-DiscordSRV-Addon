@@ -1,7 +1,7 @@
 package com.loohp.multichatdiscordsrvaddon.integration.impl;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
-import com.loohp.multichatdiscordsrvaddon.integration.dynmap.DynmapSender;
+import com.loohp.multichatdiscordsrvaddon.integration.sender.MessageSender;
 import com.loohp.multichatdiscordsrvaddon.integration.MultiChatIntegration;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -14,7 +14,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mineacademy.chatcontrol.api.ChatChannelEvent;
-import org.mineacademy.chatcontrol.api.SimpleChatEvent;
 import org.mineacademy.chatcontrol.model.Checker;
 
 @SuppressWarnings("deprecation")
@@ -53,8 +52,8 @@ public class ChatControlRedIntegration implements MultiChatIntegration {
     public void disable(JavaPlugin plugin) {}
 
     @Override
-    public String filter(DynmapSender dynmapSender, String message) {
-        Checker checker = Checker.filterChannel(dynmapSender, message, null);
+    public String filter(MessageSender messageSender, String message) {
+        Checker checker = Checker.filterChannel(messageSender, message, null);
         if (checker.isCancelledSilently()) return "";
 
         return formatForDiscord(checker.getMessage());

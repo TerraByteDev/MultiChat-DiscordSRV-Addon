@@ -22,6 +22,8 @@ package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.ChatColor;
 
 import java.util.Arrays;
@@ -240,6 +242,10 @@ public class ChatColorUtils {
         text = sb.toString();
 
         return text;
+    }
+
+    public static Component format(String toFormat) {
+        return MiniMessage.miniMessage().deserialize(toFormat);
     }
 
     public static String escapeColorCharacters(char character, String str) {

@@ -1,7 +1,7 @@
 package com.loohp.multichatdiscordsrvaddon.integration.impl;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
-import com.loohp.multichatdiscordsrvaddon.integration.dynmap.DynmapSender;
+import com.loohp.multichatdiscordsrvaddon.integration.sender.MessageSender;
 import com.loohp.multichatdiscordsrvaddon.integration.MultiChatIntegration;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -43,7 +43,7 @@ public class ZelChatIntegration extends ExternalModule implements MultiChatInteg
     }
 
     @Override
-    public String filter(DynmapSender dynmapSender, String message) {
+    public String filter(MessageSender messageSender, String message) {
         return message; // todo same as todo below
     }
 
