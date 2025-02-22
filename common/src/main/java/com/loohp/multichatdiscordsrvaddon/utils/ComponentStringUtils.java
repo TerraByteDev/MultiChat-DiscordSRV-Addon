@@ -407,7 +407,19 @@ public class ComponentStringUtils {
                 sb.append(magic ? toMagic(provider, current) : current);
             }
         }
-        return sb.toString();
+        return stripColors(sb.toString());
+    }
+
+    private static final Pattern ALL_IN_ONE = Pattern.compile("((&|§)[0-9a-fk-or])|(§x(§[0-9a-fA-F]){6})|((?<!\\\\)(\\{|&|)#((?:[0-9a-fA-F]{3}){2})(\\}|))");
+
+    public static String stripColors(String message) {
+        if (message != null && !message.isEmpty()) {
+            for(Matcher matcher = ALL_IN_ONE.matcher(message); matcher.find(); message = matcher.replaceAll("")) {}
+
+            return message;
+        } else {
+            return message;
+        }
     }
 
     @SuppressWarnings("deprecation")

@@ -20,7 +20,10 @@
 
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -33,6 +36,8 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.GuildChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import org.bukkit.Bukkit;
+
+import java.util.Locale;
 
 public class DiscordReadyEvents {
 
@@ -66,6 +71,10 @@ public class DiscordReadyEvents {
         Bukkit.getPluginManager().registerEvents(discordCommands, MultiChatDiscordSrvAddon.plugin);
         DiscordSRV.api.addSlashCommandProvider(discordCommands);
         discordCommands.reload();
+
+        PacketEvents.getAPI().getEventManager().registerListener(
+                discordCommands, PacketListenerPriority.valueOf(Config.i().getDiscordAttachments().priority().toUpperCase(Locale.ROOT))
+        );
 
         for (String channelId : discordsrv.getChannels().values()) {
             if (channelId != null) {

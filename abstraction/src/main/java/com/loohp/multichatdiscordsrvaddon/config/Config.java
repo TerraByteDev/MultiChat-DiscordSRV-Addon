@@ -141,6 +141,7 @@ public class Config {
     public record DiscordAttachments(
             @Comment("Whether to convert discord attachments from disgusting URLs into clickable text in chat") boolean convert,
             DiscordAttachmentsFormatting formatting,
+            @Comment("Listener priority for modifying chats when attachments are sent.\nPossible priorities: LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR") String priority,
             @Comment("Whether to allow previewing images in game using maps") boolean showImageUsingMaps,
             @Comment("What color should the background be when previewing images in game using maps?\nNote: The color will not be exact as it is limited to the map colors that Minecraft offers") ImageMapBackground imageMapBackground,
             @Comment("When enabled, only websites from the list below are allowed to be shown through in-game maps") RestrictImageUrl restrictImageUrl,
@@ -435,9 +436,9 @@ public class Config {
                             new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1),
                             new ItemStack(Material.WHITE_STAINED_GLASS_PANE)
                     ),
-                    "&f[&d%player_name%'s Item&f]",
+                    "<white>[<light_purple>%player_name%'s Item<white>]",
                     "%player_name%'s Item",
-                    "&aShow the Item you are holding in the chat!",
+                    "<green>Show the Item you are holding in the chat!",
                     true
             ),
             new Inventory(
@@ -447,9 +448,9 @@ public class Config {
                     true,
                     "#55FFFF",
                     true,
-                    "&f[&d%player_name%'s Inventory&f]",
+                    "<white>[<light_purple>%player_name%'s Inventory<white>]",
                     "%player_name%'s Inventory",
-                    "&aShow your Inventory in the chat!",
+                    "<green>Show your Inventory in the chat!",
                     new Frame(
                             new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1),
                             new ItemStack(Material.WHITE_STAINED_GLASS_PANE)
@@ -459,9 +460,9 @@ public class Config {
                     true,
                     0,
                     "#FF55FF",
-                    "&f[&d%player_name%'s Ender Chest&f]",
+                    "<white>[<light_purple>%player_name%'s Ender Chest<white>]",
                     "%player_name%'s Ender Chest",
-                    "&dShow your Ender Chest in the chat!"
+                    "<light_purple>Show your Ender Chest in the chat!"
             )
     );
 
@@ -515,14 +516,15 @@ public class Config {
     DiscordAttachments discordAttachments = new DiscordAttachments(
             true,
             new DiscordAttachmentsFormatting(
-                    "&e[&b{FileName}&e]",
-                    "&a(Link)",
+                    "<yellow>[<aqua>{FileName}<yellow>]",
+                    "<green>(Link)",
                     new DiscordAttachmentsFormattingHover(
                             true,
-                            List.of("&bClick to Preview"),
-                            List.of("&eOpen Original")
+                            List.of("<aqua>Click to Preview"),
+                            List.of("<yellow>Open Original")
                     )
             ),
+            "NORMAL",
             true,
             new ImageMapBackground(
                     false,
@@ -574,11 +576,11 @@ public class Config {
                             "%discordsrv_user_tag%",
                             List.of(
                                     "%vault_prefix%%player_name%",
-                                    "&7Status: &cOnline"
+                                    "<gray>Status: <green>Online"
                             ),
                             List.of(
                                     "%vault_prefix%%player_name%",
-                                    "&7Status: &Offline"
+                                    "<gray>Status: <red>Offline"
                             )
                     )
             ),
@@ -601,7 +603,7 @@ public class Config {
                             "%vault_prefix%%player_name%",
                             true,
                             true,
-                            List.of("&aOnline Players ({OnlinePlayers}/100}"),
+                            List.of("<green>Online Players ({OnlinePlayers}/100}"),
                             List.of(""),
                             false,
                             true,
@@ -619,7 +621,7 @@ public class Config {
                     true,
                     true,
                     new DiscordCommandsShareItemInGameMessage(
-                            "&6{Player} shared an Item: &f{ItemTag}"
+                            "<gold>{Player} shared an Item: <white>{ItemTag}"
                     ),
                     "{Player}'s Item"
             ),
@@ -628,19 +630,19 @@ public class Config {
                     true,
                     true,
                     new DiscordCommandsShareInventoryECInGameMessage(
-                            "&6{Player} shared their inventory: &f[&b{Player}'s Inventory&f]",
-                            List.of("&bClick to view!")
+                            "<gold>{Player} shared their inventory: <white>[<aqua>{Player}'s Inventory<white>]",
+                            List.of("<aqua>Click to view!")
                     ),
                     "{Player}'s Inventory",
-                    "&e{Player}"
+                    "<yellow>{Player}"
             ),
             new DiscordCommandsShareEnderChest(
                     true,
                     true,
                     true,
                     new DiscordCommandsShareInventoryECInGameMessage(
-                            "&6{Player} shared their Ender Chest: &f[&d{Player}'s Ender Chest&f]",
-                            List.of("&bClick to view!")
+                            "<gold>{Player} shared their Ender Chest: <white>[<light_purple>{Player}'s Ender Chest<white>]",
+                            List.of("<aqua>Click to view!")
                     ),
                     "{Player}'s Ender Chest"
             )
@@ -651,11 +653,11 @@ public class Config {
             true,
             false,
             "ENTITY_EXPERIENCE_ORB_PICKUP",
-            "&c&lMentioned",
+            "<red><bold>Mentioned",
             1.5,
-            "&9{DiscordUser} &fmentioned you in &9{TextChannel}!",
+            "<blue>{DiscordUser} <white>mentioned you in <blue>{TextChannel}!",
             "",
-            "&9{DiscordMention}"
+            "<blue>{DiscordMention}"
     );
 
     @Comment("\nConfigure the resource handling system")
@@ -724,11 +726,11 @@ public class Config {
             ),
             new UnknownItem(
                     "BARRIER",
-                    "&cUnknown Item {Type}",
+                    "<red>Unknown Item {Type}",
                     List.of(
-                            "&7Unable to parse item!",
-                            "&7This is likely to be an item that",
-                            "&7does not exist in this version of Minecraft."
+                            "<grey>Unable to parse item!",
+                            "<grey>This is likely to be an item that",
+                            "<grey>does not exist in this version of Minecraft."
                     )
             ),
             true

@@ -21,6 +21,13 @@
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.github.retrooper.packetevents.event.PacketListener;
+import com.github.retrooper.packetevents.event.PacketReceiveEvent;
+import com.github.retrooper.packetevents.event.PacketSendEvent;
+import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientChatMessage;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerChatMessage;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSystemChatMessage;
 import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
@@ -102,7 +109,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-public class DiscordCommands implements Listener, SlashCommandProvider {
+public class DiscordCommands implements Listener, SlashCommandProvider, PacketListener {
 
     public static final String RESOURCEPACK_LABEL = "resourcepack";
     public static final String PLAYERINFO_LABEL = "playerinfo";
@@ -1127,17 +1134,24 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
         }
     }
 
-    // todo migrate
-    /*@EventHandler
-    public void onProcessChat(PostPacketComponentProcessEvent event) {
-        Component component = event.getComponent();
-        for (Entry<String, Component> entry : components.entrySet()) {
-            if (PlainTextComponentSerializer.plainText().serialize(component).contains(entry.getKey())) {
-                event.setComponent(ComponentReplacing.replace(component, CustomStringUtils.escapeMetaCharacters(entry.getKey()), false, entry.getValue()));
-                break;
+    @Override
+    public void onPacketSend(PacketSendEvent event) {
+        if (event.getPacketType() == PacketType.Play.Server.SYSTEM_CHAT_MESSAGE) {
+            WrapperPlayServerSystemChatMessage messageWrapper = new WrapperPlayServerSystemChatMessage(event);
+
+            Component component = messageWrapper.getMessage();
+            String plain = PlainTextComponentSerializer.plainText().serialize(component);
+            for (Entry<String, Component> entry : components.entrySet()) {
+                if (plain.contains(entry.getKey())) {
+                    messageWrapper.setMessage(ComponentReplacing.replace(MiniMessage.miniMessage().deserialize(plain), CustomStringUtils.escapeMetaCharacters(entry.getKey()), false, entry.getValue()));
+
+                    event.setLastUsedWrapper(messageWrapper);
+                    event.markForReEncode(true);
+                    break;
+                }
             }
         }
-    }*/
+    }
 
     public static class DiscordCommandRegistrationException extends RuntimeException {
 

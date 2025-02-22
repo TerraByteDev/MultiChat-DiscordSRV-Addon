@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon;
 
+import com.github.retrooper.packetevents.PacketEvents;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageListener;
 import com.loohp.multichatdiscordsrvaddon.command.CommandHandler;
@@ -185,6 +186,8 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
     public void enable() {
         plugin = this;
 
+        PacketEvents.getAPI().init();
+
         ChatUtils.init(this);
         VersionManager.init();
         discordsrv = DiscordSRV.getPlugin();
@@ -314,6 +317,7 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
 
     @Override
     public void disable() {
+        PacketEvents.getAPI().terminate();
         DiscordInteractionEvents.unregisterAll();
 
         if (modelRenderer != null) modelRenderer.close();
