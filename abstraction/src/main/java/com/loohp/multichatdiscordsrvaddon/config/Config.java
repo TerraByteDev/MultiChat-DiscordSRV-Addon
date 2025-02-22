@@ -379,7 +379,7 @@ public class Config {
 
     public record Settings(
             @Comment("THIS IS A WORK IN PROGRESS AND NOT FUNCTIONAL AS OF RIGHT NOW!\nUses Bungeecord / Velocity to request the playerlist, etc.") boolean bungeecord,
-            @Comment("\nWhether to parse PlaceholderAPI placeholders on the main thread.") boolean parsePAPIOnMainThread,
+            @Comment("\nWhether to parse PlaceholderAPI placeholders on the main thread.") boolean parsePlaceholdersOnMainThread,
             @Comment("\nHow long should an item display be stored in memory after its creation?\n(In minutes) - Default 5m") int timeout,
             @Comment("\nSet the cooldown that is shared between all placeholders in this plugin (in seconds).\nPlaceholders will not be parsed in discord messages when a player is in cooldown.") int universalCooldown,
             @Comment("\nMax tag length for items (otherwise it will not be processed).\nGenerally you can leave this as default (30767)") long itemTagMaxLength,

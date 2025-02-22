@@ -56,7 +56,7 @@ public class PlaceholderParser {
     }
 
     public static String parse(OfflinePlayer offlineICPlayer, String str) {
-        if (Config.i().getSettings().parsePAPIOnMainThread() && !Bukkit.isPrimaryThread()) {
+        if (Config.i().getSettings().parsePlaceholdersOnMainThread() && !Bukkit.isPrimaryThread()) {
             try {
                 CompletableFuture<String> future = new CompletableFuture<>();
                 Bukkit.getScheduler().runTask(MultiChatDiscordSrvAddon.plugin, () -> future.complete(parse0(offlineICPlayer, str)));
