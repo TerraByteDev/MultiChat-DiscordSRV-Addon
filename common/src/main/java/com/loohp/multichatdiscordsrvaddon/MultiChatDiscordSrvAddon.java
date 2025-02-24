@@ -220,10 +220,10 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
         getServer().getMessenger().registerIncomingPluginChannel(this, "interchat:main", bungeeMessageListener = new BungeeMessageListener());
 
         inboundToGameEvents = new InboundToGameEvents();
+        DiscordSRV.api.subscribe(inboundToGameEvents);
         DiscordSRV.api.subscribe(new DiscordReadyEvents());
         DiscordSRV.api.subscribe(new LegacyDiscordCommandEvents());
         DiscordSRV.api.subscribe(new OutboundToDiscordEvents());
-        DiscordSRV.api.subscribe(inboundToGameEvents);
 
         placeholderCooldownManager = new PlaceholderCooldownManager();
 

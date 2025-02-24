@@ -83,7 +83,7 @@ import java.util.stream.Collectors;
 
 public class InboundToGameEvents implements Listener, PacketListener {
 
-    public static final Pattern TENOR_HTML_PATTERN = Pattern.compile("<link class=\\\"dynamic\\\" rel=\\\"image_src\\\" href=\\\"https://media1\\.tenor\\.com/m/(.*?)/.*?\\\">");
+    public static final Pattern TENOR_HTML_PATTERN = Pattern.compile("<link class=\"dynamic\" rel=\"image_src\" href=\"https://media1\\.tenor\\.com/m/(.*?)/.*?\">");
 
     public static final Map<UUID, DiscordAttachmentData> DATA = new ConcurrentHashMap<>();
     public static final Map<Player, GraphicsToPacketMapWrapper> MAP_VIEWERS = new ConcurrentHashMap<>();
