@@ -80,7 +80,7 @@ public class ChatControlIntegration implements MultiChatIntegration {
 
     public void onChannelPreChatEvent(ChannelPreChatEvent event) {
         try {
-            Checker checker = ChatControlAPI.checkMessage(WrappedSender.fromSender(event.getSender()), event.getMessage());
+            Checker checker = ChatControlAPI.checkMessage(WrappedSender.fromSender(event.getSender()), event.getMessage().replaceFirst("!", ""));
             if (checker.isCancelledSilently()) return;
 
             String formatted = formatForDiscord(checker.getMessage());
