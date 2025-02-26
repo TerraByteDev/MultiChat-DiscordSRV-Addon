@@ -27,6 +27,7 @@ public class ReloadConfigCommand {
             if (plugin.resourceReloadLock.tryLock(0, TimeUnit.MILLISECONDS)) {
                 try {
                     Config.reload();
+                     plugin.processConfigs();
                     ImageGeneration.onConfigReload();
                     Bukkit.getPluginManager().callEvent(new MultiChatDiscordSRVConfigReloadEvent());
                     ChatUtils.sendMessage(Config.i().getMessages().reloadConfig(), sender);
