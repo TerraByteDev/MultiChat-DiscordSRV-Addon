@@ -53,10 +53,14 @@ public class ChatControlRedIntegration implements MultiChatIntegration {
 
     @Override
     public String filter(MessageSender messageSender, String message) {
-        Checker checker = Checker.filterChannel(messageSender, message, null);
-        if (checker.isCancelledSilently()) return "";
+        try {
+            Checker checker = Checker.filterChannel(messageSender, message, null);
+            if (checker.isCancelledSilently()) return "";
 
-        return formatForDiscord(checker.getMessage());
+            return formatForDiscord(checker.getMessage());
+        } catch (Exception ignored) {}
+
+        return "";
     }
 
     public void onChannelChatEvent(ChatChannelEvent event) {

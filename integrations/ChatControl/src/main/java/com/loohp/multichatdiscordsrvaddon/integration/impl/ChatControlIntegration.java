@@ -58,35 +58,41 @@ public class ChatControlIntegration implements MultiChatIntegration {
     @SuppressWarnings("DataFlowIssue")
     @Override
     public String filter(MessageSender messageSender, String message) {
-        String dynmapUsername = messageSender.getName();
+        try {
+            String dynmapUsername = messageSender.getName();
 
-        DynmapSender chatControlDynmapSender = null;
-        if (!dynmapUsername.isEmpty()) {
-            Player player = Bukkit.getPlayerExact(dynmapUsername);
-            if (player != null) chatControlDynmapSender = new DynmapSender(dynmapUsername, player.getUniqueId(), player);
-        } else {
-            chatControlDynmapSender = new DynmapSender(Config.i().getHook().dynmap().fallbackName(), ChatUtils.ZERO_UUID, null);
-        }
+            DynmapSender chatControlDynmapSender = null;
+            if (!dynmapUsername.isEmpty()) {
+                Player player = Bukkit.getPlayerExact(dynmapUsername);
+                if (player != null) chatControlDynmapSender = new DynmapSender(dynmapUsername, player.getUniqueId(), player);
+            } else {
+                chatControlDynmapSender = new DynmapSender(Config.i().getHook().dynmap().fallbackName(), ChatUtils.ZERO_UUID, null);
+            }
 
-        Checker checker = ChatControlAPI.checkMessage(WrappedSender.fromDynmap(chatControlDynmapSender), message);
-        if (checker.isCancelledSilently()) return "";
+            Checker checker = ChatControlAPI.checkMessage(WrappedSender.fromDynmap(chatControlDynmapSender), message);
+            if (checker.isCancelledSilently()) return "";
 
-        return formatForDiscord(checker.getMessage());
+            return formatForDiscord(checker.getMessage());
+        } catch (Exception ignored) {}
+
+        return "";
     }
 
     public void onChannelPreChatEvent(ChannelPreChatEvent event) {
-        Checker checker = ChatControlAPI.checkMessage(WrappedSender.fromSender(event.getSender()), event.getMessage());
-        if (checker.isCancelledSilently()) return;
+        try {
+            Checker checker = ChatControlAPI.checkMessage(WrappedSender.fromSender(event.getSender()), event.getMessage());
+            if (checker.isCancelledSilently()) return;
 
-        String formatted = formatForDiscord(checker.getMessage());
+            String formatted = formatForDiscord(checker.getMessage());
 
-        ChatUtils.toAllow.add(formatted);
-        DiscordSRV.getPlugin().processChatMessage(
-                (Player) event.getSender(),
-                formatted,
-                DiscordSRV.getPlugin().getOptionalChannel("global"),
-                false
-        );
+            ChatUtils.toAllow.add(formatted);
+            DiscordSRV.getPlugin().processChatMessage(
+                    (Player) event.getSender(),
+                    formatted,
+                    DiscordSRV.getPlugin().getOptionalChannel("global"),
+                    false
+            );
+        } catch (Exception ignored) {}
     }
 
     public void onPlayerMessage(AsyncPlayerChatEvent event) {
