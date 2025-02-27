@@ -24,6 +24,7 @@ import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 
 import java.util.Arrays;
@@ -179,6 +180,9 @@ public class ChatColorUtils {
         if (text == null || text.length() < 2) {
             return text;
         }
+
+        text = LegacyComponentSerializer.legacyAmpersand().serialize(MiniMessage.miniMessage().deserialize(text));
+
         if (!legacyRGB) {
             if (rgbTags) {
                 Matcher matcher = COLOR_TAG_PATTERN.matcher(text);
