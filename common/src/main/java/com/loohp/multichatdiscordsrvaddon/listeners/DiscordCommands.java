@@ -675,6 +675,12 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                     errorCode--;
                     String title = ChatColorUtils.stripColor(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlineICPlayer, Config.i().getDiscordCommands().playerInfo().infoFormatting().title())));
                     String subtitle = ChatColorUtils.stripColor(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlineICPlayer, Config.i().getDiscordCommands().playerInfo().infoFormatting().subtitle())));
+
+                    if (Config.i().getDiscordCommands().playerInfo().parsePlaceholdersTwice()) {
+                        title = ChatColorUtils.stripColor(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlineICPlayer, title)));
+                        subtitle = ChatColorUtils.stripColor(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlineICPlayer, subtitle)));
+                    }
+
                     BufferedImage image = ImageGeneration.getToolTipImage(playerInfoComponents, null);
                     errorCode--;
                     byte[] data = ImageUtils.toArray(image);
