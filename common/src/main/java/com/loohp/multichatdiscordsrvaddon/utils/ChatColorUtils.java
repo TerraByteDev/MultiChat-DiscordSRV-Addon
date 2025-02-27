@@ -181,7 +181,7 @@ public class ChatColorUtils {
             return text;
         }
 
-        text = LegacyComponentSerializer.legacyAmpersand().serialize(LegacyComponentSerializer.legacySection().deserialize(text));
+        text = miniMessageToLegacy(text);
 
         if (!legacyRGB) {
             if (rgbTags) {
@@ -246,6 +246,39 @@ public class ChatColorUtils {
         text = sb.toString();
 
         return text;
+    }
+
+    public static String miniMessageToLegacy(String message) {
+        message = message.replace("<dark_red>", "&4");
+        message = message.replace("<red>", "&c");
+        message = message.replace("<gold>", "&6");
+        message = message.replace("<yellow>", "&e");
+        message = message.replace("<dark_green>", "&2");
+        message = message.replace("<green>", "&a");
+        message = message.replace("<aqua>", "&b");
+        message = message.replace("<dark_aqua>", "&3");
+        message = message.replace("<dark_blue>", "&1");
+        message = message.replace("<blue>", "&9");
+        message = message.replace("<light_purple>", "&d");
+        message = message.replace("<dark_purple>", "&5");
+        message = message.replace("<white>", "&f");
+        message = message.replace("<gray>", "&7");
+        message = message.replace("<dark_gray>", "&8");
+        message = message.replace("<black>", "&0");
+        message = message.replace("<b>", "&l");
+        message = message.replace("<bold>", "&l");
+        message = message.replace("<obf>", "&k");
+        message = message.replace("<obfuscated>", "&k");
+        message = message.replace("<st>", "&m");
+        message = message.replace("<strikethrough>", "&m");
+        message = message.replace("<u>", "&n");
+        message = message.replace("<underline>", "&n");
+        message = message.replace("<i>", "&o");
+        message = message.replace("<italic>", "&o");
+        message = message.replace("<reset>", "&r");
+        message = message.replace("<r>", "&r");
+
+        return message;
     }
 
     public static Component format(String toFormat) {
