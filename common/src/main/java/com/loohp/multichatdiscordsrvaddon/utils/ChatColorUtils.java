@@ -181,7 +181,7 @@ public class ChatColorUtils {
             return text;
         }
 
-        text = LegacyComponentSerializer.legacyAmpersand().serialize(MiniMessage.miniMessage().deserialize(text));
+        text = LegacyComponentSerializer.legacyAmpersand().serialize(LegacyComponentSerializer.legacySection().deserialize(text));
 
         if (!legacyRGB) {
             if (rgbTags) {
