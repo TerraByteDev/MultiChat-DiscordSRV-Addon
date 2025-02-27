@@ -656,7 +656,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                             each = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlineICPlayer, each));
 
                             if (Config.i().getDiscordCommands().playerInfo().parsePlaceholdersTwice()) {
-                                each = ChatColorUtils.translateAlternateColorCodes('&', each);
+                                each = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlineICPlayer, each));
                             }
 
                             return ToolTipComponent.text(LegacyComponentSerializer.legacySection().deserialize(each));
@@ -666,7 +666,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                             each = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlineICPlayer, each));
 
                             if (Config.i().getDiscordCommands().playerInfo().parsePlaceholdersTwice()) {
-                                each = ChatColorUtils.translateAlternateColorCodes('&', each);
+                                each = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlineICPlayer, each));
                             }
 
                             return ToolTipComponent.text(LegacyComponentSerializer.legacySection().deserialize(each));
