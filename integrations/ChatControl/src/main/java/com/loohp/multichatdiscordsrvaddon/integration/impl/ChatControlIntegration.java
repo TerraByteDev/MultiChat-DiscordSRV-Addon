@@ -8,6 +8,8 @@ import github.scarsz.discordsrv.DiscordSRV;
 import lombok.Getter;
 import me.lucko.helper.Events;
 import me.lucko.helper.event.filter.EventFilters;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
@@ -19,6 +21,10 @@ import org.mineacademy.chatcontrol.api.ChatControlAPI;
 import org.mineacademy.chatcontrol.lib.model.DynmapSender;
 import org.mineacademy.chatcontrol.model.Checker;
 import org.mineacademy.chatcontrol.model.WrappedSender;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @SuppressWarnings("deprecation")
 @Getter
@@ -39,6 +45,13 @@ public class ChatControlIntegration implements MultiChatIntegration {
         if (eventPriority == null) throw new IllegalArgumentException("Unknown Hook event priority: " + Config.i().getHook().priority());
 
         Events.subscribe(ChannelPostChatEvent.class, eventPriority)
+                .filter(EventFilters.ignoreCancelled())
+                .filter(e -> Config.i().getHook().useChannels())
+                .filter(e -> !Config.i().getHook().ignoredChannels().contains(e.getChannel().getName()))
+                .filter(e -> e.getSender() instanceof Player)
+                .handler(this::onChannelPostChatEvent);
+
+        Events.subscribe(ChannelPreChatEvent.class, eventPriority)
                 .filter(EventFilters.ignoreCancelled())
                 .filter(e -> Config.i().getHook().useChannels())
                 .filter(e -> !Config.i().getHook().ignoredChannels().contains(e.getChannel().getName()))
@@ -79,15 +92,29 @@ public class ChatControlIntegration implements MultiChatIntegration {
         return "";
     }
 
-    public void onChannelPreChatEvent(ChannelPostChatEvent event) {
-        try {
-            String formattedPre = formatForDiscord(event.getFormat().toPlain());
-            String formatted = formatForDiscord(event.getMessage());
+    private final Map<UUID, String> lastMessage = new HashMap<>();
 
-            ChatUtils.toAllow.put(formattedPre, formatted);
+    public void onChannelPreChatEvent(ChannelPreChatEvent event) {
+        try {
+            String formatted = formatForDiscord(event.getMessage());
+            lastMessage.put(((Player) event.getSender()).getUniqueId(), formatted);
+        } catch (Exception ignored) {}
+    }
+
+    public void onChannelPostChatEvent(ChannelPostChatEvent event) {
+        String plain = PlainTextComponentSerializer.plainText().serialize(MiniMessage.miniMessage().deserialize(event.getMessage()));
+        String formatted = formatForDiscord(plain);
+        try {
+            Player sender = (Player) event.getSender();
+
+            String lastMsg = lastMessage.get(sender.getUniqueId());
+            if (lastMsg == null) return;
+            lastMessage.remove(sender.getUniqueId());
+
+            ChatUtils.toAllow.put(formatted, lastMsg);
             DiscordSRV.getPlugin().processChatMessage(
-                    (Player) event.getSender(),
-                    formattedPre,
+                    sender,
+                    formatted,
                     DiscordSRV.getPlugin().getOptionalChannel("global"),
                     false
             );

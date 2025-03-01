@@ -181,17 +181,16 @@ public class OutboundToDiscordEvents implements Listener {
 
         boolean pluginHookEnabled = Config.i().getHook().shouldHook();
 
-        String originalPlain = event.getMessage();
+        String originalPlain;
 
         if (event.isCancelled()) {
             Debug.debug("onGameToDiscord already cancelled");
             return;
         } else if (pluginHookEnabled && !toAllow.containsKey(event.getMessage())) {
-            originalPlain = toAllow.get(event.getMessage());
-
             event.setCancelled(true);
             return;
-        }
+        } else originalPlain = toAllow.get(event.getMessage());
+
         if (pluginHookEnabled) toAllow.remove(event.getMessage());
         MultiChatDiscordSrvAddon.plugin.messagesCounter.incrementAndGet();
 
@@ -376,10 +375,14 @@ public class OutboundToDiscordEvents implements Listener {
 
                     AtomicBoolean replaced = new AtomicBoolean(false);
                     Component replaceComponent = LegacyComponentSerializer.legacySection().deserialize(replaceText);
+
+                    component = ComponentReplacing.replace(component, "\\[.*" + (icSender.isOnline() ? PlainTextComponentSerializer.plainText().serialize(NMS.getInstance().getItemStackDisplayName(icSender.getPlayer().getEquipment().getItemInMainHand())) : "item") + ".*\\]", true, Component.text("[item]"));
+
                     component = ComponentReplacing.replace(component, MultiChatDiscordSrvAddon.itemPlaceholder.getKeyword().pattern(), true, (groups) -> {
                         replaced.set(true);
                         return replaceComponent;
                     });
+
                     if (replaced.get() && Config.i().getInventoryImage().item().enabled()) {
                         int inventoryId = DATA_ID_PROVIDER.getNext();
                         int position = matcher.start();
