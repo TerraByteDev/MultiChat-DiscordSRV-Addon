@@ -49,7 +49,7 @@ public class CarbonChatIntegration implements MultiChatIntegration {
         if (player == null || !player.isOnline()) return;
 
         String plainMessage = PlainTextComponentSerializer.plainText().serialize(event.message());
-        ChatUtils.toAllow.add(plainMessage);
+        ChatUtils.toAllow.put(plainMessage, plainMessage);
         DiscordSRV.getPlugin().processChatMessage(
                 player,
                 plainMessage,

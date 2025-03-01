@@ -181,10 +181,14 @@ public class OutboundToDiscordEvents implements Listener {
 
         boolean pluginHookEnabled = Config.i().getHook().shouldHook();
 
+        String originalPlain = event.getMessage();
+
         if (event.isCancelled()) {
             Debug.debug("onGameToDiscord already cancelled");
             return;
-        } else if (pluginHookEnabled && !toAllow.contains(event.getMessage())) {
+        } else if (pluginHookEnabled && !toAllow.containsKey(event.getMessage())) {
+            originalPlain = toAllow.get(event.getMessage());
+
             event.setCancelled(true);
             return;
         }
@@ -195,7 +199,7 @@ public class OutboundToDiscordEvents implements Listener {
         OfflinePlayer icSender = Bukkit.getOfflinePlayer(sender.getUniqueId());
         Component message = ComponentStringUtils.toRegularComponent(event.getMessageComponent());
 
-        message = processGameMessage(icSender, message);
+        message = processGameMessage(icSender, message, Component.text(originalPlain));
 
         if (message == null) {
             event.setCancelled(true);
@@ -267,7 +271,7 @@ public class OutboundToDiscordEvents implements Listener {
         }
         Component message = ComponentStringUtils.toRegularComponent(event.getMessageComponent());
 
-        message = processGameMessage(icSender, message);
+        message = processGameMessage(icSender, message, message);
 
         if (message == null) {
             event.setCancelled(true);
@@ -277,7 +281,7 @@ public class OutboundToDiscordEvents implements Listener {
         event.setMessageComponent(ComponentStringUtils.toDiscordSRVComponent(message));
     }
 
-    public Component processGameMessage(OfflinePlayer icSender, Component component) {
+    public Component processGameMessage(OfflinePlayer icSender, Component component, Component originalPlain) {
         boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
         PlaceholderCooldownManager cooldownManager = MultiChatDiscordSrvAddon.placeholderCooldownManager;
         long now = cooldownManager.checkMessage(icSender.getUniqueId(), PlainTextComponentSerializer.plainText().serialize(component)).getTimeNow();
@@ -289,7 +293,7 @@ public class OutboundToDiscordEvents implements Listener {
         }
         component = ComponentFlattening.flatten(gameMessagePreProcessEvent.getComponent());
 
-        String plain = MultiChatComponentSerializer.plainText().serialize(component);
+        String plain = MultiChatComponentSerializer.plainText().serialize(originalPlain);
 
         Debug.debug("onGameToDiscord processing custom placeholders");
         for (ICPlaceholder placeholder : MultiChatDiscordSrvAddonAPI.getPlaceholderList()) {

@@ -387,6 +387,8 @@ public class ComponentStringUtils {
     }
 
     public static String stripColorAndConvertMagic(FontProvider provider, String str) {
+        str = ChatColorUtils.miniMessageToLegacy(str);
+
         StringBuilder sb = new StringBuilder();
         str = str.replaceAll(ChatColor.COLOR_CHAR + "[l-o]", "").replaceAll(ChatColor.COLOR_CHAR + "[0-9a-fxA-F]", ChatColor.COLOR_CHAR + "r");
         boolean magic = false;

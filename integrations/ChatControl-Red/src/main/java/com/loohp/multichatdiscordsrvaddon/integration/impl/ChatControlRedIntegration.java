@@ -66,7 +66,7 @@ public class ChatControlRedIntegration implements MultiChatIntegration {
     public void onChannelChatEvent(ChatChannelEvent event) {
         String formatted = formatForDiscord(event.getMessage());
 
-        ChatUtils.toAllow.add(formatted);
+        ChatUtils.toAllow.put(formatted, formatted);
         DiscordSRV.getPlugin().processChatMessage(
                 (Player) event.getSender(),
                 formatted,
@@ -78,7 +78,7 @@ public class ChatControlRedIntegration implements MultiChatIntegration {
     public void onPlayerMessage(AsyncPlayerChatEvent event) {
         String formatted = formatForDiscord(event.getMessage());
 
-        ChatUtils.toAllow.add(formatted);
+        ChatUtils.toAllow.put(formatted, formatted);
         DiscordSRV.getPlugin().processChatMessage(
                 event.getPlayer(),
                 formatted,

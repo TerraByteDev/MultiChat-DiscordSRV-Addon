@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mineacademy.chatcontrol.api.ChannelPostChatEvent;
 import org.mineacademy.chatcontrol.api.ChannelPreChatEvent;
 import org.mineacademy.chatcontrol.api.ChatControlAPI;
 import org.mineacademy.chatcontrol.lib.model.DynmapSender;
@@ -37,7 +38,7 @@ public class ChatControlIntegration implements MultiChatIntegration {
         EventPriority eventPriority = EventPriority.valueOf(Config.i().getHook().priority());
         if (eventPriority == null) throw new IllegalArgumentException("Unknown Hook event priority: " + Config.i().getHook().priority());
 
-        Events.subscribe(ChannelPreChatEvent.class, eventPriority)
+        Events.subscribe(ChannelPostChatEvent.class, eventPriority)
                 .filter(EventFilters.ignoreCancelled())
                 .filter(e -> Config.i().getHook().useChannels())
                 .filter(e -> !Config.i().getHook().ignoredChannels().contains(e.getChannel().getName()))
@@ -78,17 +79,15 @@ public class ChatControlIntegration implements MultiChatIntegration {
         return "";
     }
 
-    public void onChannelPreChatEvent(ChannelPreChatEvent event) {
+    public void onChannelPreChatEvent(ChannelPostChatEvent event) {
         try {
-            Checker checker = ChatControlAPI.checkMessage(WrappedSender.fromSender(event.getSender()), event.getMessage());
-            if (checker.isCancelledSilently()) return;
+            String formattedPre = formatForDiscord(event.getFormat().toPlain());
+            String formatted = formatForDiscord(event.getMessage());
 
-            String formatted = formatForDiscord(checker.getMessage());
-
-            ChatUtils.toAllow.add(formatted);
+            ChatUtils.toAllow.put(formattedPre, formatted);
             DiscordSRV.getPlugin().processChatMessage(
                     (Player) event.getSender(),
-                    formatted,
+                    formattedPre,
                     DiscordSRV.getPlugin().getOptionalChannel("global"),
                     false
             );
@@ -98,7 +97,7 @@ public class ChatControlIntegration implements MultiChatIntegration {
     public void onPlayerMessage(AsyncPlayerChatEvent event) {
         String formatted = formatForDiscord(event.getMessage());
 
-        ChatUtils.toAllow.add(formatted);
+        ChatUtils.toAllow.put(formatted, formatted);
         DiscordSRV.getPlugin().processChatMessage(
                 event.getPlayer(),
                 formatted,
