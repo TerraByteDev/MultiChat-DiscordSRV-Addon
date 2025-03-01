@@ -61,7 +61,7 @@ public class ZelChatIntegration extends ExternalModule implements MultiChatInteg
 
         String formatted = formatForDiscord(chatMessage.getRawMessage());
 
-        ChatUtils.toAllow.add(formatted);
+        ChatUtils.toAllow.put(formatted, formatted);
         DiscordSRV.getPlugin().processChatMessage(
                 chatMessage.getBukkitPlayer(),
                 formatted,
