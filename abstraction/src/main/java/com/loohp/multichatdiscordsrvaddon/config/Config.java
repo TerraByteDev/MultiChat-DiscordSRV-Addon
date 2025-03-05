@@ -426,6 +426,7 @@ public class Config {
 
     public record StandaloneFormat(
             @Comment("Use webhooks instead of plain text messages.") boolean useWebhooks,
+            @Comment("Name of the webhook. Will be created automatically.") String webhookName,
             @Comment("Skin API to use. Supports PAPI Placeholders.\nFormat: %uuid% - Player's UUID / %username% - Player's Username\nOnly applies if useWebhooks is set to true.") String avatarURL,
             @Comment("Format for player name - for webhooks, the webhook name. For plain text, the text before. Supports PAPI Placeholders.\nFormat: %username% - Player's Username") String playerNameFormat,
             @Comment("Format for plain text messages (assuming useWebhooks is set to false).\nFormat: %username% - The configured, PARSED playerNameFormat (as configured above)") String plainTextFormat
@@ -799,6 +800,7 @@ public class Config {
             "REPLACE_ME",
             new StandaloneFormat(
                     true,
+                    "MCDSRV-Standalone",
                     "https://mc-heads.net/avatar/%uuid%",
                     "%vault_prefix%%username%",
                     "%"

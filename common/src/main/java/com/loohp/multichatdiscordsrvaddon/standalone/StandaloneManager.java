@@ -5,6 +5,7 @@ import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Webhook;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
@@ -12,11 +13,12 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 import java.time.Duration;
 
+@Getter
 public class StandaloneManager {
 
     private JDA jda;
-    @Getter
     private TextChannel textChannel;
+    private Webhook webhook;
 
     private StandalonePresenceHandler presenceHandler;
 
@@ -29,13 +31,14 @@ public class StandaloneManager {
                     .build();
 
             this.jda.awaitReady();
-
             fetchGlobalChannel();
 
             if (Config.i().getStandalone().botPresence().enabled()) {
                 this.presenceHandler = new StandalonePresenceHandler();
                 this.presenceHandler.start(this.jda);
             }
+
+            if (Config.i().getStandalone().formatting().useWebhooks()) StandaloneWebhookManager.fetchWebhook(this);
         } catch (InterruptedException exception) {
             ChatUtils.sendMessage("Failed to initialise MultiChatDiscordSRVAddon Standalone implementation!");
             exception.printStackTrace();
