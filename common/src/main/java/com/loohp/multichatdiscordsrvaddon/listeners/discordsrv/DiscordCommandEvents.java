@@ -18,7 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.loohp.multichatdiscordsrvaddon.listeners;
+package com.loohp.multichatdiscordsrvaddon.listeners.discordsrv;
 
 import com.loohp.multichatdiscordsrvaddon.utils.DiscordCommandDataUtils;
 import github.scarsz.discordsrv.DiscordSRV;

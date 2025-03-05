@@ -27,7 +27,7 @@ import com.loohp.multichatdiscordsrvaddon.utils.ColorUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.VersionManager;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageFrame;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
-import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents;
+import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.InboundToGameEvents;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import lombok.Getter;
 import org.bukkit.entity.Player;

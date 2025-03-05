@@ -162,6 +162,10 @@
                                     <pattern>org.objectweb</pattern>
                                     <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.org.objectweb</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>net.dv8tion</pattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.net.dv8tion</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -699,6 +703,12 @@
             <artifactId>packetevents-spigot</artifactId>
             <version>2.7.0</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.dv8tion</groupId>
+            <artifactId>JDA</artifactId>
+            <version>5.3.0</version>
         </dependency>
     </dependencies>
 </project>

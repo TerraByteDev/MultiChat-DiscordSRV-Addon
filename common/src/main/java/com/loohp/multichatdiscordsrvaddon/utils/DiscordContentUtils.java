@@ -29,7 +29,7 @@ import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
-import com.loohp.multichatdiscordsrvaddon.listeners.DiscordInteractionEvents;
+import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.DiscordInteractionEvents;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.registry.ResourceRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.CustomItemTextureRegistry;

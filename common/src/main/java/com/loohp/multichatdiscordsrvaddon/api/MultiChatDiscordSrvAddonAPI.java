@@ -22,8 +22,8 @@ package com.loohp.multichatdiscordsrvaddon.api;
 
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
-import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents;
-import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents.DiscordAttachmentData;
+import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.InboundToGameEvents;
+import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.InboundToGameEvents.DiscordAttachmentData;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;

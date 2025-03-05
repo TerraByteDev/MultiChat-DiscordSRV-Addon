@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.lucko.helper.internal.LoaderUtils;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -422,6 +424,33 @@ public class Config {
             @Comment("\n") DynmapHook dynmap
     ) {}
 
+    public record StandaloneFormat(
+            @Comment("Use webhooks instead of plain text messages.") boolean useWebhooks,
+            @Comment("Skin API to use. Supports PAPI Placeholders.\nFormat: %uuid% - Player's UUID / %username% - Player's Username\nOnly applies if useWebhooks is set to true.") String avatarURL,
+            @Comment("Format for player name - for webhooks, the webhook name. For plain text, the text before. Supports PAPI Placeholders.\nFormat: %username% - Player's Username") String playerNameFormat,
+            @Comment("Format for plain text messages (assuming useWebhooks is set to false).\nFormat: %username% - The configured, PARSED playerNameFormat (as configured above)") String plainTextFormat
+    ) {}
+
+    public record PresenceObject(
+            @Comment("Status of the bot for this presence.\nSupported status types: IDLE, ONLINE, DO_NOT_DISTURB, OFFLINE, INVISIBLE") OnlineStatus status,
+            @Comment("Activity types of the bot for this presence.\nSupported activity types: PLAYING, COMPETING, LISTENING, STREAMING, WATCHING") Activity.ActivityType type,
+            @Comment("Activity description of the bot for this presence.") String description
+    ) {}
+
+    public record StandalonePresence(
+            @Comment("Whether to enable bot presence.") boolean enabled,
+            @Comment("How often should the presence be changed? In seconds - do not set this too low!") int presenceInterval,
+            @Comment("All the presences that can be displayed. Cycled through on the configured interval (above)") List<PresenceObject> presences
+    ) {}
+
+    public record Standalone(
+            @Comment("This will DISABLE DiscordSRV integration.") boolean enabled,
+            @Comment("\nBot token that should be used.") String token,
+            @Comment("Channel that all messages should be directed to") String channelID,
+            @Comment("\nConfigure formatting here.") StandaloneFormat formatting,
+            @Comment("\nConfigure the bot's presence") StandalonePresence botPresence
+    ) {}
+
     public record Debug(
             boolean printInfoToConsole,
             boolean pluginMessagePacketVerbose
@@ -753,6 +782,33 @@ public class Config {
             new DynmapHook(
                     true,
                     "Dynmap"
+            )
+    );
+
+    @Comment("\nThe Standalone version of this plugin. " +
+            "This is for people who want better Proxy support, and more \"barebones\" discord linking.\n" +
+            "Standalone currently has the following features:" +
+            "- Account Linking" +
+            "- TODO: Proxy synchronisation for inventories, etc (Redis)" +
+            "- PAPI support (obviously)" +
+            "- Just check the below configs. too lazy\n" +
+            "Bear in mind that the discordattachment/commands/etc configs still apply!")
+    Standalone standalone = new Standalone(
+            false,
+            "REPLACE_ME",
+            "REPLACE_ME",
+            new StandaloneFormat(
+                    true,
+                    "https://mc-heads.net/avatar/%uuid%",
+                    "%vault_prefix%%username%",
+                    "%"
+            ),
+            new StandalonePresence(
+                    true,
+                    300,
+                    List.of(
+                            new PresenceObject(BotStatusType.ONLINE, PresenceType.PLAYING, "my amazing server")
+                    )
             )
     );
 

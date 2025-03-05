@@ -1,7 +1,7 @@
 package com.loohp.multichatdiscordsrvaddon.command.subcommand;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
-import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents;
+import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.InboundToGameEvents;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import com.loohp.multichatdiscordsrvaddon.wrappers.GraphicsToPacketMapWrapper;
 import org.bukkit.command.CommandSender;
