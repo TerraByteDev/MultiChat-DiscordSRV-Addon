@@ -1,10 +1,10 @@
 package com.loohp.multichatdiscordsrvaddon.integration.impl;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.event.InternalServerChatEvent;
 import com.loohp.multichatdiscordsrvaddon.integration.MultiChatIntegration;
 import com.loohp.multichatdiscordsrvaddon.integration.sender.MessageSender;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
-import github.scarsz.discordsrv.DiscordSRV;
 import lombok.Getter;
 import net.draycia.carbon.api.CarbonChat;
 import net.draycia.carbon.api.CarbonChatProvider;
@@ -37,6 +37,7 @@ public class CarbonChatIntegration implements MultiChatIntegration {
         this.configManager = carbonChatInternal.injector().getInstance(ConfigManager.class);
 
         carbonChat.eventHandler().subscribe(CarbonChatEvent.class, this::onCarbonChat);
+        ChatUtils.sendMessage("<green>Registered Carbon Chat module!");
     }
 
     public void onCarbonChat(CarbonChatEvent event) {
@@ -48,16 +49,10 @@ public class CarbonChatIntegration implements MultiChatIntegration {
         Player player = Bukkit.getPlayer(event.sender().uuid());
         if (player == null || !player.isOnline()) return;
 
-        String plainMessage = PlainTextComponentSerializer.plainText().serialize(event.message());
+        String plainMessage = MultiChatIntegration.formatForDiscord(PlainTextComponentSerializer.plainText().serialize(event.message()));
         ChatUtils.toAllow.put(plainMessage, plainMessage);
-        DiscordSRV.getPlugin().processChatMessage(
-                player,
-                plainMessage,
-                DiscordSRV.getPlugin().getOptionalChannel("global"),
-                false
-        );
 
-        ChatUtils.sendMessage("<green>Registered Carbon Chat module!");
+        Bukkit.getPluginManager().callEvent(new InternalServerChatEvent(plainMessage, plainMessage, player, true));
     }
 
     @Override

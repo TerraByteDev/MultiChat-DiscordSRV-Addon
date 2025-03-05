@@ -1,6 +1,8 @@
 package com.loohp.multichatdiscordsrvaddon.integration;
 
 import com.loohp.multichatdiscordsrvaddon.integration.sender.MessageSender;
+import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public interface MultiChatIntegration {
@@ -15,8 +17,8 @@ public interface MultiChatIntegration {
 
     String filter(MessageSender messageSender, String message);
 
-    default String formatForDiscord(String string) {
-        return string.replace("*", "\\*");
+    static String formatForDiscord(String string) {
+        return DiscordSerializer.INSTANCE.serialize(Component.text(string.replace("*", "\\*")));
     }
 
 }

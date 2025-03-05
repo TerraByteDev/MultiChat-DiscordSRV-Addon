@@ -1,10 +1,10 @@
 package com.loohp.multichatdiscordsrvaddon.integration.impl;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.event.InternalServerChatEvent;
 import com.loohp.multichatdiscordsrvaddon.integration.sender.MessageSender;
 import com.loohp.multichatdiscordsrvaddon.integration.MultiChatIntegration;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
-import github.scarsz.discordsrv.DiscordSRV;
 import it.pino.zelchat.api.ZelChatAPI;
 import it.pino.zelchat.api.formatter.module.external.ExternalModule;
 import it.pino.zelchat.api.formatter.module.priority.ModulePriority;
@@ -59,15 +59,10 @@ public class ZelChatIntegration extends ExternalModule implements MultiChatInteg
 
         // todo wait for pino to expose filtering thru api
 
-        String formatted = formatForDiscord(chatMessage.getRawMessage());
+        String formatted = MultiChatIntegration.formatForDiscord(chatMessage.getRawMessage());
 
         ChatUtils.toAllow.put(formatted, formatted);
-        DiscordSRV.getPlugin().processChatMessage(
-                chatMessage.getBukkitPlayer(),
-                formatted,
-                DiscordSRV.getPlugin().getOptionalChannel("global"),
-                false
-        );
+        Bukkit.getPluginManager().callEvent(new InternalServerChatEvent(formatted, formatted, chatMessage.getBukkitPlayer(), true));
 
         return chatMessage;
     }

@@ -21,8 +21,10 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,6 +35,7 @@ import org.json.simple.parser.JSONParser;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.UUID;
 
 public class SkinUtils {
@@ -96,6 +99,18 @@ public class SkinUtils {
             }
         }
         throw new RuntimeException("Unable to retrieve skin url from Mojang servers for the player " + uuid);
+    }
+
+    /**
+     * For standalone!
+     * @return String of the formatted URL
+     */
+    public static String getFormattedSkinURL(OfflinePlayer player) {
+        String avatarURL = Config.i().getStandalone().formatting().avatarURL()
+                .replace("%uuid%", player.getUniqueId().toString())
+                .replace("%username%", Objects.requireNonNull(player.getName()));
+
+        return PlaceholderParser.parse(player, avatarURL);
     }
 
 }

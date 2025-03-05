@@ -1,10 +1,10 @@
 package com.loohp.multichatdiscordsrvaddon.integration.impl;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.event.InternalServerChatEvent;
 import com.loohp.multichatdiscordsrvaddon.integration.sender.MessageSender;
 import com.loohp.multichatdiscordsrvaddon.integration.MultiChatIntegration;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
-import github.scarsz.discordsrv.DiscordSRV;
 import lombok.Getter;
 import me.lucko.helper.Events;
 import me.lucko.helper.event.filter.EventFilters;
@@ -16,7 +16,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mineacademy.chatcontrol.api.ChatChannelEvent;
 import org.mineacademy.chatcontrol.model.Checker;
 
-@SuppressWarnings("deprecation")
 @Getter
 public class ChatControlRedIntegration implements MultiChatIntegration {
 
@@ -57,33 +56,23 @@ public class ChatControlRedIntegration implements MultiChatIntegration {
             Checker checker = Checker.filterChannel(messageSender, message, null);
             if (checker.isCancelledSilently()) return "";
 
-            return formatForDiscord(checker.getMessage());
+            return checker.getMessage();
         } catch (Exception ignored) {}
 
         return "";
     }
 
     public void onChannelChatEvent(ChatChannelEvent event) {
-        String formatted = formatForDiscord(event.getMessage());
+        String formatted = MultiChatIntegration.formatForDiscord(event.getMessage());
 
         ChatUtils.toAllow.put(formatted, formatted);
-        DiscordSRV.getPlugin().processChatMessage(
-                (Player) event.getSender(),
-                formatted,
-                DiscordSRV.getPlugin().getOptionalChannel("global"),
-                false
-        );
+        Bukkit.getPluginManager().callEvent(new InternalServerChatEvent(formatted, formatted, (Player) event.getSender(), true));
     }
 
     public void onPlayerMessage(AsyncPlayerChatEvent event) {
-        String formatted = formatForDiscord(event.getMessage());
+        String formatted = MultiChatIntegration.formatForDiscord(event.getMessage());
 
         ChatUtils.toAllow.put(formatted, formatted);
-        DiscordSRV.getPlugin().processChatMessage(
-                event.getPlayer(),
-                formatted,
-                DiscordSRV.getPlugin().getOptionalChannel("global"),
-                false
-        );
+        Bukkit.getPluginManager().callEvent(new InternalServerChatEvent(formatted, formatted, event.getPlayer(), true));
     }
 }

@@ -27,8 +27,10 @@ import com.loohp.multichatdiscordsrvaddon.command.CommandHandler;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.hooks.DynmapHook;
 import com.loohp.multichatdiscordsrvaddon.integration.IntegrationManager;
+import com.loohp.multichatdiscordsrvaddon.listeners.InternalEvents;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import com.loohp.multichatdiscordsrvaddon.registry.MultiChatRegistry;
+import com.loohp.multichatdiscordsrvaddon.standalone.StandaloneManager;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
 import me.lucko.helper.plugin.ExtendedJavaPlugin;
 import net.kyori.adventure.text.Component;
@@ -159,6 +161,7 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
     public ModelRenderer modelRenderer;
     public ExecutorService mediaReadingService;
     public static PlaceholderCooldownManager placeholderCooldownManager;
+    public StandaloneManager standaloneManager;
 
     public InboundToGameEvents inboundToGameEvents;
 
@@ -233,6 +236,7 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
         getServer().getPluginManager().registerEvents(new OutboundToDiscordEvents(), this);
         getServer().getPluginManager().registerEvents(new ICPlayerEvents(), this);
         getServer().getPluginManager().registerEvents(new Updater(), this);
+        getServer().getPluginManager().registerEvents(new InternalEvents(), this);
 
         new CommandHandler();
 

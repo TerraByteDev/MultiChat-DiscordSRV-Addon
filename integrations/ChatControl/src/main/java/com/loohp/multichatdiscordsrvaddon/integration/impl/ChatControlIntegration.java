@@ -1,10 +1,10 @@
 package com.loohp.multichatdiscordsrvaddon.integration.impl;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.event.InternalServerChatEvent;
 import com.loohp.multichatdiscordsrvaddon.integration.MultiChatIntegration;
 import com.loohp.multichatdiscordsrvaddon.integration.sender.MessageSender;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
-import github.scarsz.discordsrv.DiscordSRV;
 import lombok.Getter;
 import me.lucko.helper.Events;
 import me.lucko.helper.event.filter.EventFilters;
@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@SuppressWarnings("deprecation")
 @Getter
 public class ChatControlIntegration implements MultiChatIntegration {
 
@@ -86,7 +85,7 @@ public class ChatControlIntegration implements MultiChatIntegration {
             Checker checker = ChatControlAPI.checkMessage(WrappedSender.fromDynmap(chatControlDynmapSender), message);
             if (checker.isCancelledSilently()) return "";
 
-            return formatForDiscord(checker.getMessage());
+            return checker.getMessage();
         } catch (Exception ignored) {}
 
         return "";
@@ -96,14 +95,14 @@ public class ChatControlIntegration implements MultiChatIntegration {
 
     public void onChannelPreChatEvent(ChannelPreChatEvent event) {
         try {
-            String formatted = formatForDiscord(event.getMessage());
+            String formatted = MultiChatIntegration.formatForDiscord(event.getMessage());
             lastMessage.put(((Player) event.getSender()).getUniqueId(), formatted);
         } catch (Exception ignored) {}
     }
 
     public void onChannelPostChatEvent(ChannelPostChatEvent event) {
         String plain = PlainTextComponentSerializer.plainText().serialize(MiniMessage.miniMessage().deserialize(event.getMessage()));
-        String formatted = formatForDiscord(plain);
+        String formatted = MultiChatIntegration.formatForDiscord(plain);
         try {
             Player sender = (Player) event.getSender();
 
@@ -112,24 +111,14 @@ public class ChatControlIntegration implements MultiChatIntegration {
             lastMessage.remove(sender.getUniqueId());
 
             ChatUtils.toAllow.put(formatted, lastMsg);
-            DiscordSRV.getPlugin().processChatMessage(
-                    sender,
-                    formatted,
-                    DiscordSRV.getPlugin().getOptionalChannel("global"),
-                    false
-            );
+            Bukkit.getPluginManager().callEvent(new InternalServerChatEvent(formatted, lastMsg, sender.getPlayer(), true));
         } catch (Exception ignored) {}
     }
 
     public void onPlayerMessage(AsyncPlayerChatEvent event) {
-        String formatted = formatForDiscord(event.getMessage());
+        String formatted = MultiChatIntegration.formatForDiscord(event.getMessage());
 
         ChatUtils.toAllow.put(formatted, formatted);
-        DiscordSRV.getPlugin().processChatMessage(
-                event.getPlayer(),
-                formatted,
-                DiscordSRV.getPlugin().getOptionalChannel("global"),
-                false
-        );
+        Bukkit.getPluginManager().callEvent(new InternalServerChatEvent(formatted, formatted, event.getPlayer(), true));
     }
 }

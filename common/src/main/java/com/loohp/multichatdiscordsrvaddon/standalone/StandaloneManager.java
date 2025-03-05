@@ -2,6 +2,7 @@ package com.loohp.multichatdiscordsrvaddon.standalone;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
+import com.loohp.multichatdiscordsrvaddon.utils.PlaceholderParser;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -10,6 +11,8 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.time.Duration;
 
@@ -66,5 +69,13 @@ public class StandaloneManager {
         if (textChannel == null) {
             throw new IllegalArgumentException("Invalid Discord chat channel ID: " + channelID);
         }
+    }
+
+    public String getFormattedUsername(Player player) {
+        return PlaceholderParser.parse(
+                player,
+                Config.i().getStandalone().formatting().playerNameFormat()
+                        .replace("%username%", player.getName())
+        );
     }
 }

@@ -104,67 +104,79 @@
                             <relocations>
                                 <relocation>
                                     <pattern>okhttp3</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.okhttp3</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.okhttp3</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>me.lucko.helper</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.me.lucko.helper</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.me.lucko.helper</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.madgag.gif</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.com.madgag.gif</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.com.madgag.gif</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.loohp.blockmodelrenderer</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.com.loohp.blockmodelrenderer</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.com.loohp.blockmodelrenderer</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.ibm.icu</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.com.ibm.icu</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.com.ibm.icu</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>darwin.</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.darwin.</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.darwin.</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>kotlin.</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.kotlin.</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.kotlin.</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>linux.</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.linux.</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.linux.</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>win32.</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.win32.</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.win32.</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>net.jpountz</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.net.jpountz</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.net.jpountz</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.checkerframework</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.org.checkerframework</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.org.checkerframework</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.eclipse</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.org.eclipse</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.org.eclipse</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.mapdb</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.org.mapdb</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.org.mapdb</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.intellij</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.com.intellij</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.com.intellij</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.objectweb</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.org.objectweb</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.org.objectweb</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>net.dv8tion</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.net.dv8tion</shadedPattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.net.dv8tion</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>dev.vankka</pattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.dev.vankka</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.jooq</pattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.org.jooq</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.flywaydb</pattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.org.flywaydb</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -221,6 +233,48 @@
                 <configuration>
                     <source>17</source>
                     <target>17</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>3.20.1</version>
+
+                <executions>
+                    <execution>
+                        <id>jooq-codegen</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <logging>DEBUG</logging>
+                    <jdbc>
+                        <driver>org.sqlite.JDBC</driver>
+                        <url>jdbc:sqlite:file:./assets/data.sqlite3</url>
+                        <user>sa</user>
+                    </jdbc>
+                    <generator>
+                        <name>org.jooq.codegen.DefaultGenerator</name>
+                        <database>
+                            <name>org.jooq.meta.sqlite.SQLiteDatabase</name>
+                        </database>
+                        <generate>
+                            <deprecated>false</deprecated>
+                            <records>true</records>
+                            <immutablePojos>true</immutablePojos>
+                            <fluentSetters>true</fluentSetters>
+                        </generate>
+                        <target>
+                            <packageName>com.loohp.multichatdiscordsrvaddon.standalone.database</packageName>
+                            <directory>common/src/main/java</directory>
+                            <clean>false</clean>
+                        </target>
+                    </generator>
                 </configuration>
             </plugin>
         </plugins>
@@ -709,6 +763,23 @@
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
             <version>5.3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.vankka</groupId>
+            <artifactId>mcdiscordreserializer</artifactId>
+            <version>4.3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>3.20.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>11.3.4</version>
         </dependency>
     </dependencies>
 </project>
