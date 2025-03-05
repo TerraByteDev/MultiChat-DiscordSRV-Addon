@@ -400,7 +400,8 @@ public class Config {
             RendererSettings rendererSettings,
             FormattingTags formattingTags,
             UnknownItem unknownItem,
-            @Comment("Toggle the update checker") boolean updater
+            @Comment("Toggle the update checker") boolean updater,
+            @Comment("Block specific messages (Regex) here.") List<String> blockedMessages
     ) {}
 
     public record DynmapHook(
@@ -735,7 +736,8 @@ public class Config {
                             "<grey>does not exist in this version of Minecraft."
                     )
             ),
-            true
+            true,
+            List.of()
     );
 
     @Comment("\nPlugin hook configs")

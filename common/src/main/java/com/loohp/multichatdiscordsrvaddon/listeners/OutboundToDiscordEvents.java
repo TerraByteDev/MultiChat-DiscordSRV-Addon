@@ -294,6 +294,13 @@ public class OutboundToDiscordEvents implements Listener {
 
         String plain = MultiChatComponentSerializer.plainText().serialize(originalPlain);
 
+        for (Pattern pattern : MultiChatDiscordSrvAddon.plugin.toBlockPatterns) {
+            Matcher matcher = pattern.matcher(plain);
+            if (matcher.matches()) {
+                return null;
+            }
+        }
+
         Debug.debug("onGameToDiscord processing custom placeholders");
         for (ICPlaceholder placeholder : MultiChatDiscordSrvAddonAPI.getPlaceholderList()) {
             if (!placeholder.isBuildIn()) {

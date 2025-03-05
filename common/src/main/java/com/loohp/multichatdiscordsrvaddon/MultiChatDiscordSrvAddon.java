@@ -123,6 +123,7 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
     public List<String> resourceOrder = new ArrayList<>();
     public ItemStack unknownReplaceItem;
     public List<Pattern> additionalRGBFormats;
+    public List<Pattern> toBlockPatterns;
 
     public final ReentrantLock resourceReloadLock = new ReentrantLock(true);
     public Metrics metrics;
@@ -349,6 +350,7 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
         }
 
         additionalRGBFormats = Config.i().getSettings().formattingTags().additionalRGBFormats().stream().map(Pattern::compile).collect(Collectors.toList());
+        toBlockPatterns = Config.i().getSettings().blockedMessages().stream().map(Pattern::compile).collect(Collectors.toList());
 
         try {
             ItemStack unknown = new ItemStack(Material.valueOf(Config.i().getSettings().unknownItem().replaceItem().toUpperCase()));
