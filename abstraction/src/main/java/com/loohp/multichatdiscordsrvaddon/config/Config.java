@@ -808,12 +808,12 @@ public class Config {
             )
     );
 
-    @Comment("\nThe Standalone version of this plugin. " +
+    @Comment("\nThe Standalone version of this plugin. \n" +
             "This is for people who want better Proxy support, and more \"barebones\" discord linking.\n" +
-            "Standalone currently has the following features:" +
-            "- Account Linking" +
-            "- TODO: Proxy synchronisation for inventories, etc (Redis)" +
-            "- PAPI support (obviously)" +
+            "Standalone currently has the following features:\n" +
+            "- Account Linking\n" +
+            "- TODO: Proxy synchronisation for inventories, etc (Redis)\n" +
+            "- PAPI support (obviously)\n" +
             "- Just check the below configs. too lazy\n" +
             "Bear in mind that the discordattachment/commands/etc configs still apply!")
     Standalone standalone = new Standalone(
