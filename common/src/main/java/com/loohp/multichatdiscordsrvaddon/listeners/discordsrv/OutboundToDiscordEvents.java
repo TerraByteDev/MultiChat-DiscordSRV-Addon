@@ -93,9 +93,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.function.IntFunction;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.loohp.multichatdiscordsrvaddon.utils.ChatUtils.toAllow;
 import static com.loohp.multichatdiscordsrvaddon.discordsrv.DiscordSRVManager.ventureChatToDiscordPriority;
@@ -105,7 +103,6 @@ import static com.loohp.multichatdiscordsrvaddon.utils.ComponentProcessingUtils.
 @SuppressWarnings("deprecation")
 public class OutboundToDiscordEvents implements Listener {
 
-    public static final Comparator<DiscordDisplayData> DISPLAY_DATA_COMPARATOR = Comparator.comparing(DiscordDisplayData::getPosition);
     public static final Int2ObjectMap<AttachmentData> RESEND_WITH_ATTACHMENT = Int2ObjectMaps.synchronize(new Int2ObjectLinkedOpenHashMap<>());
     private static final Map<UUID, Component> DEATH_MESSAGE = new ConcurrentHashMap<>();
 

@@ -75,7 +75,7 @@ Get the latest official stable release from the [Releases Page](https://github.c
 ## Dependencies 
 
 ### Required
-- [DiscordSRV](https://www.spigotmc.org/resources/discordsrv.18494/)
+- [DiscordSRV](https://www.spigotmc.org/resources/discordsrv.18494/) OR use the Standalone version, which is a barebones implementation with better proxy support (does not use DiscordSRV).
 
 ### Optional (1 required)
 - [InteractiveChat](https://www.spigotmc.org/resources/75870/)

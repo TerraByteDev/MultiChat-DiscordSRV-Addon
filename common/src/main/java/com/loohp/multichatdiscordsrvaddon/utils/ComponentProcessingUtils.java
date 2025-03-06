@@ -37,6 +37,7 @@ public class ComponentProcessingUtils {
     public static final Int2ObjectMap<DiscordDisplayData> DATA = Int2ObjectMaps.synchronize(new Int2ObjectLinkedOpenHashMap<>());
     public static final IntFunction<Pattern> DATA_PATTERN = i -> Pattern.compile("<ICD=" + i + "\\\\?>");
     public static final IDProvider DATA_ID_PROVIDER = new IDProvider();
+    public static final Comparator<DiscordDisplayData> DISPLAY_DATA_COMPARATOR = Comparator.comparing(DiscordDisplayData::getPosition);
 
     public static Component processGameMessage(OfflinePlayer icSender, Component component, Component originalPlain) {
         boolean reserializer = Config.i().getSettings().useDiscordFormattingSerializer();

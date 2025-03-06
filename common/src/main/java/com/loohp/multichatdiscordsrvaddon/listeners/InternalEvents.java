@@ -3,7 +3,7 @@ package com.loohp.multichatdiscordsrvaddon.listeners;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.event.InternalServerChatEvent;
 import com.loohp.multichatdiscordsrvaddon.integration.MultiChatIntegration;
-import com.loohp.multichatdiscordsrvaddon.standalone.message.StandaloneMessageHandler;
+import com.loohp.multichatdiscordsrvaddon.standalone.message.StandaloneGameMessageHandler;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -15,7 +15,7 @@ public class InternalEvents implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onInternalServerChat(InternalServerChatEvent event) {
         if (Config.i().getStandalone().enabled()) {
-            StandaloneMessageHandler.handleChat(event);
+            StandaloneGameMessageHandler.handleChat(event);
         } else {
             DiscordSRV.getPlugin().processChatMessage(
                     event.getEmitter(),

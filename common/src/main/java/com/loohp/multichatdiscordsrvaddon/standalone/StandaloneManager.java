@@ -28,7 +28,6 @@ public class StandaloneManager {
 
     private JDA jda;
     private TextChannel textChannel;
-    private Webhook webhook;
 
     private StandalonePresenceHandler presenceHandler;
     private StandaloneLinkManager linkManager;

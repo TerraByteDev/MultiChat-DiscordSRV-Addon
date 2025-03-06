@@ -62,7 +62,7 @@ public class ICPlayerEvents implements Listener {
         }
 
         try {
-            if (Config.i().getStandalone().enabled()) MultiChatDiscordSrvAddon.plugin.standaloneManager.getDatabase().getLinkedUserByUuid(player.getUniqueId()).get(10, TimeUnit.SECONDS);
+            if (Config.i().getStandalone().enabled()) MultiChatDiscordSrvAddon.plugin.standaloneManager.getLinkManager().getDatabase().getLinkedUserByUuid(player.getUniqueId()).get(10, TimeUnit.SECONDS);
 
             Map<String, Object> cacheProperties = CACHED_PROPERTIES.get(player.getUniqueId());
             if (cacheProperties == null) {
