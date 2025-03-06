@@ -2,6 +2,7 @@ package com.loohp.multichatdiscordsrvaddon.command;
 
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.command.subcommand.*;
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -37,6 +38,8 @@ public class CommandHandler {
             manager.registerAsynchronousCompletions();
         }
 
+        manager.registerCommandPostProcessor(new CooldownManager.CooldownPostProcessor<>());
+
         minecraftHelp = MinecraftHelp.<CommandSender>builder()
                 .commandManager(manager)
                 .audienceProvider(audience::sender)
@@ -55,12 +58,17 @@ public class CommandHandler {
     }
 
     private void registerCommands() {
-        parser.parse(new MainCommand());
-        parser.parse(new StatusCommand());
-        parser.parse(new ReloadConfigCommand());
-        parser.parse(new ReloadTexturesCommand());
-        parser.parse(new CheckUpdateCommand());
-        parser.parse(new ImageMapCommand());
-        parser.parse(new HelpCommand());
+        parser.parse(
+                new MainCommand(),
+                new ReloadConfigCommand(),
+                new ReloadTexturesCommand(),
+                new CheckUpdateCommand(),
+                new ImageMapCommand(),
+                new HelpCommand()
+        );
+
+        if (Config.i().getStandalone().enabled()) {
+            parser.parse(new LinkCommand());
+        }
     }
 }

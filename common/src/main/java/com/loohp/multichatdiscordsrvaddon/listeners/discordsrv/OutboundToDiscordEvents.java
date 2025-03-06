@@ -98,6 +98,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.loohp.multichatdiscordsrvaddon.utils.ChatUtils.toAllow;
+import static com.loohp.multichatdiscordsrvaddon.discordsrv.DiscordSRVManager.ventureChatToDiscordPriority;
+import static com.loohp.multichatdiscordsrvaddon.discordsrv.DiscordSRVManager.gameToDiscordPriority;
+import static com.loohp.multichatdiscordsrvaddon.utils.ComponentProcessingUtils.*;
 
 @SuppressWarnings("deprecation")
 public class OutboundToDiscordEvents implements Listener {
@@ -108,42 +111,42 @@ public class OutboundToDiscordEvents implements Listener {
 
     @Subscribe(priority = ListenerPriority.LOWEST)
     public void onGameToDiscordLowest(GameChatMessagePreProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.LOWEST)) {
+        if (gameToDiscordPriority.equals(ListenerPriority.LOWEST)) {
             handleGameToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.LOW)
     public void onGameToDiscordLow(GameChatMessagePreProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.LOW)) {
+        if (gameToDiscordPriority.equals(ListenerPriority.LOW)) {
             handleGameToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.NORMAL)
     public void onGameToDiscordNormal(GameChatMessagePreProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.NORMAL)) {
+        if (gameToDiscordPriority.equals(ListenerPriority.NORMAL)) {
             handleGameToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.HIGH)
     public void onGameToDiscordHigh(GameChatMessagePreProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.HIGH)) {
+        if (gameToDiscordPriority.equals(ListenerPriority.HIGH)) {
             handleGameToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.HIGHEST)
     public void onGameToDiscordHighest(GameChatMessagePreProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.HIGHEST)) {
+        if (gameToDiscordPriority.equals(ListenerPriority.HIGHEST)) {
             handleGameToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.MONITOR)
     public void onGameToDiscordMonitor(GameChatMessagePreProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.gameToDiscordPriority.equals(ListenerPriority.MONITOR)) {
+        if (gameToDiscordPriority.equals(ListenerPriority.MONITOR)) {
             handleGameToDiscord(event);
         }
     }
@@ -182,42 +185,42 @@ public class OutboundToDiscordEvents implements Listener {
 
     @Subscribe(priority = ListenerPriority.LOWEST)
     public void onVentureChatHookToDiscordLowest(VentureChatMessagePreProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.LOWEST)) {
+        if (ventureChatToDiscordPriority.equals(ListenerPriority.LOWEST)) {
             handleVentureChatHookToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.LOW)
     public void onVentureChatHookToDiscordLow(VentureChatMessagePreProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.LOW)) {
+        if (ventureChatToDiscordPriority.equals(ListenerPriority.LOW)) {
             handleVentureChatHookToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.NORMAL)
     public void onVentureChatHookToDiscordNormal(VentureChatMessagePreProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.NORMAL)) {
+        if (ventureChatToDiscordPriority.equals(ListenerPriority.NORMAL)) {
             handleVentureChatHookToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.HIGH)
     public void onVentureChatHookToDiscordHigh(VentureChatMessagePreProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.HIGH)) {
+        if (ventureChatToDiscordPriority.equals(ListenerPriority.HIGH)) {
             handleVentureChatHookToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.HIGHEST)
     public void onVentureChatHookToDiscordHighest(VentureChatMessagePreProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.HIGHEST)) {
+        if (ventureChatToDiscordPriority.equals(ListenerPriority.HIGHEST)) {
             handleVentureChatHookToDiscord(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.MONITOR)
     public void onVentureChatHookToDiscordMonitor(VentureChatMessagePreProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.ventureChatToDiscordPriority.equals(ListenerPriority.MONITOR)) {
+        if (ventureChatToDiscordPriority.equals(ListenerPriority.MONITOR)) {
             handleVentureChatHookToDiscord(event);
         }
     }
@@ -475,7 +478,7 @@ public class OutboundToDiscordEvents implements Listener {
 
         synchronized (DATA) {
             for (int key : DATA.keySet()) {
-                Matcher matcher = OutboundToDiscordEvents.DATA_PATTERN.apply(key).matcher(text);
+                Matcher matcher = DATA_PATTERN.apply(key).matcher(text);
                 if (matcher.find()) {
                     text = matcher.replaceAll("");
                     matches.add(key);
@@ -551,7 +554,7 @@ public class OutboundToDiscordEvents implements Listener {
 
         synchronized (DATA) {
             for (int key : DATA.keySet()) {
-                Matcher matcher = OutboundToDiscordEvents.DATA_PATTERN.apply(key).matcher(text);
+                Matcher matcher = DATA_PATTERN.apply(key).matcher(text);
                 if (matcher.find()) {
                     text = matcher.replaceAll("");
                     matches.add(key);

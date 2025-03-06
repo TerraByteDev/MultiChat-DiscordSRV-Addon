@@ -22,6 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.metrics;
 
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.provider.DiscordProviderManager;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 
 import java.util.concurrent.Callable;
@@ -33,33 +34,21 @@ public class Charts {
         metrics.addCustomChart(new Metrics.SingleLineChart("discord_servers_present", new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                JDA jda = MultiChatDiscordSrvAddon.discordsrv.getJda();
-                if (jda == null) {
-                    return 0;
-                }
-                return jda.getGuilds().size();
+                return DiscordProviderManager.get().getServerCount();
             }
         }));
 
         metrics.addCustomChart(new Metrics.SingleLineChart("discord_channels_present", new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                JDA jda = MultiChatDiscordSrvAddon.discordsrv.getJda();
-                if (jda == null) {
-                    return 0;
-                }
-                return jda.getGuilds().stream().mapToInt(each -> each.getChannels().size()).sum();
+                return DiscordProviderManager.get().getChannelCount();
             }
         }));
 
         metrics.addCustomChart(new Metrics.SingleLineChart("total_discord_members", new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                JDA jda = MultiChatDiscordSrvAddon.discordsrv.getJda();
-                if (jda == null) {
-                    return 0;
-                }
-                return jda.getUsers().size();
+                return DiscordProviderManager.get().getMemberCount();
             }
         }));
 

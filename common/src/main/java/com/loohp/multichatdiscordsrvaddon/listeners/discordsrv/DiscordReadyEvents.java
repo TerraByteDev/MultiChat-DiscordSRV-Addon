@@ -25,6 +25,7 @@ import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
+import com.loohp.multichatdiscordsrvaddon.discordsrv.DiscordSRVManager;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.ListenerPriority;
@@ -61,7 +62,7 @@ public class DiscordReadyEvents {
 
     public void ready() {
         Debug.debug("Triggering discord ready...");
-        DiscordSRV discordsrv = MultiChatDiscordSrvAddon.discordsrv;
+        DiscordSRV discordsrv = DiscordSRVManager.discordsrv;
         JDA jda = discordsrv.getJda();
         jda.addEventListener(new OutboundToDiscordEvents.JDAEvents());
         jda.addEventListener(new DiscordInteractionEvents());
@@ -74,7 +75,7 @@ public class DiscordReadyEvents {
 
         PacketListenerPriority priority = PacketListenerPriority.valueOf(Config.i().getDiscordAttachments().priority().toUpperCase(Locale.ROOT));
         PacketEvents.getAPI().getEventManager().registerListener(discordCommands, priority);
-        PacketEvents.getAPI().getEventManager().registerListener(MultiChatDiscordSrvAddon.plugin.inboundToGameEvents, priority);
+        PacketEvents.getAPI().getEventManager().registerListener(DiscordSRVManager.inboundToGameEvents, priority);
 
         for (String channelId : discordsrv.getChannels().values()) {
             if (channelId != null) {
@@ -83,7 +84,7 @@ public class DiscordReadyEvents {
                     if (channel != null) {
                         Guild guild = channel.getGuild();
                         Member self = guild.getMember(jda.getSelfUser());
-                        for (Permission permission : MultiChatDiscordSrvAddon.requiredPermissions) {
+                        for (Permission permission : DiscordSRVManager.requiredPermissions) {
                             if (!self.hasPermission(channel, permission)) {
                                 ChatUtils.sendMessage("<red>The bot used for DiscordSRV is missing the <yellow>" + permission.getName() + "<red> permission in the channel <yellow>" + channel.getName() + "<red> (Id: <yellow>" + channel.getId() + "<red>)");
                             }

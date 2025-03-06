@@ -1,6 +1,11 @@
 package com.loohp.multichatdiscordsrvaddon.standalone;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.provider.DiscordProviderManager;
+import com.loohp.multichatdiscordsrvaddon.standalone.linking.StandaloneLinkDatabase;
+import com.loohp.multichatdiscordsrvaddon.standalone.linking.StandaloneLinkManager;
+import com.loohp.multichatdiscordsrvaddon.standalone.message.StandaloneWebhookManager;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.PlaceholderParser;
 import lombok.Getter;
@@ -11,10 +16,12 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 @Getter
 public class StandaloneManager {
@@ -24,9 +31,17 @@ public class StandaloneManager {
     private Webhook webhook;
 
     private StandalonePresenceHandler presenceHandler;
+    private StandaloneLinkManager linkManager;
+
+    private ExecutorService scheduler;
 
     public void initialise() {
         try {
+            ThreadFactory threadFactory = new ThreadFactoryBuilder()
+                    .setNameFormat("MultiChatDiscordSrvAddon-Standalone-Thread-%d")
+                    .build();
+            this.scheduler = Executors.newSingleThreadExecutor(threadFactory);
+
             this.jda = JDABuilder.createDefault(Config.i().getStandalone().token())
                     .setChunkingFilter(ChunkingFilter.ALL)
                     .setMemberCachePolicy(MemberCachePolicy.ALL)
@@ -42,6 +57,9 @@ public class StandaloneManager {
             }
 
             if (Config.i().getStandalone().formatting().useWebhooks()) StandaloneWebhookManager.fetchWebhook(this);
+
+            this.linkManager = new StandaloneLinkManager(this);
+            DiscordProviderManager.setInstance(new StandaloneDiscordProvider());
         } catch (InterruptedException exception) {
             ChatUtils.sendMessage("Failed to initialise MultiChatDiscordSRVAddon Standalone implementation!");
             exception.printStackTrace();

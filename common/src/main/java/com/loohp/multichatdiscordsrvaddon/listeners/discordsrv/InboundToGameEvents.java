@@ -25,6 +25,7 @@ import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSystemChatMessage;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.discordsrv.DiscordSRVManager;
 import com.loohp.multichatdiscordsrvaddon.integration.sender.MessageSender;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
@@ -81,6 +82,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.loohp.multichatdiscordsrvaddon.discordsrv.DiscordSRVManager.discordToGamePriority;
+
 public class InboundToGameEvents implements Listener, PacketListener {
 
     public static final Pattern TENOR_HTML_PATTERN = Pattern.compile("<link class=\"dynamic\" rel=\"image_src\" href=\"https://media1\\.tenor\\.com/m/(.*?)/.*?\">");
@@ -91,7 +94,7 @@ public class InboundToGameEvents implements Listener, PacketListener {
     @Subscribe(priority = ListenerPriority.LOWEST)
     public void onReceiveMessageFromDiscordPre(DiscordGuildMessagePreProcessEvent event) {
         Debug.debug("Triggering onReceiveMessageFromDiscordPre");
-        DiscordSRV srv = MultiChatDiscordSrvAddon.discordsrv;
+        DiscordSRV srv = DiscordSRVManager.discordsrv;
         Map<Pattern, String> discordRegexes = srv.getDiscordRegexes();
         if (discordRegexes != null) {
             discordRegexes.keySet().removeIf(pattern -> pattern.pattern().equals("@+(everyone|here)"));
@@ -114,42 +117,42 @@ public class InboundToGameEvents implements Listener, PacketListener {
 
     @Subscribe(priority = ListenerPriority.LOWEST)
     public void onReceiveMessageFromDiscordPostLowest(DiscordGuildMessagePostProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.discordToGamePriority.equals(ListenerPriority.LOWEST)) {
+        if (discordToGamePriority.equals(ListenerPriority.LOWEST)) {
             handleReceiveMessageFromDiscordPost(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.LOW)
     public void onReceiveMessageFromDiscordPostLow(DiscordGuildMessagePostProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.discordToGamePriority.equals(ListenerPriority.LOW)) {
+        if (discordToGamePriority.equals(ListenerPriority.LOW)) {
             handleReceiveMessageFromDiscordPost(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.NORMAL)
     public void onReceiveMessageFromDiscordPostNormal(DiscordGuildMessagePostProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.discordToGamePriority.equals(ListenerPriority.NORMAL)) {
+        if (discordToGamePriority.equals(ListenerPriority.NORMAL)) {
             handleReceiveMessageFromDiscordPost(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.HIGH)
     public void onReceiveMessageFromDiscordPostHigh(DiscordGuildMessagePostProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.discordToGamePriority.equals(ListenerPriority.HIGH)) {
+        if (discordToGamePriority.equals(ListenerPriority.HIGH)) {
             handleReceiveMessageFromDiscordPost(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.HIGHEST)
     public void onReceiveMessageFromDiscordPostHighest(DiscordGuildMessagePostProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.discordToGamePriority.equals(ListenerPriority.HIGHEST)) {
+        if (discordToGamePriority.equals(ListenerPriority.HIGHEST)) {
             handleReceiveMessageFromDiscordPost(event);
         }
     }
 
     @Subscribe(priority = ListenerPriority.MONITOR)
     public void onReceiveMessageFromDiscordPostMonitor(DiscordGuildMessagePostProcessEvent event) {
-        if (MultiChatDiscordSrvAddon.plugin.discordToGamePriority.equals(ListenerPriority.MONITOR)) {
+        if (discordToGamePriority.equals(ListenerPriority.MONITOR)) {
             handleReceiveMessageFromDiscordPost(event);
         }
     }
@@ -162,7 +165,7 @@ public class InboundToGameEvents implements Listener, PacketListener {
                     Debug.debug("Triggering onReceiveMessageFromDiscordPost");
                     Message message = event.getMessage();
 
-                    DiscordSRV srv = MultiChatDiscordSrvAddon.discordsrv;
+                    DiscordSRV srv = DiscordSRVManager.discordsrv;
                     User author = message.getAuthor();
 
                     TextChannel channel = event.getChannel();

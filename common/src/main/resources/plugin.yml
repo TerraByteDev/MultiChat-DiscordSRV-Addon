@@ -3,9 +3,9 @@ author: ["loohp", "Skullians"]
 version: ${project.version}
 main: com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon
 api-version: 1.13
-description: DiscordSRV addon for InteractiveChat, ZelChat, ChatControl(Red), CarbonChat and more.
-depend: [DiscordSRV, packetevents]
-softdepend: [ItemsAdder, InteractiveChat, ZelChat, ChatControl, ChatControlRed, Carbon, PlaceholderAPI, dynmap, Nexo, oraxen]
+description: DiscordSRV (or standalone!) addon for InteractiveChat, ZelChat, ChatControl(Red), CarbonChat and more.
+depend: [packetevents]
+softdepend: [ItemsAdder, InteractiveChat, ZelChat, ChatControl, ChatControlRed, Carbon, PlaceholderAPI, dynmap, Nexo, oraxen, DiscordSRV]
 prefix: MultiChatDiscordSrvAddon
 
 commands:

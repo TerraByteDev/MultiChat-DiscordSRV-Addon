@@ -20,9 +20,11 @@
 
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
+import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ConcurrentCacheHashMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.json.simple.JSONObject;
 import com.loohp.multichatdiscordsrvaddon.utils.HTTPRequestUtils;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
@@ -36,6 +38,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class ICPlayerEvents implements Listener {
 
@@ -57,32 +60,37 @@ public class ICPlayerEvents implements Listener {
             Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> populate(player, false));
             return;
         }
-        Map<String, Object> cacheProperties = CACHED_PROPERTIES.get(player.getUniqueId());
-        if (cacheProperties == null) {
-            cacheProperties = new HashMap<>();
-            JSONObject json = HTTPRequestUtils.getJSONResponse(PROFILE_URL.replace("%s", player.getName()));
-            if (json != null && json.containsKey("properties")) {
-                JSONObject properties = (JSONObject) json.get("properties");
-                for (Object obj : properties.keySet()) {
-                    try {
-                        String key = (String) obj;
-                        String value = (String) properties.get(key);
-                        if (value.endsWith(".png")) {
-                            BufferedImage image = ImageUtils.downloadImage(value);
-                            cacheProperties.put(key, image);
-                        } else if (value.endsWith(".bin")) {
-                            byte[] data = HTTPRequestUtils.download(value);
-                            cacheProperties.put(key, data);
-                        } else {
-                            cacheProperties.put(key, value);
+
+        try {
+            if (Config.i().getStandalone().enabled()) MultiChatDiscordSrvAddon.plugin.standaloneManager.getDatabase().getLinkedUserByUuid(player.getUniqueId()).get(10, TimeUnit.SECONDS);
+
+            Map<String, Object> cacheProperties = CACHED_PROPERTIES.get(player.getUniqueId());
+            if (cacheProperties == null) {
+                cacheProperties = new HashMap<>();
+                JSONObject json = HTTPRequestUtils.getJSONResponse(PROFILE_URL.replace("%s", player.getName()));
+                if (json != null && json.containsKey("properties")) {
+                    JSONObject properties = (JSONObject) json.get("properties");
+                    for (Object obj : properties.keySet()) {
+                        try {
+                            String key = (String) obj;
+                            String value = (String) properties.get(key);
+                            if (value.endsWith(".png")) {
+                                BufferedImage image = ImageUtils.downloadImage(value);
+                                cacheProperties.put(key, image);
+                            } else if (value.endsWith(".bin")) {
+                                byte[] data = HTTPRequestUtils.download(value);
+                                cacheProperties.put(key, data);
+                            } else {
+                                cacheProperties.put(key, value);
+                            }
+                        } catch (Exception ignore) {
                         }
-                    } catch (Exception ignore) {
                     }
                 }
             }
-        }
 
-        CACHED_PROPERTIES.put(player.getUniqueId(), cacheProperties);
+            CACHED_PROPERTIES.put(player.getUniqueId(), cacheProperties);
+        } catch (Exception ignored) {}
     }
 
 }

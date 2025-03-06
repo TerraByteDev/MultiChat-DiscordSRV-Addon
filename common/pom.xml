@@ -167,16 +167,8 @@
                                     <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.net.dv8tion</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>dev.vankka</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.dev.vankka</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.jooq</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.org.jooq</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.flywaydb</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.org.flywaydb</shadedPattern>
+                                    <pattern>com.google.code</pattern>
+                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.com.google.code</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -233,48 +225,6 @@
                 <configuration>
                     <source>17</source>
                     <target>17</target>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.jooq</groupId>
-                <artifactId>jooq-codegen-maven</artifactId>
-                <version>3.20.1</version>
-
-                <executions>
-                    <execution>
-                        <id>jooq-codegen</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
-                <configuration>
-                    <logging>DEBUG</logging>
-                    <jdbc>
-                        <driver>org.sqlite.JDBC</driver>
-                        <url>jdbc:sqlite:file:./assets/data.sqlite3</url>
-                        <user>sa</user>
-                    </jdbc>
-                    <generator>
-                        <name>org.jooq.codegen.DefaultGenerator</name>
-                        <database>
-                            <name>org.jooq.meta.sqlite.SQLiteDatabase</name>
-                        </database>
-                        <generate>
-                            <deprecated>false</deprecated>
-                            <records>true</records>
-                            <immutablePojos>true</immutablePojos>
-                            <fluentSetters>true</fluentSetters>
-                        </generate>
-                        <target>
-                            <packageName>com.loohp.multichatdiscordsrvaddon.standalone.database</packageName>
-                            <directory>common/src/main/java</directory>
-                            <clean>false</clean>
-                        </target>
-                    </generator>
                 </configuration>
             </plugin>
         </plugins>
@@ -772,14 +722,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>jooq</artifactId>
-            <version>3.20.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-            <version>11.3.4</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.12.1</version>
         </dependency>
     </dependencies>
 </project>

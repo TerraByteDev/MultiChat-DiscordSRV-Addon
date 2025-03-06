@@ -25,6 +25,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageListener;
 import com.loohp.multichatdiscordsrvaddon.command.CommandHandler;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.discordsrv.DiscordSRVManager;
 import com.loohp.multichatdiscordsrvaddon.hooks.DynmapHook;
 import com.loohp.multichatdiscordsrvaddon.integration.IntegrationManager;
 import com.loohp.multichatdiscordsrvaddon.listeners.InternalEvents;
@@ -48,12 +49,9 @@ import com.loohp.multichatdiscordsrvaddon.api.events.ResourceManagerInitializeEv
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
-import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.DiscordCommandEvents;
 import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.DiscordInteractionEvents;
-import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.DiscordReadyEvents;
 import com.loohp.multichatdiscordsrvaddon.listeners.ICPlayerEvents;
 import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.InboundToGameEvents;
-import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.LegacyDiscordCommandEvents;
 import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.OutboundToDiscordEvents;
 import com.loohp.multichatdiscordsrvaddon.metrics.Charts;
 import com.loohp.multichatdiscordsrvaddon.metrics.Metrics;
@@ -73,10 +71,6 @@ import com.loohp.multichatdiscordsrvaddon.resources.mods.ModManager;
 import com.loohp.multichatdiscordsrvaddon.resources.mods.chime.ChimeManager;
 import com.loohp.multichatdiscordsrvaddon.resources.mods.optifine.OptifineManager;
 import com.loohp.multichatdiscordsrvaddon.updater.Updater;
-import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.api.ListenerPriority;
-import github.scarsz.discordsrv.dependencies.jda.api.Permission;
-import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
@@ -108,17 +102,7 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
     public static final int BSTATS_PLUGIN_ID = 8863;
     public static final String CONFIG_ID = "multichatdiscordsrvaddon_config";
 
-    public static final List<Permission> requiredPermissions = Collections.unmodifiableList(Arrays.asList(
-        Permission.MESSAGE_READ,
-        Permission.MESSAGE_WRITE,
-        Permission.MESSAGE_MANAGE,
-        Permission.MESSAGE_EMBED_LINKS,
-        Permission.MESSAGE_ATTACH_FILES,
-        Permission.MANAGE_WEBHOOKS
-    ));
-
     public static MultiChatDiscordSrvAddon plugin;
-    public static DiscordSRV discordsrv;
 
     public static boolean isReady = false;
     public String defaultResourceHash = "N/A";
@@ -136,9 +120,6 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
     public AtomicLong attachmentImageCounter = new AtomicLong(0);
     public AtomicLong imagesViewedCounter = new AtomicLong(0);
     public Queue<Integer> playerModelRenderingTimes = new ConcurrentLinkedQueue<>();
-    public ListenerPriority gameToDiscordPriority = ListenerPriority.HIGHEST;
-    public ListenerPriority ventureChatToDiscordPriority = ListenerPriority.HIGHEST;
-    public ListenerPriority discordToGamePriority = ListenerPriority.HIGH;
     public static ICPlaceholder itemPlaceholder = null;
     public static ICPlaceholder inventoryPlaceholder = null;
     public static ICPlaceholder enderChestPlaceholder = null;
@@ -163,8 +144,6 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
     public static PlaceholderCooldownManager placeholderCooldownManager;
     public StandaloneManager standaloneManager;
 
-    public InboundToGameEvents inboundToGameEvents;
-
     public IntegrationManager integrationManager;
 
     protected Map<String, byte[]> extras = new ConcurrentHashMap<>();
@@ -184,8 +163,9 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
 
     @Override
     public void load() {
-        DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
-        DiscordSRV.api.subscribe(new DiscordCommandEvents());
+        if (!Config.i().getStandalone().enabled()) {
+            DiscordSRVManager.onLoad();
+        }
     }
 
     @Override
@@ -196,7 +176,6 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
 
         ChatUtils.init(this);
         VersionManager.init();
-        discordsrv = DiscordSRV.getPlugin();
 
         if (!getDataFolder().exists()) {
             getDataFolder().mkdirs();
@@ -217,17 +196,18 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
         integrationManager = new IntegrationManager();
         if (Config.i().getHook().shouldHook()) integrationManager.load(Config.i().getHook().selected());
 
+        if (Config.i().getStandalone().enabled()) {
+            this.standaloneManager = new StandaloneManager();
+            this.standaloneManager.initialise();
+        } else if (Bukkit.getPluginManager().isPluginEnabled("DiscordSRV")) {
+            DiscordSRVManager.enable();
+        } else throw new IllegalStateException("Attempted to hook into DiscordSRV when it is not enabled!");
+
         metrics = new Metrics(this, BSTATS_PLUGIN_ID);
         Charts.setup(metrics);
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "interchat:main");
         getServer().getMessenger().registerIncomingPluginChannel(this, "interchat:main", bungeeMessageListener = new BungeeMessageListener());
-
-        inboundToGameEvents = new InboundToGameEvents();
-        DiscordSRV.api.subscribe(inboundToGameEvents);
-        DiscordSRV.api.subscribe(new DiscordReadyEvents());
-        DiscordSRV.api.subscribe(new LegacyDiscordCommandEvents());
-        DiscordSRV.api.subscribe(new OutboundToDiscordEvents());
 
         placeholderCooldownManager = new PlaceholderCooldownManager();
 
@@ -396,8 +376,6 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
         }
 
         FontTextureResource.setCacheTime(Config.i().getSettings().cacheTimeout() * 20L);
-
-        discordsrv.reloadRegexes();
     }
 
     public byte[] getExtras(String str) {

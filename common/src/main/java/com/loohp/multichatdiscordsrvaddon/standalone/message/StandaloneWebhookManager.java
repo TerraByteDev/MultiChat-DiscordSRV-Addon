@@ -1,6 +1,7 @@
-package com.loohp.multichatdiscordsrvaddon.standalone;
+package com.loohp.multichatdiscordsrvaddon.standalone.message;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.standalone.StandaloneManager;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import net.dv8tion.jda.api.entities.Webhook;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;

@@ -5,6 +5,7 @@ import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.api.events.*;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
+import com.loohp.multichatdiscordsrvaddon.provider.DiscordProviderManager;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import com.loohp.multichatdiscordsrvaddon.registry.DiscordDataRegistry;
@@ -35,8 +36,7 @@ public class ComponentProcessingUtils {
 
     public static final Int2ObjectMap<DiscordDisplayData> DATA = Int2ObjectMaps.synchronize(new Int2ObjectLinkedOpenHashMap<>());
     public static final IntFunction<Pattern> DATA_PATTERN = i -> Pattern.compile("<ICD=" + i + "\\\\?>");
-    private static final IDProvider DATA_ID_PROVIDER = new IDProvider();
-
+    public static final IDProvider DATA_ID_PROVIDER = new IDProvider();
 
     public static Component processGameMessage(OfflinePlayer icSender, Component component, Component originalPlain) {
         boolean reserializer = Config.i().getSettings().useDiscordFormattingSerializer();
@@ -272,7 +272,6 @@ public class ComponentProcessingUtils {
             }
         }
 
-        DiscordSRV srv = MultiChatDiscordSrvAddon.discordsrv;
         if (Config.i().getDiscordMention().translateMentions() && !Config.i().getDiscordMention().suppressDiscordPings()) {
             Debug.debug("onGameToDiscord processing mentions");
             //boolean hasMentionPermission = PlayerUtils.hasPermission(icSender.getUniqueId(), "interactivechat.mention.player", true, 200); todo
@@ -288,14 +287,9 @@ public class ComponentProcessingUtils {
                 for (Map.Entry<String, UUID> entry : names.entrySet()) {
                     String name = entry.getKey();
                     UUID uuid = entry.getValue();
-                    String userId = srv.getAccountLinkManager().getDiscordId(uuid);
-                    if (userId != null) {
-                        User user = srv.getJda().getUserById(userId);
-                        if (user != null) {
-                            String discordMention = user.getAsMention();
-                            component = ComponentReplacing.replace(component, CustomStringUtils.escapeMetaCharacters('@' + name), true, PlainTextComponentSerializer.plainText().deserialize(discordMention));
-                        }
-                    }
+
+                    String discordMention = DiscordProviderManager.get().getUserAsMention(uuid);
+                    component = ComponentReplacing.replace(component, CustomStringUtils.escapeMetaCharacters('@' + name), true, PlainTextComponentSerializer.plainText().deserialize(discordMention));
                 }
             }
             if (!hasMentionPermission /*|| !PlayerUtils.hasPermission(icSender.getUniqueId(), "interactivechat.mention.here", false, 200) todo */) {

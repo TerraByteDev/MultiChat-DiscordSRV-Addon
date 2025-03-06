@@ -1,12 +1,12 @@
-package com.loohp.multichatdiscordsrvaddon.standalone;
+package com.loohp.multichatdiscordsrvaddon.standalone.message;
 
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.event.InternalServerChatEvent;
-import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.OutboundToDiscordEvents;
+import com.loohp.multichatdiscordsrvaddon.standalone.StandaloneManager;
+import com.loohp.multichatdiscordsrvaddon.utils.ComponentProcessingUtils;
 import lombok.Setter;
-import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.kyori.adventure.text.Component;
 
@@ -32,7 +32,7 @@ public class StandaloneMessageHandler {
     private static void handlePlainText(InternalServerChatEvent event) {
         String formattedUsername = standaloneManager.getFormattedUsername(event.getEmitter());
 
-        Component processedComponent = OutboundToDiscordEvents.processGameMessage(
+        Component processedComponent = ComponentProcessingUtils.processGameMessage(
                 event.getEmitter(),
                 Component.text(event.getFormatted()),
                 Component.text(event.getPlainText())

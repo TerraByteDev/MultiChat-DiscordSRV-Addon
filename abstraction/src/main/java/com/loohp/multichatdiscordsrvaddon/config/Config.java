@@ -336,6 +336,8 @@ public class Config {
     ) {}
 
     public record Messages(
+            @Comment("Sent when a player runs a command while on cooldown.\nPlaceholders: %cooldown% - Remaining cooldown in seconds.")
+            String onCooldown,
             String reloadConfig,
             String reloadTexture,
             String linkExpired,
@@ -346,7 +348,15 @@ public class Config {
             String interactionExpired,
             String trueLabel,
             String falseLabel,
-            StatusCommandMessages statusCommand
+            StatusCommandMessages statusCommand,
+            @Comment("The below messages are only for standalone linking implementation. If you want to edit DiscordSRV messages, it's not here.\nSent when a player is already linked. Placeholders: %linked_member_name% - Member you are already linked to.") String alreadyLinked,
+            @Comment("Placeholders: %code% - Code to message the bot / %bot_name% - Name of the bot.") String linkPrompt,
+            @Comment("Sent in game when a player successfully links.\nPlaceholders: %linked_member_name% - Name of the discord member you are now linked to.") String inGameLinkSuccess,
+            @Comment("Sent from the Discord bot in DMs when it successfully links to the player.\nPlaceholders: %linked_player_name% - Name of the linked MC Player.") String discordLinkSuccess,
+            @Comment("The Discord bot sends this when it cannot find the code you sent it.")
+            String unknownCode,
+            String unlinkSuccess,
+            @Comment("Sent when a player attempts to run a command that requires their account to be linked.") String linkRequired
     ) {}
 
     public record ListenerPriorities(
@@ -404,7 +414,8 @@ public class Config {
             FormattingTags formattingTags,
             UnknownItem unknownItem,
             @Comment("Toggle the update checker") boolean updater,
-            @Comment("Block specific messages (Regex) here.") List<String> blockedMessages
+            @Comment("Block specific messages (Regex) here.") List<String> blockedMessages,
+            @Comment("Cooldown for all commands. In milliseconds. Bypassable with the \"multichatdiscordsrv.cooldown.bypass\" permission.") long cooldown
     ) {}
 
     public record DynmapHook(
@@ -717,6 +728,7 @@ public class Config {
 
     @Comment("\nConfigure in-game and Discord messages")
     Messages messages = new Messages(
+            "<red><bold>Hey!<reset><grey> You're on cooldown for another <red><bold>%cooldown%<reset><grey> seconds!",
             "<green>Config has been reloaded!",
             "<yellow>Reloading textures... <grey>(See console for progress)",
             "<red>This link has expired! To view this link, please head over to the linked Discord channel!",
@@ -731,7 +743,14 @@ public class Config {
                     "<blue>Default Resource Hash: %s",
                     "<blue>Fonts loaded: %s",
                     "<green>Loaded Resources!"
-            )
+            ),
+            "<red>You are already linked to <yellow>%linked_member_name%<red>! Run <green>/multichat unlink <red>to unlink this account.",
+            "<yellow>Join our Discord and send the code <green>%code% <yellow>to our bot <green>%bot_name%<yellow>.",
+            "<green>Success! You are now linked to <yellow>%linked_member_name%<green>.",
+            "Success! You are now linked to **%linked_player_name%**.",
+            "I couldn't find that code. Did you type it in correctly?",
+            "<red>Successfully unlinked your Discord account.",
+            "You must have linked your account for that! Run \"/multichat linl\" in game!"
     );
 
     @Comment("\nGeneral settings concerning this plugin")
@@ -769,7 +788,8 @@ public class Config {
                     )
             ),
             true,
-            List.of()
+            List.of(),
+            5000
     );
 
     @Comment("\nPlugin hook configs")
@@ -811,7 +831,7 @@ public class Config {
                     true,
                     300,
                     List.of(
-                            new PresenceObject(BotStatusType.ONLINE, PresenceType.PLAYING, "my amazing server")
+                            new PresenceObject(OnlineStatus.ONLINE, Activity.ActivityType.PLAYING, "my amazing server")
                     )
             )
     );
