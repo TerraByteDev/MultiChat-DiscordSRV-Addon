@@ -4,15 +4,16 @@ import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.standalone.StandaloneManager;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
-import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Webhook;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
-import net.dv8tion.jda.api.requests.restaction.MessageEditAction;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.utils.messages.MessageRequest;
+import net.dv8tion.jda.internal.utils.requestbody.BufferedRequestBody;
 import okhttp3.*;
+import okio.Okio;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
@@ -20,10 +21,8 @@ import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.io.InputStream;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class StandaloneWebhookManager {
@@ -49,7 +48,7 @@ public class StandaloneWebhookManager {
         }
     }
 
-    public static void editMessage(@NotNull TextChannel channel, @NotNull String messageID, @NotNull String newMessage, Collection<? extends MessageEmbed> embeds) {
+    public static void editMessage(@NotNull TextChannel channel, @NotNull String messageID, @NotNull String newMessage, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
         Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
             if (webhook == null) throw new IllegalStateException("Attmpeted to edit webhook message when webhook has not been fetched!");
 
@@ -57,12 +56,40 @@ public class StandaloneWebhookManager {
             try {
                 JSONObject jsonObject = new JSONObject();
                 if (StringUtils.isNotBlank(newMessage)) jsonObject.put("content", newMessage);
+
                 if (embeds != null) {
                     JSONArray jsonArray = new JSONArray();
                     for (MessageEmbed embed : embeds) {
                         if (embed != null) jsonArray.add(embed.toData().toMap());
                     }
                     jsonObject.put("embeds", jsonArray);
+                }
+
+                if (interactions != null) {
+                    JSONArray jsonArray = new JSONArray();
+                    for (ActionRow actionRow : interactions) {
+                        jsonArray.add(actionRow.toData().toMap());
+                    }
+                    jsonObject.put("components", jsonArray);
+                }
+
+                List<String> attachmentIndex = null;
+                if (attachments != null) {
+                    attachmentIndex = new ArrayList<>(attachments.size());
+                    JSONArray jsonArray = new JSONArray();
+                    int i = 0;
+
+                    for (String name : attachments.keySet()) {
+                        attachmentIndex.add(name);
+                        JSONObject attachmentObject = new JSONObject();
+                        attachmentObject.put("id", i);
+                        attachmentObject.put("filename", name);
+
+                        jsonArray.add(attachmentIndex);
+                        i++;
+                    }
+
+                    jsonObject.put("attachments", jsonArray);
                 }
 
                 JSONObject allowedMentions = new JSONObject();
@@ -75,6 +102,17 @@ public class StandaloneWebhookManager {
 
                 MultipartBody.Builder multipartBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
                 multipartBuilder.addFormDataPart("payload_json", null, RequestBody.create(MediaType.get("application/json"), jsonObject.toString()));
+
+                if (attachmentIndex != null) {
+                    for (int i = 0; i < attachmentIndex.size(); i++) {
+                        String name = attachmentIndex.get(i);
+                        InputStream data = attachments.get(name);
+                        if (data != null) {
+                            multipartBuilder.addFormDataPart("files[" + i + "]", name, new BufferedRequestBody(Okio.source(data), null));
+                            data.close();
+                        }
+                    }
+                }
 
                 Request.Builder requestBuilder = new Request.Builder()
                         .url(webhookURL)

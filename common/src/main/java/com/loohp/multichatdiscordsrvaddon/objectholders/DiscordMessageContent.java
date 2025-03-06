@@ -24,7 +24,6 @@ import lombok.Setter;
 
 import java.awt.Color;
 import java.util.*;
-import java.util.Map.Entry;
 
 public class DiscordMessageContent {
 

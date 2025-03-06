@@ -162,14 +162,6 @@
                                     <pattern>org.objectweb</pattern>
                                     <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.org.objectweb</shadedPattern>
                                 </relocation>
-                                <relocation>
-                                    <pattern>net.dv8tion</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.net.dv8tion</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>com.google.code</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.com.google.code</shadedPattern>
-                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -713,6 +705,7 @@
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
             <version>5.3.0</version>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
@@ -725,12 +718,14 @@
             <groupId>dev.vankka</groupId>
             <artifactId>mcdiscordreserializer</artifactId>
             <version>4.3.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.12.1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

@@ -1,19 +1,19 @@
-package com.loohp.multichatdiscordsrvaddon.discordsrv;
+package com.loohp.multichatdiscordsrvaddon.standalone.message;
 
 import com.loohp.multichatdiscordsrvaddon.objectholders.DiscordMessageContent;
 import com.loohp.multichatdiscordsrvaddon.objectholders.MCField;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValuePairs;
-import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
-import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.MessageAction;
-import github.scarsz.discordsrv.objects.MessageFormat;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.util.*;
 
-public class DiscordSRVMessageContentUtils {
+public class StandaloneDiscordMessageContentUtils {
 
     public static DiscordMessageContent create(Message message) {
         if (message.getEmbeds().isEmpty()) throw new IllegalArgumentException("No embeds found!");
@@ -46,35 +46,8 @@ public class DiscordSRVMessageContentUtils {
         return content;
     }
 
-    public static DiscordMessageContent create(MessageFormat messageFormat) {
-        List<String> desc = new ArrayList<>();
-        if (messageFormat.getDescription() != null) desc.add(messageFormat.getDescription());
-        List<String> imgURL = new ArrayList<>();
-        if (messageFormat.getImageUrl() != null) imgURL.add(messageFormat.getImageUrl());
-
-        DiscordMessageContent content = new DiscordMessageContent(
-                messageFormat.getAuthorName(),
-                messageFormat.getAuthorImageUrl(),
-                desc,
-                imgURL,
-                messageFormat.getColorRaw(),
-                new HashMap<>()
-        );
-        messageFormat.getFields().forEach((field) -> {
-            content.addFields(new MCField(
-                    field.getName(),
-                    field.getValue(),
-                    field.isInline(),
-                    true
-            ));
-        });
-        content.setThumbnail(messageFormat.getThumbnailUrl());
-
-        return content;
-    }
-
     public static RestAction<List<Message>> toJDAMessageRestAction(DiscordMessageContent content, TextChannel channel) {
-        Map<MessageAction, Set<String>> actions = new LinkedHashMap<>();
+        Map<MessageCreateAction, Set<String>> actions = new LinkedHashMap<>();
         Set<String> rootAttachments = new HashSet<>();
         rootAttachments.add(content.getAuthorIconUrl());
 
@@ -111,7 +84,7 @@ public class DiscordSRVMessageContentUtils {
             }
         }
 
-        actions.put(channel.sendMessage(embed.build()), rootAttachments);
+        actions.put(channel.sendMessageEmbeds(embed.build()), rootAttachments);
         for (int i = 1; i < content.getImageUrls().size() || i < content.getDescriptions().size(); i++) {
             Set<String> usedAttachments = new HashSet<>();
 
@@ -134,29 +107,29 @@ public class DiscordSRVMessageContentUtils {
                 }
             }
             if (!otherEmbed.isEmpty()) {
-                actions.put(channel.sendMessage(otherEmbed.build()), usedAttachments);
+                actions.put(channel.sendMessageEmbeds(otherEmbed.build()), usedAttachments);
             }
         }
 
         Set<String> embeddedAttachments = new HashSet<>();
-        for (Map.Entry<MessageAction, Set<String>> entry : actions.entrySet()) {
-            MessageAction action = entry.getKey();
+        for (Map.Entry<MessageCreateAction, Set<String>> entry : actions.entrySet()) {
+            MessageCreateAction action = entry.getKey();
 
             Set<String> necessaryURLs = entry.getValue();
             for (Map.Entry<String, byte[]> attachment : content.getAttachments().entrySet()) {
                 String attachmentName = attachment.getKey();
                 if (necessaryURLs.contains("attachment:// "+ attachmentName)) {
-                    action.addFile(attachment.getValue(), attachmentName);
+                    action.addFiles(FileUpload.fromData(attachment.getValue(), attachmentName));
                     embeddedAttachments.add(attachmentName);
                 }
             }
         }
 
-        MessageAction lastAction = actions.keySet().stream().skip(actions.size() - 1).findFirst().get();
+        MessageCreateAction lastAction = actions.keySet().stream().skip(actions.size() - 1).findFirst().get();
         for (Map.Entry<String, byte[]> attachment : content.getAttachments().entrySet()) {
             String attachmentName = attachment.getKey();
             if (!embeddedAttachments.contains(attachmentName)) {
-                lastAction.addFile(attachment.getValue(), attachmentName);
+                lastAction.addFiles(FileUpload.fromData(attachment.getValue(), attachmentName));
             }
         }
 

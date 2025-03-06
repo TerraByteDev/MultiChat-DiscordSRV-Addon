@@ -18,8 +18,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.loohp.multichatdiscordsrvaddon.objectholders;
+package com.loohp.multichatdiscordsrvaddon.discordsrv.utils;
 
+import com.loohp.multichatdiscordsrvaddon.objectholders.DiscordMessageContent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.GenericComponentInteractionCreateEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
 import lombok.Getter;
@@ -29,14 +30,14 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 @Getter
-public class InteractionHandler {
+public class DiscordSRVInteractionHandler {
 
     private final Collection<? extends ActionRow> interactionToRegister;
     private final List<String> interactions;
     private final long expire;
     private final BiConsumer<GenericComponentInteractionCreateEvent, List<DiscordMessageContent>> reactionConsumer;
 
-    public InteractionHandler(Collection<? extends ActionRow> interactionToRegister, List<String> interactions, long expire, BiConsumer<GenericComponentInteractionCreateEvent, List<DiscordMessageContent>> reactionConsumer) {
+    public DiscordSRVInteractionHandler(Collection<? extends ActionRow> interactionToRegister, List<String> interactions, long expire, BiConsumer<GenericComponentInteractionCreateEvent, List<DiscordMessageContent>> reactionConsumer) {
         this.interactionToRegister = interactionToRegister;
         this.interactions = interactions;
         this.expire = expire;

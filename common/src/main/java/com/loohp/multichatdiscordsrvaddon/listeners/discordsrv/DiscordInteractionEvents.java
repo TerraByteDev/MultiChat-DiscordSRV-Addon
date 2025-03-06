@@ -21,12 +21,10 @@
 package com.loohp.multichatdiscordsrvaddon.listeners.discordsrv;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.discordsrv.utils.DiscordSRVInteractionHandler;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.HashUtils;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
-import com.loohp.multichatdiscordsrvaddon.metrics.Metrics;
 import com.loohp.multichatdiscordsrvaddon.objectholders.DiscordMessageContent;
-import com.loohp.multichatdiscordsrvaddon.objectholders.InteractionHandler;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.GenericComponentInteractionCreateEvent;
@@ -36,33 +34,18 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.loohp.multichatdiscordsrvaddon.utils.DiscordInteractionUtils.INTERACTION_ID_PREFIX;
 
 public class DiscordInteractionEvents extends ListenerAdapter {
 
-    public static final String INTERACTION_ID_PREFIX;
+    public static final Map<String, InteractionData> REGISTER = new ConcurrentHashMap<>();
 
-    static {
-        try {
-            String uuid = Metrics.getServerUUID();
-            if (uuid == null) {
-                uuid = UUID.randomUUID().toString();
-            }
-            INTERACTION_ID_PREFIX = "ICD_" + HashUtils.createSha1String(new ByteArrayInputStream(uuid.getBytes(StandardCharsets.UTF_8))) + "_";
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static final Map<String, InteractionData> REGISTER = new ConcurrentHashMap<>();
-
-    public static void register(Message message, InteractionHandler interactionHandler, List<DiscordMessageContent> discordMessageContent) {
+    public static void register(Message message, DiscordSRVInteractionHandler interactionHandler, List<DiscordMessageContent> discordMessageContent) {
         String messageId = message.getChannel().getId() + "/" + message.getId();
         List<String> interactionIds = interactionHandler.getInteractions();
         InteractionData interactionData = new InteractionData(interactionHandler, discordMessageContent, interactionIds, messageId);
@@ -113,19 +96,19 @@ public class DiscordInteractionEvents extends ListenerAdapter {
     @Getter
     public static class InteractionData {
 
-        private final InteractionHandler interactionHandler;
+        private final DiscordSRVInteractionHandler interactionHandler;
         private final List<DiscordMessageContent> contents;
         private final List<String> interactionIds;
         private final List<String> messageIds;
 
-        public InteractionData(InteractionHandler interactionHandler, List<DiscordMessageContent> contents, List<String> interactionIds, List<String> messageIds) {
+        public InteractionData(DiscordSRVInteractionHandler interactionHandler, List<DiscordMessageContent> contents, List<String> interactionIds, List<String> messageIds) {
             this.interactionHandler = interactionHandler;
             this.contents = contents;
             this.interactionIds = interactionIds;
             this.messageIds = messageIds;
         }
 
-        public InteractionData(InteractionHandler interactionHandler, List<DiscordMessageContent> contents, List<String> interactionIds, String messageId) {
+        public InteractionData(DiscordSRVInteractionHandler interactionHandler, List<DiscordMessageContent> contents, List<String> interactionIds, String messageId) {
             this.interactionHandler = interactionHandler;
             this.contents = contents;
             this.interactionIds = interactionIds;

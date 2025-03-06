@@ -5,6 +5,7 @@ import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.api.events.*;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
+import com.loohp.multichatdiscordsrvaddon.standalone.utils.StandaloneDiscordContentUtils;
 import com.loohp.multichatdiscordsrvaddon.provider.DiscordProviderManager;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
@@ -155,7 +156,7 @@ public class ComponentProcessingUtils {
 
                         String title = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, Config.i().getInventoryImage().item().itemTitle()));
 
-                        Inventory inv = DiscordContentUtils.getBlockInventory(item);
+                        Inventory inv = StandaloneDiscordContentUtils.getBlockInventory(item);
 
                         GameMessageProcessItemEvent gameMessageProcessItemEvent = new GameMessageProcessItemEvent(icSender, title, component, false, inventoryId, item.clone(), inv);
                         Bukkit.getPluginManager().callEvent(gameMessageProcessItemEvent);

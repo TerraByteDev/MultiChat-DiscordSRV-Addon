@@ -28,6 +28,9 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSy
 import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.discordsrv.DiscordSRVMessageContentUtils;
+import com.loohp.multichatdiscordsrvaddon.discordsrv.utils.DiscordSRVContentUtils;
+import com.loohp.multichatdiscordsrvaddon.discordsrv.utils.DiscordSRVInteractionHandler;
 import com.loohp.multichatdiscordsrvaddon.modules.InventoryDisplay;
 import com.loohp.multichatdiscordsrvaddon.modules.ItemDisplay;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
@@ -105,6 +108,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+
+import static com.loohp.multichatdiscordsrvaddon.utils.DiscordInteractionUtils.OFFSET_WHITE;
 
 public class DiscordCommands implements Listener, SlashCommandProvider, PacketListener {
 
@@ -594,7 +599,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                         if (color == null) {
                             color = new Color(0xAAAAAA);
                         } else if (color.equals(Color.WHITE)) {
-                            color = DiscordContentUtils.OFFSET_WHITE;
+                            color = OFFSET_WHITE;
                         }
                         builder.setColor(color);
                         if (packInfo.compareServerPackFormat(ResourceRegistry.RESOURCE_PACK_VERSION) > 0) {
@@ -759,12 +764,12 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                         OfflinePlayer firstPlayer = Bukkit.getOfflinePlayer(players.keySet().iterator().next().getUniqueId());
                         List<Component> header = new ArrayList<>();
                         if (!Config.i().getDiscordCommands().playerList().tablistOptions().headerText().isEmpty()) {
-                            header = ComponentStyling.splitAtLineBreaks(LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(firstPlayer, DiscordContentUtils.join(Config.i().getDiscordCommands().playerList().tablistOptions().headerText(), true).replace("{OnlinePlayers}", players.size() + "")))));
+                            header = ComponentStyling.splitAtLineBreaks(LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(firstPlayer, DiscordSRVContentUtils.join(Config.i().getDiscordCommands().playerList().tablistOptions().headerText(), true).replace("{OnlinePlayers}", players.size() + "")))));
                         }
                         errorCode--;
                         List<Component> footer = new ArrayList<>();
                         if (!Config.i().getDiscordCommands().playerList().tablistOptions().footerText().isEmpty()) {
-                            footer = ComponentStyling.splitAtLineBreaks(LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(firstPlayer, DiscordContentUtils.join(Config.i().getDiscordCommands().playerList().tablistOptions().footerText(), true).replace("{OnlinePlayers}", players.size() + "")))));
+                            footer = ComponentStyling.splitAtLineBreaks(LegacyComponentSerializer.legacySection().deserialize(ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(firstPlayer, DiscordSRVContentUtils.join(Config.i().getDiscordCommands().playerList().tablistOptions().footerText(), true).replace("{OnlinePlayers}", players.size() + "")))));
                         }
                         errorCode--;
                         int playerListMaxPlayers = Config.i().getDiscordCommands().playerList().tablistOptions().maxPlayersDisplayable();
@@ -893,9 +898,9 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                     } else {
                         data = new ImageDisplayData(offlineICPlayer, 0, title, ImageDisplayType.ITEM, itemStack.clone());
                     }
-                    ValuePairs<List<DiscordMessageContent>, InteractionHandler> pair = DiscordContentUtils.createContents(Collections.singletonList(data), offlineICPlayer);
+                    ValuePairs<List<DiscordMessageContent>, DiscordSRVInteractionHandler> pair = DiscordSRVContentUtils.createContents(Collections.singletonList(data), offlineICPlayer);
                     List<DiscordMessageContent> contents = pair.getFirst();
-                    InteractionHandler interactionHandler = pair.getSecond();
+                    DiscordSRVInteractionHandler interactionHandler = pair.getSecond();
                     errorCode--;
 
                     WebhookMessageUpdateAction<Message> action = event.getHook().editOriginal(ComponentStringUtils.stripColorAndConvertMagic(LegacyComponentSerializer.legacySection().serialize(resolvedComponent)));
@@ -904,7 +909,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                     for (DiscordMessageContent content : contents) {
                         i += content.getAttachments().size();
                         if (i <= 10) {
-                            ValuePairs<List<MessageEmbed>, Set<String>> valuePair = content.toJDAMessageEmbeds();
+                            ValuePairs<List<MessageEmbed>, Set<String>> valuePair = DiscordSRVMessageContentUtils.toJDAMessageEmbeds(content);
                             embeds.addAll(valuePair.getFirst());
                             for (Entry<String, byte[]> attachment : content.getAttachments().entrySet()) {
                                 if (valuePair.getSecond().contains(attachment.getKey())) {
@@ -984,7 +989,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                 errorCode--;
                 layout1(offlineICPlayer, sha1, title);
                 errorCode--;
-                component = component.hoverEvent(HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(DiscordContentUtils.join(Config.i().getDiscordCommands().shareInventory().inGameMessage().hover(), true))));
+                component = component.hoverEvent(HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(DiscordSRVContentUtils.join(Config.i().getDiscordCommands().shareInventory().inGameMessage().hover(), true))));
                 component = component.clickEvent(ClickEvent.runCommand("/multichat viewinv " + sha1));
                 errorCode--;
                 String key = "<DiscordShare=" + UUID.randomUUID() + ">";
@@ -996,9 +1001,9 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                 }
                 if (Config.i().getDiscordCommands().shareInventory().isMainServer()) {
                     ImageDisplayData data = new ImageDisplayData(offlineICPlayer, 0, title, ImageDisplayType.INVENTORY, true, new TitledInventoryWrapper(Component.translatable(TranslationKeyUtils.getDefaultContainerTitle()), offlinePlayerData.getInventory()));
-                    ValuePairs<List<DiscordMessageContent>, InteractionHandler> pair = DiscordContentUtils.createContents(Collections.singletonList(data), offlineICPlayer);
+                    ValuePairs<List<DiscordMessageContent>, DiscordSRVInteractionHandler> pair = DiscordSRVContentUtils.createContents(Collections.singletonList(data), offlineICPlayer);
                     List<DiscordMessageContent> contents = pair.getFirst();
-                    InteractionHandler interactionHandler = pair.getSecond();
+                    DiscordSRVInteractionHandler interactionHandler = pair.getSecond();
                     errorCode--;
 
                     WebhookMessageUpdateAction<Message> action = event.getHook().editOriginal(ComponentStringUtils.stripColorAndConvertMagic(LegacyComponentSerializer.legacySection().serialize(component)));
@@ -1007,7 +1012,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                     for (DiscordMessageContent content : contents) {
                         i += content.getAttachments().size();
                         if (i <= 10) {
-                            ValuePairs<List<MessageEmbed>, Set<String>> valuePair = content.toJDAMessageEmbeds();
+                            ValuePairs<List<MessageEmbed>, Set<String>> valuePair = DiscordSRVMessageContentUtils.toJDAMessageEmbeds(content);
                             embeds.addAll(valuePair.getFirst());
                             for (Entry<String, byte[]> attachment : content.getAttachments().entrySet()) {
                                 if (valuePair.getSecond().contains(attachment.getKey())) {
@@ -1085,7 +1090,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                 errorCode--;
                 ender(offlineICPlayer, sha1, title);
                 errorCode--;
-                component = component.hoverEvent(HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(DiscordContentUtils.join(Config.i().getDiscordCommands().shareEnderChest().inGameMessage().hover(), true))));
+                component = component.hoverEvent(HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(DiscordSRVContentUtils.join(Config.i().getDiscordCommands().shareEnderChest().inGameMessage().hover(), true))));
                 component = component.clickEvent(ClickEvent.runCommand("/multichat viewender " + sha1));
                 errorCode--;
                 String key = "<DiscordShare=" + UUID.randomUUID() + ">";
@@ -1097,9 +1102,9 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                 }
                 if (Config.i().getDiscordCommands().shareEnderChest().isMainServer()) {
                     ImageDisplayData data = new ImageDisplayData(offlineICPlayer, 0, title, ImageDisplayType.ENDERCHEST, new TitledInventoryWrapper(Component.translatable(TranslationKeyUtils.getEnderChestContainerTitle()), offlinePlayerData.getEnderChest()));
-                    ValuePairs<List<DiscordMessageContent>, InteractionHandler> pair = DiscordContentUtils.createContents(Collections.singletonList(data), offlineICPlayer);
+                    ValuePairs<List<DiscordMessageContent>, DiscordSRVInteractionHandler> pair = DiscordSRVContentUtils.createContents(Collections.singletonList(data), offlineICPlayer);
                     List<DiscordMessageContent> contents = pair.getFirst();
-                    InteractionHandler interactionHandler = pair.getSecond();
+                    DiscordSRVInteractionHandler interactionHandler = pair.getSecond();
                     errorCode--;
 
                     WebhookMessageUpdateAction<Message> action = event.getHook().editOriginal(ComponentStringUtils.stripColorAndConvertMagic(LegacyComponentSerializer.legacySection().serialize(component)));
@@ -1108,7 +1113,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                     for (DiscordMessageContent content : contents) {
                         i += content.getAttachments().size();
                         if (i <= 10) {
-                            ValuePairs<List<MessageEmbed>, Set<String>> valuePair = content.toJDAMessageEmbeds();
+                            ValuePairs<List<MessageEmbed>, Set<String>> valuePair = DiscordSRVMessageContentUtils.toJDAMessageEmbeds(content);
                             embeds.addAll(valuePair.getFirst());
                             for (Entry<String, byte[]> attachment : content.getAttachments().entrySet()) {
                                 if (valuePair.getSecond().contains(attachment.getKey())) {

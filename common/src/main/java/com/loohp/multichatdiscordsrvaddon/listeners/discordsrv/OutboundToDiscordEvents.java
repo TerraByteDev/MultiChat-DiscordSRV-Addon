@@ -21,13 +21,13 @@
 package com.loohp.multichatdiscordsrvaddon.listeners.discordsrv;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.discordsrv.DiscordSRVMessageContentUtils;
+import com.loohp.multichatdiscordsrvaddon.discordsrv.utils.DiscordSRVContentUtils;
+import com.loohp.multichatdiscordsrvaddon.discordsrv.utils.DiscordSRVInteractionHandler;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
+import com.loohp.multichatdiscordsrvaddon.utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.MultiChatComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.utils.LanguageUtils;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.api.events.DiscordImageEvent;
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
@@ -35,9 +35,6 @@ import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.resources.languages.SpecificTranslateFunction;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentStringUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.DiscordContentUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.DiscordItemStackUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.DiscordItemStackUtils.DiscordToolTip;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.ListenerPriority;
@@ -84,7 +81,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -334,7 +330,7 @@ public class OutboundToDiscordEvents implements Listener {
             Debug.debug("onDeathMessageSend sending item to discord");
             TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(event.getChannel());
             if (event.isUsingWebhooks()) {
-                ValuePairs<List<MessageEmbed>, Set<String>> pair = content.toJDAMessageEmbeds();
+                ValuePairs<List<MessageEmbed>, Set<String>> pair = DiscordSRVMessageContentUtils.toJDAMessageEmbeds(content);
                 Map<String, InputStream> attachments = new LinkedHashMap<>();
                 for (Entry<String, byte[]> attachment : content.getAttachments().entrySet()) {
                     if (pair.getSecond().contains(attachment.getKey())) {
@@ -344,7 +340,7 @@ public class OutboundToDiscordEvents implements Listener {
 
                 WebhookUtil.deliverMessage(destinationChannel, event.getWebhookName(), event.getWebhookAvatarUrl(), null, pair.getFirst(), attachments, null);
             } else {
-                content.toJDAMessageRestAction(destinationChannel).queue();
+                DiscordSRVMessageContentUtils.toJDAMessageRestAction(content, destinationChannel).queue();
             }
         }, 5);
     }
@@ -404,7 +400,7 @@ public class OutboundToDiscordEvents implements Listener {
                 color = ColorUtils.getColor(colorStr == null || colorStr.isEmpty() ? advancementType.getColor() : ColorUtils.toChatColor(colorStr));
             }
             if (color.equals(Color.white)) {
-                color = DiscordContentUtils.OFFSET_WHITE;
+                color = DiscordInteractionUtils.OFFSET_WHITE;
             }
             messageFormat.setColorRaw(color.getRGB());
         }
@@ -435,7 +431,7 @@ public class OutboundToDiscordEvents implements Listener {
             }
         }
         event.setCancelled(true);
-        DiscordMessageContent content = new DiscordMessageContent(message);
+        DiscordMessageContent content = DiscordSRVMessageContentUtils.create(message);
 
         for (IntIterator itr = matches.iterator(); itr.hasNext();) {
             int key = itr.nextInt();
@@ -448,7 +444,7 @@ public class OutboundToDiscordEvents implements Listener {
         TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(event.getChannel());
         Debug.debug("onAdvancementSend sending message to discord");
         if (event.isUsingWebhooks()) {
-            ValuePairs<List<MessageEmbed>, Set<String>> pair = content.toJDAMessageEmbeds();
+            ValuePairs<List<MessageEmbed>, Set<String>> pair = DiscordSRVMessageContentUtils.toJDAMessageEmbeds(content);
             Map<String, InputStream> attachments = new LinkedHashMap<>();
             for (Entry<String, byte[]> attachment : content.getAttachments().entrySet()) {
                 if (pair.getSecond().contains(attachment.getKey())) {
@@ -458,7 +454,7 @@ public class OutboundToDiscordEvents implements Listener {
 
             WebhookUtil.deliverMessage(destinationChannel, event.getWebhookName(), event.getWebhookAvatarUrl(), null, pair.getFirst(), attachments, null);
         } else {
-            content.toJDAMessageRestAction(destinationChannel).queue();
+            DiscordSRVMessageContentUtils.toJDAMessageRestAction(content, destinationChannel).queue();
         }
     }
 
@@ -504,11 +500,11 @@ public class OutboundToDiscordEvents implements Listener {
         dataList.sort(DISPLAY_DATA_COMPARATOR);
 
         Debug.debug("discordMessageSent creating contents");
-        ValuePairs<List<DiscordMessageContent>, InteractionHandler> pair = DiscordContentUtils.createContents(dataList, player);
+        ValuePairs<List<DiscordMessageContent>, DiscordSRVInteractionHandler> pair = DiscordSRVContentUtils.createContents(dataList, player);
         List<DiscordMessageContent> contents = pair.getFirst();
-        InteractionHandler interactionHandler = pair.getSecond();
+        DiscordSRVInteractionHandler interactionHandler = pair.getSecond();
 
-        DiscordImageEvent discordImageEvent = new DiscordImageEvent(channel, textOriginal, text, contents, false, true);
+        DiscordImageEvent discordImageEvent = new DiscordImageEvent(channel.getId(), textOriginal, text, contents, false, true);
         Bukkit.getPluginManager().callEvent(discordImageEvent);
         Debug.debug("discordMessageSent sending to discord, Cancelled: " + discordImageEvent.isCancelled());
         if (discordImageEvent.isCancelled()) {
@@ -521,7 +517,7 @@ public class OutboundToDiscordEvents implements Listener {
             for (DiscordMessageContent content : contents) {
                 i += content.getAttachments().size();
                 if (i <= 10) {
-                    ValuePairs<List<MessageEmbed>, Set<String>> valuePair = content.toJDAMessageEmbeds();
+                    ValuePairs<List<MessageEmbed>, Set<String>> valuePair = DiscordSRVMessageContentUtils.toJDAMessageEmbeds(content);
                     embeds.addAll(valuePair.getFirst());
                     for (Entry<String, byte[]> attachment : content.getAttachments().entrySet()) {
                         if (valuePair.getSecond().contains(attachment.getKey())) {
@@ -582,11 +578,11 @@ public class OutboundToDiscordEvents implements Listener {
         dataList.sort(DISPLAY_DATA_COMPARATOR);
 
         Debug.debug("onMessageReceived creating contents");
-        ValuePairs<List<DiscordMessageContent>, InteractionHandler> pair = DiscordContentUtils.createContents(dataList, player);
+        ValuePairs<List<DiscordMessageContent>, DiscordSRVInteractionHandler> pair = DiscordSRVContentUtils.createContents(dataList, player);
         List<DiscordMessageContent> contents = pair.getFirst();
-        InteractionHandler interactionHandler = pair.getSecond();
+        DiscordSRVInteractionHandler interactionHandler = pair.getSecond();
 
-        DiscordImageEvent discordImageEvent = new DiscordImageEvent(channel, textOriginal, text, contents, false, true);
+        DiscordImageEvent discordImageEvent = new DiscordImageEvent(channel.getId(), textOriginal, text, contents, false, true);
         Bukkit.getPluginManager().callEvent(discordImageEvent);
 
         Debug.debug("onMessageReceived sending to discord, Cancelled: " + discordImageEvent.isCancelled());
@@ -600,7 +596,7 @@ public class OutboundToDiscordEvents implements Listener {
             for (DiscordMessageContent content : contents) {
                 i += content.getAttachments().size();
                 if (i <= 10) {
-                    ValuePairs<List<MessageEmbed>, Set<String>> valuePair = content.toJDAMessageEmbeds();
+                    ValuePairs<List<MessageEmbed>, Set<String>> valuePair = DiscordSRVMessageContentUtils.toJDAMessageEmbeds(content);
                     embeds.addAll(valuePair.getFirst());
                     for (Entry<String, byte[]> attachment : content.getAttachments().entrySet()) {
                         if (valuePair.getSecond().contains(attachment.getKey())) {
