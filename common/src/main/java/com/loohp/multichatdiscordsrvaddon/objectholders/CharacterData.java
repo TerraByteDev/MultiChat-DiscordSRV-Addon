@@ -35,10 +35,7 @@ import com.loohp.multichatdiscordsrvaddon.utils.ComponentFlattening;
 import it.unimi.dsi.fastutil.chars.CharObjectImmutablePair;
 import it.unimi.dsi.fastutil.chars.CharObjectPair;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
@@ -57,7 +54,10 @@ public class CharacterData {
                 textColor = NamedTextColor.WHITE;
             }
             int color = textColor.value();
-            OptionalInt shadowColor = each.shadowColor() == null ? OptionalInt.empty() : OptionalInt.of(each.shadowColor().value());
+            OptionalInt shadowColor = OptionalInt.empty();
+            try {
+                shadowColor = each.shadowColor() == null ? OptionalInt.empty() : OptionalInt.of(Objects.requireNonNull(each.shadowColor()).value());
+            } catch (Exception ignored) {}
             List<TextDecoration> decorations = each.decorations().entrySet().stream().filter(entry -> entry.getValue().equals(State.TRUE)).map(entry -> entry.getKey()).collect(Collectors.toList());
             String content;
             if (each instanceof TextComponent) {
