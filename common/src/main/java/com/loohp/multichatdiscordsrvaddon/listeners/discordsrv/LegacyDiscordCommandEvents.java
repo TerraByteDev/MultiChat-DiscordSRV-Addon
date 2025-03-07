@@ -106,7 +106,7 @@ public class LegacyDiscordCommandEvents {
                     Map<UUID, ValuePairs<List<String>, String>> playerInfo = new HashMap<>();
                     for (Map.Entry<OfflinePlayer, Integer> entry : players.entrySet()) {
                         OfflinePlayer offlinePlayer = entry.getKey();
-                        playerInfo.put(offlinePlayer.getUniqueId(), new ValuePairs<>(DiscordCommands.getPlayerGroups(offlinePlayer), offlinePlayer.getName()));
+                        playerInfo.put(offlinePlayer.getUniqueId(), new ValuePairs<>(DiscordCommandUtils.getPlayerGroups(offlinePlayer), offlinePlayer.getName()));
                         String name = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(offlinePlayer, Config.i().getDiscordCommands().playerList().tablistOptions().playerFormat()));
                         Component nameComponent;
                         if (Config.i().getDiscordCommands().playerList().tablistOptions().parsePlayerNamesWithMiniMessage()) {
@@ -117,7 +117,7 @@ public class LegacyDiscordCommandEvents {
                         player.add(new ValueTrios<>(offlinePlayer, nameComponent, entry.getValue()));
                     }
                     errorCode--;
-                    DiscordCommands.sortPlayers(Config.i().getDiscordCommands().playerList().tablistOptions().playerOrder().orderBy(), player, playerInfo);
+                    DiscordCommandUtils.sortPlayers(Config.i().getDiscordCommands().playerList().tablistOptions().playerOrder().orderBy(), player, playerInfo);
                     errorCode--;
                     OfflinePlayer firstPlayer = Bukkit.getOfflinePlayer(players.keySet().iterator().next().getUniqueId());
                     List<Component> header = new ArrayList<>();

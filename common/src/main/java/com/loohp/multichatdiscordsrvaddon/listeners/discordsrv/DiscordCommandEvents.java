@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.listeners.discordsrv;
 
 import com.loohp.multichatdiscordsrvaddon.utils.DiscordCommandDataUtils;
+import com.loohp.multichatdiscordsrvaddon.utils.DiscordCommandUtils;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.ListenerPriority;
 import github.scarsz.discordsrv.api.Subscribe;
@@ -46,7 +47,7 @@ public class DiscordCommandEvents {
         Set<CommandData> commands = event.getCommands();
         List<Command> originalCommands = guild.retrieveCommands().complete();
         for (Command command : originalCommands) {
-            if (DiscordCommands.DISCORD_COMMANDS.contains(command.getName())) {
+            if (DiscordCommandUtils.DISCORD_COMMANDS.contains(command.getName())) {
                 commands.add(DiscordCommandDataUtils.toCommandData(command));
             }
         }

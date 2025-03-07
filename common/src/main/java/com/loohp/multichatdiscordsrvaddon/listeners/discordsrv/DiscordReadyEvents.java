@@ -68,7 +68,6 @@ public class DiscordReadyEvents {
         jda.addEventListener(new DiscordInteractionEvents());
 
         DiscordCommands discordCommands = new DiscordCommands(discordsrv);
-        discordCommands.init();
         Bukkit.getPluginManager().registerEvents(discordCommands, MultiChatDiscordSrvAddon.plugin);
         DiscordSRV.api.addSlashCommandProvider(discordCommands);
         discordCommands.reload();

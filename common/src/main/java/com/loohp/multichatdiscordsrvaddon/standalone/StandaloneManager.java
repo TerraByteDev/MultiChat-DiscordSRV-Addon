@@ -3,6 +3,7 @@ package com.loohp.multichatdiscordsrvaddon.standalone;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.provider.DiscordProviderManager;
+import com.loohp.multichatdiscordsrvaddon.standalone.cmd.StandaloneCommandManager;
 import com.loohp.multichatdiscordsrvaddon.standalone.event.StandaloneInboundEvents;
 import com.loohp.multichatdiscordsrvaddon.standalone.linking.StandaloneLinkDatabase;
 import com.loohp.multichatdiscordsrvaddon.standalone.linking.StandaloneLinkManager;
@@ -33,6 +34,7 @@ public class StandaloneManager {
 
     private StandalonePresenceHandler presenceHandler;
     private StandaloneLinkManager linkManager;
+    private StandaloneCommandManager commandManager;
 
     private ExecutorService scheduler;
 
@@ -60,6 +62,10 @@ public class StandaloneManager {
             if (Config.i().getStandalone().formatting().useWebhooks()) StandaloneWebhookManager.fetchWebhook(this);
 
             this.linkManager = new StandaloneLinkManager(this);
+
+            this.commandManager = new StandaloneCommandManager();
+            this.commandManager.initialise();
+
             this.jda.addEventListener(new StandaloneDiscordMessageHandler(), new StandaloneInboundEvents());
             DiscordProviderManager.setInstance(new StandaloneDiscordProvider());
         } catch (InterruptedException exception) {

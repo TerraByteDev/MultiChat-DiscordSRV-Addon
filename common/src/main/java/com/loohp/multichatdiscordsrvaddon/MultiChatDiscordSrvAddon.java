@@ -226,6 +226,8 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
 
         new CommandHandler();
 
+        DiscordCommandUtils.init();
+
         File resourcepacks = new File(getDataFolder(), "resourcepacks");
         if (!resourcepacks.exists()) {
             File resources = new File(getDataFolder(), "resources");

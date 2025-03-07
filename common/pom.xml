@@ -730,5 +730,12 @@
             <version>5.1.1</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.incendo</groupId>
+            <artifactId>cloud-jda5</artifactId>
+            <version>1.0.0-beta.3</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
