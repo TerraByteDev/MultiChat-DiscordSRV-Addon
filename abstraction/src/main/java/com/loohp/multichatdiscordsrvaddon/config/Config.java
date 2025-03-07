@@ -459,7 +459,7 @@ public class Config {
     public record Standalone(
             @Comment("This will DISABLE DiscordSRV integration.") boolean enabled,
             @Comment("\nBot token that should be used.") String token,
-            @Comment("Channel that all messages should be directed to") String channelID,
+            @Comment("Channel that all messages should be directed to") String channelId,
             @Comment("\nConfigure formatting here.") StandaloneFormat formatting,
             @Comment("\nConfigure the bot's presence") StandalonePresence botPresence
     ) {}

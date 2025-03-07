@@ -106,7 +106,7 @@ public class SkinUtils {
      * @return String of the formatted URL
      */
     public static String getFormattedSkinURL(OfflinePlayer player) {
-        String avatarURL = Config.i().getStandalone().formatting().avatarURL()
+        String avatarURL = Config.i().getStandalone().formatting().avatarUrl()
                 .replace("%uuid%", player.getUniqueId().toString())
                 .replace("%username%", Objects.requireNonNull(player.getName()));
 

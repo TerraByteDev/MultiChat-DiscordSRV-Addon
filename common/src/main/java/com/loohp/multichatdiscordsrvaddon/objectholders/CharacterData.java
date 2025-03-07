@@ -56,8 +56,10 @@ public class CharacterData {
             int color = textColor.value();
             OptionalInt shadowColor = OptionalInt.empty();
             try {
-                shadowColor = each.shadowColor() == null ? OptionalInt.empty() : OptionalInt.of(Objects.requireNonNull(each.shadowColor()).value());
-            } catch (Exception ignored) {}
+                if (Component.class.getMethod("shadowColor") != null) {
+                    shadowColor = each.shadowColor() == null ? OptionalInt.empty() : OptionalInt.of(Objects.requireNonNull(each.shadowColor()).value());
+                }
+            } catch (NoSuchMethodException ignored) {}
             List<TextDecoration> decorations = each.decorations().entrySet().stream().filter(entry -> entry.getValue().equals(State.TRUE)).map(entry -> entry.getKey()).collect(Collectors.toList());
             String content;
             if (each instanceof TextComponent) {
