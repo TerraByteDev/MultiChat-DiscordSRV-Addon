@@ -2,6 +2,7 @@ package com.loohp.multichatdiscordsrvaddon.command.subcommand;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.InboundToGameEvents;
+import com.loohp.multichatdiscordsrvaddon.objectholders.DiscordAttachmentData;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import com.loohp.multichatdiscordsrvaddon.wrappers.GraphicsToPacketMapWrapper;
 import org.bukkit.command.CommandSender;
@@ -11,6 +12,8 @@ import org.incendo.cloud.annotations.Command;
 import org.incendo.cloud.annotations.CommandDescription;
 
 import java.util.UUID;
+
+import static com.loohp.multichatdiscordsrvaddon.listeners.InboundEventListener.DATA;
 
 @Command("multichat|mc")
 public class ImageMapCommand {
@@ -27,7 +30,7 @@ public class ImageMapCommand {
         }
 
         try {
-            InboundToGameEvents.DiscordAttachmentData data = InboundToGameEvents.DATA.get(UUID.fromString(uuid));
+            DiscordAttachmentData data = DATA.get(UUID.fromString(uuid));
             if (data != null && (data.isImage() || data.isVideo())) {
 
                 GraphicsToPacketMapWrapper imageMap = data.getImageMap();

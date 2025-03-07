@@ -43,7 +43,6 @@ public class DiscordSRVManager {
         DiscordSRV.api.subscribe(new LegacyDiscordCommandEvents());
         DiscordSRV.api.subscribe(new OutboundToDiscordEvents());
 
-        Bukkit.getServer().getPluginManager().registerEvents(new InboundToGameEvents(), MultiChatDiscordSrvAddon.plugin);
         Bukkit.getServer().getPluginManager().registerEvents(new OutboundToDiscordEvents(), MultiChatDiscordSrvAddon.plugin);
 
         discordsrv.reloadRegexes();

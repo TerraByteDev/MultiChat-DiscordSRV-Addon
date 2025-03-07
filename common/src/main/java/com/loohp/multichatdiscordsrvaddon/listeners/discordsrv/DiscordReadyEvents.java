@@ -73,10 +73,6 @@ public class DiscordReadyEvents {
         DiscordSRV.api.addSlashCommandProvider(discordCommands);
         discordCommands.reload();
 
-        PacketListenerPriority priority = PacketListenerPriority.valueOf(Config.i().getDiscordAttachments().priority().toUpperCase(Locale.ROOT));
-        PacketEvents.getAPI().getEventManager().registerListener(discordCommands, priority);
-        PacketEvents.getAPI().getEventManager().registerListener(DiscordSRVManager.inboundToGameEvents, priority);
-
         for (String channelId : discordsrv.getChannels().values()) {
             if (channelId != null) {
                 try {

@@ -43,6 +43,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.loohp.multichatdiscordsrvaddon.listeners.InboundEventListener.MAP_VIEWERS;
+
 @SuppressWarnings("deprecation")
 public class GraphicsToPacketMapWrapper {
 
@@ -161,7 +163,7 @@ public class GraphicsToPacketMapWrapper {
             throw new IllegalStateException("Future has not complete!");
         }
         MultiChatDiscordSrvAddon.plugin.imagesViewedCounter.incrementAndGet();
-        InboundToGameEvents.MAP_VIEWERS.put(player, this);
+        MAP_VIEWERS.put(player, this);
 
         NMS.getInstance().sendFakeMainHandSlot(player, mapItem);
 
@@ -171,7 +173,7 @@ public class GraphicsToPacketMapWrapper {
 
             @Override
             public void run() {
-                GraphicsToPacketMapWrapper wrapper = InboundToGameEvents.MAP_VIEWERS.get(player);
+                GraphicsToPacketMapWrapper wrapper = MAP_VIEWERS.get(player);
                 if (wrapper != null && wrapper.equals(ref)) {
                     byte[] colorArray = colors.get(index);
                     NMS.getInstance().sendFakeMapUpdate(player, MAP_ID, Collections.emptyList(), colorArray);

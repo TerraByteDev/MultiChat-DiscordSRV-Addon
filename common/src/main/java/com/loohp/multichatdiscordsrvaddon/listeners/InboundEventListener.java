@@ -12,8 +12,11 @@ import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.ComponentReplacing;
 import com.loohp.multichatdiscordsrvaddon.utils.CustomStringUtils;
 import com.loohp.multichatdiscordsrvaddon.wrappers.GraphicsToPacketMapWrapper;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -41,6 +44,7 @@ public class InboundEventListener implements Listener, PacketListener {
 
     public static final Map<UUID, DiscordAttachmentData> DATA = new ConcurrentHashMap<>();
     public static final Map<Player, GraphicsToPacketMapWrapper> MAP_VIEWERS = new ConcurrentHashMap<>();
+    public static final Map<String, Component> components = new ConcurrentHashMap<>();
 
     @SuppressWarnings("deprecation")
     @EventHandler
@@ -161,24 +165,36 @@ public class InboundEventListener implements Listener, PacketListener {
             Debug.debug("Triggering onChatPacket");
 
             WrapperPlayServerSystemChatMessage messageWrapper = new WrapperPlayServerSystemChatMessage(event);
+            Component component = messageWrapper.getMessage();
+            String plain = PlainTextComponentSerializer.plainText().serialize(component);
+
+            for (Map.Entry<String, Component> entry : components.entrySet()) {
+                if (plain.contains(entry.getKey())) {
+                    messageWrapper.setMessage(ComponentReplacing.replace(MiniMessage.miniMessage().deserialize(plain), CustomStringUtils.escapeMetaCharacters(entry.getKey()), false, entry.getValue()));
+
+                    event.setLastUsedWrapper(messageWrapper);
+                    event.markForReEncode(true);
+                    break;
+                }
+            }
+
             if (Config.i().getDiscordAttachments().convert()) {
                 Debug.debug("onChatPacket converting discord attachments");
 
                 for (Map.Entry<UUID, DiscordAttachmentData> entry : DATA.entrySet()) {
                     DiscordAttachmentData data = entry.getValue();
                     String url = data.getUrl();
-                    net.kyori.adventure.text.Component component = messageWrapper.getMessage();
 
-                    net.kyori.adventure.text.Component textComponent = ChatColorUtils.format(Config.i().getDiscordAttachments().formatting().text()
+                    Component textComponent = ChatColorUtils.format(Config.i().getDiscordAttachments().formatting().text()
                             .replace("{FileName}", data.getFileName()));
                     if (Config.i().getDiscordAttachments().formatting().hover().enabled()) {
-                        textComponent = textComponent.hoverEvent(HoverEvent.showText(ChatColorUtils.format(String.join("\n", Config.i().getDiscordAttachments().formatting().hover().hoverText())
+                        textComponent = textComponent.hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(ChatColorUtils.format(String.join("\n", Config.i().getDiscordAttachments().formatting().hover().hoverText())
                                 .replace("{FileName}", data.getFileName()))));
                     }
 
                     if (Config.i().getDiscordAttachments().showImageUsingMaps() && data.isImage()) {
-                        textComponent = textComponent.clickEvent(ClickEvent.runCommand("/mc imagemap " + data.getUniqueId().toString()));
-                        net.kyori.adventure.text.Component imageAppend = ChatColorUtils.format(Config.i().getDiscordAttachments().formatting().imageOriginal()
+                        textComponent = textComponent.clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/mc imagemap " + data.getUniqueId().toString()));
+                        Component imageAppend = ChatColorUtils.format(Config.i().getDiscordAttachments().formatting().imageOriginal()
                                 .replace("{FileName}", data.getFileName()));
 
                         imageAppend.hoverEvent(HoverEvent.showText(ChatColorUtils.format(String.join("\n", Config.i().getDiscordAttachments().formatting().hover().imageOriginalHover())

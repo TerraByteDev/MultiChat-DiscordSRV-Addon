@@ -97,6 +97,7 @@ Since this plugin hooks into ChatControl, you will have to:
 1. Compile v11 from ChatControl's GitHub page, and rename to `ChatControl.jar`.
 2. Either delete the ChatControl-Red module, or purchase and download v10 - then rename to `ChatControl-Red.jar`.
 3. Add both files to a folder named `lib`.
+4. Compile Carbon Chat, rename it to `CarbonChat.jar` and add it to the same folder.
 
 ### Compiling
 Run `mvn clean package` in a terminal in the same folder as the addon.\

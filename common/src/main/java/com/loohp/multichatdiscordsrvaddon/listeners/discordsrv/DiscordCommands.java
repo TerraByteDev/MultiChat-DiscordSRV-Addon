@@ -21,10 +21,6 @@
 package com.loohp.multichatdiscordsrvaddon.listeners.discordsrv;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.github.retrooper.packetevents.event.PacketListener;
-import com.github.retrooper.packetevents.event.PacketSendEvent;
-import com.github.retrooper.packetevents.protocol.packettype.PacketType;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSystemChatMessage;
 import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
@@ -103,15 +99,15 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import static com.loohp.multichatdiscordsrvaddon.listeners.InboundEventListener.components;
 import static com.loohp.multichatdiscordsrvaddon.utils.DiscordInteractionUtils.OFFSET_WHITE;
 
-public class DiscordCommands implements Listener, SlashCommandProvider, PacketListener {
+public class DiscordCommands implements Listener, SlashCommandProvider {
 
     public static final String RESOURCEPACK_LABEL = "resourcepack";
     public static final String PLAYERINFO_LABEL = "playerinfo";
@@ -445,11 +441,9 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
 
     private final DiscordSRV discordsrv;
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private final Map<String, Component> components;
 
     public DiscordCommands(DiscordSRV discordsrv) {
         this.discordsrv = discordsrv;
-        this.components = new ConcurrentHashMap<>();
     }
 
     public void init() {
@@ -1138,25 +1132,6 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                         message.delete().queueAfter(Config.i().getSettings().embedDeleteAfter(), TimeUnit.SECONDS);
                     }
                 });
-            }
-        }
-    }
-
-    @Override
-    public void onPacketSend(PacketSendEvent event) {
-        if (event.getPacketType() == PacketType.Play.Server.SYSTEM_CHAT_MESSAGE) {
-            WrapperPlayServerSystemChatMessage messageWrapper = new WrapperPlayServerSystemChatMessage(event);
-
-            Component component = messageWrapper.getMessage();
-            String plain = PlainTextComponentSerializer.plainText().serialize(component);
-            for (Entry<String, Component> entry : components.entrySet()) {
-                if (plain.contains(entry.getKey())) {
-                    messageWrapper.setMessage(ComponentReplacing.replace(MiniMessage.miniMessage().deserialize(plain), CustomStringUtils.escapeMetaCharacters(entry.getKey()), false, entry.getValue()));
-
-                    event.setLastUsedWrapper(messageWrapper);
-                    event.markForReEncode(true);
-                    break;
-                }
             }
         }
     }

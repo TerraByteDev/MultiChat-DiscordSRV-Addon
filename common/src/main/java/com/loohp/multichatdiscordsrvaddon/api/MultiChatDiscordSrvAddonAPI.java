@@ -23,7 +23,7 @@ package com.loohp.multichatdiscordsrvaddon.api;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
 import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.InboundToGameEvents;
-import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.InboundToGameEvents.DiscordAttachmentData;
+import com.loohp.multichatdiscordsrvaddon.objectholders.DiscordAttachmentData;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ValueTrios;
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager;
@@ -35,6 +35,9 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+
+import static com.loohp.multichatdiscordsrvaddon.listeners.InboundEventListener.DATA;
+import static com.loohp.multichatdiscordsrvaddon.listeners.InboundEventListener.MAP_VIEWERS;
 
 public class MultiChatDiscordSrvAddonAPI {
 
@@ -76,7 +79,7 @@ public class MultiChatDiscordSrvAddonAPI {
      * @return A mapping of the assigned UUID to the discord attachments
      */
     public static Map<UUID, DiscordAttachmentData> getActiveDiscordAttachments() {
-        return Collections.unmodifiableMap(InboundToGameEvents.DATA);
+        return Collections.unmodifiableMap(DATA);
     }
 
     /**
@@ -85,7 +88,7 @@ public class MultiChatDiscordSrvAddonAPI {
      * @return A mapping of currently viewing players to the image preview maps
      */
     public static Map<Player, GraphicsToPacketMapWrapper> getActivePlayerImageMapViews() {
-        return Collections.unmodifiableMap(InboundToGameEvents.MAP_VIEWERS);
+        return Collections.unmodifiableMap(MAP_VIEWERS);
     }
 
     /**
@@ -95,7 +98,7 @@ public class MultiChatDiscordSrvAddonAPI {
      * @return The image preview map (Could be null)
      */
     public static GraphicsToPacketMapWrapper getDiscordImageWrapperByUUID(UUID uuid) {
-        Optional<DiscordAttachmentData> opt = InboundToGameEvents.DATA.values().stream().filter(each -> each.getUniqueId().equals(uuid)).findFirst();
+        Optional<DiscordAttachmentData> opt = DATA.values().stream().filter(each -> each.getUniqueId().equals(uuid)).findFirst();
         DiscordAttachmentData data;
         if (opt.isPresent() && (data = opt.get()).isImage()) {
             return data.getImageMap();

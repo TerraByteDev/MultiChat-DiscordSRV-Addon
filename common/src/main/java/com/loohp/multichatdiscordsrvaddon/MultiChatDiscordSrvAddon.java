@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon;
 
 import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageListener;
 import com.loohp.multichatdiscordsrvaddon.command.CommandHandler;
@@ -28,6 +29,7 @@ import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.discordsrv.DiscordSRVManager;
 import com.loohp.multichatdiscordsrvaddon.hooks.DynmapHook;
 import com.loohp.multichatdiscordsrvaddon.integration.IntegrationManager;
+import com.loohp.multichatdiscordsrvaddon.listeners.InboundEventListener;
 import com.loohp.multichatdiscordsrvaddon.listeners.InternalEvents;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import com.loohp.multichatdiscordsrvaddon.registry.MultiChatRegistry;
@@ -211,10 +213,16 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
 
         placeholderCooldownManager = new PlaceholderCooldownManager();
 
+        InboundEventListener inboundEventListener = new InboundEventListener();
+
+        PacketListenerPriority priority = PacketListenerPriority.valueOf(Config.i().getDiscordAttachments().priority().toUpperCase(Locale.ROOT));
+        PacketEvents.getAPI().getEventManager().registerListener(inboundEventListener, priority);
+
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new ICPlayerEvents(), this);
         getServer().getPluginManager().registerEvents(new Updater(), this);
         getServer().getPluginManager().registerEvents(new InternalEvents(), this);
+        getServer().getPluginManager().registerEvents(inboundEventListener, this);
 
         new CommandHandler();
 

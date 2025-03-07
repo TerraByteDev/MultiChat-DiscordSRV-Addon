@@ -1,12 +1,11 @@
 package com.loohp.multichatdiscordsrvaddon.objectholders;
 
-import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.InboundToGameEvents;
 import com.loohp.multichatdiscordsrvaddon.wrappers.GraphicsToPacketMapWrapper;
 import lombok.Getter;
 
 import java.util.UUID;
 
-public static class DiscordAttachmentData {
+public class DiscordAttachmentData {
 
     @Getter
     private final String fileName;
@@ -46,8 +45,8 @@ public static class DiscordAttachmentData {
     }
 
     public boolean equals(Object object) {
-        if (object instanceof InboundToGameEvents.DiscordAttachmentData) {
-            return ((InboundToGameEvents.DiscordAttachmentData) object).uuid.equals(this.uuid);
+        if (object instanceof DiscordAttachmentData) {
+            return ((DiscordAttachmentData) object).uuid.equals(this.uuid);
         }
         return false;
     }

@@ -1,11 +1,9 @@
 package com.loohp.multichatdiscordsrvaddon.standalone.utils;
 
 import com.loohp.multichatdiscordsrvaddon.objectholders.PreviewableImageContainer;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageSticker;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.sticker.Sticker;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -27,6 +25,7 @@ public class StandaloneImageUtils {
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
                 connection.setRequestMethod("GET");
+                return connection.getInputStream();
             } catch (Exception e) {
                 throw new RuntimeException("Failed to retrieve InputStream from URL: " + url, e);
             }
