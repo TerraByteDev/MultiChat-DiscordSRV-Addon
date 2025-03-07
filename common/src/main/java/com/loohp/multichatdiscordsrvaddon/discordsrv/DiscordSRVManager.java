@@ -1,5 +1,6 @@
 package com.loohp.multichatdiscordsrvaddon.discordsrv;
 
+import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.provider.DiscordProviderManager;
 import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.*;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -42,8 +43,8 @@ public class DiscordSRVManager {
         DiscordSRV.api.subscribe(new LegacyDiscordCommandEvents());
         DiscordSRV.api.subscribe(new OutboundToDiscordEvents());
 
-        Bukkit.getServer().getPluginManager().registerEvents(new InboundToGameEvents(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new OutboundToDiscordEvents(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new InboundToGameEvents(), MultiChatDiscordSrvAddon.plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(new OutboundToDiscordEvents(), MultiChatDiscordSrvAddon.plugin);
 
         discordsrv.reloadRegexes();
         DiscordProviderManager.setInstance(new DiscordSRVDiscordProvider());
