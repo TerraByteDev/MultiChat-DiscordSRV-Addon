@@ -1,10 +1,10 @@
 package com.loohp.multichatdiscordsrvaddon.standalone.linking;
 
 import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.objectholders.LinkedUser;
 import com.loohp.multichatdiscordsrvaddon.standalone.StandaloneManager;
-import github.scarsz.discordsrv.dependencies.google.gson.Gson;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
