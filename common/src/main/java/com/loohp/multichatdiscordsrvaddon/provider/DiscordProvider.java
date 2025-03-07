@@ -2,7 +2,10 @@ package com.loohp.multichatdiscordsrvaddon.provider;
 
 import com.loohp.multichatdiscordsrvaddon.objectholders.LinkedUser;
 
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public interface DiscordProvider {
 
@@ -21,5 +24,7 @@ public interface DiscordProvider {
     int getMemberCount();
 
     int getServerCount();
+
+    CompletableFuture<Map<UUID, String>> getManyDiscordIds(Set<UUID> uuids);
 
 }

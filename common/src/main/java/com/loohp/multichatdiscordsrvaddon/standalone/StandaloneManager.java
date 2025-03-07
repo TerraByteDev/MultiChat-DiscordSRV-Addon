@@ -3,6 +3,7 @@ package com.loohp.multichatdiscordsrvaddon.standalone;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.provider.DiscordProviderManager;
+import com.loohp.multichatdiscordsrvaddon.standalone.event.StandaloneInboundEvents;
 import com.loohp.multichatdiscordsrvaddon.standalone.linking.StandaloneLinkDatabase;
 import com.loohp.multichatdiscordsrvaddon.standalone.linking.StandaloneLinkManager;
 import com.loohp.multichatdiscordsrvaddon.standalone.message.StandaloneDiscordMessageHandler;
@@ -59,7 +60,7 @@ public class StandaloneManager {
             if (Config.i().getStandalone().formatting().useWebhooks()) StandaloneWebhookManager.fetchWebhook(this);
 
             this.linkManager = new StandaloneLinkManager(this);
-            this.jda.addEventListener(new StandaloneDiscordMessageHandler());
+            this.jda.addEventListener(new StandaloneDiscordMessageHandler(), new StandaloneInboundEvents());
             DiscordProviderManager.setInstance(new StandaloneDiscordProvider());
         } catch (InterruptedException exception) {
             ChatUtils.sendMessage("Failed to initialise MultiChatDiscordSRVAddon Standalone implementation!");

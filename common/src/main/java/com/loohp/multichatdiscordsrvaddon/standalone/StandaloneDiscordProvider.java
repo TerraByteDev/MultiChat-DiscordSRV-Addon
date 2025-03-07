@@ -5,7 +5,11 @@ import com.loohp.multichatdiscordsrvaddon.objectholders.LinkedUser;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
 
@@ -60,5 +64,19 @@ public class StandaloneDiscordProvider implements DiscordProvider {
         JDA jda = plugin.standaloneManager.getJda();
 
         return jda != null ? jda.getGuilds().size() : 0;
+    }
+
+    @Override
+    public CompletableFuture<Map<UUID, String>> getManyDiscordIds(Set<UUID> uuids) {
+        return CompletableFuture.supplyAsync(() -> {
+            Map<UUID, String> map = new HashMap<>();
+            uuids.forEach(uuid -> {
+                LinkedUser linkedUser = getLinkedUser(uuid);
+                if (linkedUser != null) {
+                    map.put(linkedUser.getUuid(), linkedUser.getDiscordID());
+                }
+            });
+            return map;
+        }, plugin.standaloneManager.getScheduler());
     }
 }

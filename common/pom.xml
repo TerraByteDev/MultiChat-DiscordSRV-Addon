@@ -723,5 +723,12 @@
             <version>2.12.1</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.vdurmont</groupId>
+            <artifactId>emoji-java</artifactId>
+            <version>5.1.1</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

@@ -456,12 +456,22 @@ public class Config {
             @Comment("All the presences that can be displayed. Cycled through on the configured interval (above)") List<PresenceObject> presences
     ) {}
 
+    public record StandaloneInboundSettings(
+            @Comment("Should we block messages from webhooks?") boolean blockWebhooks,
+            @Comment("Should we block messages from bots?") boolean blockBots,
+            @Comment("Length that messages should be truncated to. Do not set this too high!") int truncationLength,
+            @Comment("List of role IDs that can use colour codes.") List<String> colorCodeRoles,
+            @Comment("Format for inbound messages from Discord.\nSupported placeholders: %member_name%, %member_role%, %member_role_color%, %message%") String format,
+            @Comment("Strip all emojis") boolean stripEmojis
+    ) {}
+
     public record Standalone(
             @Comment("This will DISABLE DiscordSRV integration.") boolean enabled,
             @Comment("\nBot token that should be used.") String token,
             @Comment("Channel that all messages should be directed to") String channelId,
             @Comment("\nConfigure formatting here.") StandaloneFormat formatting,
-            @Comment("\nConfigure the bot's presence") StandalonePresence botPresence
+            @Comment("\nConfigure the bot's presence") StandalonePresence botPresence,
+            @Comment("Manage inbound messages from Discord to game chat.") StandaloneInboundSettings inboundSettings
     ) {}
 
     public record Debug(
@@ -825,7 +835,7 @@ public class Config {
                     "MCDSRV-Standalone",
                     "https://mc-heads.net/avatar/%uuid%",
                     "%vault_prefix%%username%",
-                    "%"
+                    "%username% » %message%"
             ),
             new StandalonePresence(
                     true,
@@ -833,6 +843,14 @@ public class Config {
                     List.of(
                             new PresenceObject(OnlineStatus.ONLINE, Activity.ActivityType.PLAYING, "my amazing server")
                     )
+            ),
+            new StandaloneInboundSettings(
+                    true,
+                    true,
+                    256,
+                    List.of(),
+                     "<reset>%member_role_color%%member_role% <reset>%member_name% <grey>»<reset> %message%",
+                    true
             )
     );
 

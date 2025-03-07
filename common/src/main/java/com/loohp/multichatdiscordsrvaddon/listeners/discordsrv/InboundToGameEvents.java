@@ -25,8 +25,10 @@ import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSystemChatMessage;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.discordsrv.utils.DiscordSRVImageUtils;
 import com.loohp.multichatdiscordsrvaddon.discordsrv.DiscordSRVManager;
 import com.loohp.multichatdiscordsrvaddon.integration.sender.MessageSender;
+import com.loohp.multichatdiscordsrvaddon.objectholders.DiscordAttachmentData;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ICPlaceholder;
 import com.loohp.multichatdiscordsrvaddon.utils.*;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
@@ -51,7 +53,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.text.minimessage.MiniMessage;
 import github.scarsz.discordsrv.util.MessageUtil;
-import lombok.Getter;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
@@ -83,13 +84,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.loohp.multichatdiscordsrvaddon.discordsrv.DiscordSRVManager.discordToGamePriority;
+import static com.loohp.multichatdiscordsrvaddon.listeners.InboundEventListener.*;
 
-public class InboundToGameEvents implements Listener, PacketListener {
-
-    public static final Pattern TENOR_HTML_PATTERN = Pattern.compile("<link class=\"dynamic\" rel=\"image_src\" href=\"https://media1\\.tenor\\.com/m/(.*?)/.*?\">");
-
-    public static final Map<UUID, DiscordAttachmentData> DATA = new ConcurrentHashMap<>();
-    public static final Map<Player, GraphicsToPacketMapWrapper> MAP_VIEWERS = new ConcurrentHashMap<>();
+public class InboundToGameEvents {
 
     @Subscribe(priority = ListenerPriority.LOWEST)
     public void onReceiveMessageFromDiscordPre(DiscordGuildMessagePreProcessEvent event) {
@@ -264,7 +261,7 @@ public class InboundToGameEvents implements Listener, PacketListener {
                             if (processedMessage.contains(url)) {
                                 processedUrl.add(url);
                                 if ((attachment.isImage() || attachment.isVideo()) && attachment.getSize() <= Config.i().getDiscordAttachments().fileSizeLimit()) {
-                                    previewableImageContainers.add(PreviewableImageContainer.fromAttachment(attachment));
+                                    previewableImageContainers.add(DiscordSRVImageUtils.fromAttachment(attachment));
                                 } else {
                                     DiscordAttachmentData data = new DiscordAttachmentData(attachment.getFileName(), url);
                                     DiscordAttachmentConversionEvent dace = new DiscordAttachmentConversionEvent(url, data);
@@ -275,7 +272,7 @@ public class InboundToGameEvents implements Listener, PacketListener {
                             }
                         }
                         for (MessageSticker sticker : message.getStickers()) {
-                            previewableImageContainers.add(PreviewableImageContainer.fromSticker(sticker));
+                            previewableImageContainers.add(DiscordSRVImageUtils.fromSticker(sticker));
                         }
                         for (PreviewableImageContainer imageContainer : previewableImageContainers) {
                             MultiChatDiscordSrvAddon.plugin.attachmentImageCounter.incrementAndGet();
@@ -385,212 +382,6 @@ public class InboundToGameEvents implements Listener, PacketListener {
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 e.printStackTrace();
             }
-    }
-
-    @Override
-    public void onPacketSend(PacketSendEvent event) {
-        if (event.getPacketType() == PacketType.Play.Server.SYSTEM_CHAT_MESSAGE) {
-            Debug.debug("Triggering onChatPacket");
-
-            WrapperPlayServerSystemChatMessage messageWrapper = new WrapperPlayServerSystemChatMessage(event);
-            if (Config.i().getDiscordAttachments().convert()) {
-                Debug.debug("onChatPacket converting discord attachments");
-
-                for (Entry<UUID, DiscordAttachmentData> entry : DATA.entrySet()) {
-                    DiscordAttachmentData data = entry.getValue();
-                    String url = data.getUrl();
-                    net.kyori.adventure.text.Component component = messageWrapper.getMessage();
-
-                    net.kyori.adventure.text.Component textComponent = ChatColorUtils.format(Config.i().getDiscordAttachments().formatting().text()
-                            .replace("{FileName}", data.getFileName()));
-                    if (Config.i().getDiscordAttachments().formatting().hover().enabled()) {
-                        textComponent = textComponent.hoverEvent(HoverEvent.showText(ChatColorUtils.format(String.join("\n", Config.i().getDiscordAttachments().formatting().hover().hoverText())
-                                .replace("{FileName}", data.getFileName()))));
-                    }
-
-                    if (Config.i().getDiscordAttachments().showImageUsingMaps() && data.isImage()) {
-                        textComponent = textComponent.clickEvent(ClickEvent.runCommand("/mc imagemap " + data.getUniqueId().toString()));
-                        net.kyori.adventure.text.Component imageAppend = ChatColorUtils.format(Config.i().getDiscordAttachments().formatting().imageOriginal()
-                                .replace("{FileName}", data.getFileName()));
-
-                        imageAppend.hoverEvent(HoverEvent.showText(ChatColorUtils.format(String.join("\n", Config.i().getDiscordAttachments().formatting().hover().imageOriginalHover())
-                                .replace("{FileName}", data.getFileName()))));
-                        imageAppend = imageAppend.clickEvent(ClickEvent.openUrl(url));
-                        textComponent = textComponent.append(imageAppend);
-                    } else {
-                        textComponent = textComponent.clickEvent(ClickEvent.openUrl(url));
-                    }
-
-                    component = ComponentReplacing.replace(component, "\\\\?" + CustomStringUtils.escapeMetaCharacters(url), textComponent);
-
-                    messageWrapper.setMessage(component);
-
-                    event.setLastUsedWrapper(messageWrapper);
-                    event.markForReEncode(true);
-                }
-            }
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onInventory(InventoryOpenEvent event) {
-        Player player = (Player) event.getPlayer();
-        boolean removed = MAP_VIEWERS.remove(player) != null;
-
-        if (removed) {
-            player.getInventory().setItemInHand(player.getInventory().getItemInHand());
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onInventory(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        if (player.getGameMode().equals(GameMode.CREATIVE)) {
-            Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> {
-                boolean removed = MAP_VIEWERS.remove(player) != null;
-
-                if (removed) {
-                    player.getInventory().setItemInHand(player.getInventory().getItemInHand());
-                }
-            }, 1);
-        } else {
-            boolean removed = MAP_VIEWERS.remove(player) != null;
-
-            if (removed) {
-                player.getInventory().setItemInHand(player.getInventory().getItemInHand());
-            }
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onInventory(InventoryCreativeEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        boolean removed = MAP_VIEWERS.remove(player) != null;
-
-        int slot = event.getSlot();
-
-        if (removed) {
-            if (player.getInventory().equals(event.getClickedInventory()) && slot >= 9) {
-                ItemStack item = player.getInventory().getItem(slot);
-                Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> player.getInventory().setItem(slot, item), 1);
-            } else {
-                event.setCursor(null);
-            }
-        }
-
-        if (removed) {
-            player.getInventory().setItemInHand(player.getInventory().getItemInHand());
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onSlotChange(PlayerItemHeldEvent event) {
-        if (event.getNewSlot() == event.getPreviousSlot()) {
-            return;
-        }
-
-        Player player = event.getPlayer();
-        boolean removed = MAP_VIEWERS.remove(player) != null;
-
-        if (removed) {
-            player.getInventory().setItemInHand(player.getInventory().getItemInHand());
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction().equals(Action.PHYSICAL)) {
-            return;
-        }
-        Player player = event.getPlayer();
-
-        if (player.getGameMode().equals(GameMode.CREATIVE)) {
-            Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> {
-                boolean removed = MAP_VIEWERS.remove(player) != null;
-
-                if (removed) {
-                    player.getInventory().setItemInHand(player.getInventory().getItemInHand());
-                }
-            }, 1);
-        } else {
-            boolean removed = MAP_VIEWERS.remove(player) != null;
-
-            if (removed) {
-                player.getInventory().setItemInHand(player.getInventory().getItemInHand());
-            }
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onAttack(EntityDamageByEntityEvent event) {
-        Entity entity = event.getDamager();
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
-            boolean removed = MAP_VIEWERS.remove(player) != null;
-
-            if (removed) {
-                player.getInventory().setItemInHand(player.getInventory().getItemInHand());
-            }
-        }
-    }
-
-    @EventHandler
-    public void onLeave(PlayerQuitEvent event) {
-        MAP_VIEWERS.remove(event.getPlayer());
-    }
-
-    public static class DiscordAttachmentData {
-
-        @Getter
-        private final String fileName;
-        @Getter
-        private final String url;
-        @Getter
-        private final GraphicsToPacketMapWrapper imageMap;
-        private final UUID uuid;
-        private final boolean isVideo;
-
-        public DiscordAttachmentData(String fileName, String url, GraphicsToPacketMapWrapper imageMap, boolean isVideo) {
-            this.fileName = fileName;
-            this.url = url;
-            this.imageMap = imageMap;
-            this.uuid = UUID.randomUUID();
-            this.isVideo = isVideo;
-        }
-
-        public DiscordAttachmentData(String fileName, String url) {
-            this(fileName, url, null, false);
-        }
-
-        public boolean isImage() {
-            return imageMap != null && !isVideo;
-        }
-
-        public boolean isVideo() {
-            return imageMap != null && isVideo;
-        }
-
-        public UUID getUniqueId() {
-            return uuid;
-        }
-
-        public int hashCode() {
-            return 17 * uuid.hashCode();
-        }
-
-        public boolean equals(Object object) {
-            if (object instanceof DiscordAttachmentData) {
-                return ((DiscordAttachmentData) object).uuid.equals(this.uuid);
-            }
-            return false;
-        }
-
     }
 
 }

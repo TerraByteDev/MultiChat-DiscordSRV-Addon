@@ -20,7 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.api.events;
 
-import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.InboundToGameEvents.DiscordAttachmentData;
+import com.loohp.multichatdiscordsrvaddon.objectholders.DiscordAttachmentData;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;

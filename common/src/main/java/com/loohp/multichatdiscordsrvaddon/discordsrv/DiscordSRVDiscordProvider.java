@@ -6,7 +6,11 @@ import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class DiscordSRVDiscordProvider implements DiscordProvider {
     @Override
@@ -58,6 +62,11 @@ public class DiscordSRVDiscordProvider implements DiscordProvider {
         JDA jda = DiscordSRVManager.discordsrv.getJda();
 
         return jda != null ? jda.getGuilds().stream().mapToInt(each -> each.getChannels().size()).sum() : 0;
+    }
+
+    @Override
+    public CompletableFuture<Map<UUID, String>> getManyDiscordIds(Set<UUID> uuids) {
+        return CompletableFuture.completedFuture(DiscordSRVManager.discordsrv.getAccountLinkManager().getManyDiscordIds(uuids));
     }
 
     @Nullable
