@@ -30,8 +30,6 @@ public class StandaloneResourcePackCommand {
     public static void resourcePackCommand(
             JDAInteraction interaction
     ) {
-        if (!Config.i().getDiscordCommands().resourcePack().enabled() || !Config.i().getDiscordCommands().resourcePack().isMainServer()) return;
-
         List<MessageEmbed> messageEmbeds = new ArrayList<>();
         Map<String, byte[]> attachments = new HashMap<>();
         String footer = "MultiChatDiscordSRVAddon v" + plugin.getDescription().getVersion();

@@ -34,29 +34,36 @@ public class StandaloneCommandManager {
     }
 
     private void registerCommands() {
-        commandManager.command(
-                commandManager.commandBuilder(RESOURCEPACK_LABEL, Description.of(ChatColorUtils.stripColor(Config.i().getDiscordCommands().resourcePack().description())))
-                        .apply(CommandScope.guilds())
-                        .apply(ReplySetting.defer(true))
-                        .handler(commandContext -> StandaloneResourcePackCommand.resourcePackCommand(commandContext.sender()))
-        );
+        if (Config.i().getDiscordCommands().resourcePack().enabled() && Config.i().getDiscordCommands().resourcePack().isMainServer()) {
+            commandManager.command(
+                    commandManager.commandBuilder(RESOURCEPACK_LABEL, Description.of(ChatColorUtils.stripColor(Config.i().getDiscordCommands().resourcePack().description())))
+                            .apply(CommandScope.guilds())
+                            .apply(ReplySetting.defer(true))
+                            .handler(commandContext -> StandaloneResourcePackCommand.resourcePackCommand(commandContext.sender()))
+            );
 
-        commandManager.command(
-                commandManager.commandBuilder(PLAYERINFO_LABEL, Description.of(ChatColorUtils.stripColor(Config.i().getDiscordCommands().playerInfo().description())))
-                        .apply(CommandScope.guilds())
-                        .optional(
-                                StandalonePlayerInfoCommand.USER,
-                                JDAParser.userParser(),
-                                Description.of(Config.i().getDiscordCommands().globalSettings().messages().memberDescription())
-                        )
-                        .apply(ReplySetting.defer(false))
-                        .handler(commandContext -> StandalonePlayerInfoCommand.playerInfoCommand(commandContext.sender(), commandContext.optional(StandalonePlayerInfoCommand.USER)))
-        );
+        }
 
-        commandManager.command(
-                commandManager.commandBuilder(PLAYERLIST_LABEL, Description.of(ChatColorUtils.stripColor(Config.i().getDiscordCommands().playerList().description())))
-                        .apply(CommandScope.guilds())
-                        .handler(commandContext -> StandalonePlayerListCommand.playerListCommand(commandContext.sender()))
-        );
+        if (Config.i().getDiscordCommands().playerInfo().enabled() && Config.i().getDiscordCommands().playerList().isMainServer()) {
+            commandManager.command(
+                    commandManager.commandBuilder(PLAYERINFO_LABEL, Description.of(ChatColorUtils.stripColor(Config.i().getDiscordCommands().playerInfo().description())))
+                            .apply(CommandScope.guilds())
+                            .optional(
+                                    StandalonePlayerInfoCommand.USER,
+                                    JDAParser.userParser(),
+                                    Description.of(Config.i().getDiscordCommands().globalSettings().messages().memberDescription())
+                            )
+                            .apply(ReplySetting.defer(false))
+                            .handler(commandContext -> StandalonePlayerInfoCommand.playerInfoCommand(commandContext.sender(), commandContext.optional(StandalonePlayerInfoCommand.USER)))
+            );
+        }
+
+        if (Config.i().getDiscordCommands().playerList().enabled() && Config.i().getDiscordCommands().playerList().isMainServer()) {
+            commandManager.command(
+                    commandManager.commandBuilder(PLAYERLIST_LABEL, Description.of(ChatColorUtils.stripColor(Config.i().getDiscordCommands().playerList().description())))
+                            .apply(CommandScope.guilds())
+                            .handler(commandContext -> StandalonePlayerListCommand.playerListCommand(commandContext.sender()))
+            );
+        }
     }
 }
