@@ -51,3 +51,4 @@ libraries:
   - net.dv8tion:JDA:5.3.0
   - dev.vankka:mcdiscordreserializer:4.3.0
   - com.google.code.gson:gson:2.12.1
+  - com.squareup.okhttp3:okhttp:4.12.0

@@ -306,7 +306,7 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
     @Override
     public void disable() {
         PacketEvents.getAPI().terminate();
-        DiscordInteractionEvents.unregisterAll();
+        if (!Config.i().getStandalone().enabled()) DiscordInteractionEvents.unregisterAll();
 
         if (modelRenderer != null) modelRenderer.close();
         if (mediaReadingService != null) mediaReadingService.shutdown();

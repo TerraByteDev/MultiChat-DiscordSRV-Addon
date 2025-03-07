@@ -103,10 +103,6 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <relocations>
                                 <relocation>
-                                    <pattern>okhttp3</pattern>
-                                    <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.okhttp3</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>me.lucko.helper</pattern>
                                     <shadedPattern>com.loohp.multichatdiscordsrvaddon.libs.shaded.me.lucko.helper</shadedPattern>
                                 </relocation>

@@ -82,7 +82,7 @@ public class StandaloneManager {
     }
 
     private void fetchGlobalChannel() {
-        String channelID = Config.i().getStandalone().channelID();
+        String channelID = Config.i().getStandalone().channelId();
 
         this.textChannel = this.jda.getTextChannelById(channelID);
         if (textChannel == null) {
