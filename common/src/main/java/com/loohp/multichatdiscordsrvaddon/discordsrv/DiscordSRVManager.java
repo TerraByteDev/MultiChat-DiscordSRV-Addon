@@ -6,6 +6,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.ListenerPriority;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
+import org.bukkit.Bukkit;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,6 +41,9 @@ public class DiscordSRVManager {
         DiscordSRV.api.subscribe(new DiscordReadyEvents());
         DiscordSRV.api.subscribe(new LegacyDiscordCommandEvents());
         DiscordSRV.api.subscribe(new OutboundToDiscordEvents());
+
+        Bukkit.getServer().getPluginManager().registerEvents(new InboundToGameEvents(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new OutboundToDiscordEvents(), this);
 
         discordsrv.reloadRegexes();
         DiscordProviderManager.setInstance(new DiscordSRVDiscordProvider());

@@ -212,8 +212,6 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
         placeholderCooldownManager = new PlaceholderCooldownManager();
 
         getServer().getPluginManager().registerEvents(this, this);
-        getServer().getPluginManager().registerEvents(new InboundToGameEvents(), this);
-        getServer().getPluginManager().registerEvents(new OutboundToDiscordEvents(), this);
         getServer().getPluginManager().registerEvents(new ICPlayerEvents(), this);
         getServer().getPluginManager().registerEvents(new Updater(), this);
         getServer().getPluginManager().registerEvents(new InternalEvents(), this);
