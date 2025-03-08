@@ -181,7 +181,7 @@ public class MultiChatDiscordSrvAddonAPI {
      *
      * @return The placeholder list
      */
-    public static List<ICPlaceholder> getPlaceholderList() {
+    public static Collection<List<ICPlaceholder>> getPlaceholderList() {
         return new ArrayList<>(MultiChatDiscordSrvAddon.placeholderList.values());
     }
 

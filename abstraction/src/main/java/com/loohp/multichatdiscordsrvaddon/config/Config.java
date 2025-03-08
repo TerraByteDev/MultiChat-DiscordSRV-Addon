@@ -79,9 +79,9 @@ public class Config {
     ) {}
 
     public record Placeholders(
-            @Comment("If your chat plugin supports it, what placeholder does the player use to show their held item in chat? (Regex)") String item,
-            @Comment("Same as above but for player inventories") String inventory,
-            @Comment("Same as above but for player enderchests") String enderChest
+            @Comment("If your chat plugin supports it, what placeholder does the player use to show their held item in chat? (Regex). Supports list, will trigger if any one matches.") List<String> item,
+            @Comment("Same as above but for player inventories") List<String> inventory,
+            @Comment("Same as above but for player enderchests") List<String> enderChest
     ) {}
 
     public record DiscordItemDetailsAndInteractions(
@@ -479,9 +479,9 @@ public class Config {
 
     @Comment("\nConfigure placeholders used in this plugin")
     Placeholders placeholders = new Placeholders(
-            "(?i)\\[item\\]",
-            "(?i)\\[inventory\\]",
-            "(?i)\\[enderchest\\]"
+            List.of("(?i)\\[item\\]"),
+            List.of("(?i)\\[inventory\\]", "(?i)\\[inv\\]"),
+            List.of("(?i)\\[enderchest\\]", "(?i)\\[ec\\]", "(?i)\\[ender\\]")
     );
 
     @Comment("\nChoose what to include when sharing items and inventories to Discord")

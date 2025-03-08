@@ -23,21 +23,10 @@ package com.loohp.multichatdiscordsrvaddon.listeners;
 import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
+import com.loohp.multichatdiscordsrvaddon.utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ColorUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentFlattening;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentModernizing;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentReplacing;
-import com.loohp.multichatdiscordsrvaddon.utils.CustomStringUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.MultiChatComponentSerializer;
-import com.loohp.multichatdiscordsrvaddon.utils.InventoryUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.ItemStackUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.LanguageUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.PlaceholderParser;
-import com.loohp.multichatdiscordsrvaddon.utils.PlayerUtils;
 import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.api.events.DiscordImageEvent;
 import com.loohp.multichatdiscordsrvaddon.api.events.GameMessagePostProcessEvent;
@@ -51,11 +40,7 @@ import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
 import com.loohp.multichatdiscordsrvaddon.nms.NMS;
 import com.loohp.multichatdiscordsrvaddon.registry.DiscordDataRegistry;
 import com.loohp.multichatdiscordsrvaddon.resources.languages.SpecificTranslateFunction;
-import com.loohp.multichatdiscordsrvaddon.utils.ComponentStringUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.DiscordContentUtils;
-import com.loohp.multichatdiscordsrvaddon.utils.DiscordItemStackUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.DiscordItemStackUtils.DiscordToolTip;
-import com.loohp.multichatdiscordsrvaddon.utils.TranslationKeyUtils;
 import com.loohp.multichatdiscordsrvaddon.wrappers.TitledInventoryWrapper;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.ListenerPriority;
@@ -121,6 +106,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.IntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.loohp.multichatdiscordsrvaddon.utils.ChatUtils.toAllow;
 
@@ -302,59 +288,61 @@ public class OutboundToDiscordEvents implements Listener {
         }
 
         Debug.debug("onGameToDiscord processing custom placeholders");
-        for (ICPlaceholder placeholder : MultiChatDiscordSrvAddonAPI.getPlaceholderList()) {
-            if (!placeholder.isBuildIn()) {
-                CustomPlaceholder customP = (CustomPlaceholder) placeholder;
-                Matcher matcher = customP.getKeyword().matcher(plain);
-                if (matcher.find()) {
-                    if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), customP, now)) {
-                        String replaceText;
-                        if (customP.getReplace().isEnabled()) {
-                            replaceText = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(icSender, customP.getReplace().getReplaceText()));
-                        } else {
-                            replaceText = null;
-                        }
-                        List<Component> toAppend = new LinkedList<>();
-                        Set<String> shown = new HashSet<>();
-                        component = ComponentReplacing.replace(component, customP.getKeyword().pattern(), true, (result, matchedComponents) -> {
-                            String replaceString = replaceText == null ? result.group() : CustomStringUtils.applyReplacementRegex(replaceText, result, 1);
-                            if (!shown.contains(replaceString)) {
-                                shown.add(replaceString);
-                                int position = result.start();
-                                if (Config.i().getHoverEventDisplay().enabled() && !Config.i().getHoverEventDisplay().ignoredPlaceholderKeys().contains(customP.getKey())) {
-                                    HoverClickDisplayData.Builder hoverClick = new HoverClickDisplayData.Builder().player(icSender).postion(position).color(DiscordDataRegistry.DISCORD_HOVER_COLOR).displayText(ChatColorUtils.stripColor(replaceString));
-                                    boolean usingHoverClick = false;
+        for (List<ICPlaceholder> list : MultiChatDiscordSrvAddonAPI.getPlaceholderList()) {
+            for (ICPlaceholder placeholder : list) {
+                if (!placeholder.isBuildIn()) {
+                    CustomPlaceholder customP = (CustomPlaceholder) placeholder;
+                    Matcher matcher = customP.getKeyword().matcher(plain);
+                    if (matcher.find()) {
+                        if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), customP, now)) {
+                            String replaceText;
+                            if (customP.getReplace().isEnabled()) {
+                                replaceText = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(icSender, customP.getReplace().getReplaceText()));
+                            } else {
+                                replaceText = null;
+                            }
+                            List<Component> toAppend = new LinkedList<>();
+                            Set<String> shown = new HashSet<>();
+                            component = ComponentReplacing.replace(component, customP.getKeyword().pattern(), true, (result, matchedComponents) -> {
+                                String replaceString = replaceText == null ? result.group() : CustomStringUtils.applyReplacementRegex(replaceText, result, 1);
+                                if (!shown.contains(replaceString)) {
+                                    shown.add(replaceString);
+                                    int position = result.start();
+                                    if (Config.i().getHoverEventDisplay().enabled() && !Config.i().getHoverEventDisplay().ignoredPlaceholderKeys().contains(customP.getKey())) {
+                                        HoverClickDisplayData.Builder hoverClick = new HoverClickDisplayData.Builder().player(icSender).postion(position).color(DiscordDataRegistry.DISCORD_HOVER_COLOR).displayText(ChatColorUtils.stripColor(replaceString));
+                                        boolean usingHoverClick = false;
 
-                                    if (customP.getHover().isEnabled()) {
-                                        usingHoverClick = true;
-                                        String hoverText = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(icSender, CustomStringUtils.applyReplacementRegex(customP.getHover().getText(), result, 1)));
-                                        Color color = ColorUtils.getFirstColor(hoverText);
-                                        hoverClick.hoverText(LegacyComponentSerializer.legacySection().deserialize(hoverText));
-                                        if (color != null) {
-                                            hoverClick.color(color);
+                                        if (customP.getHover().isEnabled()) {
+                                            usingHoverClick = true;
+                                            String hoverText = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(icSender, CustomStringUtils.applyReplacementRegex(customP.getHover().getText(), result, 1)));
+                                            Color color = ColorUtils.getFirstColor(hoverText);
+                                            hoverClick.hoverText(LegacyComponentSerializer.legacySection().deserialize(hoverText));
+                                            if (color != null) {
+                                                hoverClick.color(color);
+                                            }
+                                        }
+
+                                        if (customP.getClick().isEnabled()) {
+                                            usingHoverClick = true;
+                                            String clickValue = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(icSender, CustomStringUtils.applyReplacementRegex(customP.getClick().getValue(), result, 1)));
+                                            hoverClick.clickAction(customP.getClick().getAction()).clickValue(CustomStringUtils.applyReplacementRegex(clickValue, result, 1));
+                                        }
+
+                                        if (usingHoverClick) {
+                                            int hoverId = DATA_ID_PROVIDER.getNext();
+                                            DATA.put(hoverId, hoverClick.build());
+                                            toAppend.add(Component.text("<ICD=" + hoverId + ">"));
                                         }
                                     }
-
-                                    if (customP.getClick().isEnabled()) {
-                                        usingHoverClick = true;
-                                        String clickValue = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(icSender, CustomStringUtils.applyReplacementRegex(customP.getClick().getValue(), result, 1)));
-                                        hoverClick.clickAction(customP.getClick().getAction()).clickValue(CustomStringUtils.applyReplacementRegex(clickValue, result, 1));
-                                    }
-
-                                    if (usingHoverClick) {
-                                        int hoverId = DATA_ID_PROVIDER.getNext();
-                                        DATA.put(hoverId, hoverClick.build());
-                                        toAppend.add(Component.text("<ICD=" + hoverId + ">"));
-                                    }
                                 }
+                                return replaceText == null ? Component.empty().children(matchedComponents) : LegacyComponentSerializer.legacySection().deserialize(replaceString);
+                            });
+                            for (Component componentToAppend : toAppend) {
+                                component = component.append(componentToAppend);
                             }
-                            return replaceText == null ? Component.empty().children(matchedComponents) : LegacyComponentSerializer.legacySection().deserialize(replaceString);
-                        });
-                        for (Component componentToAppend : toAppend) {
-                            component = component.append(componentToAppend);
+                        } else {
+                            return null;
                         }
-                    } else {
-                        return null;
                     }
                 }
             }
@@ -362,9 +350,12 @@ public class OutboundToDiscordEvents implements Listener {
 
         if (Config.i().getInventoryImage().item().enabled()) {
             Debug.debug("onGameToDiscord processing item display");
-            Matcher matcher = MultiChatDiscordSrvAddon.itemPlaceholder.getKeyword().matcher(plain);
-            if (matcher.find()) {
-                if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.itemPlaceholder)).findFirst().get(), now)) {
+            ValuePairs<Boolean, Matcher> matcherPairs = PatternUtils.matches(plain, MultiChatDiscordSrvAddon.itemPlaceholder);
+
+            if (matcherPairs.getFirst()) {
+                Matcher matcher = matcherPairs.getSecond();
+
+                if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.itemPlaceholder)).findFirst().get().getFirst(), now)) {
                     ItemStack item = PlayerUtils.getMainHandItem(icSender);
                     boolean isAir = item.getType().equals(Material.AIR);
                     String itemStr = PlainTextComponentSerializer.plainText().serialize(ComponentStringUtils.resolve(ComponentModernizing.modernize(ItemStackUtils.getDisplayName(item)), MultiChatDiscordSrvAddon.plugin.getResourceManager().getLanguageManager().getTranslateFunction().ofLanguage(Config.i().getResources().language())));
@@ -385,7 +376,7 @@ public class OutboundToDiscordEvents implements Listener {
 
                     component = ComponentReplacing.replace(component, "\\[.*" + (icSender.isOnline() ? PlainTextComponentSerializer.plainText().serialize(NMS.getInstance().getItemStackDisplayName(icSender.getPlayer().getEquipment().getItemInMainHand())) : "item") + ".*\\]", true, Component.text("[item]"));
 
-                    component = ComponentReplacing.replace(component, MultiChatDiscordSrvAddon.itemPlaceholder.getKeyword().pattern(), true, (groups) -> {
+                    component = ComponentReplacing.replace(component, MultiChatDiscordSrvAddon.itemPlaceholder.stream().map(k -> k.getKeyword().pattern()).collect(Collectors.toList()), true, (groups) -> {
                         replaced.set(true);
                         return replaceComponent;
                     });
@@ -419,9 +410,12 @@ public class OutboundToDiscordEvents implements Listener {
 
         if (Config.i().getInventoryImage().inventory().enabled()) {
             Debug.debug("onGameToDiscord processing inventory display");
-            Matcher matcher = MultiChatDiscordSrvAddon.inventoryPlaceholder.getKeyword().matcher(plain);
-            if (matcher.find()) {
-                if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.inventoryPlaceholder)).findFirst().get(), now)) {
+
+            ValuePairs<Boolean, Matcher> matcherPairs = PatternUtils.matches(plain, MultiChatDiscordSrvAddon.inventoryPlaceholder);
+            if (matcherPairs.getFirst()) {
+                Matcher matcher = matcherPairs.getSecond();
+
+                if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.inventoryPlaceholder)).findFirst().get().getFirst(), now)) {
                     String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, Config.i().getInventoryImage().inventory().inventoryTitle()));
                     if (reserializer) {
                         replaceText = MessageUtil.reserializeToDiscord(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(replaceText));
@@ -429,7 +423,7 @@ public class OutboundToDiscordEvents implements Listener {
 
                     AtomicBoolean replaced = new AtomicBoolean(false);
                     Component replaceComponent = LegacyComponentSerializer.legacySection().deserialize(replaceText);
-                    component = ComponentReplacing.replace(component, MultiChatDiscordSrvAddon.inventoryPlaceholder.getKeyword().pattern(), true, (groups) -> {
+                    component = ComponentReplacing.replace(component, MultiChatDiscordSrvAddon.inventoryPlaceholder.stream().map(k -> k.getKeyword().pattern()).collect(Collectors.toList()), true, (groups) -> {
                         replaced.set(true);
                         return replaceComponent;
                     });
@@ -467,9 +461,13 @@ public class OutboundToDiscordEvents implements Listener {
 
         if (Config.i().getInventoryImage().enderChest().enabled()) {
             Debug.debug("onGameToDiscord processing enderchest display");
-            Matcher matcher = MultiChatDiscordSrvAddon.enderChestPlaceholder.getKeyword().matcher(plain);
-            if (matcher.find()) {
-                if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.enderChestPlaceholder)).findFirst().get(), now)) {
+
+            ValuePairs<Boolean, Matcher> matcherPairs = PatternUtils.matches(plain, MultiChatDiscordSrvAddon.enderChestPlaceholder);
+
+            if (matcherPairs.getFirst()) {
+                Matcher matcher = matcherPairs.getSecond();
+
+                if (!cooldownManager.isPlaceholderOnCooldownAt(icSender.getUniqueId(), MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.enderChestPlaceholder)).findFirst().get().getFirst(), now)) {
                     String replaceText = ComponentStringUtils.stripColorAndConvertMagic(PlaceholderParser.parse(icSender, Config.i().getInventoryImage().enderChest().inventoryTitle()));
                     if (reserializer) {
                         replaceText = MessageUtil.reserializeToDiscord(github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component.text(replaceText));
@@ -477,7 +475,7 @@ public class OutboundToDiscordEvents implements Listener {
 
                     AtomicBoolean replaced = new AtomicBoolean(false);
                     Component replaceComponent = LegacyComponentSerializer.legacySection().deserialize(replaceText);
-                    component = ComponentReplacing.replace(component, MultiChatDiscordSrvAddon.enderChestPlaceholder.getKeyword().pattern(), true, (groups) -> {
+                    component = ComponentReplacing.replace(component, MultiChatDiscordSrvAddon.enderChestPlaceholder.stream().map(k -> k.getKeyword().pattern()).collect(Collectors.toList()), true, (groups) -> {
                         replaced.set(true);
                         return replaceComponent;
                     });

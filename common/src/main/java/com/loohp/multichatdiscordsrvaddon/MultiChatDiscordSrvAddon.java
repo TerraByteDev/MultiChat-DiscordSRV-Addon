@@ -137,10 +137,10 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
     public ListenerPriority gameToDiscordPriority = ListenerPriority.HIGHEST;
     public ListenerPriority ventureChatToDiscordPriority = ListenerPriority.HIGHEST;
     public ListenerPriority discordToGamePriority = ListenerPriority.HIGH;
-    public static ICPlaceholder itemPlaceholder = null;
-    public static ICPlaceholder inventoryPlaceholder = null;
-    public static ICPlaceholder enderChestPlaceholder = null;
-    public static Map<UUID, ICPlaceholder> placeholderList = new LinkedHashMap<>();
+    public static List<ICPlaceholder> itemPlaceholder = null;
+    public static List<ICPlaceholder> inventoryPlaceholder = null;
+    public static List<ICPlaceholder> enderChestPlaceholder = null;
+    public static Map<UUID, List<ICPlaceholder>> placeholderList = new LinkedHashMap<>();
 
     public static BungeeMessageListener bungeeMessageListener;
 
@@ -371,24 +371,36 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
 
         LanguageUtils.loadTranslations(Config.i().getResources().language());
 
-        Pattern itemPlaceholderPattern = Pattern.compile(Config.i().getPlaceholders().item());
-        Pattern inventoryPlaceholderPattern = Pattern.compile(Config.i().getPlaceholders().inventory());
-        Pattern enderChestPlaceholderPattern = Pattern.compile(Config.i().getPlaceholders().enderChest());
+        List<Pattern> itemPlaceholderPattern = Config.i().getPlaceholders().item().stream().map(Pattern::compile).collect(Collectors.toList());
+        List<Pattern> inventoryPlaceholderPattern = Config.i().getPlaceholders().inventory().stream().map(Pattern::compile).collect(Collectors.toList());
+        List<Pattern> enderChestPlaceholderPattern = Config.i().getPlaceholders().enderChest().stream().map(Pattern::compile).collect(Collectors.toList());
 
         if (Config.i().getInventoryImage().item().enabled()) {
             String description = ChatColorUtils.translateAlternateColorCodes('&', Config.i().getInventoryImage().item().description());
-            itemPlaceholder = new BuiltInPlaceholder(itemPlaceholderPattern, Config.i().getInventoryImage().item().itemTitle(), description, "", Config.i().getInventoryImage().item().cooldown() * 1000L);
-            placeholderList.put(itemPlaceholder.getInternalId(), itemPlaceholder);
+
+            for (Pattern pattern : itemPlaceholderPattern) {
+                BuiltInPlaceholder placeholder = new BuiltInPlaceholder(pattern, Config.i().getInventoryImage().item().itemTitle(), description, "", Config.i().getInventoryImage().item().cooldown() * 1000L);
+                itemPlaceholder.add(placeholder);
+                placeholderList.computeIfAbsent(placeholder.getInternalId(), k -> new ArrayList<>()).add(placeholder);
+            }
         }
         if (Config.i().getInventoryImage().inventory().enabled()) {
             String description = ChatColorUtils.translateAlternateColorCodes('&', Config.i().getInventoryImage().inventory().description());
-            inventoryPlaceholder = new BuiltInPlaceholder(inventoryPlaceholderPattern, Config.i().getInventoryImage().inventory().inventoryTitle(), description, "", Config.i().getInventoryImage().inventory().cooldown() * 1000L);
-            placeholderList.put(inventoryPlaceholder.getInternalId(), inventoryPlaceholder);
+
+            for (Pattern pattern : inventoryPlaceholderPattern) {
+                BuiltInPlaceholder placeholder = new BuiltInPlaceholder(pattern, Config.i().getInventoryImage().inventory().inventoryTitle(), description, "", Config.i().getInventoryImage().inventory().cooldown() * 1000L);
+                inventoryPlaceholder.add(placeholder);
+                placeholderList.computeIfAbsent(placeholder.getInternalId(), k -> new ArrayList<>()).add(placeholder);
+            }
         }
         if (Config.i().getInventoryImage().enderChest().enabled()) {
             String description = ChatColorUtils.translateAlternateColorCodes('&', Config.i().getInventoryImage().enderChest().description());
-            enderChestPlaceholder = new BuiltInPlaceholder(enderChestPlaceholderPattern, Config.i().getInventoryImage().enderChest().inventoryTitle(), description, "", Config.i().getInventoryImage().enderChest().cooldown() * 1000L);
-            placeholderList.put(enderChestPlaceholder.getInternalId(), enderChestPlaceholder);
+
+            for (Pattern pattern : enderChestPlaceholderPattern) {
+                BuiltInPlaceholder placeholder = new BuiltInPlaceholder(pattern, Config.i().getInventoryImage().enderChest().inventoryTitle(), description, "", Config.i().getInventoryImage().enderChest().cooldown() * 1000L);
+                enderChestPlaceholder.add(placeholder);
+                placeholderList.computeIfAbsent(placeholder.getInternalId(), k -> new ArrayList<>()).add(placeholder);
+            }
         }
 
         FontTextureResource.setCacheTime(Config.i().getSettings().cacheTimeout() * 20L);
