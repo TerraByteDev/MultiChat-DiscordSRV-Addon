@@ -17,6 +17,8 @@ import com.loohp.multichatdiscordsrvaddon.wrappers.TitledInventoryWrapper;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.kyori.adventure.text.Component;
@@ -184,7 +186,13 @@ public class StandaloneShareItemCommand {
                         action = action.setFiles(fileUploads);
                     }
                 }
-                action.setEmbeds(embeds).setActionRow(interactionHandler.getInteractionToRegister()[0]).queue(message -> {
+
+                Collection<ItemComponent> componentCollection = new HashSet<>();
+                for (ActionRow actionRow : interactionHandler.getInteractionToRegister()) {
+                    componentCollection.addAll(actionRow.getComponents());
+                }
+
+                action.setEmbeds(embeds).setActionRow(componentCollection).queue(message -> {
                     if (!interactionHandler.getInteractions().isEmpty()) {
                         StandaloneInteractionEvents.register(message, interactionHandler, contents);
                     }
