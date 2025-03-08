@@ -125,9 +125,9 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
     public AtomicLong attachmentImageCounter = new AtomicLong(0);
     public AtomicLong imagesViewedCounter = new AtomicLong(0);
     public Queue<Integer> playerModelRenderingTimes = new ConcurrentLinkedQueue<>();
-    public static List<ICPlaceholder> itemPlaceholder = null;
-    public static List<ICPlaceholder> inventoryPlaceholder = null;
-    public static List<ICPlaceholder> enderChestPlaceholder = null;
+    public static List<ICPlaceholder> itemPlaceholder = new ArrayList<>();
+    public static List<ICPlaceholder> inventoryPlaceholder = new ArrayList<>();
+    public static List<ICPlaceholder> enderChestPlaceholder = new ArrayList<>();
     public static Map<UUID, List<ICPlaceholder>> placeholderList = new LinkedHashMap<>();
 
     public static BungeeMessageListener bungeeMessageListener;
