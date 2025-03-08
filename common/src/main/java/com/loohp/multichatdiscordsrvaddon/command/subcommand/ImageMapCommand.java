@@ -12,7 +12,7 @@ import org.incendo.cloud.annotations.CommandDescription;
 
 import java.util.UUID;
 
-@Command("multichat|mc")
+@Command("multichat|mcd")
 public class ImageMapCommand {
 
     @Command("imagemap <uuid>")

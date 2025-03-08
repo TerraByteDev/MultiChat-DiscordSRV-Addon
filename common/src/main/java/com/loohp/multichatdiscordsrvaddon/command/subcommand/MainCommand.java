@@ -7,7 +7,7 @@ import org.incendo.cloud.annotations.Permission;
 
 import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
 
-@Command("multichat|mc")
+@Command("multichat|mcd")
 public class MainCommand {
 
     @Command("info")
