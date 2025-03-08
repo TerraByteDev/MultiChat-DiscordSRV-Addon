@@ -137,9 +137,9 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
     public ListenerPriority gameToDiscordPriority = ListenerPriority.HIGHEST;
     public ListenerPriority ventureChatToDiscordPriority = ListenerPriority.HIGHEST;
     public ListenerPriority discordToGamePriority = ListenerPriority.HIGH;
-    public static List<ICPlaceholder> itemPlaceholder = null;
-    public static List<ICPlaceholder> inventoryPlaceholder = null;
-    public static List<ICPlaceholder> enderChestPlaceholder = null;
+    public static List<ICPlaceholder> itemPlaceholder = new ArrayList<>();
+    public static List<ICPlaceholder> inventoryPlaceholder = new ArrayList<>();
+    public static List<ICPlaceholder> enderChestPlaceholder = new ArrayList<>();
     public static Map<UUID, List<ICPlaceholder>> placeholderList = new LinkedHashMap<>();
 
     public static BungeeMessageListener bungeeMessageListener;
