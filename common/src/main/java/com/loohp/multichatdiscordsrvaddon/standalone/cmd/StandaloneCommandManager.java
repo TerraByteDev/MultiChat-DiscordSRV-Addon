@@ -20,6 +20,7 @@ import org.incendo.cloud.execution.ExecutionCoordinator;
 import org.incendo.cloud.parser.standard.IntegerParser;
 import org.incendo.cloud.parser.standard.StringParser;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.loohp.multichatdiscordsrvaddon.utils.DiscordCommandUtils.*;
@@ -74,9 +75,9 @@ public class StandaloneCommandManager {
         }
 
         if (Config.i().getDiscordCommands().shareItem().isMainServer()) {
-            Optional<ICPlaceholder> optItemPlaceholder = MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.itemPlaceholder)).findFirst();
+            Optional<List<ICPlaceholder>> optItemPlaceholder = MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.itemPlaceholder)).findFirst();
             if (Config.i().getDiscordCommands().shareItem().enabled() && optItemPlaceholder.isPresent()) {
-                Description itemDescription = Description.of(ChatColorUtils.stripColor(optItemPlaceholder.get().getDescription()));
+                Description itemDescription = Description.of(ChatColorUtils.stripColor(optItemPlaceholder.get().getFirst().getDescription()));
 
                 Command.Builder<JDAInteraction> root = commandManager.commandBuilder(ITEM_LABEL, itemDescription);
 

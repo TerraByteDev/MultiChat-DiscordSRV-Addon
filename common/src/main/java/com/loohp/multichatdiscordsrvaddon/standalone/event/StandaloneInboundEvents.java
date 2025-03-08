@@ -121,12 +121,14 @@ public class StandaloneInboundEvents extends ListenerAdapter {
                 serialized = serializer.serialize(message);
 
                 Debug.debug("on(Standalone)discordToGame escaping placeholders");
-                for (ICPlaceholder placeholder : placeholderList.values()) {
-                    serialized = serialized.replaceText(TextReplacementConfig.builder()
-                            .match(placeholder.getKeyword())
-                            .replacement((result, builder) -> builder.content("\\" + result.group()))
-                            .build()
-                    );
+                for (List<ICPlaceholder> list : placeholderList.values()) {
+                    for (ICPlaceholder placeholder : list) {
+                        serialized = serialized.replaceText(TextReplacementConfig.builder()
+                                .match(placeholder.getKeyword())
+                                .replacement((result, builder) -> builder.content("\\" + result.group()))
+                                .build()
+                        );
+                    }
                 }
 
                 if (Config.i().getDiscordMention().translateMentions()) {
