@@ -24,15 +24,13 @@ import com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon;
 import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageSender;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.utils.PatternUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.PlayerUtils;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class PlaceholderCooldownManager {
 
@@ -46,7 +44,9 @@ public class PlaceholderCooldownManager {
     }
 
     public void reloadPlaceholders() {
-        List<ICPlaceholder> placeholderList = MultiChatDiscordSrvAddonAPI.getPlaceholderList();
+        Collection<ICPlaceholder> placeholderList = MultiChatDiscordSrvAddonAPI.getPlaceholderList().stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
         Iterator<UUID> itr = placeholderTimestamps.keySet().iterator();
         while (itr.hasNext()) {
             UUID internalId = itr.next();
@@ -68,28 +68,27 @@ public class PlaceholderCooldownManager {
         boolean first = true;
         for (Entry<UUID, Map<UUID, Long>> entry : placeholderTimestamps.entrySet()) {
             UUID internalId = entry.getKey();
-            ICPlaceholder placeholder = MultiChatDiscordSrvAddon.placeholderList.get(internalId);
-            if (placeholder != null) {
-                if (placeholder.getKeyword().matcher(message).find()) {
-                    if (first) {
-                        first = false;
-                        if ((Config.i().getSettings().universalCooldown() * 1000L) > 0) {
-                            Long lastUniversal = universalTimestamps.get(uuid);
-                            if (lastUniversal != null && now - lastUniversal < (Config.i().getSettings().universalCooldown() * 1000L)) {
-                                return new CooldownResult(CooldownResult.CooldownOutcome.DENY_UNIVERSAL, now, lastUniversal + (Config.i().getSettings().universalCooldown() * 1000L), null);
-                            }
-                        }
-                        tasksIfSucessful.add(() -> setPlayerUniversalLastTimestamp(uuid, now));
-                    }
-                    Map<UUID, Long> mapping = entry.getValue();
-                    if (placeholder.getCooldown() > 0) {
-                        Long lastUsed = mapping.get(uuid);
-                        if (lastUsed != null && now - lastUsed < placeholder.getCooldown()) {
-                            return new CooldownResult(CooldownResult.CooldownOutcome.DENY_PLACEHOLDER, now, lastUsed + placeholder.getCooldown(), placeholder);
+            List<ICPlaceholder> placeholder = MultiChatDiscordSrvAddon.placeholderList.get(internalId);
+
+            if (placeholder != null && PatternUtils.matches(message, placeholder).getFirst()) {
+                if (first) {
+                    first = false;
+                    if ((Config.i().getSettings().universalCooldown() * 1000L) > 0) {
+                        Long lastUniversal = universalTimestamps.get(uuid);
+                        if (lastUniversal != null && now - lastUniversal < (Config.i().getSettings().universalCooldown() * 1000L)) {
+                            return new CooldownResult(CooldownResult.CooldownOutcome.DENY_UNIVERSAL, now, lastUniversal + (Config.i().getSettings().universalCooldown() * 1000L), null);
                         }
                     }
-                    tasksIfSucessful.add(() -> setPlayerPlaceholderLastTimestamp(uuid, placeholder, now));
+                    tasksIfSucessful.add(() -> setPlayerUniversalLastTimestamp(uuid, now));
                 }
+                Map<UUID, Long> mapping = entry.getValue();
+                if (placeholder.getFirst().getCooldown() > 0) {
+                    Long lastUsed = mapping.get(uuid);
+                    if (lastUsed != null && now - lastUsed < placeholder.getFirst().getCooldown()) {
+                        return new CooldownResult(CooldownResult.CooldownOutcome.DENY_PLACEHOLDER, now, lastUsed + placeholder.getFirst().getCooldown(), placeholder.getFirst());
+                    }
+                }
+                tasksIfSucessful.add(() -> setPlayerPlaceholderLastTimestamp(uuid, placeholder.getFirst(), now));
             }
         }
         tasksIfSucessful.forEach(each -> each.run());
@@ -157,5 +156,6 @@ public class PlaceholderCooldownManager {
         long placeholderLastTimestamp = getPlayerPlaceholderLastTimestamp(uuid, placeholder);
         return placeholderLastTimestamp >= 0 && placeholder.getCooldown() > 0 && time - placeholderLastTimestamp < placeholder.getCooldown() && placeholderLastTimestamp < time;
     }
+
 
 }

@@ -1,8 +1,7 @@
 package com.loohp.multichatdiscordsrvaddon.command.subcommand;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
-import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.InboundToGameEvents;
-import com.loohp.multichatdiscordsrvaddon.objectholders.DiscordAttachmentData;
+import com.loohp.multichatdiscordsrvaddon.objectholders.DiscordAttachmentData
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import com.loohp.multichatdiscordsrvaddon.wrappers.GraphicsToPacketMapWrapper;
 import org.bukkit.command.CommandSender;
@@ -15,7 +14,7 @@ import java.util.UUID;
 
 import static com.loohp.multichatdiscordsrvaddon.listeners.InboundEventListener.DATA;
 
-@Command("multichat|mc")
+@Command("multichat|mcd")
 public class ImageMapCommand {
 
     @Command("imagemap <uuid>")

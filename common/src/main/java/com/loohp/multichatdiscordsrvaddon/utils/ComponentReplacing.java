@@ -57,6 +57,14 @@ public class ComponentReplacing {
         return replace(component, regex, escaping, (result, replaced) -> replaceFunction.apply(result));
     }
 
+    public static Component replace(Component component, List<String> regex, boolean escaping, Function<ComponentMatchResult, Component> replaceFunction) {
+        for (String regexStr : regex) {
+            component = replace(component, regexStr, escaping, (result, replaced) -> replaceFunction.apply(result));
+        }
+
+        return component;
+    }
+
     public static Component replace(Component component, String regex, boolean escaping, BiFunction<ComponentMatchResult, List<Component>, Component> replaceFunction) {
         String regexOriginal = regex;
         if (escaping) {

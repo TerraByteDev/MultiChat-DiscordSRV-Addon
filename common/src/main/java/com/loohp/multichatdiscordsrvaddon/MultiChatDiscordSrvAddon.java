@@ -51,9 +51,12 @@ import com.loohp.multichatdiscordsrvaddon.api.events.ResourceManagerInitializeEv
 import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageGeneration;
 import com.loohp.multichatdiscordsrvaddon.graphics.ImageUtils;
+import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.DiscordCommandEvents;
 import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.DiscordInteractionEvents;
+import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.DiscordReadyEvents;
 import com.loohp.multichatdiscordsrvaddon.listeners.ICPlayerEvents;
 import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.InboundToGameEvents;
+import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.LegacyDiscordCommandEvents;
 import com.loohp.multichatdiscordsrvaddon.listeners.discordsrv.OutboundToDiscordEvents;
 import com.loohp.multichatdiscordsrvaddon.metrics.Charts;
 import com.loohp.multichatdiscordsrvaddon.metrics.Metrics;
@@ -122,10 +125,10 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
     public AtomicLong attachmentImageCounter = new AtomicLong(0);
     public AtomicLong imagesViewedCounter = new AtomicLong(0);
     public Queue<Integer> playerModelRenderingTimes = new ConcurrentLinkedQueue<>();
-    public static ICPlaceholder itemPlaceholder = null;
-    public static ICPlaceholder inventoryPlaceholder = null;
-    public static ICPlaceholder enderChestPlaceholder = null;
-    public static Map<UUID, ICPlaceholder> placeholderList = new LinkedHashMap<>();
+    public static List<ICPlaceholder> itemPlaceholder = null;
+    public static List<ICPlaceholder> inventoryPlaceholder = null;
+    public static List<ICPlaceholder> enderChestPlaceholder = null;
+    public static Map<UUID, List<ICPlaceholder>> placeholderList = new LinkedHashMap<>();
 
     public static BungeeMessageListener bungeeMessageListener;
 
@@ -198,6 +201,12 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
         integrationManager = new IntegrationManager();
         if (Config.i().getHook().shouldHook()) integrationManager.load(Config.i().getHook().selected());
 
+        metrics = new Metrics(this, BSTATS_PLUGIN_ID);
+        Charts.setup(metrics);
+
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "interchat:main");
+        getServer().getMessenger().registerIncomingPluginChannel(this, "interchat:main", bungeeMessageListener = new BungeeMessageListener());
+
         if (Config.i().getStandalone().enabled()) {
             this.standaloneManager = new StandaloneManager();
             this.standaloneManager.initialise();
@@ -205,18 +214,12 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
             DiscordSRVManager.enable();
         } else throw new IllegalStateException("Attempted to hook into DiscordSRV when it is not enabled!");
 
-        metrics = new Metrics(this, BSTATS_PLUGIN_ID);
-        Charts.setup(metrics);
-
-        getServer().getMessenger().registerOutgoingPluginChannel(this, "interchat:main");
-        getServer().getMessenger().registerIncomingPluginChannel(this, "interchat:main", bungeeMessageListener = new BungeeMessageListener());
-
-        placeholderCooldownManager = new PlaceholderCooldownManager();
-
         InboundEventListener inboundEventListener = new InboundEventListener();
 
         PacketListenerPriority priority = PacketListenerPriority.valueOf(Config.i().getDiscordAttachments().priority().toUpperCase(Locale.ROOT));
         PacketEvents.getAPI().getEventManager().registerListener(inboundEventListener, priority);
+
+        placeholderCooldownManager = new PlaceholderCooldownManager();
 
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new ICPlayerEvents(), this);
@@ -363,24 +366,36 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
 
         LanguageUtils.loadTranslations(Config.i().getResources().language());
 
-        Pattern itemPlaceholderPattern = Pattern.compile(Config.i().getPlaceholders().item());
-        Pattern inventoryPlaceholderPattern = Pattern.compile(Config.i().getPlaceholders().inventory());
-        Pattern enderChestPlaceholderPattern = Pattern.compile(Config.i().getPlaceholders().enderChest());
+        List<Pattern> itemPlaceholderPattern = Config.i().getPlaceholders().item().stream().map(Pattern::compile).collect(Collectors.toList());
+        List<Pattern> inventoryPlaceholderPattern = Config.i().getPlaceholders().inventory().stream().map(Pattern::compile).collect(Collectors.toList());
+        List<Pattern> enderChestPlaceholderPattern = Config.i().getPlaceholders().enderChest().stream().map(Pattern::compile).collect(Collectors.toList());
 
         if (Config.i().getInventoryImage().item().enabled()) {
             String description = ChatColorUtils.translateAlternateColorCodes('&', Config.i().getInventoryImage().item().description());
-            itemPlaceholder = new BuiltInPlaceholder(itemPlaceholderPattern, Config.i().getInventoryImage().item().itemTitle(), description, "", Config.i().getInventoryImage().item().cooldown() * 1000L);
-            placeholderList.put(itemPlaceholder.getInternalId(), itemPlaceholder);
+
+            for (Pattern pattern : itemPlaceholderPattern) {
+                BuiltInPlaceholder placeholder = new BuiltInPlaceholder(pattern, Config.i().getInventoryImage().item().itemTitle(), description, "", Config.i().getInventoryImage().item().cooldown() * 1000L);
+                itemPlaceholder.add(placeholder);
+                placeholderList.computeIfAbsent(placeholder.getInternalId(), k -> new ArrayList<>()).add(placeholder);
+            }
         }
         if (Config.i().getInventoryImage().inventory().enabled()) {
             String description = ChatColorUtils.translateAlternateColorCodes('&', Config.i().getInventoryImage().inventory().description());
-            inventoryPlaceholder = new BuiltInPlaceholder(inventoryPlaceholderPattern, Config.i().getInventoryImage().inventory().inventoryTitle(), description, "", Config.i().getInventoryImage().inventory().cooldown() * 1000L);
-            placeholderList.put(inventoryPlaceholder.getInternalId(), inventoryPlaceholder);
+
+            for (Pattern pattern : inventoryPlaceholderPattern) {
+                BuiltInPlaceholder placeholder = new BuiltInPlaceholder(pattern, Config.i().getInventoryImage().inventory().inventoryTitle(), description, "", Config.i().getInventoryImage().inventory().cooldown() * 1000L);
+                inventoryPlaceholder.add(placeholder);
+                placeholderList.computeIfAbsent(placeholder.getInternalId(), k -> new ArrayList<>()).add(placeholder);
+            }
         }
         if (Config.i().getInventoryImage().enderChest().enabled()) {
             String description = ChatColorUtils.translateAlternateColorCodes('&', Config.i().getInventoryImage().enderChest().description());
-            enderChestPlaceholder = new BuiltInPlaceholder(enderChestPlaceholderPattern, Config.i().getInventoryImage().enderChest().inventoryTitle(), description, "", Config.i().getInventoryImage().enderChest().cooldown() * 1000L);
-            placeholderList.put(enderChestPlaceholder.getInternalId(), enderChestPlaceholder);
+
+            for (Pattern pattern : enderChestPlaceholderPattern) {
+                BuiltInPlaceholder placeholder = new BuiltInPlaceholder(pattern, Config.i().getInventoryImage().enderChest().inventoryTitle(), description, "", Config.i().getInventoryImage().enderChest().cooldown() * 1000L);
+                enderChestPlaceholder.add(placeholder);
+                placeholderList.computeIfAbsent(placeholder.getInternalId(), k -> new ArrayList<>()).add(placeholder);
+            }
         }
 
         FontTextureResource.setCacheTime(Config.i().getSettings().cacheTimeout() * 20L);

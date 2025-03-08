@@ -13,7 +13,7 @@ import org.incendo.cloud.suggestion.Suggestion;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Command("multichat|mc")
+@Command("multichat|mcd")
 public class HelpCommand {
 
     @Suggestions("helpQuery")

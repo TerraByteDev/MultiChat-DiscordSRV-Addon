@@ -155,9 +155,9 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
             }
         }
         if (Config.i().getDiscordCommands().shareItem().isMainServer()) {
-            Optional<ICPlaceholder> optItemPlaceholder = MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.itemPlaceholder)).findFirst();
+            Optional<List<ICPlaceholder>> optItemPlaceholder = MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.itemPlaceholder)).findFirst();
             if (Config.i().getDiscordCommands().shareItem().enabled() && optItemPlaceholder.isPresent()) {
-                String itemDescription = ChatColorUtils.stripColor(optItemPlaceholder.get().getDescription());
+                String itemDescription = ChatColorUtils.stripColor(optItemPlaceholder.get().getFirst().getDescription());
 
                 SubcommandData mainhandSubcommand = new SubcommandData("mainhand", itemDescription);
                 SubcommandData offhandSubcommand = new SubcommandData("offhand", itemDescription);
@@ -166,7 +166,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                 SubcommandData armorSubcommand = new SubcommandData("armor", itemDescription).addOptions(new OptionData(OptionType.STRING, slotLabel, slotDescription, true).addChoice("head", "head").addChoice("chest", "chest").addChoice("legs", "legs").addChoice("feet", "feet"));
                 SubcommandData enderSubcommand = new SubcommandData("ender", itemDescription).addOptions(new OptionData(OptionType.INTEGER, slotLabel, slotDescription, true).setRequiredRange(1, 27));
 
-                commandDataList.add(new CommandData(ITEM_LABEL, ChatColorUtils.stripColor(optItemPlaceholder.get().getDescription())).addSubcommands(mainhandSubcommand).addSubcommands(offhandSubcommand).addSubcommands(hotbarSubcommand).addSubcommands(inventorySubcommand).addSubcommands(armorSubcommand).addSubcommands(enderSubcommand));
+                commandDataList.add(new CommandData(ITEM_LABEL, ChatColorUtils.stripColor(optItemPlaceholder.get().getFirst().getDescription())).addSubcommands(mainhandSubcommand).addSubcommands(offhandSubcommand).addSubcommands(hotbarSubcommand).addSubcommands(inventorySubcommand).addSubcommands(armorSubcommand).addSubcommands(enderSubcommand));
 
                 if (Config.i().getDiscordCommands().shareItem().allowAsOthers()) {
                     SubcommandData mainhandOtherSubcommand = new SubcommandData("mainhand", itemDescription).addOption(OptionType.USER, memberLabel, memberDescription, true);
@@ -176,27 +176,27 @@ public class DiscordCommands implements Listener, SlashCommandProvider {
                     SubcommandData armorOtherSubcommand = new SubcommandData("armor", itemDescription).addOptions(new OptionData(OptionType.STRING, slotLabel, slotDescription, true).addChoice("head", "head").addChoice("chest", "chest").addChoice("legs", "legs").addChoice("feet", "feet")).addOption(OptionType.USER, memberLabel, memberDescription, true);
                     SubcommandData enderOtherSubcommand = new SubcommandData("ender", itemDescription).addOptions(new OptionData(OptionType.INTEGER, slotLabel, slotDescription, true).setRequiredRange(1, 27)).addOption(OptionType.USER, memberLabel, memberDescription, true);
 
-                    commandDataList.add(new CommandData(ITEM_OTHER_LABEL, ChatColorUtils.stripColor(optItemPlaceholder.get().getDescription())).addSubcommands(mainhandOtherSubcommand).addSubcommands(offhandOtherSubcommand).addSubcommands(hotbarOtherSubcommand).addSubcommands(inventoryOtherSubcommand).addSubcommands(armorOtherSubcommand).addSubcommands(enderOtherSubcommand));
+                    commandDataList.add(new CommandData(ITEM_OTHER_LABEL, ChatColorUtils.stripColor(optItemPlaceholder.get().getFirst().getDescription())).addSubcommands(mainhandOtherSubcommand).addSubcommands(offhandOtherSubcommand).addSubcommands(hotbarOtherSubcommand).addSubcommands(inventoryOtherSubcommand).addSubcommands(armorOtherSubcommand).addSubcommands(enderOtherSubcommand));
                 }
             }
         }
         if (Config.i().getDiscordCommands().shareInventory().isMainServer()) {
-            Optional<ICPlaceholder> optInvPlaceholder = MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.inventoryPlaceholder)).findFirst();
+            Optional<List<ICPlaceholder>> optInvPlaceholder = MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.inventoryPlaceholder)).findFirst();
             if (Config.i().getDiscordCommands().shareInventory().enabled() && optInvPlaceholder.isPresent()) {
-                commandDataList.add(new CommandData(INVENTORY_LABEL, ChatColorUtils.stripColor(optInvPlaceholder.get().getDescription())));
+                commandDataList.add(new CommandData(INVENTORY_LABEL, ChatColorUtils.stripColor(optInvPlaceholder.get().getFirst().getDescription())));
 
                 if (Config.i().getDiscordCommands().shareInventory().allowAsOthers()) {
-                    commandDataList.add(new CommandData(INVENTORY_OTHER_LABEL, ChatColorUtils.stripColor(optInvPlaceholder.get().getDescription())).addOption(OptionType.USER, memberLabel, memberDescription, true));
+                    commandDataList.add(new CommandData(INVENTORY_OTHER_LABEL, ChatColorUtils.stripColor(optInvPlaceholder.get().getFirst().getDescription())).addOption(OptionType.USER, memberLabel, memberDescription, true));
                 }
             }
         }
         if (Config.i().getDiscordCommands().shareEnderChest().isMainServer()) {
-            Optional<ICPlaceholder> optEnderPlaceholder = MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.enderChestPlaceholder)).findFirst();
+            Optional<List<ICPlaceholder>> optEnderPlaceholder = MultiChatDiscordSrvAddon.placeholderList.values().stream().filter(each -> each.equals(MultiChatDiscordSrvAddon.enderChestPlaceholder)).findFirst();
             if (Config.i().getDiscordCommands().shareEnderChest().enabled() && optEnderPlaceholder.isPresent()) {
-                commandDataList.add(new CommandData(ENDERCHEST_LABEL, ChatColorUtils.stripColor(optEnderPlaceholder.get().getDescription())));
+                commandDataList.add(new CommandData(ENDERCHEST_LABEL, ChatColorUtils.stripColor(optEnderPlaceholder.get().getFirst().getDescription())));
 
                 if (Config.i().getDiscordCommands().shareEnderChest().allowAsOthers()) {
-                    commandDataList.add(new CommandData(ENDERCHEST_OTHER_LABEL, ChatColorUtils.stripColor(optEnderPlaceholder.get().getDescription())).addOption(OptionType.USER, memberLabel, memberDescription, true));
+                    commandDataList.add(new CommandData(ENDERCHEST_OTHER_LABEL, ChatColorUtils.stripColor(optEnderPlaceholder.get().getFirst().getDescription())).addOption(OptionType.USER, memberLabel, memberDescription, true));
                 }
             }
         }

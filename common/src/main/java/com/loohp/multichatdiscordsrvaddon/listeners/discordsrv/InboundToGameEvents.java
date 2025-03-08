@@ -105,8 +105,10 @@ public class InboundToGameEvents {
         github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component component = event.getMinecraftMessage();
         if (Config.i().getSettings().escapePlaceholdersSentFromDiscord()) {
             Debug.debug("onDiscordToGame escaping placeholders");
-            for (ICPlaceholder placeholder : MultiChatDiscordSrvAddon.placeholderList.values()) {
-                component = component.replaceText(github.scarsz.discordsrv.dependencies.kyori.adventure.text.TextReplacementConfig.builder().match(placeholder.getKeyword()).replacement((result, builder) -> builder.content("\\" + result.group())).build());
+            for (List<ICPlaceholder> list : MultiChatDiscordSrvAddon.placeholderList.values()) {
+                for (ICPlaceholder placeholder : list) {
+                    component = component.replaceText(github.scarsz.discordsrv.dependencies.kyori.adventure.text.TextReplacementConfig.builder().match(placeholder.getKeyword()).replacement((result, builder) -> builder.content("\\" + result.group())).build());
+                }
             }
             event.setMinecraftMessage(component);
         }

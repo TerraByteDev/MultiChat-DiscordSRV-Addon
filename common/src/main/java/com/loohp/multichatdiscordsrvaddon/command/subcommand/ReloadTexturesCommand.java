@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 import static com.loohp.multichatdiscordsrvaddon.MultiChatDiscordSrvAddon.plugin;
 
-@Command("multichat|mc")
+@Command("multichat|mcd")
 public class ReloadTexturesCommand {
 
     @Suggestions("args")
