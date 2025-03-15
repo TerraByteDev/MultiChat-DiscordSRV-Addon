@@ -172,7 +172,7 @@ public class InboundToGameEvents implements Listener, PacketListener {
                     Member authorAsMember = guild.getMember(author);
                     String senderDiscordName = authorAsMember == null ? author.getName() : authorAsMember.getEffectiveName();
                     UUID senderUUID = srv.getAccountLinkManager().getUuid(author.getId());
-                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(senderUUID);
+                    OfflinePlayer offlinePlayer = null;
 
                     github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component component = event.getMinecraftMessage();
 
@@ -180,8 +180,10 @@ public class InboundToGameEvents implements Listener, PacketListener {
                         String serialized = MiniMessage.miniMessage().serialize(component);
                         assert MultiChatDiscordSrvAddon.plugin.integrationManager.getIntegration() != null;
 
+                        if (senderUUID != null) offlinePlayer = Bukkit.getOfflinePlayer(senderUUID);
+
                         String filtered = MultiChatDiscordSrvAddon.plugin.integrationManager.getIntegration().filter(
-                                new MessageSender(Objects.requireNonNull(offlinePlayer.getName())),
+                                new MessageSender(offlinePlayer != null ? offlinePlayer.getName() : ""),
                                 serialized
                         );
 
