@@ -24,7 +24,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
-import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.libs.LibraryDownloadManager;
 import com.loohp.multichatdiscordsrvaddon.libs.LibraryLoader;
 import com.loohp.multichatdiscordsrvaddon.utils.*;

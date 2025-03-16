@@ -1,6 +1,7 @@
 package com.loohp.multichatdiscordsrvaddon.integration.impl;
 
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.integration.sender.MessageSender;
 import com.loohp.multichatdiscordsrvaddon.integration.MultiChatIntegration;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
@@ -54,6 +55,8 @@ public class ZelChatIntegration extends ExternalModule implements MultiChatInteg
 
     @Override
     public ChatMessage handleChatMessage(@NotNull ChatMessage chatMessage) {
+        if (Config.i().getDebug().printInfoToConsole()) Debug.debug("ZelChat handleChatMessage method triggered.\nChannel Type = " + chatMessage.getChannel().getType().name() + "\nState = " + chatMessage.getState());
+
         if (Config.i().getHook().ignoredChannels().contains(chatMessage.getChannel().getType().name())
             || (chatMessage.getState() == MessageState.CANCELLED || chatMessage.getState() == MessageState.FILTERED_CANCELLED)) return chatMessage;
 

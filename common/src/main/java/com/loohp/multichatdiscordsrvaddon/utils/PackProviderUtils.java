@@ -5,7 +5,6 @@ import com.loohp.multichatdiscordsrvaddon.debug.Debug;
 import com.loohp.multichatdiscordsrvaddon.hooks.ItemsAdderHook;
 import com.loohp.multichatdiscordsrvaddon.hooks.NexoHook;
 import com.loohp.multichatdiscordsrvaddon.hooks.OraxenHook;
-import dev.lone.itemsadder.api.ItemsAdder;
 
 import java.util.Locale;
 
