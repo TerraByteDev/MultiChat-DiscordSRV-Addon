@@ -7,17 +7,22 @@ import com.loohp.multichatdiscordsrvaddon.integration.MultiChatIntegration;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatUtils;
 import github.scarsz.discordsrv.DiscordSRV;
 import it.pino.zelchat.api.ZelChatAPI;
-import it.pino.zelchat.api.formatter.module.external.ExternalModule;
-import it.pino.zelchat.api.formatter.module.priority.ModulePriority;
 import it.pino.zelchat.api.message.ChatMessage;
-import it.pino.zelchat.api.message.MessageState;
+import it.pino.zelchat.api.message.state.MessageState;
+import it.pino.zelchat.api.module.ChatModule;
+import it.pino.zelchat.api.module.annotation.ChatModuleSettings;
+import it.pino.zelchat.api.module.priority.ModulePriority;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-public class ZelChatIntegration extends ExternalModule implements MultiChatIntegration {
+@ChatModuleSettings(
+        pluginOwner = "MultiChatDiscordSrvAddon",
+        priority = ModulePriority.NORMAL
+)
+public class ZelChatIntegration implements MultiChatIntegration, ChatModule {
 
     private final String pluginName = "ZelChat";
 
@@ -31,7 +36,7 @@ public class ZelChatIntegration extends ExternalModule implements MultiChatInteg
         ModulePriority modulePriority = ModulePriority.valueOf(Config.i().getHook().priority());
         if (modulePriority == null) throw new IllegalArgumentException("Unknown Hook event priority: " + Config.i().getHook().priority() + ".\nNote: ZelChat does not support the MONITOR event priority.");
 
-        ZelChatAPI.get().getFormatterService().registerExternalModule(plugin, this);
+        ZelChatAPI.get().getModuleManager().register(plugin, this);
         this.load();
 
         ChatUtils.sendMessage("<green>Registered external ZelChat module!");
@@ -40,7 +45,7 @@ public class ZelChatIntegration extends ExternalModule implements MultiChatInteg
     @Override
     public void disable(JavaPlugin plugin) {
         this.unload();
-        ZelChatAPI.get().getFormatterService().unregisterExternalModule(plugin, this);
+        ZelChatAPI.get().getModuleManager().unregister(plugin, this);
     }
 
     @Override
@@ -49,16 +54,11 @@ public class ZelChatIntegration extends ExternalModule implements MultiChatInteg
     }
 
     @Override
-    public ModulePriority getPriority() {
-        return ModulePriority.valueOf(Config.i().getHook().priority());
-    }
-
-    @Override
-    public ChatMessage handleChatMessage(@NotNull ChatMessage chatMessage) {
+    public void handleChatMessage(@NotNull ChatMessage chatMessage) {
         if (Config.i().getDebug().printInfoToConsole()) Debug.debug("ZelChat handleChatMessage method triggered.\nChannel Type = " + chatMessage.getChannel().getType().name() + "\nState = " + chatMessage.getState());
 
         if (Config.i().getHook().ignoredChannels().contains(chatMessage.getChannel().getType().name())
-            || (chatMessage.getState() == MessageState.CANCELLED || chatMessage.getState() == MessageState.FILTERED_CANCELLED)) return chatMessage;
+            || (chatMessage.getState() == MessageState.CANCELLED || chatMessage.getState() == MessageState.FILTERED_CANCELLED)) return;
 
         // todo wait for pino to expose filtering thru api
 
@@ -71,7 +71,5 @@ public class ZelChatIntegration extends ExternalModule implements MultiChatInteg
                 DiscordSRV.getPlugin().getOptionalChannel("global"),
                 false
         );
-
-        return chatMessage;
     }
 }
