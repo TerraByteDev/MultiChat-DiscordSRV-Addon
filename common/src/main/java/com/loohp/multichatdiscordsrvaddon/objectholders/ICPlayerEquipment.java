@@ -311,4 +311,14 @@ public class ICPlayerEquipment implements EntityEquipment {
         return null;
     }
 
+    @Override
+    public float getDropChance(@NotNull EquipmentSlot equipmentSlot) {
+        return dropChance.get(equipmentSlot);
+    }
+
+    @Override
+    public void setDropChance(@NotNull EquipmentSlot equipmentSlot, float v) {
+        dropChance.put(equipmentSlot, v);
+    }
+
 }
