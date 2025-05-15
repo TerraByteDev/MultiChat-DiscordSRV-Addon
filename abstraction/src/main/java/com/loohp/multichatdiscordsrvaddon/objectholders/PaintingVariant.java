@@ -25,15 +25,18 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import java.util.Optional;
+
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @Getter
 public class PaintingVariant {
 
-    private static Component getLegacyPaintingTitle(Key key) {
-        return Component.translatable("painting." + key.namespace() + "." + key.value() + ".title").color(NamedTextColor.YELLOW);
+    private static Optional<Component> getLegacyPaintingTitle(Key key) {
+        return Optional.of(Component.translatable("painting." + key.namespace() + "." + key.value() + ".title").color(NamedTextColor.YELLOW));
     }
 
-    private static Component getLegacyPaintingAuthor(Key key) {
-        return Component.translatable("painting." + key.namespace() + "." + key.value() + ".author").color(NamedTextColor.GRAY);
+    private static Optional<Component> getLegacyPaintingAuthor(Key key) {
+        return Optional.of(Component.translatable("painting." + key.namespace() + "." + key.value() + ".author").color(NamedTextColor.GRAY));
     }
 
     private final Key key;
@@ -42,10 +45,10 @@ public class PaintingVariant {
     private final int blockWidth;
     private final int blockHeight;
 
-    private final Component title;
-    private final Component author;
+    private final Optional<Component> title;
+    private final Optional<Component> author;
 
-    public PaintingVariant(Key key, int offsetX, int offsetY, int blockWidth, int blockHeight, Component title, Component author) {
+    public PaintingVariant(Key key, int offsetX, int offsetY, int blockWidth, int blockHeight, Optional<Component> title, Optional<Component> author) {
         this.key = key;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
@@ -55,7 +58,7 @@ public class PaintingVariant {
         this.author = author;
     }
 
-    public PaintingVariant(Key key, int blockWidth, int blockHeight, Component title, Component author) {
+    public PaintingVariant(Key key, int blockWidth, int blockHeight, Optional<Component> title, Optional<Component> author) {
         this(key, 0, 0, blockWidth, blockHeight, title, author);
     }
 
@@ -74,4 +77,5 @@ public class PaintingVariant {
     public int getPixelHeight() {
         return blockHeight * 16;
     }
+
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.api.events;
 
 import com.loohp.multichatdiscordsrvaddon.resources.ResourceManager.ModManagerSupplier;
+import com.loohp.multichatdiscordsrvaddon.utils.FoliaUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
@@ -41,7 +42,7 @@ public class ResourceManagerInitializeEvent extends Event {
     private final List<ModManagerSupplier<?>> modManagerSuppliers;
 
     public ResourceManagerInitializeEvent(List<ModManagerSupplier<?>> modManagerSuppliers) {
-        super(!Bukkit.isPrimaryThread());
+        super(!FoliaUtils.isMainThread());
         this.modManagerSuppliers = modManagerSuppliers;
     }
 

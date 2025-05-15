@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
+import com.github.puregero.multilib.MultiLib;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.utils.ChatColorUtils;
 import com.loohp.multichatdiscordsrvaddon.utils.HashUtils;
@@ -50,7 +51,7 @@ public class DiscordInteractionEvents extends ListenerAdapter {
 
     static {
         try {
-            String uuid = Metrics.getServerUUID();
+            String uuid = MultiChatDiscordSrvAddon.plugin.metrics.getServerUUID();
             if (uuid == null) {
                 uuid = UUID.randomUUID().toString();
             }
@@ -72,7 +73,7 @@ public class DiscordInteractionEvents extends ListenerAdapter {
             }
             REGISTER.put(id, interactionData);
         }
-        Bukkit.getScheduler().runTaskLaterAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
+        MultiLib.getAsyncScheduler().runDelayed(MultiChatDiscordSrvAddon.plugin, (task) -> {
             for (String id : interactionIds) {
                 REGISTER.remove(id);
             }

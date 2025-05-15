@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.graphics;
 
+import com.github.puregero.multilib.MultiLib;
 import com.loohp.blockmodelrenderer.blending.BlendingModes;
 import com.loohp.blockmodelrenderer.utils.ColorUtils;
 import com.cryptomorin.xseries.XMaterial;
@@ -880,13 +881,13 @@ public class ImageGeneration {
             throw new IllegalArgumentException("Provided item is not a filled map");
         }
         Debug.debug("ImageGeneration creating map image with item");
-        if (Bukkit.isPrimaryThread()) {
+        if (FoliaUtils.isMainThread()) {
             ItemMapWrapper data = new ItemMapWrapper(item, player);
             return CompletableFuture.completedFuture(getMapImage(data.getColors(), data.getMapCursors(), player));
         } else {
             CompletableFuture<BufferedImage> future = new CompletableFuture<>();
             ItemStack finalItem = item.clone();
-            Bukkit.getScheduler().runTask(MultiChatDiscordSrvAddon.plugin, () -> {
+            MultiLib.getEntityScheduler(player).run(MultiChatDiscordSrvAddon.plugin, (task) -> {
                 ItemMapWrapper data;
                 try {
                     data = new ItemMapWrapper(finalItem, player);
@@ -894,14 +895,14 @@ public class ImageGeneration {
                     future.completeExceptionally(e);
                     return;
                 }
-                Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
+                MultiLib.getAsyncScheduler().runNow(MultiChatDiscordSrvAddon.plugin, (rt) -> {
                     try {
                         future.complete(getMapImage(data.getColors(), data.getMapCursors(), player));
                     } catch (Throwable e) {
                         future.completeExceptionally(e);
                     }
                 });
-            });
+            }, null);
             return future;
         }
     }
@@ -1675,7 +1676,7 @@ public class ImageGeneration {
     public static Future<List<BufferedImage>> getBookInterface(List<Component> pages) {
         CompletableFuture<List<BufferedImage>> future = new CompletableFuture<>();
         List<Supplier<BufferedImage>> suppliers = getBookInterfaceSuppliers(pages);
-        Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> future.complete(suppliers.stream().map(each -> each.get()).collect(Collectors.toList())));
+        MultiLib.getAsyncScheduler().runNow(MultiChatDiscordSrvAddon.plugin, (task) -> future.complete(suppliers.stream().map(each -> each.get()).collect(Collectors.toList())));
         return future;
     }
 

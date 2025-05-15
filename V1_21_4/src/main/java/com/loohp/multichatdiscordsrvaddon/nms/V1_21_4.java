@@ -22,6 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.nms;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import com.loohp.multichatdiscordsrvaddon.objectholders.CustomModelData;
@@ -40,7 +41,7 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.gson.GsonDataComponentValue;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecraft.core.*;
-import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.*;
 import net.minecraft.nbt.MojangsonParser;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTCompressedStreamTools;
@@ -66,8 +67,6 @@ import net.minecraft.MinecraftVersion;
 import net.minecraft.advancements.AdvancementDisplay;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.critereon.CriterionConditionBlock;
-import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NBTTagCompound;
@@ -449,7 +448,7 @@ public class V1_21_4 extends NMSWrapper {
         }
         Optional<Component> title = paintingVariant.e().map(c -> MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(c)));
         Optional<Component> author = paintingVariant.f().map(c -> MultiChatGsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(c)));
-        return new PaintingVariant(Key.key(key.b(), key.a()), paintingVariant.b(), paintingVariant.c(), title.get(), author.get());
+        return new PaintingVariant(Key.key(key.b(), key.a()), paintingVariant.b(), paintingVariant.c(), title, author);
     }
 
     @Override
@@ -1184,6 +1183,42 @@ public class V1_21_4 extends NMSWrapper {
         ItemSkullPlayer skull = (ItemSkullPlayer) nmsItemStack.h();
         IChatBaseComponent owner = skull.a(nmsItemStack);
         return GsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(owner));
+    }
+
+    @Override
+    public Object getItemStackDataComponentValue(ItemStack itemStack, Key component) {
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        DataComponentType<?> componentType = BuiltInRegistries.ao.a(MinecraftKey.a(component.namespace(), component.value()));
+        if (componentType == null) {
+            return false;
+        }
+        return nmsItemStack.a(componentType);
+    }
+
+    @Override
+    public Object serializeDataComponent(Key component, String data) {
+        DataComponentType<?> componentType = BuiltInRegistries.ao.a(MinecraftKey.a(component.namespace(), component.value()));
+        if (componentType == null) {
+            return null;
+        }
+        IRegistryCustom registryAccess = ((CraftWorld)Bukkit.getWorlds().get(0)).getHandle().K_();
+        JsonElement jsonElement = new Gson().fromJson(data, JsonElement.class);
+        Object nativeJsonElement = NativeJsonConverter.toNative(jsonElement);
+        return componentType.c().decode(registryAccess.a((DynamicOps<Object>) (DynamicOps<?>) JsonOps.INSTANCE), nativeJsonElement).result().map(r -> r.getFirst()).orElse(null);
+    }
+
+    @Override
+    public boolean evaluateComponentPredicateOnItemStack(ItemStack itemStack, String predicateData, String data) {
+        IRegistryCustom registryAccess = ((CraftWorld)Bukkit.getWorlds().get(0)).getHandle().K_();
+        JsonElement jsonElement = new Gson().fromJson(predicateData, JsonElement.class);
+        Object nativeJsonElement = NativeJsonConverter.toNative(jsonElement);
+        DataComponentPredicate predicate = DataComponentPredicate.a.decode(registryAccess.a((DynamicOps<Object>) (DynamicOps<?>) JsonOps.INSTANCE), nativeJsonElement).result().map(r -> r.getFirst()).orElse(null);
+        if (predicate == null) {
+            return false;
+        }
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        DataComponentMap dataComponentMap = nmsItemStack.a();
+        return predicate.test(dataComponentMap);
     }
 
 }

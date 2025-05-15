@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.api.events;
 
+import com.loohp.multichatdiscordsrvaddon.utils.FoliaUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -52,7 +53,7 @@ public class GameMessageEvent extends Event implements Cancellable {
     private boolean cancel;
 
     public GameMessageEvent(OfflinePlayer sender, Component component, boolean cancel) {
-        super(!Bukkit.isPrimaryThread());
+        super(!FoliaUtils.isMainThread());
         this.sender = sender;
         this.component = component;
         this.cancel = cancel;

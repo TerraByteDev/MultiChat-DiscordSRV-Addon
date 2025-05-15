@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -21,8 +21,8 @@
 package com.loohp.multichatdiscordsrvaddon.api.events;
 
 import com.loohp.multichatdiscordsrvaddon.listeners.InboundToGameEvents.DiscordAttachmentData;
+import com.loohp.multichatdiscordsrvaddon.utils.FoliaUtils;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +45,7 @@ public class DiscordAttachmentConversionEvent extends Event {
     private final DiscordAttachmentData data;
 
     public DiscordAttachmentConversionEvent(String url, DiscordAttachmentData data) {
-        super(!Bukkit.isPrimaryThread());
+        super(!FoliaUtils.isMainThread());
         this.url = url;
         this.data = data;
     }

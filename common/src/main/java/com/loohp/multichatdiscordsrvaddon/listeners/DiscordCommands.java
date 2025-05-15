@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.github.puregero.multilib.MultiLib;
 import com.github.retrooper.packetevents.event.PacketListener;
 import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
@@ -190,7 +191,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
             inv.setItem(8, offhand);
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
+        MultiLib.getAsyncScheduler().runNow(MultiChatDiscordSrvAddon.plugin, (task) -> {
             ItemStack skull = SkinUtils.getSkull(player.getUniqueId());
             ItemMeta meta = skull.getItemMeta();
             String name = ChatColorUtils.translateAlternateColorCodes('&', Config.i().getDiscordCommands().shareInventory().skullDisplayName().replace("{Player}", player.getName()));
@@ -273,7 +274,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
             }
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
+        MultiLib.getAsyncScheduler().runNow(MultiChatDiscordSrvAddon.plugin, (task) -> {
             ItemStack skull = SkinUtils.getSkull(player.getUniqueId());
             ItemMeta meta = skull.getItemMeta();
             String name = ChatColorUtils.translateAlternateColorCodes('&', Config.i().getDiscordCommands().shareInventory().skullDisplayName().replace("{Player}", player.getName()));
@@ -448,7 +449,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
     }
 
     public void init() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
+        MultiLib.getAsyncScheduler().runAtFixedRate(MultiChatDiscordSrvAddon.plugin, (task) -> {
             if (Config.i().getSettings().bungeecord()) {
                 if (Config.i().getDiscordCommands().playerList().enabled() && Config.i().getDiscordCommands().playerList().isMainServer()) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
@@ -477,7 +478,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
 
     @EventHandler
     public void onConfigReload(MultiChatDiscordSRVConfigReloadEvent event) {
-        Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> reload());
+        MultiLib.getAsyncScheduler().runNow(MultiChatDiscordSrvAddon.plugin, (task) -> reload());
     }
 
     @Override
@@ -700,7 +701,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                 AtomicBoolean deleted = new AtomicBoolean(false);
                 event.deferReply().queue(hook -> {
                     if (Config.i().getDiscordCommands().playerList().deleteAfter() > 0) {
-                        Bukkit.getScheduler().runTaskLaterAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
+                        MultiLib.getAsyncScheduler().runDelayed(MultiChatDiscordSrvAddon.plugin, (task) -> {
                             if (!deleted.get()) {
                                 hook.deleteOriginal().queue();
                             }
@@ -861,7 +862,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                 errorCode--;
                 String key = "<DiscordShare=" + UUID.randomUUID() + ">";
                 components.put(key, component);
-                Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> components.remove(key), 100);
+                MultiLib.getGlobalRegionScheduler().runDelayed(MultiChatDiscordSrvAddon.plugin, (task) -> components.remove(key), 100);
                 errorCode--;
                 if (DiscordSRV.config().getBoolean("DiscordChatChannelDiscordToMinecraft")) {
                     discordsrv.broadcastMessageToMinecraftServer(minecraftChannel, ComponentStringUtils.toDiscordSRVComponent(Component.text(key)), event.getUser());
@@ -989,7 +990,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                 errorCode--;
                 String key = "<DiscordShare=" + UUID.randomUUID() + ">";
                 components.put(key, component);
-                Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> components.remove(key), 100);
+                MultiLib.getGlobalRegionScheduler().runDelayed(MultiChatDiscordSrvAddon.plugin, (task) -> components.remove(key), 100);
                 errorCode--;
                 if (DiscordSRV.config().getBoolean("DiscordChatChannelDiscordToMinecraft")) {
                     discordsrv.broadcastMessageToMinecraftServer(minecraftChannel, ComponentStringUtils.toDiscordSRVComponent(Component.text(key)), event.getUser());
@@ -1090,7 +1091,7 @@ public class DiscordCommands implements Listener, SlashCommandProvider, PacketLi
                 errorCode--;
                 String key = "<DiscordShare=" + UUID.randomUUID() + ">";
                 components.put(key, component);
-                Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> components.remove(key), 100);
+                MultiLib.getGlobalRegionScheduler().runDelayed(MultiChatDiscordSrvAddon.plugin, (task) -> components.remove(key), 100);
                 errorCode--;
                 if (DiscordSRV.config().getBoolean("DiscordChatChannelDiscordToMinecraft")) {
                     discordsrv.broadcastMessageToMinecraftServer(minecraftChannel, ComponentStringUtils.toDiscordSRVComponent(Component.text(key)), event.getUser());

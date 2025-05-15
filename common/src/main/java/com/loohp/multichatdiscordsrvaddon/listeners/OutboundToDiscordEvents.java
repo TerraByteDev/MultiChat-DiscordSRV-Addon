@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
+import com.github.puregero.multilib.MultiLib;
 import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
@@ -633,7 +634,7 @@ public class OutboundToDiscordEvents implements Listener {
             e.printStackTrace();
         }
 
-        Bukkit.getScheduler().runTaskLaterAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
+        MultiLib.getAsyncScheduler().runDelayed(MultiChatDiscordSrvAddon.plugin, (task) -> {
             Debug.debug("onDeathMessageSend sending item to discord");
             TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(event.getChannel());
             if (event.isUsingWebhooks()) {
@@ -918,7 +919,7 @@ public class OutboundToDiscordEvents implements Listener {
             }
             if (Config.i().getSettings().embedDeleteAfter() > 0) {
                 String finalText = text;
-                Bukkit.getScheduler().runTaskLaterAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
+                MultiLib.getAsyncScheduler().runDelayed(MultiChatDiscordSrvAddon.plugin, (task) -> {
                     WebhookUtil.editMessage(channel, String.valueOf(messageId), finalText, Collections.emptyList(), Collections.emptyMap(), Collections.emptyList());
                 }, Config.i().getSettings().embedDeleteAfter() * 20L);
             }
@@ -946,7 +947,7 @@ public class OutboundToDiscordEvents implements Listener {
                 if (!MultiChatDiscordSrvAddon.plugin.isEnabled()) {
                     return;
                 }
-                Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
+                MultiLib.getAsyncScheduler().runNow(MultiChatDiscordSrvAddon.plugin, (task) -> {
                     if (isWebhookMessage) {
                         handleWebhook(messageId, message, textOriginal, channel);
                     } else {

@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
+import com.github.puregero.multilib.MultiLib;
 import com.loohp.multichatdiscordsrvaddon.objectholders.ConcurrentCacheHashMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -42,7 +43,7 @@ public class ICPlayerEvents implements Listener {
     public static final ConcurrentCacheHashMap<UUID, Map<String, Object>> CACHED_PROPERTIES = new ConcurrentCacheHashMap<>(300000);
 
     static {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(MultiChatDiscordSrvAddon.plugin, CACHED_PROPERTIES::cleanUp, 12000, 12000);
+        MultiLib.getAsyncScheduler().runAtFixedRate(MultiChatDiscordSrvAddon.plugin, (task) -> CACHED_PROPERTIES.cleanUp(), 12000, 12000);
     }
 
     public static final String PROFILE_URL = "https://api.loohpjames.com/spigot/plugins/interactivechatdiscordsrvaddon/profile/%s";
@@ -54,7 +55,7 @@ public class ICPlayerEvents implements Listener {
 
     private void populate(Player player, boolean scheduleAsync) {
         if (scheduleAsync) {
-            Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> populate(player, false));
+            MultiLib.getAsyncScheduler().runNow(MultiChatDiscordSrvAddon.plugin, (task) -> populate(player, false));
             return;
         }
         Map<String, Object> cacheProperties = CACHED_PROPERTIES.get(player.getUniqueId());

@@ -65,6 +65,8 @@ public abstract class NMSWrapper {
     private static Plugin plugin;
     private static NMSWrapper instance;
 
+    public static final ItemStack ITEM_STACK_AIR = new ItemStack(Material.AIR);
+
     @Deprecated
     public static Plugin getPlugin() {
         return plugin;
@@ -80,8 +82,6 @@ public abstract class NMSWrapper {
         NMSWrapper.instance = instance;
         NMSWrapper.plugin = plugin;
     }
-
-    static final ItemStack ITEM_STACK_AIR = new ItemStack(Material.AIR);
 
     public abstract Map<ICMaterial, TintColorProvider.SpawnEggTintData> getSpawnEggColorMap();
 
@@ -264,5 +264,11 @@ public abstract class NMSWrapper {
     public abstract void sendFakeMapUpdate(Player player, int mapId, List<MapCursor> mapCursors, byte[] colors);
 
     public abstract Component getSkullOwner(ItemStack itemStack);
+
+    public abstract Object getItemStackDataComponentValue(ItemStack itemStack, Key component);
+
+    public abstract Object serializeDataComponent(Key component, String data);
+
+    public abstract boolean evaluateComponentPredicateOnItemStack(ItemStack itemStack, String predicateData, String data);
 
 }

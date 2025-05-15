@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.listeners;
 
+import com.github.puregero.multilib.MultiLib;
 import com.github.retrooper.packetevents.event.PacketListener;
 import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
@@ -271,7 +272,7 @@ public class InboundToGameEvents implements Listener, PacketListener {
                                     DiscordAttachmentConversionEvent dace = new DiscordAttachmentConversionEvent(url, data);
                                     Bukkit.getPluginManager().callEvent(dace);
                                     DATA.put(data.getUniqueId(), data);
-                                    Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> DATA.remove(data.getUniqueId()), Config.i().getDiscordAttachments().timeout() * 20L);
+                                    MultiLib.getGlobalRegionScheduler().runDelayed(MultiChatDiscordSrvAddon.plugin, (task) -> DATA.remove(data.getUniqueId()), Config.i().getDiscordAttachments().timeout() * 20L);
                                 }
                             }
                         }
@@ -312,14 +313,14 @@ public class InboundToGameEvents implements Listener, PacketListener {
                                 DiscordAttachmentConversionEvent dace = new DiscordAttachmentConversionEvent(url, data);
                                 Bukkit.getPluginManager().callEvent(dace);
                                 DATA.put(data.getUniqueId(), data);
-                                Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> DATA.remove(data.getUniqueId()), Config.i().getDiscordAttachments().timeout() * 20L);
+                                MultiLib.getGlobalRegionScheduler().runDelayed(MultiChatDiscordSrvAddon.plugin, (task) -> DATA.remove(data.getUniqueId()), Config.i().getDiscordAttachments().timeout() * 20L);
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 DiscordAttachmentData data = new DiscordAttachmentData(imageContainer.getName(), url);
                                 DiscordAttachmentConversionEvent dace = new DiscordAttachmentConversionEvent(url, data);
                                 Bukkit.getPluginManager().callEvent(dace);
                                 DATA.put(data.getUniqueId(), data);
-                                Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> DATA.remove(data.getUniqueId()), Config.i().getDiscordAttachments().timeout() * 20L);
+                                MultiLib.getGlobalRegionScheduler().runDelayed(MultiChatDiscordSrvAddon.plugin, (task) -> DATA.remove(data.getUniqueId()), Config.i().getDiscordAttachments().timeout() * 20L);
                             }
                         }
 
@@ -371,7 +372,7 @@ public class InboundToGameEvents implements Listener, PacketListener {
                                         DiscordAttachmentConversionEvent dace = new DiscordAttachmentConversionEvent(url, data);
                                         Bukkit.getPluginManager().callEvent(dace);
                                         DATA.put(data.getUniqueId(), data);
-                                        Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> DATA.remove(data.getUniqueId()), Config.i().getDiscordAttachments().timeout() * 20L);
+                                        MultiLib.getGlobalRegionScheduler().runDelayed(MultiChatDiscordSrvAddon.plugin, (task) -> DATA.remove(data.getUniqueId()), Config.i().getDiscordAttachments().timeout() * 20L);
                                     } catch (FileNotFoundException ignore) {
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -449,13 +450,13 @@ public class InboundToGameEvents implements Listener, PacketListener {
     public void onInventory(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
-            Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> {
+            MultiLib.getEntityScheduler(player).runDelayed(MultiChatDiscordSrvAddon.plugin, (task) -> {
                 boolean removed = MAP_VIEWERS.remove(player) != null;
 
                 if (removed) {
                     player.getInventory().setItemInHand(player.getInventory().getItemInHand());
                 }
-            }, 1);
+            }, null, 1);
         } else {
             boolean removed = MAP_VIEWERS.remove(player) != null;
 
@@ -476,7 +477,7 @@ public class InboundToGameEvents implements Listener, PacketListener {
         if (removed) {
             if (player.getInventory().equals(event.getClickedInventory()) && slot >= 9) {
                 ItemStack item = player.getInventory().getItem(slot);
-                Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> player.getInventory().setItem(slot, item), 1);
+                MultiLib.getEntityScheduler(player).runDelayed(MultiChatDiscordSrvAddon.plugin, (task) -> player.getInventory().setItem(slot, item), null, 1);
             } else {
                 event.setCursor(null);
             }
@@ -511,13 +512,13 @@ public class InboundToGameEvents implements Listener, PacketListener {
         Player player = event.getPlayer();
 
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
-            Bukkit.getScheduler().runTaskLater(MultiChatDiscordSrvAddon.plugin, () -> {
+            MultiLib.getEntityScheduler(player).runDelayed(MultiChatDiscordSrvAddon.plugin, (task) -> {
                 boolean removed = MAP_VIEWERS.remove(player) != null;
 
                 if (removed) {
                     player.getInventory().setItemInHand(player.getInventory().getItemInHand());
                 }
-            }, 1);
+            }, null, 1);
         } else {
             boolean removed = MAP_VIEWERS.remove(player) != null;
 

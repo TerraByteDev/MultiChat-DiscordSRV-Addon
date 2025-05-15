@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -21,6 +21,7 @@
 package com.loohp.multichatdiscordsrvaddon.utils;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.github.puregero.multilib.MultiLib;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
 import com.loohp.multichatdiscordsrvaddon.objectholders.*;
 import net.kyori.adventure.text.Component;
@@ -361,7 +362,7 @@ public class DiscordContentUtils {
                 int slot = Integer.parseInt(((SelectionMenuInteraction) event.getInteraction()).getValues().get(0));
                 if (slot >= 0 && slot < items.length) {
                     event.deferReply().setEphemeral(true).queue();
-                    Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
+                    MultiLib.getAsyncScheduler().runNow(MultiChatDiscordSrvAddon.plugin, (task) -> {
                         OfflinePlayer offlineICPlayer = offlinePlayerAtomicReference.updateAndGet(p -> p instanceof Player ? (p.isOnline() ? p : Bukkit.getOfflinePlayer(p.getUniqueId())) : p);
                         try {
                             ItemStack item = items[slot];
@@ -455,7 +456,7 @@ public class DiscordContentUtils {
                 return;
             }
             event.deferEdit().queue();
-            Bukkit.getScheduler().runTaskAsynchronously(MultiChatDiscordSrvAddon.plugin, () -> {
+            MultiLib.getAsyncScheduler().runNow(MultiChatDiscordSrvAddon.plugin, (task) -> {
                 AtomicInteger currentPage = currentPages.get(user.getId());
                 if (currentPage == null) {
                     currentPages.put(user.getId(), currentPage = new AtomicInteger(0));

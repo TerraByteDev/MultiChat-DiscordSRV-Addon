@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon.api.events;
 
+import com.loohp.multichatdiscordsrvaddon.utils.FoliaUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -50,7 +51,7 @@ public class MapDataLookupEvent extends Event {
     private List<MapCursor> mapCursors;
 
     public MapDataLookupEvent(Player player, int mapId, MapView mapView, byte[] colors, List<MapCursor> mapCursors) {
-        super(!Bukkit.isPrimaryThread());
+        super(!FoliaUtils.isMainThread());
         this.player = player;
         this.mapId = mapId;
         this.mapView = mapView;

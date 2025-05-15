@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -24,6 +24,7 @@ import com.google.common.collect.Multimap;
 import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.api.MultiChatDiscordSrvAddonAPI;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.nms.NMSWrapper;
 import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -88,16 +89,8 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.OptionalInt;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -250,7 +243,7 @@ public class DiscordItemStackUtils {
         prints.add(tooltipText(itemDisplayNameComponent));
 
         boolean hasMeta = item.getItemMeta() != null;
-        boolean hideAdditionalFlags = hasMeta && item.getItemMeta().hasItemFlag(NMS.getInstance().getHideAdditionalItemFlag()) && (item.getItemMeta() instanceof PotionMeta || VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_6));
+        boolean hideAdditionalFlags = hasMeta && item.getItemMeta().hasItemFlag(NMSWrapper.getInstance().getHideAdditionalItemFlag()) && (item.getItemMeta() instanceof PotionMeta || VersionManager.version.isNewerOrEqualTo(MCVersion.V1_20_6));
 
         if (hasMeta && item.getItemMeta().getDisplayName() != null) {
             hasCustomName = true;
@@ -309,8 +302,8 @@ public class DiscordItemStackUtils {
         if (icMaterial.isMaterial(XMaterial.PAINTING) && !hideAdditionalFlags) {
             PaintingVariant paintingVariant = NMS.getInstance().getPaintingVariant(item);
             if (paintingVariant != null) {
-                prints.add(tooltipText(paintingVariant.getTitle()));
-                prints.add(tooltipText(paintingVariant.getAuthor()));
+                paintingVariant.getTitle().ifPresent(title -> prints.add(tooltipText(title)));
+                paintingVariant.getAuthor().ifPresent(author -> prints.add(tooltipText(author)));
                 prints.add(tooltipText(translatable(getPaintingDimension()).arguments(text(paintingVariant.getBlockWidth()), text(paintingVariant.getBlockHeight())).color(WHITE)));
                 prints.add(tooltipImage(ImageGeneration.getPaintingImage(paintingVariant)));
             }
@@ -490,18 +483,33 @@ public class DiscordItemStackUtils {
             CrossbowMeta meta = (CrossbowMeta) item.getItemMeta();
             List<ItemStack> charged = meta.getChargedProjectiles();
             if (charged != null && !charged.isEmpty()) {
-                ItemStack charge = charged.get(0);
-                List<ToolTipComponent<?>> chargedItemInfo = getToolTip(charge, player, false).getComponents();
-                Component chargeItemName = chargedItemInfo.get(0).getToolTipComponent(ToolTipType.TEXT);
-                prints.add(tooltipText(translatable(getCrossbowProjectile()).color(WHITE).append(text(" [").color(WHITE)).append(chargeItemName).append(text("]").color(WHITE))));
-                if (Config.i().getToolTipSettings().showFireworkRocketDetailsInCrossbow() && ICMaterial.from(charge).isMaterial(XMaterial.FIREWORK_ROCKET)) {
-                    chargedItemInfo.stream().skip(1).forEachOrdered(each -> {
-                        if (each.getType().equals(ToolTipType.TEXT)) {
-                            prints.add(tooltipText(text("  ").append(each.getToolTipComponent(ToolTipType.TEXT))));
-                        } else {
-                            prints.add(each);
-                        }
-                    });
+                Map<String, ChargedItemInfo> chargedItemsInfo = new LinkedHashMap<>(charged.size());
+                for (ItemStack charge : charged) {
+                    List<ToolTipComponent<?>> chargedItemInfo = getToolTip(charge, player, false).getComponents();
+                    String nbt = NMS.getInstance().getNMSItemStackJson(charge);
+                    ChargedItemInfo chargedItemMeta = chargedItemsInfo.get(nbt);
+                    if (chargedItemMeta == null) {
+                        chargedItemsInfo.put(nbt, new ChargedItemInfo(chargedItemInfo, charge, charge.getAmount()));
+                    } else {
+                        chargedItemMeta.setCount(chargedItemMeta.getCount() + charge.getAmount());
+                    }
+                }
+                for (ChargedItemInfo chargedItemMeta : chargedItemsInfo.values()) {
+                    List<ToolTipComponent<?>> chargedItemInfo = chargedItemMeta.getTooltip();
+                    ItemStack charge = chargedItemMeta.getItemStack();
+                    int count = chargedItemMeta.getCount();
+                    Component chargeItemName = chargedItemInfo.get(0).getToolTipComponent(ToolTipType.TEXT);
+                    String countText = count == 1 ? "" : " " + count + " x";
+                    prints.add(tooltipText(translatable(getCrossbowProjectile()).color(WHITE).append(text(countText).color(WHITE)).append(text(" [").color(WHITE)).append(chargeItemName).append(text("]").color(WHITE))));
+                    if (Config.i().getToolTipSettings().showFireworkRocketDetailsInCrossbow()) {
+                        chargedItemInfo.stream().skip(1).forEachOrdered(each -> {
+                            if (each.getType().equals(ToolTipType.TEXT)) {
+                                prints.add(tooltipText(text("  ").append(each.getToolTipComponent(ToolTipType.TEXT))));
+                            } else {
+                                prints.add(each);
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -860,6 +868,35 @@ public class DiscordItemStackUtils {
 
         public boolean isHideTooltip() {
             return isHideTooltip;
+        }
+    }
+
+    public static class ChargedItemInfo {
+
+        private final List<ToolTipComponent<?>> tooltip;
+        private final ItemStack itemStack;
+        private int count;
+
+        public ChargedItemInfo(List<ToolTipComponent<?>> tooltip, ItemStack itemStack, int count) {
+            this.tooltip = tooltip;
+            this.itemStack = itemStack;
+            this.count = count;
+        }
+
+        public List<ToolTipComponent<?>> getTooltip() {
+            return tooltip;
+        }
+
+        public ItemStack getItemStack() {
+            return itemStack;
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
         }
     }
 

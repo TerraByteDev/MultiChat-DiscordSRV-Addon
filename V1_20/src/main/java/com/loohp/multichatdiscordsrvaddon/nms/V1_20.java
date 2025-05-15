@@ -1041,4 +1041,19 @@ public class V1_20 extends NMSWrapper {
         return GsonComponentSerializer.gson().deserialize(CraftChatMessage.toJSON(owner));
     }
 
+    @Override
+    public Object getItemStackDataComponentValue(ItemStack itemStack, Key component) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Object serializeDataComponent(Key component, String data) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean evaluateComponentPredicateOnItemStack(ItemStack itemStack, String predicateData, String data) {
+        throw new UnsupportedOperationException();
+    }
+
 }

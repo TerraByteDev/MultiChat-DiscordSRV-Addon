@@ -25,6 +25,7 @@ import com.ibm.icu.util.Calendar;
 import com.ibm.icu.util.ULocale;
 import com.cryptomorin.xseries.XMaterial;
 import com.loohp.multichatdiscordsrvaddon.config.Config;
+import com.loohp.multichatdiscordsrvaddon.nms.NMSWrapper;
 import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.querz.nbt.tag.CompoundTag;
@@ -657,7 +658,7 @@ public class ItemRenderUtils {
                 ItemModelDefinition.ComponentConditionProperty componentConditionProperty = (ItemModelDefinition.ComponentConditionProperty) condition;
                 String predicate = componentConditionProperty.getPredicate();
                 String value = componentConditionProperty.getValue();
-                evaluation = NMSAddon.getInstance().evaluateComponentPredicateOnItemStack(itemStack, predicate, value);
+                evaluation = NMSWrapper.getInstance().evaluateComponentPredicateOnItemStack(itemStack, predicate, value);
             } else if (propertyType.equals(ItemModelDefinition.ConditionPropertyType.CUSTOM_MODEL_DATA)) {
                 ItemModelDefinition.CustomModelDataConditionProperty customModelDataConditionProperty = (ItemModelDefinition.CustomModelDataConditionProperty) condition;
                 CustomModelData customModelData = NMS.getInstance().getCustomModelData(itemStack);
@@ -692,7 +693,7 @@ public class ItemRenderUtils {
             } else if (propertyType.equals(ItemModelDefinition.SelectPropertyType.COMPONENT)) {
                 ItemModelDefinition.ComponentSelectProperty componentSelectProperty = (ItemModelDefinition.ComponentSelectProperty) select;
                 Key component = componentSelectProperty.getComponent();
-                value = NMSAddon.getInstance().getItemStackDataComponentValue(itemStack, component);
+                value = NMSWrapper.getInstance().getItemStackDataComponentValue(itemStack, component);
             } else if (propertyType.equals(ItemModelDefinition.SelectPropertyType.TRIM_MATERIAL)) {
                 if (itemStack.getItemMeta() instanceof ArmorMeta) {
                     ArmorMeta armorMeta = (ArmorMeta) itemStack.getItemMeta();

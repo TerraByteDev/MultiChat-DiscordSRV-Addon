@@ -291,7 +291,7 @@ public class Config {
     ) {}
 
     public record Resources(
-            @Comment("Which language should be used in places like the item tooltip?\nVisit this page for all the languages that Minecraft offers:\nhttps://minecraft.fandom.com/wiki/Language") String language,
+            @Comment("Which language should be used in places like the item tooltip?\nVisit this page for all the languages that Minecraft offers:\nhttps://loohpjames.com/minecraft/languages/") String language,
             @Comment("Apply the force unicode setting to languages and fonts") boolean forceUnicodeFont,
             @Comment("Put the server resource pack from server.properties\nat the top of the resource pack ordering list (if available).") boolean includeServerResourcePack,
             @Comment(

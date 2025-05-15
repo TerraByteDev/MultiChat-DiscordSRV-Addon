@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -20,6 +20,7 @@
 
 package com.loohp.multichatdiscordsrvaddon;
 
+import com.github.puregero.multilib.MultiLib;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.loohp.multichatdiscordsrvaddon.bungee.BungeeMessageListener;
@@ -284,7 +285,7 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
         ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("MultiChatDiscordSrvAddon Async Media Reading Thread #%d").build();
         mediaReadingService = Executors.newFixedThreadPool(4, factory);
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+        MultiLib.getAsyncScheduler().runAtFixedRate(this, (task) -> {
             for (OfflinePlayer player : Bukkit.getOnlinePlayers()) {
                 cachePlayerSkin(player);
             }
@@ -294,7 +295,7 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> cachePlayerSkin(event.getPlayer()), 40);
+        MultiLib.getAsyncScheduler().runDelayed(this, (task) -> cachePlayerSkin(event.getPlayer()), 40);
     }
 
     private void cachePlayerSkin(OfflinePlayer player) {
@@ -421,7 +422,7 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
             senders = receivers;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+        MultiLib.getAsyncScheduler().runNow(this, (task) -> {
             try {
                 if (!resourceReloadLock.tryLock(0, TimeUnit.MILLISECONDS)) {
                     ChatUtils.sendMessage("<yellow>Resource reloading already in progress!", senders);
@@ -434,7 +435,7 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
             try {
                 isReady = false;
                 if (MultiChatDiscordSrvAddon.plugin.isResourceManagerReady()) {
-                    Bukkit.getScheduler().callSyncMethod(plugin, () -> {
+                    FoliaUtils.callSyncMethod(plugin, () -> {
                         MultiChatDiscordSrvAddon.plugin.getResourceManager().close();
                         return null;
                     }).get();
@@ -583,7 +584,7 @@ public class MultiChatDiscordSrvAddon extends ExtendedJavaPlugin implements List
                     }
                 }
 
-                Bukkit.getScheduler().callSyncMethod(plugin, () -> {
+                FoliaUtils.callSyncMethod(this, () -> {
                     MultiChatDiscordSrvAddon.plugin.resourceManager = resourceManager;
 
                     if (resourceManager.getResourcePackInfo().stream().allMatch(each -> each.getStatus())) {

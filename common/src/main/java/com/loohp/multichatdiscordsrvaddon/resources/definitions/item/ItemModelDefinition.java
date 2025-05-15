@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -22,6 +22,7 @@ package com.loohp.multichatdiscordsrvaddon.resources.definitions.item;
 
 import com.ibm.icu.util.TimeZone;
 import com.loohp.blockmodelrenderer.utils.ColorUtils;
+import com.loohp.multichatdiscordsrvaddon.nms.NMSWrapper;
 import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import org.json.simple.JSONArray;
@@ -108,6 +109,10 @@ public abstract class ItemModelDefinition {
                 return new KeybindDownConditionProperty(handAnimationOnSwapString, propertyType, onTrue, onFalse, keybind);
             } else if (propertyType.equals(ConditionPropertyType.VIEW_ENTITY)) {
                 return new ViewEntityConditionProperty(handAnimationOnSwapString, propertyType, onTrue, onFalse);
+            } else if (propertyType.equals(ConditionPropertyType.COMPONENT)) {
+                String predicate = (String) rootJson.get("predicate");
+                String value = (String) rootJson.get("value");
+                return new ComponentConditionProperty(handAnimationOnSwapString, propertyType, onTrue, onFalse, predicate, value);
             } else if (propertyType.equals(ConditionPropertyType.CUSTOM_MODEL_DATA)) {
                 int index = ((Number) rootJson.getOrDefault("index", 0)).intValue();
                 return new CustomModelDataConditionProperty(handAnimationOnSwapString, propertyType, onTrue, onFalse, index);
@@ -139,6 +144,9 @@ public abstract class ItemModelDefinition {
                 return new MainHandSelectProperty(handAnimationOnSwapString, propertyType, parse(cases, c -> MainHand.valueOf(c.toUpperCase())), fallback);
             } else if (propertyType.equals(SelectPropertyType.CHARGE_TYPE)) {
                 return new ChargeTypeSelectProperty(handAnimationOnSwapString, propertyType, parse(cases, c -> ChargeType.fromName(c)), fallback);
+            } else if (propertyType.equals(SelectPropertyType.COMPONENT)) {
+                Key component = KeyUtils.toKey(ensureNamespace((String) rootJson.get("component")));
+                return new ComponentSelectProperty(handAnimationOnSwapString, propertyType, parse(cases, c -> NMSWrapper.getInstance().serializeDataComponent(component, c)), fallback, component);
             } else if (propertyType.equals(SelectPropertyType.TRIM_MATERIAL)) {
                 return new TrimMaterialSelectProperty(handAnimationOnSwapString, propertyType, parse(cases, c -> KeyUtils.toKey(c)), fallback);
             } else if (propertyType.equals(SelectPropertyType.BLOCK_STATE)) {
@@ -287,37 +295,45 @@ public abstract class ItemModelDefinition {
 
         public static final ItemModelDefinitionType<ItemModelDefinitionEmpty> IC_LEGACY = new ItemModelDefinitionType<>(ResourceRegistry.ICD_PREFIX + "legacy", ItemModelDefinitionEmpty.class);
 
-        private static final Map<String, ItemModelDefinitionType<?>> TYPES_MAP = new HashMap<>();
+        private static final Map<Key, ItemModelDefinitionType<?>> TYPES_MAP = new HashMap<>();
 
         static {
-            TYPES_MAP.put(MODEL.getNamespacedKey(), MODEL);
-            TYPES_MAP.put(COMPOSITE.getNamespacedKey(), COMPOSITE);
-            TYPES_MAP.put(CONDITION.getNamespacedKey(), CONDITION);
-            TYPES_MAP.put(SELECT.getNamespacedKey(), SELECT);
-            TYPES_MAP.put(RANGE_DISPATCH.getNamespacedKey(), RANGE_DISPATCH);
-            TYPES_MAP.put(EMPTY.getNamespacedKey(), EMPTY);
-            TYPES_MAP.put(BUNDLE_SELECTED_ITEM.getNamespacedKey(), BUNDLE_SELECTED_ITEM);
-            TYPES_MAP.put(SPECIAL.getNamespacedKey(), SPECIAL);
+            TYPES_MAP.put(MODEL.getKey(), MODEL);
+            TYPES_MAP.put(COMPOSITE.getKey(), COMPOSITE);
+            TYPES_MAP.put(CONDITION.getKey(), CONDITION);
+            TYPES_MAP.put(SELECT.getKey(), SELECT);
+            TYPES_MAP.put(RANGE_DISPATCH.getKey(), RANGE_DISPATCH);
+            TYPES_MAP.put(EMPTY.getKey(), EMPTY);
+            TYPES_MAP.put(BUNDLE_SELECTED_ITEM.getKey(), BUNDLE_SELECTED_ITEM);
+            TYPES_MAP.put(SPECIAL.getKey(), SPECIAL);
         }
 
-        private final String namespacedKey;
+        private final Key key;
         private final Class<T> typeClass;
 
-        public ItemModelDefinitionType(String namespacedKey, Class<T> typeClass) {
-            this.namespacedKey = namespacedKey;
+        public ItemModelDefinitionType(Key key, Class<T> typeClass) {
+            this.key = key;
             this.typeClass = typeClass;
+        }
+
+        public ItemModelDefinitionType(String key, Class<T> typeClass) {
+            this(KeyUtils.toKey(key), typeClass);
         }
 
         @Override
         public String toString() {
-            return getNamespacedKey();
+            return key.asString();
         }
 
         public static ItemModelDefinitionType<?> getItemModelDefinitionType(String typeKey) {
-            if (TYPES_MAP.containsKey(typeKey)) {
-                return TYPES_MAP.get(typeKey);
+            if (!typeKey.contains(":")) {
+                typeKey = ResourceRegistry.DEFAULT_NAMESPACE + ":" + typeKey;
             }
-            throw new IllegalArgumentException("Unknown type: " + typeKey);
+            Key parsedKey = KeyUtils.toKey(typeKey);
+            if (TYPES_MAP.containsKey(parsedKey)) {
+                return TYPES_MAP.get(parsedKey);
+            }
+            throw new IllegalArgumentException("Unknown type: " + parsedKey.asString());
         }
     }
 
@@ -810,6 +826,7 @@ public abstract class ItemModelDefinition {
         public static final ConditionPropertyType<ExtendedViewConditionProperty> EXTENDED_VIEW = new ConditionPropertyType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":extended_view", ExtendedViewConditionProperty.class);
         public static final ConditionPropertyType<KeybindDownConditionProperty> KEYBIND_DOWN = new ConditionPropertyType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":keybind_down", KeybindDownConditionProperty.class);
         public static final ConditionPropertyType<ViewEntityConditionProperty> VIEW_ENTITY = new ConditionPropertyType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":view_entity", ViewEntityConditionProperty.class);
+        public static final ConditionPropertyType<ComponentConditionProperty> COMPONENT = new ConditionPropertyType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":component", ComponentConditionProperty.class);
         public static final ConditionPropertyType<CustomModelDataConditionProperty> CUSTOM_MODEL_DATA = new ConditionPropertyType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":custom_model_data", CustomModelDataConditionProperty.class);
 
         private static final Map<String, ConditionPropertyType<?>> TYPES_MAP = new HashMap<>();
@@ -826,6 +843,7 @@ public abstract class ItemModelDefinition {
             TYPES_MAP.put(EXTENDED_VIEW.getNamespacedKey(), EXTENDED_VIEW);
             TYPES_MAP.put(KEYBIND_DOWN.getNamespacedKey(), KEYBIND_DOWN);
             TYPES_MAP.put(VIEW_ENTITY.getNamespacedKey(), VIEW_ENTITY);
+            TYPES_MAP.put(COMPONENT.getNamespacedKey(), COMPONENT);
             TYPES_MAP.put(CUSTOM_MODEL_DATA.getNamespacedKey(), CUSTOM_MODEL_DATA);
         }
 
@@ -924,6 +942,19 @@ public abstract class ItemModelDefinition {
     }
 
     @Getter
+    public static class ComponentConditionProperty extends ItemModelDefinitionCondition {
+        private final String predicate;
+        private final String value;
+
+        public ComponentConditionProperty(boolean handAnimationOnSwap, ConditionPropertyType<?> propertyType, ItemModelDefinition onTrue, ItemModelDefinition onFalse, String predicate, String value) {
+            super(handAnimationOnSwap, propertyType, onTrue, onFalse);
+            this.predicate = predicate;
+            this.value = value;
+        }
+
+    }
+
+    @Getter
     public static class CustomModelDataConditionProperty extends ItemModelDefinitionCondition {
         private final int index;
 
@@ -939,6 +970,7 @@ public abstract class ItemModelDefinition {
 
         public static final SelectPropertyType<MainHandSelectProperty> MAIN_HAND = new SelectPropertyType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":main_hand", MainHandSelectProperty.class);
         public static final SelectPropertyType<ChargeTypeSelectProperty> CHARGE_TYPE = new SelectPropertyType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":charge_type", ChargeTypeSelectProperty.class);
+        public static final SelectPropertyType<ComponentSelectProperty> COMPONENT = new SelectPropertyType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":component", ComponentSelectProperty.class);
         public static final SelectPropertyType<TrimMaterialSelectProperty> TRIM_MATERIAL = new SelectPropertyType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":trim_material", TrimMaterialSelectProperty.class);
         public static final SelectPropertyType<BlockStateSelectProperty> BLOCK_STATE = new SelectPropertyType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":block_state", BlockStateSelectProperty.class);
         public static final SelectPropertyType<DisplayContextSelectProperty> DISPLAY_CONTEXT = new SelectPropertyType<>(ResourceRegistry.DEFAULT_NAMESPACE + ":display_context", DisplayContextSelectProperty.class);
@@ -952,6 +984,7 @@ public abstract class ItemModelDefinition {
         static {
             TYPES_MAP.put(MAIN_HAND.getNamespacedKey(), MAIN_HAND);
             TYPES_MAP.put(CHARGE_TYPE.getNamespacedKey(), CHARGE_TYPE);
+            TYPES_MAP.put(COMPONENT.getNamespacedKey(), COMPONENT);
             TYPES_MAP.put(TRIM_MATERIAL.getNamespacedKey(), TRIM_MATERIAL);
             TYPES_MAP.put(BLOCK_STATE.getNamespacedKey(), BLOCK_STATE);
             TYPES_MAP.put(DISPLAY_CONTEXT.getNamespacedKey(), DISPLAY_CONTEXT);
@@ -974,6 +1007,19 @@ public abstract class ItemModelDefinition {
                 return TYPES_MAP.get(propertyKey);
             }
             throw new IllegalArgumentException("Unknown select property type: " + propertyKey);
+        }
+    }
+
+    public static class ComponentSelectProperty extends ItemModelDefinitionSelect<Object> {
+        private final Key component;
+
+        public ComponentSelectProperty(boolean handAnimationOnSwapString, SelectPropertyType<?> propertyType, List<SelectCase<Object>> cases, ItemModelDefinition fallback, Key component) {
+            super(handAnimationOnSwapString, propertyType, cases, fallback);
+            this.component = component;
+        }
+
+        public Key getComponent() {
+            return component;
         }
     }
 
