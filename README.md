@@ -81,6 +81,7 @@ Get the latest official stable release from the [Releases Page](https://github.c
 - [InteractiveChat](https://www.spigotmc.org/resources/75870/)
 - [ZelChat](https://builtbybit.com/resources/zelchat-high-performance-simple.47406/)
 - [ChatControl](https://builtbybit.com/resources/chatcontrol-format-filter-chat.18217/)
+- [CarbonChat](https://modrinth.com/plugin/carbon)
 
 ## Compiling Yourself
 > [!NOTE]
