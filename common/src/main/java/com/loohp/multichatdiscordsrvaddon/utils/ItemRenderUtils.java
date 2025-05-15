@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -653,6 +653,11 @@ public class ItemRenderUtils {
                 evaluation = false;
             } else if (propertyType.equals(ItemModelDefinition.ConditionPropertyType.VIEW_ENTITY)) {
                 evaluation = false;
+            } else if (propertyType.equals(ItemModelDefinition.ConditionPropertyType.COMPONENT)) {
+                ItemModelDefinition.ComponentConditionProperty componentConditionProperty = (ItemModelDefinition.ComponentConditionProperty) condition;
+                String predicate = componentConditionProperty.getPredicate();
+                String value = componentConditionProperty.getValue();
+                evaluation = NMSAddon.getInstance().evaluateComponentPredicateOnItemStack(itemStack, predicate, value);
             } else if (propertyType.equals(ItemModelDefinition.ConditionPropertyType.CUSTOM_MODEL_DATA)) {
                 ItemModelDefinition.CustomModelDataConditionProperty customModelDataConditionProperty = (ItemModelDefinition.CustomModelDataConditionProperty) condition;
                 CustomModelData customModelData = NMS.getInstance().getCustomModelData(itemStack);
@@ -684,6 +689,10 @@ public class ItemRenderUtils {
                 } else {
                     value = ChargeType.NONE;
                 }
+            } else if (propertyType.equals(ItemModelDefinition.SelectPropertyType.COMPONENT)) {
+                ItemModelDefinition.ComponentSelectProperty componentSelectProperty = (ItemModelDefinition.ComponentSelectProperty) select;
+                Key component = componentSelectProperty.getComponent();
+                value = NMSAddon.getInstance().getItemStackDataComponentValue(itemStack, component);
             } else if (propertyType.equals(ItemModelDefinition.SelectPropertyType.TRIM_MATERIAL)) {
                 if (itemStack.getItemMeta() instanceof ArmorMeta) {
                     ArmorMeta armorMeta = (ArmorMeta) itemStack.getItemMeta();

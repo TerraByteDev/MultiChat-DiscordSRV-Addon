@@ -1,5 +1,5 @@
 /*
- * This file is part of InteractiveChatDiscordSrvAddon.
+ * This file is part of InteractiveChatDiscordSrvAddon2.
  *
  * Copyright (C) 2020 - 2025. LoohpJames <jamesloohp@gmail.com>
  * Copyright (C) 2020 - 2025. Contributors
@@ -248,6 +248,9 @@ public class TextureManager extends AbstractManager implements ITextureManager {
                                 }
                             }
                             for (String texture : source.getTextures()) {
+                                if (!texture.contains(":")) {
+                                    texture = ResourceRegistry.DEFAULT_NAMESPACE + ":" + texture;
+                                }
                                 BufferedImage textureImage = getTexture(texture).getTexture();
                                 for (Map.Entry<String, Int2IntMap> entry : permutations.entrySet()) {
                                     BufferedImage newImage = new BufferedImage(textureImage.getWidth(), textureImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -255,7 +258,11 @@ public class TextureManager extends AbstractManager implements ITextureManager {
                                     g.drawImage(textureImage, 0, 0, null);
                                     g.dispose();
                                     applyPaletteReplacementMap(entry.getValue(), newImage);
-                                    String key = namespace + ":" + texture + source.getSeparator() + entry.getKey();
+                                    String permutationName = entry.getKey();
+                                    if (permutationName.contains(":")) {
+                                        permutationName = permutationName.substring(permutationName.lastIndexOf(":") + 1);
+                                    }
+                                    String key = texture + source.getSeparator() + permutationName;
                                     textures.put(key, new GeneratedTextureResource(manager, key, newImage));
                                 }
                             }
