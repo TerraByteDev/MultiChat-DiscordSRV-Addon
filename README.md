@@ -30,7 +30,7 @@ Additionally, this plugin will display the filtered messages from your chat plug
     - ZelChat is functional, however ensure your chat rules cancel the message and do not replace.
     - ChatControl (v11+) is functional.
     - ChatControl-Red (Legacy, <=v10) is mostly functional.
-    - CarbonChat is not implemented
+    - CarbonChat is functional.
 - Clean up some code (configs, commands)
 - Remove some support for some minor MC versions (read above)
 - Independent discord system, separate from DiscordSRV (optional) [WIP]
