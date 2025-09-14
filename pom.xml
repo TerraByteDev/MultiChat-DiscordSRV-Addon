@@ -163,7 +163,7 @@
         <dependency>
             <groupId>de.exlll</groupId>
             <artifactId>configlib-paper</artifactId>
-            <version>4.5.0</version>
+            <version>4.6.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
